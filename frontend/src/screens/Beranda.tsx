@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CircleAlert, TrendingDown } from 'lucide-react';
+import { CircleAlert, Mic, TrendingDown } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { Beranda as DataBeranda } from '@shared/types';
 import { ambilBeranda, ambilSaya } from '../api/client';
@@ -11,6 +11,7 @@ import { GridMetrik, KartuMetrik } from '../components/KartuMetrik';
 import { BarisDaftar, KartuDaftar } from '../components/BarisDaftar';
 import { NavBawah } from '../components/NavBawah';
 import { KeadaanGalat } from '../components/KeadaanGalat';
+import { KeadaanKosong } from '../components/KeadaanKosong';
 import { RangkaHero, RangkaKartu } from '../components/Rangka';
 import { Tombol } from '../components/Tombol';
 import { bacaOnboarding } from '../state/onboarding';
@@ -100,8 +101,8 @@ export function Beranda() {
       <KepalaAplikasi nama={namaUsaha} />
 
       <div className="mt-6">
-        <p className="text-[14px] text-redup">Bulan ini</p>
-        <p className="text-[22px] font-bold tracking-[-0.02em] text-tinta">
+        <p className="text-isi text-redup">Bulan ini</p>
+        <p className="text-judul-kecil font-bold tracking-[-0.02em] text-tinta">
           {namaUsaha ?? 'Warung Anda'}
         </p>
       </div>
@@ -119,10 +120,10 @@ export function Beranda() {
           bawah={
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-[14px] font-medium text-white/60">Uang masuk</p>
-                <p className="mt-0.5 text-[12.5px] text-white/40">Belum dikurangi modal</p>
+                <p className="text-isi font-medium text-white/60">Uang masuk</p>
+                <p className="mt-0.5 text-label text-white/40">Belum dikurangi modal</p>
               </div>
-              <span className="angka shrink-0 text-[19px] font-bold text-white">
+              <span className="angka shrink-0 text-sub font-bold text-white">
                 {formatRupiah(data.omzet)}
               </span>
             </div>
@@ -152,19 +153,20 @@ export function Beranda() {
 
       {/* Angka yang tidak lengkap harus mengaku tidak lengkap. */}
       {data.baris_tanpa_modal > 0 && (
-        <p className="mt-3 rounded-kontrol bg-tanda px-4 py-3.5 text-[14px] leading-relaxed text-tanda-tinta">
+        <p className="mt-3 rounded-kontrol bg-tanda px-4 py-3.5 text-isi leading-relaxed text-tanda-tinta">
           {data.baris_tanpa_modal} penjualan belum ikut dihitung untungnya — modal produknya belum
           lengkap. Sudah masuk uang masuk, belum masuk untung bersih.
         </p>
       )}
 
       {!data.ada_transaksi && (
-        <div className="kartu mt-3 p-5">
-          <p className="text-[16px] leading-relaxed text-sedang">
-            Belum ada penjualan yang dicatat bulan ini. Catat yang hari ini dulu — cukup diucapkan,
-            tidak perlu diketik satu-satu.
-          </p>
-        </div>
+        <KeadaanKosong
+          ikon={Mic}
+          judul="Belum ada penjualan bulan ini"
+          pesan="Catat yang hari ini dulu — cukup diucapkan, tidak perlu diketik satu per satu."
+          labelAksi="Catat penjualan"
+          onAksi={() => nav('/catat')}
+        />
       )}
 
       {/* Terisi meski belum ada transaksi — dihitung dari resep, bukan penjualan. */}
@@ -183,7 +185,7 @@ export function Beranda() {
                 onClick={() => nav('/produk')}
               />
             </KartuDaftar>
-            <p className="mt-2 px-1 text-[13.5px] leading-relaxed text-redup">
+            <p className="mt-2 px-1 text-kecil leading-relaxed text-redup">
               Ketuk untuk melihat harga yang sebaiknya dipakai.
             </p>
           </div>

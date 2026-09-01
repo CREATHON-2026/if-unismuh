@@ -54,11 +54,11 @@ export function BarisDaftar({
         </span>
       )}
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[16.5px] font-semibold text-tinta">{judul}</p>
-        {meta && <div className="mt-0.5 text-[13.5px] leading-relaxed text-redup">{meta}</div>}
+        <p className="truncate text-utama font-semibold text-tinta">{judul}</p>
+        {meta && <div className="mt-0.5 text-kecil leading-relaxed text-redup">{meta}</div>}
       </div>
       <div className="flex shrink-0 flex-col items-end gap-1.5">
-        {nilai && <span className={`angka text-[16.5px] font-bold ${warnaNilai}`}>{nilai}</span>}
+        {nilai && <span className={`angka text-utama font-bold ${warnaNilai}`}>{nilai}</span>}
         {kanan}
       </div>
     </div>

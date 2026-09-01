@@ -96,8 +96,8 @@ export function JenisUsaha() {
         <TitikLangkah aktif={1} />
       </div>
 
-      <h1 className="pt-6 tracking-[-0.02em] text-[28px] font-bold text-tinta">Apa jenis usahamu?</h1>
-      <p className="text-[17px] leading-relaxed text-sedang">
+      <h1 className="pt-6 tracking-[-0.02em] text-judul font-bold text-tinta">Apa jenis usahamu?</h1>
+      <p className="text-utama leading-relaxed text-sedang">
         Pilih satu yang paling menggambarkan bisnismu agar LapakAi bisa beradaptasi.
       </p>
       {galat && <p className="font-semibold text-rugi">{galat}</p>}
@@ -123,8 +123,8 @@ export function JenisUsaha() {
                 <Ikon size={26} strokeWidth={1.8} aria-hidden="true" />
               </span>
               <span>
-                <span className="block text-[19px] font-bold text-tinta">{p.judul}</span>
-                <span className="text-[14.5px] leading-snug text-redup">{p.deskripsi}</span>
+                <span className="block text-sub font-bold text-tinta">{p.judul}</span>
+                <span className="text-isi leading-snug text-redup">{p.deskripsi}</span>
               </span>
             </button>
           );

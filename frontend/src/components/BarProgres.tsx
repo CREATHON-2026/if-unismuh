@@ -30,11 +30,11 @@ export function BarProgres({
   return (
     <div className="py-3">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="min-w-0 truncate text-[15.5px] font-semibold text-tinta">
+        <p className="min-w-0 truncate text-isi font-semibold text-tinta">
           {label}
-          {sub && <span className="ml-2 text-[13.5px] font-normal text-redup">{sub}</span>}
+          {sub && <span className="ml-2 text-kecil font-normal text-redup">{sub}</span>}
         </p>
-        <span className="angka shrink-0 text-[15.5px] font-bold text-tinta">{nilai}</span>
+        <span className="angka shrink-0 text-isi font-bold text-tinta">{nilai}</span>
       </div>
       <div className="mt-2 flex items-center gap-2.5">
         <div className="h-2 flex-1 overflow-hidden rounded-full bg-kanvas">
@@ -45,7 +45,7 @@ export function BarProgres({
             />
           )}
         </div>
-        <span className="angka w-11 shrink-0 text-right text-[13px] font-semibold text-redup">
+        <span className="angka w-11 shrink-0 text-right text-kecil font-semibold text-redup">
           {persen === null ? '—' : `${persen}%`}
         </span>
       </div>

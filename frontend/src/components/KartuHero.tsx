@@ -31,12 +31,12 @@ export function KartuHero({
 
   return (
     <div className="rounded-kartu bg-hero p-6">
-      <p className="text-[14px] font-medium text-white/55">{label}</p>
-      <p className={`angka mt-1.5 text-[40px] font-extrabold leading-none ${warnaAngka}`}>
+      <p className="text-isi font-medium text-white/55">{label}</p>
+      <p className={`angka mt-1.5 text-nomor-besar font-extrabold leading-none ${warnaAngka}`}>
         {nilai}
       </p>
       {catatan && (
-        <p className="mt-3 text-[14px] leading-relaxed text-white/60">{catatan}</p>
+        <p className="mt-3 text-isi leading-relaxed text-white/60">{catatan}</p>
       )}
       {bawah && <div className="mt-5 border-t border-white/12 pt-4">{bawah}</div>}
     </div>

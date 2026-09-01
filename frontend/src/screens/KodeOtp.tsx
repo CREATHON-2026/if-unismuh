@@ -74,10 +74,10 @@ export function KodeOtp() {
           <div className="flex h-28 w-28 items-center justify-center rounded-full bg-hero text-white">
             <Lock size={44} strokeWidth={2} aria-hidden="true" />
           </div>
-          <h1 className="tracking-[-0.02em] text-[26px] font-bold text-tinta">Verifikasi Kode OTP</h1>
+          <h1 className="tracking-[-0.02em] text-judul font-bold text-tinta">Verifikasi Kode OTP</h1>
           <div>
-            <p className="text-[17px] text-sedang">Masukkan 6 digit kode yang kami kirim.</p>
-            <p className="text-[15px] text-sedang">(Mode demo: ketik 123456)</p>
+            <p className="text-utama text-sedang">Masukkan 6 digit kode yang kami kirim.</p>
+            <p className="text-isi text-sedang">(Mode demo: ketik 123456)</p>
           </div>
           <div className="flex justify-center gap-2 pt-2" onPaste={tempel}>
             {digit.map((d, i) => (
@@ -99,7 +99,7 @@ export function KodeOtp() {
           </div>
           {sibuk && <p className="text-sedang">Memeriksa…</p>}
           {galat && <p className="font-semibold text-rugi">{galat}</p>}
-          <p className="pt-2 text-[17px] text-tinta">Belum menerima kode?</p>
+          <p className="pt-2 text-utama text-tinta">Belum menerima kode?</p>
           <button
             type="button"
             onClick={kirimUlang}

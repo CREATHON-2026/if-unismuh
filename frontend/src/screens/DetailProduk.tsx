@@ -72,7 +72,7 @@ export function DetailProduk() {
   return (
     <Layar kembali={() => nav('/produk')} atas>
       <div className="flex flex-wrap items-center gap-2">
-        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] text-tinta">{d.nama}</h1>
+        <h1 className="text-judul font-extrabold tracking-[-0.02em] text-tinta">{d.nama}</h1>
         {d.merugi && <Lencana nada="rugi">MERUGI</Lencana>}
         {/* Kuning = perlu dicek. Terlaris baru jadi peringatan kalau produknya
             juga merugi; terlaris yang untung cuma kabar baik, jadi netral. */}
@@ -104,13 +104,13 @@ export function DetailProduk() {
           }
           bawah={
             <div className="flex flex-col gap-2.5">
-              <div className="flex items-center justify-between text-[15px]">
+              <div className="flex items-center justify-between text-isi">
                 <span className="text-white/55">Modal per unit</span>
                 <span className="angka font-semibold text-white">
                   {d.modal_per_unit == null ? 'belum diisi' : formatRupiah(d.modal_per_unit)}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-[15px]">
+              <div className="flex items-center justify-between text-isi">
                 <span className="text-white/55">Harga jual</span>
                 <span className="angka font-semibold text-white">
                   {formatRupiah(d.harga_jual)}
@@ -126,23 +126,23 @@ export function DetailProduk() {
       {d.saran_harga && (
         <div className="mt-3 rounded-kartu bg-untung p-6 text-white">
           <p className="label-bagian !text-white/70">SARAN HARGA</p>
-          <p className="angka mt-2 text-[34px] font-extrabold leading-none">
+          <p className="angka mt-2 text-nomor font-extrabold leading-none">
             {formatRupiah(d.saran_harga.harga_disarankan)}
           </p>
-          <p className="mt-3 text-[14.5px] leading-relaxed text-white/85">
+          <p className="mt-3 text-isi leading-relaxed text-white/85">
             {d.saran_harga.alasan}
           </p>
 
           <div className="mt-4 flex gap-2">
             <div className="flex-1 rounded-kontrol bg-untung-tua px-4 py-3">
-              <p className="text-[12.5px] text-white/65">Batas tidak rugi</p>
-              <p className="angka mt-0.5 text-[16px] font-bold">
+              <p className="text-label text-white/65">Batas tidak rugi</p>
+              <p className="angka mt-0.5 text-utama font-bold">
                 {formatRupiah(d.saran_harga.harga_impas)}
               </p>
             </div>
             <div className="flex-1 rounded-kontrol bg-untung-tua px-4 py-3">
-              <p className="text-[12.5px] text-white/65">Untung jadi</p>
-              <p className="angka mt-0.5 text-[16px] font-bold">
+              <p className="text-label text-white/65">Untung jadi</p>
+              <p className="angka mt-0.5 text-utama font-bold">
                 {formatRupiah(d.saran_harga.untung_per_unit)}
               </p>
             </div>
@@ -153,7 +153,7 @@ export function DetailProduk() {
       {d.bahan.length > 0 && (
         <div className="kartu mt-3 px-5 py-5">
           <p className="label-bagian">MODAL DATANG DARI SINI</p>
-          <p className="mt-1 text-[13.5px] text-redup">
+          <p className="mt-1 text-kecil text-redup">
             Sekali bikin jadi {d.hasil_per_batch ?? '—'} unit
           </p>
 

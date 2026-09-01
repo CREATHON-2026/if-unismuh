@@ -39,7 +39,7 @@ export function NomorHp() {
               {!sibuk && <ArrowRight size={21} strokeWidth={2} aria-hidden="true" />}
             </span>
           </Tombol>
-          <p className="text-center text-[14px] leading-relaxed text-redup">
+          <p className="text-center text-isi leading-relaxed text-redup">
             Dengan melanjutkan, kamu setuju dengan{' '}
             <a href="#" className="font-semibold text-tinta underline">
               Syarat &amp; Ketentuan
@@ -53,10 +53,10 @@ export function NomorHp() {
         <Smartphone size={34} strokeWidth={1.9} aria-hidden="true" />
       </div>
 
-      <h1 className="pt-2 text-[28px] font-bold tracking-[-0.02em] text-tinta">
+      <h1 className="pt-2 text-judul font-bold tracking-[-0.02em] text-tinta">
         Masuk ke Warungmu
       </h1>
-      <p className="text-[16.5px] leading-relaxed text-sedang">
+      <p className="text-utama leading-relaxed text-sedang">
         Kami akan mengirimkan kode verifikasi via WhatsApp atau SMS untuk memastikan ini benar
         kamu.
       </p>
@@ -78,7 +78,7 @@ export function NomorHp() {
           className="angka h-full min-w-0 flex-1 bg-transparent text-lg tracking-wider text-tinta outline-none placeholder:text-redup"
         />
       </div>
-      <p className="text-[15px] text-redup">Pastikan nomor aktif dan bisa menerima pesan.</p>
+      <p className="text-isi text-redup">Pastikan nomor aktif dan bisa menerima pesan.</p>
       {galat && <p className="font-semibold text-rugi">{galat}</p>}
     </Layar>
   );

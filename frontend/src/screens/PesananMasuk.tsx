@@ -120,8 +120,8 @@ export function PesananMasuk() {
   return (
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
-      <h1 className="mt-7 text-[26px] font-bold tracking-[-0.02em] text-tinta">Pesanan Masuk</h1>
-      <p className="mt-1 text-[16px] leading-relaxed text-sedang">
+      <h1 className="mt-7 text-judul font-bold tracking-[-0.02em] text-tinta">Pesanan Masuk</h1>
+      <p className="mt-1 text-utama leading-relaxed text-sedang">
         Salin chat pembeli dari WhatsApp, tempel di sini.
       </p>
 
@@ -136,7 +136,7 @@ export function PesananMasuk() {
         >
           <MessageCircle size={20} strokeWidth={1.8} />
         </span>
-        <span className="min-w-0 flex-1 text-[14.5px] leading-relaxed text-sedang">
+        <span className="min-w-0 flex-1 text-isi leading-relaxed text-sedang">
           Atau sambungkan WhatsApp supaya pesanan terbaca sendiri.{' '}
           <span className="font-semibold text-tinta">Hanya membaca, tidak pernah mengirim.</span>
         </span>
@@ -148,7 +148,7 @@ export function PesananMasuk() {
         onChange={(e) => setTeks(e.target.value)}
         placeholder={CONTOH}
         rows={4}
-        className="mt-3 w-full rounded-kartu border-[1.5px] border-garis-tua bg-kartu p-4 text-[16.5px] leading-relaxed text-tinta outline-none transition placeholder:text-redup focus:border-hero"
+        className="mt-3 w-full rounded-kartu border-[1.5px] border-garis-tua bg-kartu p-4 text-utama leading-relaxed text-tinta outline-none transition placeholder:text-redup focus:border-hero"
       />
       <div className="mt-3">
         <Tombol varian="gelap" disabled={!teks.trim() || sibuk} onClick={periksa}>
@@ -157,11 +157,11 @@ export function PesananMasuk() {
       </div>
 
       {galat && (
-        <p className="mt-3 rounded-kartu bg-rugi-muda p-4 text-[16.5px] text-rugi-tua">{galat}</p>
+        <p className="mt-3 rounded-kartu bg-rugi-muda p-4 text-utama text-rugi-tua">{galat}</p>
       )}
 
       {hasil && hasil.jenis === 'bukan_pesanan' && (
-        <p className="kartu mt-4 p-5 text-[16.5px] leading-relaxed text-sedang">
+        <p className="kartu mt-4 p-5 text-utama leading-relaxed text-sedang">
           Ini sepertinya bukan pesanan, jadi tidak kami simpan.
         </p>
       )}
@@ -170,11 +170,11 @@ export function PesananMasuk() {
         <div className="mt-4 flex flex-col gap-3">
           <div className="kartu px-5 py-4">
             <div className="flex items-center justify-between gap-3">
-              <p className="min-w-0 text-[18px] font-bold text-tinta">
+              <p className="min-w-0 text-sub font-bold text-tinta">
                 {hasil.produk?.nama ?? hasil.nama_produk_mentah ?? 'Produk belum dikenali'}
               </p>
               {hasil.jumlah != null && (
-                <span className="angka shrink-0 text-[16.5px] font-semibold text-sedang">
+                <span className="angka shrink-0 text-utama font-semibold text-sedang">
                   {hasil.jumlah} pcs
                 </span>
               )}
@@ -185,7 +185,7 @@ export function PesananMasuk() {
             {hasil.perlu_dicek && hasil.kandidat.length > 0 && (
               <div className="mt-3 rounded-kontrol bg-tanda p-4">
                 <Lencana nada="tanda">PERLU DICEK</Lencana>
-                <p className="mt-2 text-[14.5px] leading-relaxed text-tanda-tinta">
+                <p className="mt-2 text-isi leading-relaxed text-tanda-tinta">
                   Maksudnya produk yang mana? {hasil.kandidat.map((k) => k.nama).join(', ')}
                 </p>
               </div>
@@ -203,7 +203,7 @@ export function PesananMasuk() {
               nada={hasil.merugi ? 'rugi' : 'untung'}
               bawah={
                 hasil.nilai_pesanan != null ? (
-                  <div className="flex items-center justify-between text-[15px]">
+                  <div className="flex items-center justify-between text-isi">
                     <span className="text-white/55">Nilai pesanan</span>
                     <span className="angka font-semibold text-white">
                       {formatRupiah(hasil.nilai_pesanan)}
@@ -219,7 +219,7 @@ export function PesananMasuk() {
           {hasil.peringatan.map((p) => (
             <p
               key={p}
-              className="rounded-kartu border border-rugi/15 bg-rugi-muda p-4 text-[16px] leading-relaxed text-rugi-tua"
+              className="rounded-kartu border border-rugi/15 bg-rugi-muda p-4 text-utama leading-relaxed text-rugi-tua"
             >
               {p}
             </p>
@@ -235,7 +235,7 @@ export function PesananMasuk() {
                     type="button"
                     disabled={sibuk}
                     onClick={() => void susunBalasan(m.nilai)}
-                    className="min-h-14 rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-3 text-[16px] font-semibold text-tinta transition active:scale-95 disabled:opacity-40"
+                    className="min-h-14 rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-3 text-utama font-semibold text-tinta transition active:scale-95 disabled:opacity-40"
                   >
                     {m.label}
                   </button>
@@ -249,7 +249,7 @@ export function PesananMasuk() {
       {balasan && (
         <div className="kartu mt-3 px-5 py-5">
           <p className="label-bagian">BALASAN SIAP DISALIN</p>
-          <p className="mt-3 rounded-kontrol bg-kanvas p-4 text-[16.5px] leading-relaxed text-tinta">
+          <p className="mt-3 rounded-kontrol bg-kanvas p-4 text-utama leading-relaxed text-tinta">
             {balasan.teks}
           </p>
           <div className="mt-4">
@@ -259,7 +259,7 @@ export function PesananMasuk() {
           </div>
           {/* Bukan basa-basi: ini yang membedakan kami dari sistem yang
               mengirim atas nama pedagang. */}
-          <p className="mt-3 text-center text-[14.5px] leading-relaxed text-redup">
+          <p className="mt-3 text-center text-isi leading-relaxed text-redup">
             Tempel sendiri di WhatsApp Anda. lapakAi tidak pernah mengirim pesan ke pembeli.
           </p>
         </div>
@@ -280,19 +280,19 @@ export function PesananMasuk() {
                 className="py-3.5 text-left transition active:scale-[0.99] disabled:opacity-60"
               >
                 <div className="flex items-center justify-between gap-3">
-                  <p className="min-w-0 truncate text-[16.5px] font-bold text-tinta">
+                  <p className="min-w-0 truncate text-utama font-bold text-tinta">
                     {p.nama_produk ?? p.nama_produk_mentah ?? 'Belum dikenali'}
                   </p>
                   {p.jumlah != null && (
-                    <span className="angka shrink-0 text-[15px] font-semibold text-sedang">
+                    <span className="angka shrink-0 text-isi font-semibold text-sedang">
                       {p.jumlah} pcs
                     </span>
                   )}
                 </div>
-                <p className="mt-0.5 truncate text-[14.5px] leading-relaxed text-redup">
+                <p className="mt-0.5 truncate text-isi leading-relaxed text-redup">
                   {p.teks}
                 </p>
-                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px]">
+                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-isi">
                   <span className="text-redup">
                     {p.sumber === 'whatsapp'
                       ? `WhatsApp ${p.pengirim_samar ?? ''}`.trim()
@@ -312,7 +312,7 @@ export function PesananMasuk() {
               </button>
             ))}
           </div>
-          <p className="mt-2 text-[13.5px] leading-relaxed text-redup">
+          <p className="mt-2 text-kecil leading-relaxed text-redup">
             Ketuk pesan untuk meninjau ulang margin dan stok, lalu menyiapkan balasan.
           </p>
         </div>

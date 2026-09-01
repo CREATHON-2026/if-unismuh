@@ -21,10 +21,10 @@ export function InfoWhatsApp() {
         </Tombol>
       }
     >
-      <h1 className="text-center tracking-[-0.02em] text-[28px] font-bold text-tinta">
+      <h1 className="text-center tracking-[-0.02em] text-judul font-bold text-tinta">
         Pesanan Lewat WhatsApp?
       </h1>
-      <p className="text-center text-[17px] leading-relaxed text-sedang">
+      <p className="text-center text-utama leading-relaxed text-sedang">
         lapakAi membaca chat pesanan yang Anda tempel — tanpa perlu menghubungkan akun WhatsApp
         Anda.
       </p>
@@ -34,14 +34,14 @@ export function InfoWhatsApp() {
           <div className="flex h-24 w-24 items-center justify-center rounded-full bg-kanvas text-sedang">
             <MessageCircle size={42} strokeWidth={1.8} aria-hidden="true" />
           </div>
-          <p className="text-[17px] leading-relaxed text-sedang">
+          <p className="text-utama leading-relaxed text-sedang">
             Salin chat pembeli, tempel di <span className="font-bold">Pesanan Masuk</span> —
             lapakAi mengecek untung dan stoknya, lalu menyiapkan balasan untuk Anda salin.
           </p>
         </div>
       </div>
 
-      <div className="mt-5 rounded-kartu bg-garis p-6 text-[16.5px] leading-relaxed text-tinta">
+      <div className="mt-5 rounded-kartu bg-garis p-6 text-utama leading-relaxed text-tinta">
         <p>1. Buka WhatsApp di HP Anda</p>
         <p className="mt-3">
           2. Tekan lama pesan pembeli, lalu ketuk <span className="font-bold">Salin</span>
@@ -54,7 +54,7 @@ export function InfoWhatsApp() {
         </p>
       </div>
 
-      <p className="mt-5 text-center text-[15px] text-sedang">
+      <p className="mt-5 text-center text-isi text-sedang">
         lapakAi tidak pernah mengirim pesan ke pembeli Anda — balasan selalu Anda kirim sendiri.
       </p>
     </Layar>

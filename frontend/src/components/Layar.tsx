@@ -40,7 +40,7 @@ export function Layar({
                 <ArrowLeft size={24} strokeWidth={2} aria-hidden="true" />
               </button>
             )}
-            <span className="text-[19px] font-extrabold tracking-[-0.02em] text-tinta">lapakAi</span>
+            <span className="text-sub font-extrabold tracking-[-0.02em] text-tinta">lapakAi</span>
           </div>
         )}
         {pertanyaan && (
