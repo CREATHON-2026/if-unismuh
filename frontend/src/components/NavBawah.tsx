@@ -20,7 +20,7 @@ export function NavBawah() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="sticky bottom-0 -mx-5 mt-4 border-t border-garis bg-kartu/95 px-2 pb-2 pt-2 backdrop-blur">
+    <nav className="sticky bottom-0 -mx-5 mt-4 border-t border-garis bg-kartu/95 aman-bawah px-2 pt-2 backdrop-blur">
       <div className="flex items-stretch justify-between">
         {TUJUAN.map((t) => {
           const aktif = pathname === t.ke || pathname.startsWith(`${t.ke}/`);

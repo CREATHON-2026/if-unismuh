@@ -10,6 +10,8 @@ import { BarisDaftar, KartuDaftar } from '../components/BarisDaftar';
 import { Lencana } from '../components/Lencana';
 import { Segmented } from '../components/Segmented';
 import { NavBawah } from '../components/NavBawah';
+import { KeadaanGalat } from '../components/KeadaanGalat';
+import { RangkaDaftar } from '../components/Rangka';
 
 type Saringan = 'semua' | 'merugi' | 'untung';
 
@@ -36,8 +38,20 @@ export function DaftarProduk() {
   const [saring, setSaring] = useState<Saringan>('semua');
   const [galat, setGalat] = useState('');
 
+  const [memuat, setMemuat] = useState(true);
+
+  async function muat() {
+    setMemuat(true);
+    setGalat('');
+    const j = await ambilDaftarProduk();
+    if (j.ok) setDaftar(j.data);
+    else setGalat(j.error.pesan);
+    setMemuat(false);
+  }
+
   useEffect(() => {
-    void ambilDaftarProduk().then((j) => (j.ok ? setDaftar(j.data) : setGalat(j.error.pesan)));
+    void muat();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // `merugi` bisa null kalau modalnya belum diketahui. Yang belum diketahui
@@ -51,10 +65,12 @@ export function DaftarProduk() {
       <KepalaAplikasi />
       <h1 className="mt-7 text-[26px] font-bold tracking-[-0.02em] text-tinta">Produk Anda</h1>
 
-      {galat && (
-        <p className="mt-4 rounded-kartu bg-rugi-muda p-4 text-[17px] text-rugi-tua">{galat}</p>
+      {galat && <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />}
+      {!daftar && !galat && (
+        <div className="mt-4">
+          <RangkaDaftar baris={3} />
+        </div>
       )}
-      {!daftar && !galat && <p className="mt-6 text-[17px] text-redup">Memuat…</p>}
 
       {daftar && daftar.length > 0 && (
         <div className="mt-4">

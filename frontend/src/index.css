@@ -35,7 +35,12 @@
   /* Tinta */
   --color-tinta: #0F172A;
   --color-sedang: #475569;
-  --color-redup: #8A94A6;
+  /* Diukur, bukan dipilih dari selera: #8A94A6 yang lama hanya 2,75:1 di atas
+     kanvas — gagal WCAG AA, padahal dipakai 39 kali untuk teks 12,5-14px.
+     Pengguna kita berusia 35-60 tahun; justru kelompok yang paling butuh
+     kontras. #646D79 memberi 5,24:1 di atas kartu dan 4,71:1 di atas kanvas.
+     Kalau warna ini diterangkan lagi, ukur ulang dulu. */
+  --color-redup: #646D79;
 
   /* Kertas */
   --color-kanvas: #F1F3F5;
@@ -118,4 +123,20 @@ body {
   background: var(--color-kartu);
   border: 1px solid var(--color-garis);
   border-radius: var(--radius-kartu);
+}
+
+/*
+ * Area aman perangkat.
+ *
+ * Di iPhone tanpa tombol home, ada garis gesture setinggi ~34px di bawah layar.
+ * Tanpa ini, label "Beranda/Produk/Catat/Pesanan" duduk tepat di bawahnya:
+ * masih terlihat, tapi setiap kali ditekan berisiko malah menggeser aplikasi
+ * ke latar. Butuh `viewport-fit=cover` di index.html supaya env() terisi —
+ * tanpa itu nilainya selalu 0 dan kelas ini tidak melakukan apa-apa.
+ */
+.aman-bawah {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+.aman-atas {
+  padding-top: max(1.5rem, env(safe-area-inset-top));
 }

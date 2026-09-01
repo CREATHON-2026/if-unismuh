@@ -8,6 +8,8 @@ import { KartuHero } from '../components/KartuHero';
 import { BarProgres } from '../components/BarProgres';
 import { Lencana } from '../components/Lencana';
 import { NavBawah } from '../components/NavBawah';
+import { KeadaanGalat } from '../components/KeadaanGalat';
+import { RangkaHero, RangkaKartu } from '../components/Rangka';
 
 /**
  * Detail produk — fitur 6, dan langkah 3 skrip demo.
@@ -25,19 +27,32 @@ export function DetailProduk() {
   const [d, setD] = useState<Detail | null>(null);
   const [galat, setGalat] = useState('');
 
-  useEffect(() => {
+  const [memuat, setMemuat] = useState(true);
+
+  async function muat() {
     const nomor = Number(id);
     if (!Number.isInteger(nomor)) {
       setGalat('Produknya tidak dikenali.');
+      setMemuat(false);
       return;
     }
-    void ambilDetailProduk(nomor).then((j) => (j.ok ? setD(j.data) : setGalat(j.error.pesan)));
+    setMemuat(true);
+    setGalat('');
+    const j = await ambilDetailProduk(nomor);
+    if (j.ok) setD(j.data);
+    else setGalat(j.error.pesan);
+    setMemuat(false);
+  }
+
+  useEffect(() => {
+    void muat();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (galat) {
     return (
       <Layar kembali={() => nav('/produk')} atas>
-        <p className="rounded-kartu bg-rugi-muda p-4 text-[17px] text-rugi-tua">{galat}</p>
+        <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />
         <NavBawah />
       </Layar>
     );
@@ -45,7 +60,11 @@ export function DetailProduk() {
   if (!d) {
     return (
       <Layar kembali={() => nav('/produk')} atas>
-        <p className="text-[17px] text-redup">Memuat…</p>
+        <div className="flex flex-col gap-3">
+          <RangkaHero />
+          <RangkaKartu tinggi="h-44" />
+        </div>
+        <NavBawah />
       </Layar>
     );
   }

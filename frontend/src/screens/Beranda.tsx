@@ -10,6 +10,8 @@ import { KartuHero } from '../components/KartuHero';
 import { GridMetrik, KartuMetrik } from '../components/KartuMetrik';
 import { BarisDaftar, KartuDaftar } from '../components/BarisDaftar';
 import { NavBawah } from '../components/NavBawah';
+import { KeadaanGalat } from '../components/KeadaanGalat';
+import { RangkaHero, RangkaKartu } from '../components/Rangka';
 import { Tombol } from '../components/Tombol';
 import { bacaOnboarding } from '../state/onboarding';
 
@@ -40,8 +42,23 @@ export function Beranda() {
   // "Warung Anda" padahal namanya tersimpan.
   const [namaUsaha, setNamaUsaha] = useState(() => bacaOnboarding().nama_usaha ?? null);
 
+  // Dipisah jadi fungsi bernama supaya tombol "Coba lagi" bisa memanggil ulang
+  // hal yang sama persis dengan pemuatan pertama — bukan jalur pemulihan kedua
+  // yang bisa berbeda diam-diam.
+  const [memuat, setMemuat] = useState(true);
+
+  async function muat() {
+    setMemuat(true);
+    setGalat('');
+    const j = await ambilBeranda();
+    if (j.ok) setData(j.data);
+    else setGalat(j.error.pesan);
+    setMemuat(false);
+  }
+
   useEffect(() => {
-    void ambilBeranda().then((j) => (j.ok ? setData(j.data) : setGalat(j.error.pesan)));
+    void muat();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -51,17 +68,26 @@ export function Beranda() {
     });
   }, [namaUsaha]);
 
-  if (galat || !data) {
+  if (galat) {
     return (
       <Layar tanpaLogo atas>
-        <KepalaAplikasi />
-        {galat ? (
-          <p className="mt-10 rounded-kartu bg-rugi-muda px-4 py-3.5 text-[15px] text-rugi-tua">
-            {galat}
-          </p>
-        ) : (
-          <p className="mt-10 text-center text-[15px] text-redup">Memuat…</p>
-        )}
+        <KepalaAplikasi nama={namaUsaha} />
+        <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />
+        <NavBawah />
+      </Layar>
+    );
+  }
+
+  // Rangkanya meniru susunan aslinya — kartu gelap lalu dua kotak metrik —
+  // supaya layar tidak melompat saat angkanya tiba.
+  if (!data) {
+    return (
+      <Layar tanpaLogo atas>
+        <KepalaAplikasi nama={namaUsaha} />
+        <div className="mt-6 flex flex-col gap-4">
+          <RangkaHero />
+          <RangkaKartu tinggi="h-24" />
+        </div>
         <NavBawah />
       </Layar>
     );
