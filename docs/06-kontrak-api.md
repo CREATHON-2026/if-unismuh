@@ -263,6 +263,71 @@ Dibulatkan **naik**, bukan ke terdekat: 21.200 × 1,2 = 25.440 → **25.500**. M
 
 `terlaris` dihitung sepanjang waktu, bukan per periode: sifatnya melekat pada produknya, dan angka yang berubah mengikuti rentang tanggal justru membingungkan.
 
+### `POST /produk/dari-teks` — fitur 10
+
+Kalimat bebas → **usulan** produk baru. Dipakai untuk "tambah produk tanpa form": pedagang cukup mengucapkan apa yang dia jual, tidak perlu mengisi delapan kolom.
+
+```jsonc
+// permintaan
+{ "teks": "tambah kripik pisang, sekali bikin jadi 40 bungkus, dijual 20 ribu. bahannya pisang 20 kilo 300 ribu" }
+
+// jawaban
+{
+  "nama_produk": "kripik pisang",
+  "hasil_per_batch": 40,
+  "harga_jual": 20000,
+  "bahan": [
+    { "nama": "pisang", "satuan": "kg", "jumlah": 20,
+      "harga_beli": 300000, "jumlah_beli": 20, "perlu_dicek": false }
+  ],
+  "produk_mirip": [],
+  "perlu_dicek": false,
+  "yang_kurang": [],
+  "catatan": []
+}
+```
+
+**★ Tidak menyimpan apa pun.** Sama seperti `POST /transaksi/dari-teks` — ini hasil AI, jadi aturan #2 berlaku. Tampilkan usulannya, biarkan pengguna membetulkan, lalu kirim ke `POST /produk`.
+
+| Field | Arti untuk frontend |
+|---|---|
+| `yang_kurang` | Pertanyaan yang **harus** dijawab dulu. Kalau tidak kosong, tahan tombol simpan |
+| `perlu_dicek` | `true` persis ketika `yang_kurang` tidak kosong |
+| `catatan` | Boleh dilewati, tapi **tampilkan** — mis. "modal belum bisa dihitung" |
+| `produk_mirip` | Produk yang sudah ada dan namanya mirip. Kalau terisi, tanyakan dulu apakah ini produk yang sama |
+| `bahan[].perlu_dicek` | Baris itu belum lengkap — tandai, jangan biarkan lolos |
+
+Yang tidak disebut pedagang **dikembalikan kosong, bukan ditebak**. `harga_jual: null` berarti dia memang tidak menyebut harga — tanyakan, jangan isi angka masuk akal.
+
+`produk_mirip` ada untuk mencegah duplikat: dua produk bernama "Kacang Telur" dan "Kacang Telor" memecah riwayat penjualannya jadi dua, dan keduanya lalu terlihat kurang laku dari kenyataan.
+
+### `POST /produk`
+
+Simpan produk. Jalan masuk kedua selain onboarding — menerima bentuk yang sama dengan keluaran `/produk/dari-teks` setelah dibetulkan pengguna, dan juga dipakai untuk menambah produk secara manual.
+
+```jsonc
+{
+  "nama_produk": "Kripik Pisang",
+  "harga_jual": 20000,
+  "hasil_per_batch": 40,          // wajib kalau bahan diisi
+  "bahan": [
+    { "nama": "pisang", "satuan": "kg", "jumlah": 20,
+      "harga_beli": 300000, "jumlah_beli": 20 }
+  ]
+}
+```
+
+Jawabannya sama bentuknya dengan `POST /onboarding/resep` — `produk_id`, `nama`, `modal_per_unit`, `harga_jual`, `margin_per_unit`, `merugi`, semuanya dari SQL.
+
+**`bahan` boleh kosong.** Pedagang yang buru-buru berhak mencatat produknya dulu dan melengkapi resepnya nanti. Akibatnya:
+
+- `modal_per_unit`, `margin_per_unit`, dan `merugi` bernilai **`null`** — bukan nol, bukan `false`
+- penjualannya masuk `baris_tanpa_modal` di Beranda, tidak dihitung sebagai untung
+
+Tampilkan produk seperti itu sebagai **"modal belum diisi"**, bukan sebagai untung penuh dan bukan sebagai rugi. Yang tidak diketahui harus tampil sebagai tidak diketahui.
+
+Kalau `bahan` diisi, `hasil_per_batch` wajib dan setiap bahan wajib punya `jumlah`, `jumlah_beli`, dan `harga_beli` — resep setengah jadi menghasilkan modal yang salah tanpa pesan galat.
+
 ## Ekstraksi
 
 ### `POST /ekstraksi/foto`

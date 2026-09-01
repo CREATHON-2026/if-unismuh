@@ -156,6 +156,70 @@ export interface DetailProduk extends RingkasanProduk {
 }
 
 // ---------------------------------------------------------------------------
+// Tambah produk tanpa form (fitur 10)
+// ---------------------------------------------------------------------------
+
+export interface DariTeksProdukReq {
+  /** Kalimat apa adanya, mis. hasil transkripsi suara di browser */
+  teks: string;
+}
+
+export interface BahanUsulan {
+  nama: string;
+  satuan: string | null;
+  /** Berapa banyak dipakai untuk SEKALI bikin */
+  jumlah: number | null;
+  harga_beli: number | null;
+  jumlah_beli: number | null;
+  /** true -> ada yang belum lengkap, tampilkan menonjol dan minta dilengkapi */
+  perlu_dicek: boolean;
+}
+
+/**
+ * ★ USULAN, BUKAN PRODUK TERSIMPAN.
+ *
+ * `POST /produk/dari-teks` tidak menyimpan apa pun — aturan #2. Setelah pengguna
+ * melengkapi yang ditandai, frontend mengirim hasilnya ke `POST /produk` yang
+ * bentuknya memang sengaja dibuat cocok.
+ */
+export interface UsulanProduk {
+  nama_produk: string | null;
+  hasil_per_batch: number | null;
+  harga_jual: number | null;
+  bahan: BahanUsulan[];
+
+  /**
+   * Produk yang sudah ada dan namanya mirip. Kalau terisi, TANYAKAN dulu apakah
+   * ini produk yang sama — menyimpan diam-diam akan membuat duplikat, dan dua
+   * produk dengan nama nyaris sama memecah riwayat penjualannya.
+   */
+  produk_mirip: KandidatProduk[];
+
+  /** true kalau ada di `yang_kurang` — tombol simpan harus ditahan dulu */
+  perlu_dicek: boolean;
+  /** Pertanyaan yang HARUS dijawab sebelum bisa disimpan */
+  yang_kurang: string[];
+  /** Boleh dilewati, tapi akibatnya perlu disadari pengguna */
+  catatan: string[];
+}
+
+/**
+ * Simpan produk — jalan masuk kedua selain onboarding.
+ *
+ * `bahan` boleh kosong: pedagang yang buru-buru berhak mencatat produknya dulu
+ * dan melengkapi resepnya nanti. Akibatnya `modal_per_unit` bernilai null dan
+ * penjualannya masuk `baris_tanpa_modal` di Beranda — bukan dianggap untung
+ * penuh. Yang tidak diketahui tampil sebagai tidak diketahui.
+ */
+export interface SimpanProdukReq {
+  nama_produk: string;
+  harga_jual: number;
+  /** Wajib kalau `bahan` diisi — tanpa ini modal tidak bisa dihitung */
+  hasil_per_batch?: number | null;
+  bahan?: BahanMasukan[];
+}
+
+// ---------------------------------------------------------------------------
 // Beranda
 // ---------------------------------------------------------------------------
 
