@@ -72,18 +72,33 @@ Simpan sebagai test set. Setiap perubahan prompt harus diuji ulang terhadap set 
 
 ## Tahap 2 — Catatan suara → transaksi
 
-> **BELUM ADA JALAN, DAN JANGAN DIANGGAP SUDAH.** Rancangan awal mengandalkan
-> audio native Gemini. Setelah pindah ke Ollama kampus, **tidak ada model audio
-> sama sekali** di server itu — tahap ini tidak bisa dikerjakan sebagaimana
-> ditulis di bawah.
->
-> Dua pilihan yang tersisa, belum diputuskan:
-> 1. **Web Speech API di browser** — gratis, mendukung `id-ID`, transkripsi
->    terjadi di perangkat pengguna. Teksnya lalu masuk ke Tahap 3 seperti
->    teks ketikan biasa. Butuh Chrome
-> 2. **Fitur 2 dicoret** — ketik manual dan foto sudah menutupi kebutuhannya
->
-> Bagian di bawah ini disimpan sebagai rancangan untuk pilihan pertama.
+**Transkripsi terjadi di browser, bukan di backend.** Ollama kampus tidak punya
+model audio sama sekali, dan Ollama memang bukan runtime Whisper — diverifikasi
+langsung: endpoint `/v1/audio/transcriptions` ada, tapi `model 'whisper' not found`.
+
+Jalurnya jadi dua bagian yang terpisah bersih:
+
+```
+Browser (Chrome/Edge)                   Backend
+─────────────────────                   ───────
+ mikrofon
+   ↓ Web Speech API, lang = 'id-ID'
+ "laku 10 kripik pisang"  ──teks──▶  POST /transaksi/dari-teks
+                                          ↓ gemma4 membaca
+                                       usulan baris
+                                          ↓ pg_trgm mencocokkan nama
+                                     layar konfirmasi ──▶ POST /transaksi
+```
+
+**Backend tidak pernah menyentuh audio.** Ia hanya menerima teks, sama seperti
+ketikan bebas — makanya endpoint-nya bernama `dari-teks`, bukan `dari-suara`.
+
+Gratis, tanpa kunci API, tanpa layanan luar. Chrome/Edge/Opera penuh, Safari
+14.1+ dengan awalan, **Firefox tidak** — kolom ketik bebas jadi jalan keluarnya.
+
+**Dan hasilnya tidak pernah langsung tersimpan.** Ini ekstraksi AI, jadi aturan
+#2 berlaku: `/transaksi/dari-teks` hanya mengusulkan; yang menyimpan tetap
+`POST /transaksi` setelah manusia mengonfirmasi.
 
 ### Yang perlu diperhatikan
 - Bahasa Indonesia bercampur bahasa daerah dan istilah pasar. Sebutkan konteks ini di prompt.
@@ -143,6 +158,37 @@ Diukur dengan `pg_trgm` di PostgreSQL 18:
 | `kripik psg` | Kripik Singkong | **0,350** | jangan cocok |
 | `kacang` | Kripik Pisang | **0,167** | jangan cocok |
 | `air mineral` | Kripik Pisang | **0,000** | jangan cocok |
+
+### Normalisasi sebelum dicocokkan — dua yang wajib ada
+
+Skor mentah saja tidak cukup. Dua pola bahasa Indonesia menjatuhkan pasangan yang jelas-jelas benar ke bawah ambang:
+
+| Pola | Contoh | Skor mentah | Setelah dinormalisasi |
+|---|---|---|---|
+| **e pepet** | `keripik pisang` → Kripik Pisang | 0,706 | **1,000** |
+| **klitik `-nya`** | `kripiknya` → Kripik Pisang | 0,333 | **0,500** |
+
+`keripik` adalah ejaan **baku KBBI**, dan itulah yang dituliskan Web Speech — sementara pedagang menyimpan produknya sebagai `kripik`. Tanpa normalisasi, pedagang harus mengonfirmasi manual setiap kali menyebut produknya sendiri dengan benar. Pola yang sama: kerupuk/krupuk, terasi/trasi, mie/mi.
+
+Caranya: bandingkan **tiga bentuk** dan ambil skor tertinggi — apa adanya, tanpa klitik, dan tanpa huruf `e` di kedua sisi.
+
+```sql
+GREATEST(
+  similarity(nama, $2),                              -- apa adanya
+  similarity(nama, $3),                              -- tanpa klitik "-nya"
+  similarity(replace(lower(nama), 'e', ''), $4)      -- tanpa "e", KEDUA sisi
+)
+```
+
+**Kenapa menghapus semua `e` itu aman meski terlihat kasar:** `GREATEST` berarti skor tidak pernah turun — normalisasi hanya bisa membantu. Diuji lawan dengan pasangan yang harus ditolak, dan **nol salah cocok** dari 10 produk realistis:
+
+| Ucapan | Produk | Mentah | Sesudah | Hasil |
+|---|---|---|---|---|
+| `keripik singkong` | Kripik **Pisang** | 0,240 | 0,364 | tetap ditolak |
+| `kue` | Keju Aroma | 0,071 | 0,083 | tetap ditolak |
+| `bakso` | Bakwan | 0,300 | 0,300 | tidak berubah |
+
+Catatan kinerja: bentuk ketiga tidak memakai index `idx_produk_nama_trgm`. Untuk pedagang dengan puluhan produk itu tidak berarti apa-apa.
 
 **Ambang 0,70 yang sempat tertulis di dokumen ini keliru dan berbahaya.** Dengan angka itu, `"kripik psg"` akan diperlakukan sebagai produk baru — membuat produk duplikat, memecah datanya, dan diam-diam merusak seluruh perhitungan margin produk itu. Tidak akan ada pesan galat; angkanya cuma jadi salah.
 

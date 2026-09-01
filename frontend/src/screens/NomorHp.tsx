@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight, Smartphone } from 'lucide-react';
 import { kirimOtp } from '../api/client';
 import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
@@ -33,53 +34,39 @@ export function NomorHp() {
       aksi={
         <>
           <Tombol varian="gelap" disabled={!valid || sibuk} onClick={kirim}>
-            <span className="flex items-center justify-center gap-3 uppercase tracking-wider">
+            <span className="flex items-center justify-center gap-2.5">
               {sibuk ? 'Mengirim…' : 'Kirim Kode'}
-              {!sibuk && (
-                <span aria-hidden className="text-2xl leading-none">
-                  →
-                </span>
-              )}
+              {!sibuk && <ArrowRight size={21} strokeWidth={2} aria-hidden="true" />}
             </span>
           </Tombol>
-          <p className="text-center text-sm text-[#57534E]">
+          <p className="text-center text-[14px] leading-relaxed text-redup">
             Dengan melanjutkan, kamu setuju dengan{' '}
-            <a href="#" className="font-semibold text-[#C2570E] underline">
-              Syarat & Ketentuan
+            <a href="#" className="font-semibold text-tinta underline">
+              Syarat &amp; Ketentuan
             </a>
             .
           </p>
         </>
       }
     >
-      <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[22px] bg-[#F5831F]">
-        <svg
-          width="34"
-          height="34"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          <rect x="7" y="3" width="10" height="18" rx="2.5" />
-          <line x1="11" y1="17.5" x2="13" y2="17.5" />
-        </svg>
+      <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[22px] bg-hero text-white">
+        <Smartphone size={34} strokeWidth={1.9} aria-hidden="true" />
       </div>
 
-      <h1 className="pt-2 font-logo text-[28px] font-bold text-[#1C1917]">Masuk ke Warungmu</h1>
-      <p className="text-[17px] leading-relaxed text-[#57534E]">
+      <h1 className="pt-2 text-[28px] font-bold tracking-[-0.02em] text-tinta">
+        Masuk ke Warungmu
+      </h1>
+      <p className="text-[16.5px] leading-relaxed text-sedang">
         Kami akan mengirimkan kode verifikasi via WhatsApp atau SMS untuk memastikan ini benar
         kamu.
       </p>
 
-      <label className="pt-4 text-lg font-bold text-[#1C1917]" htmlFor="nomor-hp">
+      <label className="pt-4 text-lg font-bold text-tinta" htmlFor="nomor-hp">
         Masukkan Nomor HP
       </label>
-      <div className="flex h-16 items-center rounded-2xl border border-[#C9A98F] bg-white px-4">
-        <span className="text-lg font-bold text-[#1C1917]">+62</span>
-        <span className="mx-3 h-8 w-px bg-[#E7D8C9]" aria-hidden="true" />
+      <div className="flex h-16 items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4">
+        <span className="angka text-lg font-bold text-tinta">+62</span>
+        <span className="mx-3 h-8 w-px bg-garis" aria-hidden="true" />
         <input
           id="nomor-hp"
           type="tel"
@@ -88,11 +75,11 @@ export function NomorHp() {
           placeholder="812 3456 7890"
           value={nomor}
           onChange={(e) => setNomor(e.target.value.replace(/\D/g, '').replace(/^0+/, ''))}
-          className="h-full flex-1 bg-transparent text-lg tracking-wider outline-none placeholder:text-[#E7B896]"
+          className="angka h-full min-w-0 flex-1 bg-transparent text-lg tracking-wider text-tinta outline-none placeholder:text-redup"
         />
       </div>
-      <p className="text-[15px] text-[#78716C]">Pastikan nomor aktif dan bisa menerima pesan.</p>
-      {galat && <p className="font-semibold text-red-600">{galat}</p>}
+      <p className="text-[15px] text-redup">Pastikan nomor aktif dan bisa menerima pesan.</p>
+      {galat && <p className="font-semibold text-rugi">{galat}</p>}
     </Layar>
   );
 }

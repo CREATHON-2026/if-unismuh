@@ -21,6 +21,27 @@ muatEnv({ path: path.join(AKAR_REPO, '.env'), quiet: true });
 
 export const PORT = Number(process.env.PORT ?? 3000);
 
+/**
+ * Direktori data PGlite. Kosong -> backend/db/data.
+ *
+ * Bisa ditimpa karena PGlite hanya boleh dipegang SATU proses: menjalankan
+ * server kedua yang menunjuk direktori yang sama merusak datanya, dengan galat
+ * `RuntimeError: Aborted()` yang sama sekali tidak menjelaskan sebabnya. Kalau
+ * perlu instans sekali pakai — menguji endpoint baru tanpa mengganggu server
+ * yang sedang jalan, misalnya — beri dia direktori sendiri lewat variabel ini.
+ */
+export const PGLITE_DIR = process.env.PGLITE_DIR ?? '';
+
+/**
+ * Direktori kredensial WhatsApp (Baileys). Kosong -> backend/db/baileys-auth.
+ *
+ * Alasannya sama dengan PGLITE_DIR: sesi WhatsApp hanya boleh dipegang SATU
+ * proses. Dua server yang menunjuk direktori auth yang sama saling menendang
+ * sesinya — status bolak-balik tersambung/terputus tanpa galat yang jelas.
+ * Instans uji harus diberi direktorinya sendiri lewat variabel ini.
+ */
+export const WA_AUTH_DIR = process.env.WA_AUTH_DIR ?? '';
+
 /** Kosong -> pakai PGlite (tertanam). Diisi -> PostgreSQL sungguhan. */
 export const DATABASE_URL = process.env.DATABASE_URL ?? '';
 export const MODE_DB: 'postgres' | 'pglite' = DATABASE_URL ? 'postgres' : 'pglite';

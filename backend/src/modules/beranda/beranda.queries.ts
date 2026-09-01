@@ -1,15 +1,9 @@
 import { satu } from '../../db/index.ts';
+import type { RingkasanPenjualan, TemuanProduk } from './beranda.types.ts';
 
 /**
  * Semua SQL Beranda ada di berkas ini. Tidak ada aritmetika di TypeScript.
  */
-
-export interface RingkasanPenjualan {
-  omzet: number;
-  untung_bersih: number;
-  jumlah_baris: number;
-  baris_tanpa_modal: number;
-}
 
 /**
  * Omzet dan untung bersih untuk satu rentang tanggal.
@@ -42,12 +36,6 @@ export function ringkasanPenjualan(
                          AND COALESCE($3::date, CURRENT_DATE)`,
     [userId, dari, sampai],
   );
-}
-
-export interface TemuanProduk {
-  jumlah_produk_merugi: number;
-  nama: string | null;
-  margin_per_unit: number | null;
 }
 
 /**

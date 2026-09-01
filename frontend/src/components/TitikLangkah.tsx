@@ -5,7 +5,7 @@ export function TitikLangkah({ aktif, total = 4 }: { aktif: number; total?: numb
       {Array.from({ length: total }, (_, i) => (
         <span
           key={i}
-          className={`h-2.5 w-2.5 rounded-full ${i === aktif ? 'bg-[#F5831F]' : 'bg-[#D4DCEA]'}`}
+          className={`h-2.5 w-2.5 rounded-full ${i === aktif ? 'bg-hero' : 'bg-garis-tua'}`}
         />
       ))}
     </div>

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Check, Pencil, Save, Trash2, TriangleAlert } from 'lucide-react';
 import type { BarisEkstraksi, BarisKonfirmasi, KonfirmasiRes } from '@shared/types';
 import { formatRupiah } from '@shared/format/rupiah';
 import { konfirmasiEkstraksi, pratinjauEkstraksi } from '../api/client';
 import { Layar } from '../components/Layar';
+import { KartuHero } from '../components/KartuHero';
 import { Tombol } from '../components/Tombol';
 import { bacaEkstraksi, hapusEkstraksi } from '../state/ekstraksi';
 
@@ -15,43 +17,6 @@ function keBarisKonfirmasi(b: BarisEkstraksi): BarisKonfirmasi {
     harga_satuan: b.harga_satuan,
     tanggal: b.tanggal,
   };
-}
-
-function IkonPensil() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M4 20l4-1L19 8l-3-3L5 16l-1 4Z" />
-    </svg>
-  );
-}
-
-function IkonSampah() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      aria-hidden="true"
-    >
-      <path d="M5 7h14" />
-      <path d="M9 7V5h6v2" />
-      <rect x="7" y="7" width="10" height="13" rx="1.5" />
-    </svg>
-  );
 }
 
 export function KonfirmasiEkstraksi() {
@@ -114,7 +79,7 @@ export function KonfirmasiEkstraksi() {
           </Tombol>
         }
       >
-        <p className="text-[#57534E]">Foto buku catatan dulu, nanti hasilnya muncul di sini.</p>
+        <p className="text-sedang">Foto buku catatan dulu, nanti hasilnya muncul di sini.</p>
       </Layar>
     );
   }
@@ -130,7 +95,7 @@ export function KonfirmasiEkstraksi() {
           </Tombol>
         }
       >
-        <p className="text-lg text-[#44403C]">
+        <p className="text-lg leading-relaxed text-sedang">
           {selesai.tersimpan} catatan tersimpan.
           {selesai.berkas_dihapus && ' Fotonya sudah dihapus dari server.'}
         </p>
@@ -140,40 +105,48 @@ export function KonfirmasiEkstraksi() {
 
   return (
     <Layar tanpaLogo atas>
-      <div className="-mx-6 flex items-center gap-4 border-b border-[#E5E7EE] px-6 pb-4">
+      <div className="-mx-5 flex items-center gap-3 border-b border-garis px-5 pb-4">
         <button
           type="button"
           aria-label="Kembali"
           onClick={() => nav(-1)}
-          className="text-3xl leading-none text-slate-900 active:scale-95"
+          className="-ml-1 flex h-10 w-10 items-center justify-center rounded-full text-tinta active:scale-95"
         >
-          ←
+          <ArrowLeft size={24} strokeWidth={2} />
         </button>
-        <h1 className="font-logo text-2xl font-bold text-[#1C1917]">Konfirmasi Transaksi</h1>
+        <h1 className="text-[22px] font-bold tracking-[-0.02em] text-tinta">
+          Konfirmasi Transaksi
+        </h1>
       </div>
 
       {fotoUrl && (
-        <img src={fotoUrl} alt="Foto nota" className="mt-5 max-h-72 w-full rounded-2xl object-cover" />
+        <img
+          src={fotoUrl}
+          alt="Foto nota"
+          className="mt-5 max-h-72 w-full rounded-kartu border border-garis object-cover"
+        />
       )}
 
-      <p className="mt-5 text-[17px] leading-relaxed text-[#44403C]">
-        Kami telah mendeteksi beberapa item dari foto nota Anda. Mohon periksa kembali, terutama
-        yang ditandai <span className="font-bold text-[#F5831F]">Oranye</span>.
+      {/* Aturan #2: layar ini adalah gerbangnya. Kalimat ini menjelaskan
+          mengapa gerbangnya ada, bukan sekadar basa-basi. */}
+      <p className="mt-5 text-[16px] leading-relaxed text-sedang">
+        Kami membaca beberapa item dari foto Anda. Belum ada yang tersimpan — periksa dulu,
+        terutama baris yang <span className="font-semibold text-tanda-tinta">Perlu Dicek</span>.
       </p>
 
-      <div className="mt-5 flex flex-col gap-4">
+      <div className="mt-5 flex flex-col gap-3">
         {baris.map((b) => {
           const mengedit = b.perlu_dicek || editUrutan === b.urutan;
           const editor = (
             <>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5">
                 <input
                   value={b.nama_produk ?? b.nama_mentah}
                   onChange={(e) => ubah(b.urutan, { nama_produk: e.target.value })}
-                  className="h-12 min-w-0 flex-1 rounded-xl bg-white px-3 text-[17px] font-semibold text-[#1C1917] shadow-sm outline-none focus:ring-2 focus:ring-[#F5831F]"
+                  className="h-12 min-w-0 flex-1 rounded-kontrol border border-garis bg-kartu px-3 text-[16.5px] font-semibold text-tinta outline-none focus:border-hero"
                 />
-                <div className="flex h-12 shrink-0 items-center gap-1 rounded-xl bg-white px-3 shadow-sm">
-                  <span className="font-bold text-[#1C1917]">Rp</span>
+                <div className="flex h-12 shrink-0 items-center gap-1 rounded-kontrol border border-garis bg-kartu px-3">
+                  <span className="text-[15px] font-semibold text-redup">Rp</span>
                   <input
                     type="tel"
                     inputMode="numeric"
@@ -183,12 +156,12 @@ export function KonfirmasiEkstraksi() {
                       const angka = e.target.value.replace(/\D/g, '');
                       ubah(b.urutan, { harga_satuan: angka ? Number(angka) : null });
                     }}
-                    className="w-20 bg-transparent text-right text-[17px] font-bold text-[#1C1917] outline-none"
+                    className="angka w-20 bg-transparent text-right text-[16.5px] font-bold text-tinta outline-none"
                   />
                 </div>
               </div>
-              <div className="mt-3 flex items-center gap-2 text-[16px] text-[#44403C]">
-                <span>Qty:</span>
+              <div className="mt-2.5 flex items-center gap-2 text-[15px] text-sedang">
+                <span>Qty</span>
                 <input
                   type="tel"
                   inputMode="numeric"
@@ -196,122 +169,119 @@ export function KonfirmasiEkstraksi() {
                   onChange={(e) =>
                     ubah(b.urutan, { jumlah: Number(e.target.value.replace(/\D/g, '')) || 0 })
                   }
-                  className="h-11 w-16 rounded-lg bg-white text-center text-[17px] font-semibold text-[#1C1917] shadow-sm outline-none focus:ring-2 focus:ring-[#F5831F]"
+                  className="angka h-11 w-16 rounded-kontrol border border-garis bg-kartu text-center text-[16.5px] font-semibold text-tinta outline-none focus:border-hero"
                 />
-                <span>x {b.harga_satuan !== null ? formatRupiah(b.harga_satuan) : '—'}</span>
+                <span className="angka">
+                  × {b.harga_satuan !== null ? formatRupiah(b.harga_satuan) : '—'}
+                </span>
               </div>
             </>
           );
 
+          const tombolHapus = (
+            <button
+              type="button"
+              onClick={() => hapus(b.urutan)}
+              className="flex min-h-11 items-center gap-1.5 px-1 text-[15px] font-semibold text-rugi active:scale-95"
+            >
+              <Trash2 size={17} strokeWidth={1.9} /> Hapus
+            </button>
+          );
+
+          /* ★ Baris yang tidak yakin dibuat MENONJOL, bukan disamarkan.
+             Menyembunyikannya akan membuat pengguna menekan Simpan tanpa tahu
+             ada yang perlu dilihat — itu pelanggaran aturan #2 dalam bentuk
+             yang paling halus dan paling berbahaya. */
           if (b.perlu_dicek) {
             return (
               <div
                 key={b.urutan}
-                className="relative overflow-hidden rounded-2xl bg-[#FBDCC3] p-5 pt-12 shadow-sm"
+                className="relative overflow-hidden rounded-kartu border border-tanda-tinta/20 bg-tanda p-5 pl-6"
               >
-                <span className="absolute left-0 top-0 h-full w-1.5 bg-[#F5831F]" aria-hidden />
-                <span className="absolute right-0 top-0 rounded-bl-2xl bg-[#F5831F] px-4 py-1.5 text-sm font-bold text-white">
-                  ⚠ Perlu Dicek
+                <span
+                  className="absolute left-0 top-0 h-full w-1.5 bg-tanda-tinta"
+                  aria-hidden="true"
+                />
+                <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-tanda-tinta px-2.5 py-1 text-[12.5px] font-semibold text-white">
+                  <TriangleAlert size={13} strokeWidth={2.2} /> PERLU DICEK
                 </span>
                 {editor}
-                <div className="mt-4 flex justify-end border-t border-[#EFC49E] pt-3">
-                  <button
-                    type="button"
-                    onClick={() => hapus(b.urutan)}
-                    className="flex items-center gap-1.5 font-semibold text-red-700 active:scale-95"
-                  >
-                    <IkonSampah /> Hapus
-                  </button>
+                <div className="mt-3 flex justify-end border-t border-tanda-tinta/15 pt-1.5">
+                  {tombolHapus}
                 </div>
               </div>
             );
           }
 
           return (
-            <div key={b.urutan} className="rounded-2xl bg-white p-5 shadow-sm">
+            <div key={b.urutan} className="kartu px-5 py-4">
               {mengedit ? (
                 editor
               ) : (
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-[18px] font-bold text-[#1C1917]">
+                  <div className="min-w-0">
+                    <p className="text-[16.5px] font-semibold text-tinta">
                       {b.nama_produk ?? b.nama_mentah}
                     </p>
-                    <p className="mt-1 text-[15px] text-[#57534E]">
-                      Qty: {b.jumlah} x {b.harga_satuan !== null ? formatRupiah(b.harga_satuan) : '—'}
+                    <p className="angka mt-0.5 text-[13.5px] text-redup">
+                      {b.jumlah} × {b.harga_satuan !== null ? formatRupiah(b.harga_satuan) : '—'}
                     </p>
                   </div>
-                  <p className="whitespace-nowrap text-[22px] font-bold text-[#1C1917]">
+                  <p className="angka shrink-0 text-[18px] font-bold text-tinta">
                     {formatRupiah(b.subtotal)}
                   </p>
                 </div>
               )}
-              <div className="mt-4 flex justify-end gap-6 border-t border-slate-100 pt-3">
+              <div className="mt-2 flex justify-end gap-5 border-t border-garis pt-1.5">
                 {mengedit ? (
                   <button
                     type="button"
                     onClick={() => setEditUrutan(null)}
-                    className="flex items-center gap-1.5 font-semibold text-emerald-700 active:scale-95"
+                    className="flex min-h-11 items-center gap-1.5 px-1 text-[15px] font-semibold text-tinta active:scale-95"
                   >
-                    Selesai
+                    <Check size={17} strokeWidth={2.2} /> Selesai
                   </button>
                 ) : (
                   <button
                     type="button"
                     onClick={() => setEditUrutan(b.urutan)}
-                    className="flex items-center gap-1.5 font-semibold text-emerald-700 active:scale-95"
+                    className="flex min-h-11 items-center gap-1.5 px-1 text-[15px] font-semibold text-sedang active:scale-95"
                   >
-                    <IkonPensil /> Edit
+                    <Pencil size={17} strokeWidth={1.9} /> Ubah
                   </button>
                 )}
-                <button
-                  type="button"
-                  onClick={() => hapus(b.urutan)}
-                  className="flex items-center gap-1.5 font-semibold text-red-700 active:scale-95"
-                >
-                  <IkonSampah /> Hapus
-                </button>
+                {tombolHapus}
               </div>
             </div>
           );
         })}
       </div>
 
-      <div className="mt-6 rounded-2xl bg-[#E9EDF6] p-5">
-        <div className="flex items-center justify-between text-lg text-[#1C1917]">
-          <span>Total Item</span>
-          <span className="font-semibold">{total.item}</span>
-        </div>
-        <div className="my-3 h-px bg-[#C9D2E4]" aria-hidden />
-        <div className="flex items-center justify-between text-xl font-bold text-[#1C1917]">
-          <span>Total Belanja</span>
-          <span>{formatRupiah(total.belanja)}</span>
-        </div>
+      {/* Total datang dari pratinjau API setiap kali baris disunting —
+          tidak ada satu penjumlahan pun di berkas ini. */}
+      <div className="mt-5">
+        <KartuHero
+          label="Total belanja"
+          nilai={formatRupiah(total.belanja)}
+          nada="netral"
+          bawah={
+            <div className="flex items-center justify-between text-[15px]">
+              <span className="text-white/55">Total item</span>
+              <span className="angka font-semibold text-white">{total.item}</span>
+            </div>
+          }
+        />
       </div>
 
-      <div className="mt-6">
+      <div className="mt-4">
         <Tombol varian="gelap" disabled={sibuk || baris.length === 0} onClick={simpan}>
-          <span className="flex items-center justify-center gap-3">
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <rect x="4" y="4" width="16" height="16" rx="2" />
-              <path d="M8 4v5h7V4" />
-              <path d="M8 20v-6h8v6" />
-            </svg>
+          <span className="flex items-center justify-center gap-2.5">
+            <Save size={20} strokeWidth={1.9} aria-hidden="true" />
             {sibuk ? 'Menyimpan…' : 'Simpan Transaksi'}
           </span>
         </Tombol>
       </div>
-      <p className="pt-2 text-center text-sm text-[#78716C]">
+      <p className="pt-2.5 text-center text-[14px] text-redup">
         Belum ada yang tersimpan — periksa dulu, lalu tekan Simpan.
       </p>
     </Layar>

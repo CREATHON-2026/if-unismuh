@@ -126,10 +126,34 @@ export interface RincianBahan {
   jumlah_pakai: number;
   /** Kontribusi bahan ini ke modal satu unit produk */
   biaya_per_unit: number;
+  /**
+   * Bagian bahan ini dari modal satu unit, dalam persen bulat. Dihitung SQL.
+   *
+   * Pembaginya modal PENUH (bahan + tenaga), bukan total bahan saja — jadi
+   * jumlah semua `persen_modal` ditambah `persen_tenaga` yang mendekati 100,
+   * bukan `persen_modal` saja. `null` kalau modalnya belum diketahui; jangan
+   * gambar bar kosong, karena itu terbaca sebagai "nol persen".
+   */
+  persen_modal: number | null;
 }
 
+/**
+ * Fitur 8 — menjawab "terus saya harus jual berapa?"
+ *
+ * `null` kalau tidak ada yang perlu disarankan: resep belum diisi (modal tidak
+ * diketahui), atau harganya sudah mencapai target. Sembunyikan bagiannya saat
+ * null, jangan tampilkan angka karangan.
+ */
 export interface SaranHarga {
+  /** Modal apa adanya. Di bawah angka ini pasti rugi — ini lantainya */
+  harga_impas: number;
+  /** Markup 20% atas modal, dibulatkan naik ke kelipatan Rp 500 */
   harga_disarankan: number;
+  /** Selisih dari harga sekarang */
+  kenaikan: number;
+  /** Untung per unit kalau memakai harga yang disarankan */
+  untung_per_unit: number;
+  /** Kalimat siap tampil, dirangkai dari angka di atas */
   alasan: string;
 }
 
@@ -138,6 +162,78 @@ export interface DetailProduk extends RingkasanProduk {
   bahan: RincianBahan[];
   total_terjual: number;
   saran_harga: SaranHarga | null;
+  /**
+   * Ongkos tenaga per unit. Bagian dari modal yang BUKAN bahan — kalau tidak
+   * ditampilkan, rincian bahan terlihat seolah sudah menjelaskan seluruh modal.
+   * `null` kalau hasil per batch belum diisi.
+   */
+  biaya_tenaga_per_unit: number | null;
+  /** Bagian tenaga dari modal satu unit, persen bulat. Dihitung SQL. */
+  persen_tenaga: number | null;
+}
+
+// ---------------------------------------------------------------------------
+// Tambah produk tanpa form (fitur 10)
+// ---------------------------------------------------------------------------
+
+export interface DariTeksProdukReq {
+  /** Kalimat apa adanya, mis. hasil transkripsi suara di browser */
+  teks: string;
+}
+
+export interface BahanUsulan {
+  nama: string;
+  satuan: string | null;
+  /** Berapa banyak dipakai untuk SEKALI bikin */
+  jumlah: number | null;
+  harga_beli: number | null;
+  jumlah_beli: number | null;
+  /** true -> ada yang belum lengkap, tampilkan menonjol dan minta dilengkapi */
+  perlu_dicek: boolean;
+}
+
+/**
+ * ★ USULAN, BUKAN PRODUK TERSIMPAN.
+ *
+ * `POST /produk/dari-teks` tidak menyimpan apa pun — aturan #2. Setelah pengguna
+ * melengkapi yang ditandai, frontend mengirim hasilnya ke `POST /produk` yang
+ * bentuknya memang sengaja dibuat cocok.
+ */
+export interface UsulanProduk {
+  nama_produk: string | null;
+  hasil_per_batch: number | null;
+  harga_jual: number | null;
+  bahan: BahanUsulan[];
+
+  /**
+   * Produk yang sudah ada dan namanya mirip. Kalau terisi, TANYAKAN dulu apakah
+   * ini produk yang sama — menyimpan diam-diam akan membuat duplikat, dan dua
+   * produk dengan nama nyaris sama memecah riwayat penjualannya.
+   */
+  produk_mirip: KandidatProduk[];
+
+  /** true kalau ada di `yang_kurang` — tombol simpan harus ditahan dulu */
+  perlu_dicek: boolean;
+  /** Pertanyaan yang HARUS dijawab sebelum bisa disimpan */
+  yang_kurang: string[];
+  /** Boleh dilewati, tapi akibatnya perlu disadari pengguna */
+  catatan: string[];
+}
+
+/**
+ * Simpan produk — jalan masuk kedua selain onboarding.
+ *
+ * `bahan` boleh kosong: pedagang yang buru-buru berhak mencatat produknya dulu
+ * dan melengkapi resepnya nanti. Akibatnya `modal_per_unit` bernilai null dan
+ * penjualannya masuk `baris_tanpa_modal` di Beranda — bukan dianggap untung
+ * penuh. Yang tidak diketahui tampil sebagai tidak diketahui.
+ */
+export interface SimpanProdukReq {
+  nama_produk: string;
+  harga_jual: number;
+  /** Wajib kalau `bahan` diisi — tanpa ini modal tidak bisa dihitung */
+  hasil_per_batch?: number | null;
+  bahan?: BahanMasukan[];
 }
 
 // ---------------------------------------------------------------------------
@@ -210,6 +306,40 @@ export interface AnalisisPesanan {
 
   /** Kalimat siap tampil, sudah berisi angka hasil hitungan SQL */
   peringatan: string[];
+}
+
+/**
+ * Satu baris di daftar `GET /pesanan` — pesan tersimpan dari jalur tempel
+ * maupun WhatsApp. Pesan `bukan_pesanan` tidak pernah ada di sini.
+ *
+ * Semua angka finansial dihitung SQL (aturan #1 dan #7); frontend hanya
+ * menampilkan.
+ */
+export interface PesanMasukItem {
+  pesan_id: number;
+  jenis: Exclude<JenisPesan, 'bukan_pesanan'>;
+  teks: string;
+  sumber: 'tempel' | 'whatsapp';
+  /** Empat digit terakhir pengirim, mis. "…7890"; null untuk jalur tempel */
+  pengirim_samar: string | null;
+  nama_produk_mentah: string | null;
+  jumlah: number | null;
+  harga_diminta: number | null;
+  tanggal_dibutuhkan: string | null;
+  perlu_dicek: boolean;
+  /** ISO timestamp saat pesan diterima */
+  diterima_pada: string;
+
+  produk_id: number | null;
+  nama_produk: string | null;
+
+  // --- dihitung SQL ---
+  modal_per_unit: number | null;
+  nilai_pesanan: number | null;
+  untung_pesanan: number | null;
+  merugi: boolean | null;
+  /** null = stok bahannya belum dicatat, bukan berarti nol */
+  stok_cukup_untuk: number | null;
 }
 
 /** Balasan siap salin untuk pembeli — fitur 9, penutup alur Pesanan Masuk. */
@@ -298,6 +428,46 @@ export interface Transaksi {
 }
 
 // ---------------------------------------------------------------------------
+// Kalimat bebas → usulan transaksi (fitur 2, dan ketikan bebas)
+// ---------------------------------------------------------------------------
+
+export interface DariTeksReq {
+  /** Kalimat apa adanya, mis. hasil transkripsi suara di browser */
+  teks: string;
+  /** YYYY-MM-DD. Kalau kosong, dipakai hari ini */
+  tanggal?: string;
+}
+
+export interface BarisUsulan {
+  /** Nama PERSIS seperti diucapkan/ditulis, sebelum dicocokkan */
+  nama_mentah: string;
+  /** null kalau belum cocok meyakinkan — pengguna yang memutuskan */
+  produk_id: number | null;
+  nama_produk: string | null;
+  jumlah: number | null;
+  harga_satuan: number | null;
+  /** true -> tampilkan menonjol di layar konfirmasi, minta dipastikan */
+  perlu_dicek: boolean;
+  /** Terisi kalau penyaring backend menandai baris ini (jumlah tidak disebut,
+   *  harga terlihat seperti total, kalimatnya pertanyaan, dsb). Tampilkan
+   *  sebagai keterangan di samping penanda. */
+  alasan_ragu?: string;
+  kandidat: KandidatProduk[];
+}
+
+/**
+ * ★ USULAN, BUKAN DATA TERSIMPAN.
+ *
+ * Endpoint `/transaksi/dari-teks` tidak menyimpan apa pun — aturan #2. Setelah
+ * pengguna membetulkan baris yang ditandai, frontend mengirim hasilnya ke
+ * `POST /transaksi` yang bentuknya memang sengaja dibuat cocok.
+ */
+export interface UsulanTransaksi {
+  tanggal: string;
+  baris: BarisUsulan[];
+}
+
+// ---------------------------------------------------------------------------
 // Ekstraksi foto/suara (fitur 1, 2, 4) — lihat docs/06-kontrak-api.md.
 // Ditambahkan dari sisi frontend untuk layar konfirmasi; kabari tim bila berubah.
 // ---------------------------------------------------------------------------
@@ -347,4 +517,42 @@ export interface PratinjauEkstraksiRes {
   baris: { urutan: number; subtotal: number }[];
   total_item: number;
   total_belanja: number;
+}
+
+// ---------------------------------------------------------------------------
+// WhatsApp (fitur 9, jalur opsional)
+// ---------------------------------------------------------------------------
+
+export type StatusWa = 'terputus' | 'menunggu_qr' | 'menyambung' | 'tersambung';
+
+/**
+ * ★ `hanya_baca` SELALU true, dan itu bukan pengaturan — itu kenyataan
+ * strukturnya. Modul WhatsApp di backend tidak mengekspor apa pun yang bisa
+ * mengirim; socket-nya privat. Lihat aturan #4 di CLAUDE.md.
+ *
+ * Menautkan WhatsApp sifatnya OPSIONAL. Kalau tidak pernah ditautkan, atau
+ * sesinya putus, Pesanan Masuk tetap berfungsi penuh lewat tempel manual.
+ */
+export interface StatusWhatsappRes {
+  status: StatusWa;
+  /** QR mentah; null kalau tidak sedang menunggu pemindaian */
+  qr: string | null;
+  /** Kode 8 digit yang dimasukkan pengguna di HP-nya; null kalau memakai QR */
+  kode_pairing: string | null;
+  hanya_baca: true;
+  /** Alasan sambungan berhenti, kalau ada. Siap ditampilkan ke pengguna */
+  alasan: string | null;
+}
+
+/**
+ * Kosongkan `nomor_hp` untuk memakai QR; isi untuk mendapat KODE PAIRING.
+ *
+ * Kode pairing jauh lebih ramah untuk pengguna 35–60 tahun: tidak perlu
+ * memindai apa pun, cukup mengetik 8 digit di HP sendiri.
+ *
+ * Kodenya tidak langsung ada — socket butuh beberapa detik. Panggil
+ * GET /whatsapp/status sesaat kemudian untuk mengambilnya.
+ */
+export interface HubungkanWhatsappReq {
+  nomor_hp?: string;
 }

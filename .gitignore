@@ -49,3 +49,11 @@ backend/db/baileys-auth/
 
 # UI sementara untuk menguji backend — BUKAN frontend tim, jangan pernah di-push
 dev-ui/
+
+# graphify: cadangan graf bertanggal + cache AST, dibuat ulang tiap kali
+# `graphify update` jalan di laptop mana pun -> murni churn, dijamin bentrok
+graphify-out/20*/
+graphify-out/cache/ast/
+
+# Dump crash Node dari tool lain (Copilot CLI), bukan aplikasi ini
+report.*.json

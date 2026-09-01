@@ -7,6 +7,7 @@
     "spike": "node spike/ekstraksi-foto.mjs",
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
+    "demo": "node scripts/siapkan-demo.mjs",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

@@ -18,6 +18,11 @@ function periksa(nama, dapat, harap) {
   console.log(`  ${cocok ? 'OK  ' : 'SALAH'} ${nama}: ${dapat}${cocok ? '' : `  (seharusnya ${harap})`}`);
 }
 
+function periksaBenar(nama, syarat) {
+  if (!syarat) gagal++;
+  console.log(`  ${syarat ? 'OK  ' : 'SALAH'} ${nama}`);
+}
+
 async function panggil(jalan, opsi = {}, token) {
   const res = await fetch(DASAR + jalan, {
     ...opsi,
@@ -112,6 +117,43 @@ periksa('lima bahan', detail.bahan.length, 5);
 periksa('rincian berjumlah = modal per unit', jumlahRincian, detail.modal_per_unit);
 periksa('modal per unit', detail.modal_per_unit, 21200);
 periksa('total terjual', detail.total_terjual, 10);
+
+// ===========================================================================
+// 2b. Saran perbaikan harga (fitur 8)
+// ===========================================================================
+// Hitungan tangan: modal 21.200, markup 20% -> 25.440,
+// dibulatkan NAIK ke kelipatan 500 -> 25.500.
+// kenaikan  = 25.500 - 20.000 = 5.500
+// untung    = 25.500 - 21.200 = 4.300
+console.log('');
+console.log('2b. Saran harga untuk produk yang merugi');
+const sh = detail.saran_harga;
+if (!sh) {
+  gagal++;
+  console.log('  SALAH saran_harga masih null');
+} else {
+  console.log(`   impas ${rupiah(sh.harga_impas)} | disarankan ${rupiah(sh.harga_disarankan)}` +
+    ` | naik ${rupiah(sh.kenaikan)} | untung ${rupiah(sh.untung_per_unit)}`);
+  console.log(`   "${sh.alasan}"`);
+  periksa('harga impas = modal', sh.harga_impas, 21200);
+  // Dibulatkan NAIK: membulatkan turun berarti menyarankan untung di bawah target
+  periksa('harga disarankan dibulatkan naik', sh.harga_disarankan, 25500);
+  periksa('kenaikan dari harga sekarang', sh.kenaikan, 5500);
+  periksa('untung di harga disarankan', sh.untung_per_unit, 4300);
+  // Kalau ketiganya tidak konsisten, ada dua tempat yang menghitung berbeda
+  periksa('untung = disarankan - modal',
+    sh.harga_disarankan - detail.modal_per_unit, sh.untung_per_unit);
+  periksaBenar('alasan menyebut angka yang sama',
+    sh.alasan.includes('25.500') && sh.alasan.includes('21.200'));
+}
+
+// Produk yang harganya SUDAH cukup tidak perlu disarankan apa-apa
+console.log('');
+console.log('2c. Produk yang sudah untung besar');
+const detKacang = await panggil(`/produk/${kacang.produk_id}`, {}, token);
+console.log(`   ${detKacang.nama}: modal ${rupiah(detKacang.modal_per_unit)}` +
+  ` jual ${rupiah(detKacang.harga_jual)} -> saran: ${detKacang.saran_harga ? 'ada' : 'null'}`);
+periksa('tidak menyarankan apa-apa', detKacang.saran_harga, null);
 
 // ===========================================================================
 // 3. Isolasi — produk pedagang lain tidak boleh terbaca

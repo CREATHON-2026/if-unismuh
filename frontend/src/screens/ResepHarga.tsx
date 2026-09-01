@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { simpanResep } from '../api/client';
 import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
@@ -41,37 +42,36 @@ export function ResepHarga() {
     <Layar tanpaLogo atas>
       <KepalaResep langkah={3} label="Harga" />
 
-      <div className="mt-6 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-        <h1 className="font-logo text-[26px] font-bold text-[#16233B]">
+      <div className="kartu mt-6 p-6">
+        <h1 className="text-[25px] font-bold leading-snug tracking-[-0.02em] text-tinta">
           Dijual berapa per bungkus?
         </h1>
-        <p className="mt-2 text-[17px] text-[#44403C]">Harga jual saat ini ke pembeli.</p>
+        <p className="mt-2 text-[16px] leading-relaxed text-sedang">
+          Harga jual saat ini ke pembeli.
+        </p>
 
-        <div className="mt-5 flex h-[72px] items-center rounded-2xl border border-[#D5DCEA] bg-[#F1F4FB] px-4 focus-within:border-[#F5831F]">
-          <span className="text-lg font-bold text-[#1C1917]">Rp</span>
-          <span className="mx-3 h-8 w-px bg-[#D5DCEA]" aria-hidden="true" />
+        <div className="mt-5 flex h-[72px] items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 transition focus-within:border-hero">
+          <span className="text-[19px] font-bold text-sedang">Rp</span>
+          <span className="mx-3 h-8 w-px bg-garis" aria-hidden="true" />
           <input
             type="tel"
             inputMode="numeric"
             autoFocus
-            placeholder="Contoh: 20000"
+            aria-label="Harga jual per bungkus"
+            placeholder="20000"
             value={harga}
             onChange={(e) => setHarga(e.target.value.replace(/\D/g, ''))}
-            className="h-full flex-1 bg-transparent text-lg outline-none placeholder:text-[#8C93A3]"
+            className="angka h-full min-w-0 flex-1 bg-transparent text-[26px] font-bold text-tinta outline-none placeholder:text-[19px] placeholder:font-normal placeholder:text-redup"
           />
         </div>
-        {galat && <p className="mt-3 font-semibold text-red-600">{galat}</p>}
+        {galat && <p className="mt-3 text-[15.5px] font-semibold text-rugi">{galat}</p>}
       </div>
 
       <div className="mt-8">
         <Tombol varian="gelap" disabled={!valid || sibuk} onClick={kirim}>
-          <span className="flex items-center justify-center gap-3">
-            {sibuk ? 'Menghitung…' : 'Lihat Hasilnya'}
-            {!sibuk && (
-              <span aria-hidden className="text-2xl leading-none">
-                →
-              </span>
-            )}
+          <span className="flex items-center justify-center gap-2.5">
+            {sibuk ? 'Menghitung…' : 'Lihat hasilnya'}
+            {!sibuk && <ArrowRight size={20} strokeWidth={2.2} aria-hidden="true" />}
           </span>
         </Tombol>
       </div>

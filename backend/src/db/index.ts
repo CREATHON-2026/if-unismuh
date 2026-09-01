@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { DATABASE_URL, MODE_DB } from '../config/env.ts';
+import { DATABASE_URL, MODE_DB, PGLITE_DIR } from '../config/env.ts';
 
 /**
  * Dua mode database, dipilih otomatis dari DATABASE_URL:
@@ -21,7 +21,7 @@ import { DATABASE_URL, MODE_DB } from '../config/env.ts';
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const DB_DIR = path.join(DIR, '..', '..', 'db');
 const SCHEMA = path.join(DB_DIR, 'schema.sql');
-const DATA_DIR = path.join(DB_DIR, 'data');
+const DATA_DIR = PGLITE_DIR || path.join(DB_DIR, 'data');
 
 /** Antarmuka minimal yang dipenuhi kedua mode. */
 export interface Pelaksana {

@@ -46,14 +46,20 @@ Ketik `/` di Claude Code. Kalau muncul perintah seperti `/brainstorm`, `/write-p
 Skill-nya **sudah ikut di repo** (`.claude/skills/graphify/`), jadi kamu tidak perlu memasang skill-nya. Yang perlu dipasang hanya paket Python-nya:
 
 ```bash
-pip install graphifyy
+pip install "graphifyy[sql]"
 ```
 
 Atau kalau punya `uv`:
 
 ```bash
-uv tool install graphifyy
+uv tool install "graphifyy[sql]"
 ```
+
+> **Pasang dengan `[sql]`, jangan `graphifyy` saja.** Tanpa itu graphify melewati
+> semua berkas `.sql` dengan peringatan yang mudah terlewat — termasuk
+> `backend/db/schema.sql`, satu-satunya tempat semua rumus finansial hidup.
+> Grafnya tetap terbentuk, tapi pertanyaan seperti *"di mana modal per produk
+> dihitung?"* hanya akan dijawab dari dokumen, bukan dari kode yang sebenarnya.
 
 **Tidak butuh API key.** Perintah `query`, `path`, `explain`, dan `update` tidak memakai LLM sama sekali.
 
@@ -117,7 +123,7 @@ AST saja, tanpa LLM, tanpa biaya.
 - [ ] Claude Code terpasang
 - [ ] `/plugin install superpowers@claude-plugins-official` sudah dijalankan, lalu restart
 - [ ] `/brainstorm` muncul saat mengetik `/`
-- [ ] `pip install graphifyy` selesai
+- [ ] `pip install "graphifyy[sql]"` selesai
 - [ ] `graphify hook install` sudah dijalankan
 - [ ] `graphify query "apa aturan commit di repo ini"` memberi jawaban
 - [ ] `.env` sudah dibuat dan `JWT_SECRET` terisi (tidak ada kunci API yang dibutuhkan)

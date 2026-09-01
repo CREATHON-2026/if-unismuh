@@ -155,6 +155,53 @@ Fitur 3 — ketik manual. **Banyak baris sekaligus**, bentuknya sama dengan laya
 ### `GET /transaksi?dari=&sampai=`
 Daftar transaksi beserta nama produknya. Bawaannya bulan berjalan.
 
+### `POST /transaksi/dari-teks`
+Fitur 2 — kalimat bebas jadi **usulan** transaksi. Melayani hasil transkripsi suara maupun ketikan bebas; endpoint ini tidak peduli teksnya datang dari mana.
+
+```json
+// permintaan — tanggal boleh dikosongkan
+{ "teks": "hari ini laku 10 kripik pisang sama 5 kacang telur" }
+
+// jawaban — USULAN, BELUM TERSIMPAN
+{ "ok": true, "data": {
+    "tanggal": "2026-09-01",
+    "baris": [
+      { "nama_mentah": "kripik pisang", "produk_id": 1, "nama_produk": "Kripik Pisang",
+        "jumlah": 10, "harga_satuan": null, "perlu_dicek": false, "kandidat": [] },
+      { "nama_mentah": "kacang telur", "produk_id": null, "nama_produk": null,
+        "jumlah": 5, "harga_satuan": null, "perlu_dicek": true,
+        "kandidat": [ { "id": 2, "nama": "Kacang Telor", "skor": 0.72 } ] }
+    ]
+} }
+```
+
+**★ Endpoint ini TIDAK menyimpan apa pun.** Ini hasil ekstraksi AI, jadi [aturan #2](../CLAUDE.md) berlaku: harus lewat layar konfirmasi manusia dulu. Tampilkan usulannya, tandai baris `perlu_dicek`, biarkan pengguna membetulkan, lalu kirim hasilnya ke `POST /transaksi`.
+
+Bentuk `baris` sengaja dibuat cocok dengan yang diterima `POST /transaksi`, sehingga **komponen baris yang sama bisa dipakai untuk suara, foto, dan ketik manual.**
+
+| Field | Catatan |
+|---|---|
+| `nama_mentah` | Persis seperti diucapkan, sebelum dicocokkan. Tampilkan ini, bukan hanya nama produknya |
+| `perlu_dicek` | `true` → jangan simpan tanpa pengguna memastikan. Tampilkan `kandidat` |
+| `alasan_ragu` | Terisi kalau penyaring backend menandai baris (jumlah tidak disebut, harga terlihat seperti total, kalimatnya pertanyaan, ada kata dialek tersaring). Tampilkan sebagai keterangan |
+| `harga_satuan` | `null` = tidak disebut → `POST /transaksi` akan memakai harga jual tersimpan |
+| `jumlah` | Boleh `null` kalau tidak disebut. Minta pengguna mengisinya |
+
+#### Sisi frontend: transkripsi suara
+
+Transkripsi terjadi **di browser** dengan Web Speech API — gratis, tanpa kunci API, tanpa endpoint backend.
+
+```js
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const r = new SR();
+r.lang = 'id-ID';        // wajib — tanpa ini bahasa Inggris yang dipakai
+r.continuous = true;      // kalimat panjang tidak terpotong
+r.interimResults = true;  // pengguna melihat kata muncul saat bicara
+r.onresult = (e) => { /* kumpulkan transcript, kirim ke /transaksi/dari-teks */ };
+```
+
+Chrome, Edge, dan Opera mendukung penuh; Safari 14.1+ dengan awalan `webkit`. **Firefox tidak** — sediakan kolom ketik bebas sebagai jalan keluar, dan itu memang sudah jadi masukan endpoint yang sama.
+
 ## Produk
 
 ### `GET /produk`
@@ -177,12 +224,14 @@ Tambahan dari daftar: rincian bahan dan total terjual.
     "merugi": true, "terlaris": false,
     "hasil_per_batch": 40,
     "total_terjual": 10,
+    "biaya_tenaga_per_unit": 0,
+    "persen_tenaga": 0,
     "bahan": [
-      { "nama": "pisang",  "satuan": "kg",     "jumlah_pakai": 20, "biaya_per_unit": 7500 },
-      { "nama": "gas",     "satuan": "tabung", "jumlah_pakai": 1,  "biaya_per_unit": 5000 },
-      { "nama": "minyak",  "satuan": "liter",  "jumlah_pakai": 10, "biaya_per_unit": 4500 },
-      { "nama": "gula",    "satuan": "kg",     "jumlah_pakai": 10, "biaya_per_unit": 3750 },
-      { "nama": "kemasan", "satuan": "buah",   "jumlah_pakai": 40, "biaya_per_unit": 450 }
+      { "nama": "pisang",  "satuan": "kg",     "jumlah_pakai": 20, "biaya_per_unit": 7500, "persen_modal": 35 },
+      { "nama": "gas",     "satuan": "tabung", "jumlah_pakai": 1,  "biaya_per_unit": 5000, "persen_modal": 24 },
+      { "nama": "minyak",  "satuan": "liter",  "jumlah_pakai": 10, "biaya_per_unit": 4500, "persen_modal": 21 },
+      { "nama": "gula",    "satuan": "kg",     "jumlah_pakai": 10, "biaya_per_unit": 3750, "persen_modal": 18 },
+      { "nama": "kemasan", "satuan": "buah",   "jumlah_pakai": 40, "biaya_per_unit": 450,  "persen_modal": 2 }
     ],
     "saran_harga": null
 } }
@@ -190,69 +239,200 @@ Tambahan dari daftar: rincian bahan dan total terjual.
 
 **`biaya_per_unit` semua bahan dijamin berjumlah tepat sama dengan `modal_per_unit`** — di contoh ini 7.500 + 5.000 + 4.500 + 3.750 + 450 = 21.200. Itu diuji, bukan kebetulan. Rincian yang tidak menjumlah ke totalnya sendiri membuat pedagang berhenti percaya pada semua angka lain di aplikasi.
 
-`saran_harga` masih `null` — fitur 8 belum dibangun. Sembunyikan bagiannya selama masih null, jangan tampilkan angka karangan.
+#### `persen_modal`, `biaya_tenaga_per_unit`, `persen_tenaga`
+
+Dipakai layar detail untuk menggambar bar "modal datang dari sini". **Dihitung SQL, bukan frontend** — aturan #7 melarang React membagi rupiah untuk mendapat persen.
+
+Pembagi `persen_modal` adalah **modal penuh**, yaitu bahan **ditambah** ongkos tenaga — bukan total bahan saja. Kalau pembaginya total bahan, bar akan berjumlah 100% padahal ongkos tenaga hilang dari gambar, dan pedagang menyimpulkan modalnya cuma bahan. Karena itu tenaga punya barisnya sendiri lewat `biaya_tenaga_per_unit` + `persen_tenaga`, dan jumlah seluruhnya mendekati 100 (selisih kecil wajar karena tiap persen dibulatkan).
+
+`null` berarti modalnya belum diketahui — resep belum diisi. Jangan gambar bar kosong: bar kosong terbaca sebagai "nol persen", padahal artinya "belum tahu".
+
+#### `saran_harga` — fitur 8
+
+```json
+"saran_harga": {
+  "harga_impas": 21200,
+  "harga_disarankan": 25500,
+  "kenaikan": 5500,
+  "untung_per_unit": 4300,
+  "alasan": "Modal Anda Rp 21.200 per unit. Supaya untung sekitar 20%, jual Rp 25.500 — naik Rp 5.500 dari harga sekarang."
+}
+```
+
+| Field | Arti |
+|---|---|
+| `harga_impas` | Modal apa adanya. **Di bawah ini pasti rugi** — ini lantainya |
+| `harga_disarankan` | Markup 20% atas modal, dibulatkan **naik** ke kelipatan Rp 500 |
+| `kenaikan` | Selisih dari harga sekarang |
+| `untung_per_unit` | Untung kalau memakai harga yang disarankan |
+
+**`null` kalau tidak ada yang perlu disarankan** — resep belum diisi (modal tidak diketahui), atau harganya sudah mencapai target. Sembunyikan bagiannya saat null, jangan tampilkan angka karangan.
+
+**Tampilkan dua angka, bukan satu.** `harga_impas` adalah batas tidak-rugi; pedagang yang belum berani menaikkan harga sebanyak itu setidaknya tahu lantainya. Satu angka yang melompat jauh berisiko diabaikan sama sekali.
+
+Dibulatkan **naik**, bukan ke terdekat: 21.200 × 1,2 = 25.440 → **25.500**. Membulatkan turun berarti menyarankan untung di bawah target yang baru saja dijanjikan.
 
 `terlaris` dihitung sepanjang waktu, bukan per periode: sifatnya melekat pada produknya, dan angka yang berubah mengikuti rentang tanggal justru membingungkan.
 
+### `POST /produk/dari-teks` — fitur 10
+
+Kalimat bebas → **usulan** produk baru. Dipakai untuk "tambah produk tanpa form": pedagang cukup mengucapkan apa yang dia jual, tidak perlu mengisi delapan kolom.
+
+```jsonc
+// permintaan
+{ "teks": "tambah kripik pisang, sekali bikin jadi 40 bungkus, dijual 20 ribu. bahannya pisang 20 kilo 300 ribu" }
+
+// jawaban
+{
+  "nama_produk": "kripik pisang",
+  "hasil_per_batch": 40,
+  "harga_jual": 20000,
+  "bahan": [
+    { "nama": "pisang", "satuan": "kg", "jumlah": 20,
+      "harga_beli": 300000, "jumlah_beli": 20, "perlu_dicek": false }
+  ],
+  "produk_mirip": [],
+  "perlu_dicek": false,
+  "yang_kurang": [],
+  "catatan": []
+}
+```
+
+**★ Tidak menyimpan apa pun.** Sama seperti `POST /transaksi/dari-teks` — ini hasil AI, jadi aturan #2 berlaku. Tampilkan usulannya, biarkan pengguna membetulkan, lalu kirim ke `POST /produk`.
+
+| Field | Arti untuk frontend |
+|---|---|
+| `yang_kurang` | Pertanyaan yang **harus** dijawab dulu. Kalau tidak kosong, tahan tombol simpan |
+| `perlu_dicek` | `true` persis ketika `yang_kurang` tidak kosong |
+| `catatan` | Boleh dilewati, tapi **tampilkan** — mis. "modal belum bisa dihitung" |
+| `produk_mirip` | Produk yang sudah ada dan namanya mirip. Kalau terisi, tanyakan dulu apakah ini produk yang sama |
+| `bahan[].perlu_dicek` | Baris itu belum lengkap — tandai, jangan biarkan lolos |
+
+Yang tidak disebut pedagang **dikembalikan kosong, bukan ditebak**. `harga_jual: null` berarti dia memang tidak menyebut harga — tanyakan, jangan isi angka masuk akal.
+
+`produk_mirip` ada untuk mencegah duplikat: dua produk bernama "Kacang Telur" dan "Kacang Telor" memecah riwayat penjualannya jadi dua, dan keduanya lalu terlihat kurang laku dari kenyataan.
+
+### `POST /produk`
+
+Simpan produk. Jalan masuk kedua selain onboarding — menerima bentuk yang sama dengan keluaran `/produk/dari-teks` setelah dibetulkan pengguna, dan juga dipakai untuk menambah produk secara manual.
+
+```jsonc
+{
+  "nama_produk": "Kripik Pisang",
+  "harga_jual": 20000,
+  "hasil_per_batch": 40,          // wajib kalau bahan diisi
+  "bahan": [
+    { "nama": "pisang", "satuan": "kg", "jumlah": 20,
+      "harga_beli": 300000, "jumlah_beli": 20 }
+  ]
+}
+```
+
+Jawabannya sama bentuknya dengan `POST /onboarding/resep` — `produk_id`, `nama`, `modal_per_unit`, `harga_jual`, `margin_per_unit`, `merugi`, semuanya dari SQL.
+
+**`bahan` boleh kosong.** Pedagang yang buru-buru berhak mencatat produknya dulu dan melengkapi resepnya nanti. Akibatnya:
+
+- `modal_per_unit`, `margin_per_unit`, dan `merugi` bernilai **`null`** — bukan nol, bukan `false`
+- penjualannya masuk `baris_tanpa_modal` di Beranda, tidak dihitung sebagai untung
+
+Tampilkan produk seperti itu sebagai **"modal belum diisi"**, bukan sebagai untung penuh dan bukan sebagai rugi. Yang tidak diketahui harus tampil sebagai tidak diketahui.
+
+Kalau `bahan` diisi, `hasil_per_batch` wajib dan setiap bahan wajib punya `jumlah`, `jumlah_beli`, dan `harga_beli` — resep setengah jadi menghasilkan modal yang salah tanpa pesan galat.
+
 ## Ekstraksi
 
-### `POST /ekstraksi/foto`
-`multipart/form-data`, field `berkas`.
+**Status: sudah jadi**, kecuali foto. Uji: `node scripts/uji-ekstraksi.mjs`.
 
-```json
+Satu bentuk jawaban untuk semua jalan masuk, jadi layar konfirmasi yang sama
+melayani suara, ketikan bebas, dan nanti foto — tanpa komponen baru.
+
+### `POST /ekstraksi/dari-teks`
+
+Kalimat bebas (hasil transkripsi suara di browser, atau ketikan) menjadi usulan.
+
+```jsonc
+// permintaan
+{ "teks": "hari ini laku 10 kripik pisang sama 5 kacang telur" }
+
+// jawaban
 { "ok": true, "data": {
     "ekstraksi_id": 12,
     "total_item": 15,
-    "total_belanja": 200000,
+    "total_belanja": 225000,
     "baris": [
-      { "urutan": 1, "nama_mentah": "kripik psg", "produk_id": 1,
+      { "urutan": 1, "nama_mentah": "kripik pisang", "produk_id": 1,
         "nama_produk": "Kripik Pisang", "jumlah": 10, "harga_satuan": 20000,
-        "subtotal": 200000,
-        "tanggal": "2026-09-01", "keyakinan": 0.94, "perlu_dicek": false },
-      { "urutan": 2, "nama_mentah": "kacang", "produk_id": null,
-        "nama_produk": null, "jumlah": 5, "harga_satuan": null,
-        "subtotal": 0,
-        "tanggal": "2026-09-01", "keyakinan": 0.41, "perlu_dicek": true,
-        "alasan_ragu": "harga tidak terbaca" }
+        "subtotal": 200000, "tanggal": null,
+        "keyakinan": 1.0, "perlu_dicek": false },
+      { "urutan": 2, "nama_mentah": "kacang telur", "produk_id": 2,
+        "nama_produk": "Kacang Telur", "jumlah": 5, "harga_satuan": 5000,
+        "subtotal": 25000, "tanggal": null,
+        "keyakinan": 1.0, "perlu_dicek": false }
     ]
 } }
 ```
 
-`subtotal`, `total_item`, dan `total_belanja` dihitung SQL di backend — layar konfirmasi hanya menampilkan (aturan #7).
+**★ Tidak ada yang masuk ke `transaksi` pada tahap ini.** Hasilnya disimpan di
+tabel `ekstraksi` berstatus `menunggu`, dan hanya `/ekstraksi/konfirmasi` yang
+bisa memindahkannya. Aturan #2 ditegakkan struktur tabelnya, bukan kedisiplinan
+penulis kodenya.
 
-**Tidak ada yang tersimpan pada tahap ini.** Ini hanya usulan. Frontend menampilkan layar konfirmasi, baris `perlu_dicek: true` ditandai.
+| Field | Catatan untuk frontend |
+|---|---|
+| `subtotal`, `total_item`, `total_belanja` | Dihitung SQL. **Jangan pernah** dihitung ulang di browser |
+| `harga_satuan` | Kalau pedagang tidak menyebut harga, SQL mengisinya dari harga jual produk tersimpan — bukan nol |
+| `keyakinan` | Skor pencocokan nama pg_trgm yang benar-benar diukur. Nama yang tidak cocok sama sekali berskor `0` |
+| `perlu_dicek` | `true` juga saat jumlahnya tidak disebut — lihat `alasan_ragu` |
+| `jumlah` | Kalau tidak disebut, diisi `1` **dan** ditandai `perlu_dicek`. Ini dugaan, jadi tidak boleh lolos tanpa dilihat manusia |
 
-### `POST /ekstraksi/pratinjau` (usulan dari frontend, belum disepakati)
+### `POST /ekstraksi/pratinjau`
 
-Layar konfirmasi membolehkan pengguna mengubah/menghapus baris sebelum menyimpan.
-Subtotal dan total harus ikut berubah — dan frontend tidak boleh menghitungnya sendiri.
-Endpoint ini menerima baris hasil suntingan dan mengembalikan angka yang dihitung SQL.
+Dipanggil **setiap kali pengguna menyunting satu baris** di layar konfirmasi.
+Ada supaya frontend tidak pernah perlu mengalikan jumlah dengan harga sendiri.
 
-```json
+```jsonc
 // permintaan
-{ "baris": [ { "urutan": 1, "produk_id": 1, "jumlah": 10, "harga_satuan": 20000, "tanggal": "2026-09-01" } ] }
+{ "baris": [ { "urutan": 1, "produk_id": 1, "jumlah": 12, "harga_satuan": 20000, "tanggal": null } ] }
 // jawaban
 { "ok": true, "data": {
-    "baris": [ { "urutan": 1, "subtotal": 200000 } ],
-    "total_item": 10,
-    "total_belanja": 200000
+    "baris": [ { "urutan": 1, "subtotal": 240000 } ],
+    "total_item": 12,
+    "total_belanja": 240000
 } }
 ```
 
-### `POST /ekstraksi/suara`
-`multipart/form-data`, field `berkas`. Bentuk jawabannya sama persis dengan `/ekstraksi/foto`, jadi frontend bisa memakai komponen konfirmasi yang sama.
+`harga_satuan: null` berarti pengguna mengosongkannya — SQL memakai harga jual
+tersimpan, bukan menganggapnya nol. Tidak menyimpan apa pun.
 
-### `POST /ekstraksi/:id/konfirmasi`
-```json
-// permintaan — hanya baris yang disetujui, boleh sudah diperbaiki pengguna
-{ "baris": [
-    { "urutan": 1, "produk_id": 1, "jumlah": 10, "harga_satuan": 20000, "tanggal": "2026-09-01" }
-] }
+### `POST /ekstraksi/konfirmasi`
+
+Satu-satunya jalan hasil AI masuk ke `transaksi`.
+
+```jsonc
+// permintaan
+{ "ekstraksi_id": 12,
+  "baris": [ { "urutan": 1, "produk_id": 1, "jumlah": 12, "harga_satuan": 20000, "tanggal": null } ] }
 // jawaban
 { "ok": true, "data": { "tersimpan": 1, "berkas_dihapus": true } }
 ```
 
-`berkas_dihapus: true` menegaskan foto mentahnya sudah dihapus setelah konfirmasi.
+- Baris dengan `produk_id: null` **dilewati**, bukan ditolak — pengguna berhak melewatkan baris yang tidak dia kenali
+- **Konfirmasi kedua ditolak.** Statusnya diubah dengan `WHERE status = 'menunggu'` di dalam transaksi database yang sama dengan penulisan barisnya, jadi pengguna yang menekan tombol dua kali karena ragu tidak mencatat penjualannya dua kali
+- `berkas_dihapus: true` menegaskan foto mentahnya sudah dihapus
+
+### `POST /ekstraksi/foto` — **belum ada**
+
+Model vision yang tersedia untuk tim sudah diukur dan belum lolos: pada tabel
+tulisan tangan 29 baris, kolomnya bergeser dan saldonya dikarang, sementara
+setiap baris dilaporkan dengan keyakinan 1,0. Kegagalan "tidak terbaca" aman
+karena akan ditandai; kegagalan "salah tapi yakin" lolos ke database dan merusak
+semua perhitungan di atasnya. Hasil pengukurannya di
+[backend/spike/README.md](../backend/spike/README.md).
+
+Sampai ada model yang lolos, `ekstraksiFoto()` di frontend menolak dengan jujur
+dan menunjuk jalur suara. **Jangan menggantinya dengan data contoh** — baris
+palsu yang tampil meyakinkan di layar konfirmasi adalah persis kegagalan yang
+produk ini ada untuk mencegahnya.
 
 ## Pesanan Masuk
 
@@ -303,14 +483,29 @@ Semua angka di sini dihitung SQL. `peringatan` sudah berupa kalimat siap tampil.
 Kalau pesannya `bukan_pesanan`, semua field lain `null` dan `peringatan` kosong.
 
 ### `GET /pesanan`
-Daftar pesanan masuk terbaru, lengkap dengan angka yang sudah dihitung SQL. Pesan yang bukan pesanan tidak pernah muncul di sini.
+Daftar pesanan masuk terbaru (maks 30), dari jalur tempel maupun WhatsApp, lengkap dengan angka yang sudah dihitung SQL. Pesan yang bukan pesanan tidak pernah muncul di sini.
+
+```json
+{ "ok": true, "data": [ {
+  "pesan_id": 7, "jenis": "menawar", "teks": "bu saya mau pesan 20 bungkus…",
+  "sumber": "whatsapp", "pengirim_samar": "…5616",
+  "nama_produk_mentah": "kripik pisang", "jumlah": 20, "harga_diminta": 18000,
+  "tanggal_dibutuhkan": null, "perlu_dicek": false,
+  "diterima_pada": "2026-09-02T03:05:00.000Z",
+  "produk_id": 3, "nama_produk": "Kripik Pisang", "modal_per_unit": 21200,
+  "nilai_pesanan": 360000, "untung_pesanan": -64000, "merugi": true,
+  "stok_cukup_untuk": 14
+} ] }
+```
+
+Tipe: `PesanMasukItem[]` di `shared/types.ts`. `sumber` `whatsapp` berarti terbaca otomatis dari sambungan baca-saja; `pengirim_samar` hanya empat digit terakhir (privasi pembeli).
 
 ### `GET /whatsapp/status`
 ```json
-{ "ok": true, "data": { "status": "terputus", "qr": null, "hanya_baca": true, "alasan": null } }
+{ "ok": true, "data": { "status": "terputus", "qr": null, "kode_pairing": null, "hanya_baca": true, "alasan": null } }
 ```
 
-`status`: `terputus` · `menunggu_qr` · `menyambung` · `tersambung`. Saat `menunggu_qr`, field `qr` berisi string QR untuk ditampilkan.
+`status`: `terputus` · `menunggu_qr` · `menyambung` · `tersambung`. Saat `menunggu_qr`, `qr` berisi string mentah untuk dirender frontend sebagai kode QR (cara utama), atau `kode_pairing` berisi kode 8 digit kalau penautan diminta lewat nomor HP.
 
 `hanya_baca` selalu `true` — sistem tidak punya jalur mengirim sama sekali.
 

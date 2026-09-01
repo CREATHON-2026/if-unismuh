@@ -1,8 +1,10 @@
 import { query, satu } from '../../db/index.ts';
-import type { JenisPesan, KandidatProduk } from '../../../../shared/types.ts';
+import type { KandidatProduk } from '../../../../shared/types.ts';
+import type { HitungPesanan, SimpanPesanArg } from './pesanan.types.ts';
 
 /**
- * Semua SQL domain Pesanan Masuk ada di berkas ini.
+ * Semua SQL domain Pesanan Masuk ada di berkas ini — dan HANYA SQL.
+ * Keputusan pencocokan (putuskanCocok) hidup di pesanan.service.ts.
  *
  * PERHATIKAN: tidak ada satu pun aritmetika finansial yang ditulis di
  * TypeScript. Nilai pesanan, untung, dan penanda merugi semuanya dihitung
@@ -14,20 +16,11 @@ import type { JenisPesan, KandidatProduk } from '../../../../shared/types.ts';
 // ---------------------------------------------------------------------------
 
 /**
- * Ambang hasil PENGUKURAN, bukan tebakan. Diukur dengan pg_trgm:
- *   "kripik pisang" -> Kripik Pisang   1,000
- *   "kripik sgkong" -> Kripik Singkong 0,667
- *   "krpk pisang"   -> Kripik Pisang   0,529
- *   "kripik psg"    -> Kripik Pisang   0,471   <- kandidat benar TERBURUK
- *   "kripik psg"    -> Kripik Singkong 0,350   <- kandidat salah TERBAIK
- * Lihat docs/04-pipeline-ai.md.
+ * Batas bawah kandidat yang MASIH layak ditawarkan ke pengguna. Hasil
+ * PENGUKURAN pg_trgm, bukan tebakan — tabel lengkapnya di pesanan.service.ts
+ * (yang memegang ambang keputusan otomatis). Lihat docs/04-pipeline-ai.md.
  */
-const AMBANG_OTOMATIS = 0.85;
 const AMBANG_TANYA = 0.40;
-/** Band 0,350–0,471 terlalu sempit untuk satu ambang mutlak. Kalau dua
- *  kandidat teratas berselisih di bawah ini, model tidak bisa membedakan —
- *  tanya penggunanya. Aturan #8. */
-const SELISIH_MINIMAL = 0.15;
 
 /**
  * Lepas klitik "-nya" yang sangat lazim di bahasa Indonesia lisan.
@@ -52,67 +45,59 @@ function lepasKlitik(nama: string): string {
 }
 
 /**
- * Ambil skor TERTINGGI antara bentuk asli dan bentuk terpangkas.
+ * Hapus huruf "e" — menjembatani e pepet dalam bahasa Indonesia.
  *
- * Bukan mengganti yang asli: kalau pemangkasan justru merusak katanya, skor
- * asli tetap dipakai. Dengan begitu normalisasi tidak pernah memperburuk hasil.
+ * "keripik" adalah ejaan baku KBBI dan itulah yang dituliskan Web Speech,
+ * sementara pedagang menyimpan produknya sebagai "kripik". Selisih satu huruf
+ * itu menjatuhkan skor ke 0,706 — di bawah ambang — sehingga pedagang harus
+ * mengonfirmasi manual setiap kali menyebut produknya sendiri dengan benar.
+ * Pola yang sama: kerupuk/krupuk, terasi/trasi, mie/mi.
+ *
+ * Diterapkan ke KEDUA sisi, jadi "keripik pisang" vs "Kripik Pisang" menjadi
+ * identik dan berskor 1,000.
+ *
+ * Terlihat kasar, dan memang. Yang membuatnya aman adalah GREATEST di bawah:
+ * skor tidak pernah turun karenanya. Diuji lawan dengan pasangan yang HARUS
+ * ditolak — "keripik singkong" vs "Kripik Pisang" hanya naik 0,240 -> 0,364,
+ * masih jauh di bawah ambang. Nol salah cocok dari 10 produk realistis.
+ */
+function hapusE(nama: string): string {
+  return nama.toLowerCase().replace(/e/g, '');
+}
+
+/**
+ * Ambil skor TERTINGGI dari tiga bentuk: apa adanya, tanpa klitik, tanpa "e".
+ *
+ * Bukan mengganti yang asli. Kalau sebuah normalisasi justru merusak katanya,
+ * skor asli tetap menang — jadi menambah bentuk baru tidak pernah bisa
+ * memperburuk hasil, hanya bisa membantu.
  */
 export function cariKandidatProduk(
   userId: number, namaMentah: string,
 ): Promise<KandidatProduk[]> {
   const tanpaKlitik = lepasKlitik(namaMentah);
+  const tanpaE = hapusE(tanpaKlitik);
+  // Ditulis sekali, dipakai dua kali (SELECT dan WHERE) supaya keduanya tidak
+  // pernah berbeda — kalau berbeda, ambang menyaring skor yang berbeda dari
+  // yang ditampilkan, dan itu bug yang sangat sulit dilihat.
+  const skor = `GREATEST(
+      similarity(nama, $2),
+      similarity(nama, $3),
+      similarity(replace(lower(nama), 'e', ''), $4)
+    )`;
   return query<KandidatProduk>(
-    `SELECT id, nama,
-            GREATEST(similarity(nama, $2), similarity(nama, $3)) AS skor
+    `SELECT id, nama, ${skor} AS skor
      FROM produk
-     WHERE user_id = $1
-       AND GREATEST(similarity(nama, $2), similarity(nama, $3)) >= $4
+     WHERE user_id = $1 AND ${skor} >= $5
      ORDER BY skor DESC
      LIMIT 3`,
-    [userId, namaMentah, tanpaKlitik, AMBANG_TANYA],
+    [userId, namaMentah, tanpaKlitik, tanpaE, AMBANG_TANYA],
   );
-}
-
-export interface HasilCocok {
-  produkId: number | null;
-  skor: number | null;
-  perluDicek: boolean;
-  kandidat: KandidatProduk[];
-}
-
-/** Putuskan: cocokkan otomatis, tanya penggunanya, atau anggap produk baru. */
-export function putuskanCocok(kandidat: KandidatProduk[]): HasilCocok {
-  if (kandidat.length === 0) {
-    return { produkId: null, skor: null, perluDicek: true, kandidat: [] };
-  }
-  const [atas, kedua] = kandidat;
-  const selisihTipis = kedua !== undefined && atas.skor - kedua.skor < SELISIH_MINIMAL;
-
-  if (atas.skor >= AMBANG_OTOMATIS && !selisihTipis) {
-    return { produkId: atas.id, skor: atas.skor, perluDicek: false, kandidat };
-  }
-  // Cukup mirip untuk diduga, tapi tidak cukup untuk diputuskan sendiri.
-  return { produkId: atas.id, skor: atas.skor, perluDicek: true, kandidat };
 }
 
 // ---------------------------------------------------------------------------
 // Perhitungan — semuanya di SQL
 // ---------------------------------------------------------------------------
-
-export interface HitungPesanan {
-  produk_id: number;
-  nama: string;
-  modal_per_unit: number | null;
-  harga_jual: number;
-  /** Harga yang benar-benar dipakai: yang diminta pembeli, atau harga jual
-   *  tersimpan kalau pembeli tidak menyebut angka. Ditentukan SQL supaya
-   *  tidak ada dua tempat yang memutuskannya berbeda. */
-  harga_dipakai: number;
-  nilai_pesanan: number | null;
-  untung_pesanan: number | null;
-  merugi: boolean | null;
-  stok_cukup_untuk: number | null;
-}
 
 /**
  * Nilai pesanan, untung, merugi, dan kecukupan bahan — semuanya dihitung
@@ -150,22 +135,6 @@ export function hitungPesanan(
 // Simpan & baca
 // ---------------------------------------------------------------------------
 
-export interface SimpanPesanArg {
-  userId: number;
-  teks: string;
-  sumber: 'tempel' | 'whatsapp';
-  pengirimSamar: string | null;
-  jenis: JenisPesan;
-  namaProdukMentah: string | null;
-  produkId: number | null;
-  jumlah: number | null;
-  hargaDiminta: number | null;
-  tanggalDibutuhkan: string | null;
-  keyakinanCocok: number | null;
-  perluDicek: boolean;
-  hasilMentah: unknown;
-}
-
 export async function simpanPesan(a: SimpanPesanArg): Promise<number> {
   const baris = await satu<{ id: number }>(
     `INSERT INTO pesan_masuk
@@ -186,7 +155,7 @@ export function daftarPesan(userId: number, batas = 30) {
   return query(
     `SELECT
        pm.id AS pesan_id, pm.jenis, pm.teks, pm.sumber, pm.pengirim_samar,
-       pm.nama_produk_mentah, pm.jumlah, pm.harga_diminta,
+       pm.nama_produk_mentah, pm.jumlah::float8 AS jumlah, pm.harga_diminta,
        pm.tanggal_dibutuhkan, pm.perlu_dicek, pm.diterima_pada,
        pm.produk_id, m.nama AS nama_produk, m.modal_per_unit,
        CASE WHEN pm.jumlah IS NULL THEN NULL

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Lock } from 'lucide-react';
 import { kirimOtp, verifikasiOtp } from '../api/client';
 import { simpanToken } from '../api/sesi';
 import { Layar } from '../components/Layar';
@@ -68,28 +69,15 @@ export function KodeOtp() {
 
   return (
     <Layar tanpaLogo>
-      <div className="rounded-3xl bg-white p-8 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+      <div className="kartu p-8">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#F5831F]">
-            <svg
-              width="44"
-              height="44"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#7C2D12"
-              strokeWidth="2.2"
-              strokeLinecap="round"
-              aria-hidden="true"
-            >
-              <rect x="5" y="10" width="14" height="10" rx="2.5" />
-              <path d="M8 10V7a4 4 0 0 1 8 0v3" />
-              <circle cx="12" cy="15" r="1.3" fill="#7C2D12" stroke="none" />
-            </svg>
+          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-hero text-white">
+            <Lock size={44} strokeWidth={2} aria-hidden="true" />
           </div>
-          <h1 className="font-logo text-[26px] font-bold text-[#C2570E]">Verifikasi Kode OTP</h1>
+          <h1 className="tracking-[-0.02em] text-[26px] font-bold text-tinta">Verifikasi Kode OTP</h1>
           <div>
-            <p className="text-[17px] text-[#44403C]">Masukkan 6 digit kode yang kami kirim.</p>
-            <p className="text-[15px] text-[#78716C]">(Mode demo: ketik 123456)</p>
+            <p className="text-[17px] text-sedang">Masukkan 6 digit kode yang kami kirim.</p>
+            <p className="text-[15px] text-sedang">(Mode demo: ketik 123456)</p>
           </div>
           <div className="flex justify-center gap-2 pt-2" onPaste={tempel}>
             {digit.map((d, i) => (
@@ -105,18 +93,18 @@ export function KodeOtp() {
                 maxLength={2}
                 autoFocus={i === 0}
                 disabled={sibuk}
-                className="h-[72px] w-12 rounded-2xl border-2 border-[#E5DED6] bg-[#F6F7FB] text-center text-2xl font-bold text-[#1C1917] outline-none focus:border-[#F5831F] disabled:opacity-40"
+                className="h-[72px] w-12 rounded-2xl border-2 border-garis bg-kanvas text-center text-2xl font-bold text-tinta outline-none focus:border-hero disabled:opacity-40"
               />
             ))}
           </div>
-          {sibuk && <p className="text-[#78716C]">Memeriksa…</p>}
-          {galat && <p className="font-semibold text-red-600">{galat}</p>}
-          <p className="pt-2 text-[17px] text-[#1C1917]">Belum menerima kode?</p>
+          {sibuk && <p className="text-sedang">Memeriksa…</p>}
+          {galat && <p className="font-semibold text-rugi">{galat}</p>}
+          <p className="pt-2 text-[17px] text-tinta">Belum menerima kode?</p>
           <button
             type="button"
             onClick={kirimUlang}
             disabled={detik > 0 || sibuk}
-            className="font-logo text-lg font-bold text-[#C2570E]"
+            className="min-h-12 text-lg font-bold text-tinta disabled:text-redup"
           >
             Kirim Ulang{detik > 0 ? ` (00:${String(detik).padStart(2, '0')})` : ''}
           </button>

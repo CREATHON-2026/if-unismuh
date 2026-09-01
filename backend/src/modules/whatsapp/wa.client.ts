@@ -1,7 +1,11 @@
 import path from 'node:path';
+import { readFile, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import qrterminal from 'qrcode-terminal';
-import { prosesPesan } from '../pesanan/pesanan.proses.ts';
+import { WA_AUTH_DIR } from '../../config/env.ts';
+import { satu } from '../../db/index.ts';
+import { prosesPesan } from '../pesanan/pesanan.service.ts';
+import type { StatusWa, StatusWhatsappRes } from './wa.types.ts';
 
 /**
  * Pembaca WhatsApp — HANYA MEMBACA.
@@ -20,9 +24,19 @@ import { prosesPesan } from '../pesanan/pesanan.proses.ts';
  */
 
 const DIR = path.dirname(fileURLToPath(import.meta.url));
-const AUTH_DIR = path.join(DIR, '..', '..', '..', 'db', 'baileys-auth');
+const AUTH_DIR = WA_AUTH_DIR || path.join(DIR, '..', '..', '..', 'db', 'baileys-auth');
 
-export type StatusWa = 'terputus' | 'menunggu_qr' | 'menyambung' | 'tersambung';
+/**
+ * Siapa pemilik sesi, disimpan DI DALAM direktori auth.
+ *
+ * Server dev di-restart setiap ada berkas yang disimpan (tsx watch), dan
+ * semua variabel modul ikut hilang — termasuk siapa pemilik sesi. Kredensial
+ * Baileys selamat karena ada di disk; pemiliknya harus ikut selamat juga,
+ * kalau tidak sesi yang sah tampil sebagai "Belum tersambung" setiap kali
+ * seseorang menyimpan berkas. Ditaruh di dalam AUTH_DIR supaya ikut terhapus
+ * bersama kredensialnya saat sesi dikeluarkan.
+ */
+const PEMILIK_PATH = path.join(AUTH_DIR, 'pemilik.json');
 
 let sock: any = null;
 let status: StatusWa = 'terputus';
@@ -141,11 +155,35 @@ export async function hubungkanWhatsapp(
   pemilik = userId;
   alasanBerhenti = null;
   kodePairing = null;
-  // Diingat supaya sambung ulang tetap memakai mode pairing, bukan jatuh ke QR.
-  if (nomorInternasional) nomorPairing = nomorInternasional;
+  qrTerakhir = null;
+  // Nomor menentukan mode penautan. Diisi -> kode pairing, dan tetap diingat
+  // untuk sambung ulang (penangan 'close' meneruskan nomornya eksplisit).
+  // Kosong -> permintaan QR yang DISENGAJA, jadi nomor lama dibuang — tanpa
+  // ini, sekali saja pernah mencoba pairing, permintaan QR berikutnya
+  // diam-diam tetap bermode pairing dan QR tidak pernah muncul.
+  nomorPairing = nomorInternasional ?? null;
   status = 'menyambung';
 
-  const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
+  let { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
+
+  // Kredensial setengah jadi = percobaan tautan yang tidak pernah selesai
+  // (mis. kode pairing diminta tapi tidak pernah dimasukkan di HP). Baileys
+  // menandai `me` begitu kode diminta, tapi `account` baru ada setelah tautan
+  // benar-benar sukses. Kredensial seperti ini meracuni percobaan berikutnya:
+  // socket mencoba masuk dengan identitas yang tidak pernah terdaftar dan
+  // langsung ditolak. Buang, mulai bersih. Sesi yang sah (me + account) aman.
+  if (state.creds.me && !state.creds.account) {
+    await rm(AUTH_DIR, { recursive: true, force: true }).catch(() => {});
+    ({ state, saveCreds } = await useMultiFileAuthState(AUTH_DIR));
+  }
+
+  // Tutup socket lama sebelum membuat yang baru — terjadi saat pengguna
+  // berganti mode (QR <-> kode pairing) sebelum tautan pertama selesai. Dua
+  // socket hidup di direktori auth yang sama saling merusak sesi.
+  if (sock) {
+    try { sock.end(undefined); } catch { /* sudah mati — tidak apa-apa */ }
+    sock = null;
+  }
 
   // Pegang instance-nya di variabel LOKAL. Variabel modul `sock` bisa
   // di-null-kan oleh penangan 'close' sebelum permintaan pairing dijalankan —
@@ -186,6 +224,10 @@ export async function hubungkanWhatsapp(
   }
 
   s.ev.on('connection.update', (u: any) => {
+    // Socket yang sudah digantikan (pengguna berganti mode) tidak boleh
+    // menyentuh status modul atau menjadwalkan sambung ulang — event
+    // penutupannya datang justru karena kita menggantikannya.
+    if (s !== sock) return;
     if (u.qr && !pakaiPairing) {
       qrTerakhir = u.qr;
       status = 'menunggu_qr';
@@ -196,6 +238,13 @@ export async function hubungkanWhatsapp(
       status = 'tersambung';
       qrTerakhir = null;
       kodePairing = null;
+      alasanBerhenti = null;
+      // Supaya restart server berikutnya bisa memulihkan sesi ini sendiri.
+      void writeFile(
+        PEMILIK_PATH,
+        JSON.stringify({ pemilik, nomor_pairing: nomorPairing }),
+        'utf8',
+      ).catch((err) => console.error('[wa] gagal menyimpan pemilik sesi:', err));
       console.log('[wa] tersambung — mode HANYA BACA, tidak akan pernah mengirim pesan');
     }
     if (u.connection === 'close') {
@@ -206,7 +255,11 @@ export async function hubungkanWhatsapp(
       if (keluar) {
         alasanBerhenti = 'Sesi dikeluarkan dari WhatsApp. Perlu ditautkan lagi.';
         nomorPairing = null;
-        console.log('[wa] sesi dikeluarkan, tidak menyambung ulang');
+        // Kredensial yang sudah dikeluarkan tidak berlaku lagi. Kalau
+        // dibiarkan, penautan berikutnya memakai kredensial mati ini:
+        // QR tidak pernah terbit, langsung dikeluarkan lagi — buntu.
+        void rm(AUTH_DIR, { recursive: true, force: true }).catch(() => {});
+        console.log('[wa] sesi dikeluarkan, kredensial dihapus — tautkan lagi dari awal');
       } else {
         alasanBerhenti = 'Koneksi terputus, mencoba menyambung ulang.';
         console.log('[wa] terputus, menyambung ulang...');
@@ -216,6 +269,7 @@ export async function hubungkanWhatsapp(
   });
 
   s.ev.on('messages.upsert', async ({ messages, type }: any) => {
+    if (s !== sock) return;   // socket lama yang sudah digantikan
     // Dicatat SEBELUM disaring. Kalau tidak ada baris ini sama sekali saat
     // chat masuk, berarti masalahnya di koneksi — bukan di penyaringan.
     console.log(`[wa] messages.upsert: type=${type}, ${messages?.length ?? 0} pesan`);
@@ -229,14 +283,61 @@ export async function hubungkanWhatsapp(
   return status;
 }
 
-export function statusWhatsapp() {
+export function statusWhatsapp(): StatusWhatsappRes {
   return {
     status,
-    /** QR mentah untuk ditampilkan frontend nanti; null kalau tidak sedang menunggu */
     qr: qrTerakhir,
-    /** Kode 8 digit yang dimasukkan pengguna di HP-nya; null kalau memakai cara QR */
     kode_pairing: kodePairing,
-    hanya_baca: true as const,
+    hanya_baca: true,
     alasan: alasanBerhenti,
   };
+}
+
+/**
+ * Pulihkan sesi WhatsApp saat server start.
+ *
+ * tsx watch me-restart server setiap ada berkas yang disimpan. Tanpa
+ * pemulihan ini, setiap restart membuat sesi yang SAH tampil sebagai
+ * "Belum tersambung" dan pesan yang masuk tidak dibaca — padahal
+ * kredensialnya masih berlaku di disk.
+ *
+ * Hanya memulihkan sesi yang benar-benar selesai ditautkan (me + account).
+ * Kredensial setengah jadi dibiarkan; jalur hubungkanWhatsapp yang akan
+ * membersihkannya saat pengguna mencoba menautkan lagi.
+ */
+export async function pulihkanWhatsapp(): Promise<void> {
+  let pemilikTersimpan: number;
+  let nomorTersimpan: string | null;
+  try {
+    const creds = JSON.parse(await readFile(path.join(AUTH_DIR, 'creds.json'), 'utf8'));
+    if (!creds?.me || !creds?.account) return;   // tidak ada sesi yang sah
+    const p = JSON.parse(await readFile(PEMILIK_PATH, 'utf8'));
+    if (typeof p?.pemilik !== 'number') return;
+    pemilikTersimpan = p.pemilik;
+    nomorTersimpan = typeof p?.nomor_pairing === 'string' ? p.nomor_pairing : null;
+  } catch {
+    return;   // belum pernah ditautkan — bukan galat
+  }
+
+  // Database bisa lebih muda daripada berkas pemilik — direktori data PGlite
+  // dihapus saat pemulihan korupsi, sementara kredensial WhatsApp selamat.
+  // Sesi yang dipulihkan untuk user yang sudah tidak ada akan menyimpan pesan
+  // ke user_id hantu (ditolak foreign key). Lebih jujur tidak memulihkan:
+  // pemilik barunya cukup menekan tombol sambungkan sekali, langsung
+  // tersambung tanpa QR karena kredensialnya masih berlaku.
+  const ada = await satu<{ id: number }>(
+    'SELECT id FROM pengguna WHERE id = $1', [pemilikTersimpan],
+  );
+  if (!ada) {
+    await rm(PEMILIK_PATH, { force: true }).catch(() => {});
+    console.log('[wa] pemilik sesi tersimpan sudah tidak ada di database — pemulihan dilewati');
+    return;
+  }
+
+  console.log('[wa] sesi tersimpan ditemukan, menyambung ulang...');
+  try {
+    await hubungkanWhatsapp(pemilikTersimpan, nomorTersimpan ?? undefined);
+  } catch (err) {
+    console.error('[wa] gagal memulihkan sesi:', err instanceof Error ? err.message : err);
+  }
 }

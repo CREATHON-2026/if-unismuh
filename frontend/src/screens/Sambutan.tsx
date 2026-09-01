@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { Layar, LATAR_GRADIEN } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
 import { LogoIkon } from '../components/Logo';
@@ -12,28 +13,27 @@ export function Sambutan() {
       aksi={
         <>
           <Tombol onClick={() => nav('/masuk')}>
-            <span className="flex items-center justify-center gap-3">
+            <span className="flex items-center justify-center gap-2.5">
               Mulai
-              <span aria-hidden className="text-2xl leading-none">
-                →
-              </span>
+              <ArrowRight size={21} strokeWidth={2} aria-hidden="true" />
             </span>
           </Tombol>
-          <p className="pt-1 text-center text-[15px] font-medium text-[#57534E]">
+          <p className="pt-1 text-center text-[15px] font-medium text-redup">
             Mudah. Cepat. Otomatis.
           </p>
         </>
       }
     >
-      <div className="flex flex-col items-center gap-5 text-center">
-        <div className="flex items-center gap-3 rounded-3xl bg-white px-8 py-6 shadow-lg ring-1 ring-slate-100">
+      <div className="flex flex-col items-center gap-6 text-center">
+        <div className="kartu flex items-center gap-3 px-8 py-6">
           <LogoIkon ukuran={64} />
-          <span className="font-logo text-4xl font-bold tracking-tight text-[#2B4C9B]">
-            LapakAI
-          </span>
+          <span className="text-4xl font-extrabold tracking-[-0.03em] text-tinta">lapakAi</span>
         </div>
-        <p className="mt-4 font-logo text-4xl font-bold text-[#B4530A]">LapakAI</p>
-        <p className="text-2xl text-[#484440]">Bantu UMKM Makin Cuan!</p>
+        <p className="text-[22px] leading-relaxed text-sedang">
+          Tahu untung sebenarnya,
+          <br />
+          dari buku tulis yang sudah Anda pakai.
+        </p>
       </div>
     </Layar>
   );

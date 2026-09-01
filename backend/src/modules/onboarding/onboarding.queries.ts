@@ -30,7 +30,14 @@ export function simpanResep(
   userId: number,
   namaProduk: string,
   hargaJual: number,
-  hasilPerBatch: number,
+  /**
+   * null hanya sah kalau `bahan` kosong — produk yang dicatat lebih dulu dan
+   * resepnya dilengkapi belakangan (fitur 10). v_modal_produk mengembalikan
+   * NULL untuk produk seperti itu, bukan nol, jadi ia tidak pernah tampil
+   * sebagai untung penuh maupun rugi total. Yang memaksakan aturan ini adalah
+   * route pemanggilnya, bukan query ini.
+   */
+  hasilPerBatch: number | null,
   bahan: BahanMasukan[],
 ): Promise<number> {
   return transaksiDb(async (c: Pelaksana) => {

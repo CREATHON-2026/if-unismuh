@@ -11,9 +11,11 @@ import { rutAuth } from './modules/auth/auth.routes.ts';
 import { rutOnboarding } from './modules/onboarding/onboarding.routes.ts';
 import { rutPesanan } from './modules/pesanan/pesanan.routes.ts';
 import { rutWhatsapp } from './modules/whatsapp/wa.routes.ts';
+import { pulihkanWhatsapp } from './modules/whatsapp/wa.client.ts';
 import { rutTransaksi } from './modules/transaksi/transaksi.routes.ts';
 import { rutBeranda } from './modules/beranda/beranda.routes.ts';
 import { rutProduk } from './modules/produk/produk.routes.ts';
+import { rutEkstraksi } from './modules/ekstraksi/ekstraksi.routes.ts';
 import { rutStok } from './modules/stok/stok.routes.ts';
 
 export function buatApp() {
@@ -35,6 +37,7 @@ export function buatApp() {
   app.use('/beranda', rutBeranda);
   app.use('/produk', rutProduk);
   app.use('/stok', rutStok);
+  app.use('/ekstraksi', rutEkstraksi);
 
   // Harus paling belakang, setelah semua rute terpasang.
   app.use(tangkapGalat);
@@ -54,6 +57,12 @@ const server = buatApp().listen(PORT, () => {
     console.log('MODE DEMO aktif — kode OTP selalu 123456, tidak ada SMS yang dikirim.');
   }
 });
+
+// Sesi WhatsApp yang sudah ditautkan dipulihkan sendiri. Tanpa ini, setiap
+// restart server (tsx watch me-restart tiap berkas disimpan!) membuat sesi
+// yang sah tampil "Belum tersambung" dan pesan masuk berhenti terbaca.
+// Fire-and-forget: kegagalannya tidak boleh menahan server melayani HTTP.
+void pulihkanWhatsapp();
 
 /**
  * Penutupan rapi — bukan kemewahan, ini mencegah kerusakan data.

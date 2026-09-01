@@ -96,6 +96,18 @@ Nomor lengkap memang tidak diperlukan, karena sistem tidak pernah membalas sendi
 
 Aturan #4 ditegakkan **struktur, bukan janji**: socket WhatsApp disimpan privat dan modulnya tidak mengekspor apa pun yang bisa mengirim. Yang tidak ada tidak bisa dipanggil.
 
+## Transkripsi suara — di browser, tapi bukan di perangkat
+
+Fitur 2 memakai Web Speech API. Transkripsi tidak melewati backend kita sama sekali; yang sampai ke server hanya teksnya.
+
+**Tapi jangan mengklaim "diproses di perangkat".** Di Chrome, Web Speech mengirim audionya ke server Google untuk dikenali. Jadi yang benar:
+
+> Suara pedagang tidak pernah menyentuh server kami — tapi memang melewati layanan pengenalan suara Google, sama seperti fitur dikte bawaan di HP-nya.
+
+Yang bisa kita kendalikan sudah dikendalikan: audionya tidak disimpan di mana pun, dan yang masuk database hanya teks hasil transkripsi **setelah pengguna mengonfirmasi**.
+
+Kalau ini dianggap tidak cukup, alternatifnya Groq Whisper (gratis 2.000 permintaan/hari, tanpa kartu kredit) atau Whisper yang dijalankan sendiri — keduanya menukar kemudahan dengan kendali penuh.
+
 ## Kredensial
 
 **LLM tidak memakai kunci API sama sekali.** Ollama kampus tidak memintanya, jadi tidak ada kunci yang bisa bocor dan tidak ada yang perlu disiapkan rekan tim.

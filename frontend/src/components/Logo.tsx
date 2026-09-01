@@ -10,7 +10,7 @@ export function LogoIkon({ ukuran = 36 }: { ukuran?: number }) {
       aria-hidden="true"
     >
       <path
-        fill="#F5831F"
+        fill="#0F172A"
         d="M30 14 H82 A20 20 0 0 1 102 34 V64 A20 20 0 0 1 82 84 H44 L24 100 Q16 106 20 96 L26 84 H30 A20 20 0 0 1 10 64 V34 A20 20 0 0 1 30 14 Z"
       />
       <path
@@ -18,7 +18,7 @@ export function LogoIkon({ ukuran = 36 }: { ukuran?: number }) {
         d="M20 8 H84 V30 A10.67 10.67 0 0 1 62.66 30 A10.67 10.67 0 0 1 41.33 30 A10.66 10.66 0 0 1 20 30 Z"
       />
       <path
-        fill="#2B4C9B"
+        fill="#0F172A"
         stroke="#FFFFFF"
         strokeWidth="6"
         paintOrder="stroke"
@@ -38,7 +38,7 @@ export function Logo({
   return (
     <div className="flex items-center gap-2">
       <LogoIkon ukuran={ukuranIkon} />
-      <span className={`font-logo font-bold tracking-tight text-[#2B4C9B] ${kelasTeks}`}>
+      <span className={`font-logo font-bold tracking-tight text-tinta ${kelasTeks}`}>
         LapakAI
       </span>
     </div>
