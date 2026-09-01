@@ -556,3 +556,23 @@ export interface StatusWhatsappRes {
 export interface HubungkanWhatsappReq {
   nomor_hp?: string;
 }
+
+/**
+ * PATCH /produk/:id/tenaga — fitur 11, hitung tenaga sendiri sebagai biaya.
+ *
+ * Dua angka yang benar-benar diketahui pedagang, bukan "biaya tenaga per batch"
+ * yang tidak bisa dijawab siapa pun secara langsung. Perkaliannya terjadi di
+ * SQL; frontend mengirim kedua angka ini apa adanya.
+ *
+ * `jam_per_batch: 0` sah dan berguna — itu cara membatalkan perhitungan waktu.
+ *
+ * Jawabannya berbentuk `TemuanPertama`, sama seperti POST /onboarding/resep:
+ * modal, margin, dan penanda merugi yang SUDAH diperbarui. Layar tinggal
+ * menampilkan, tidak menghitung ulang apa pun.
+ */
+export interface OngkosTenagaReq {
+  /** Berapa jam sekali bikin satu batch */
+  jam_per_batch: number;
+  /** Kalau kerja di tempat orang, sejam dibayar berapa */
+  upah_per_jam: number;
+}

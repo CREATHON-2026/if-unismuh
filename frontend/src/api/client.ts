@@ -27,6 +27,7 @@ import type {
   BalasanRes,
   UsulanTransaksi,
   CatatTransaksiReq,
+  OngkosTenagaReq,
   StatusWhatsappRes,
   HubungkanWhatsappReq,
 } from '@shared/types';
@@ -91,6 +92,11 @@ export function ambilBeranda(): Promise<Jawaban<Beranda>> {
 
 export function ambilDaftarProduk(): Promise<Jawaban<RingkasanProduk[]>> {
   return panggil('/produk');
+}
+
+/** Fitur 11 — catat waktu pedagang sebagai biaya. Perkaliannya di SQL. */
+export function ubahOngkosTenaga(id: number, p: OngkosTenagaReq): Promise<Jawaban<TemuanPertama>> {
+  return panggil(`/produk/${id}/tenaga`, { method: 'PATCH', body: JSON.stringify(p) });
 }
 
 export function ambilDetailProduk(id: number): Promise<Jawaban<DetailProduk>> {

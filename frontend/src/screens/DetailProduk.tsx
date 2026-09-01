@@ -8,6 +8,7 @@ import { KartuHero } from '../components/KartuHero';
 import { BarProgres } from '../components/BarProgres';
 import { Lencana } from '../components/Lencana';
 import { NavBawah } from '../components/NavBawah';
+import { KartuTenaga } from '../components/KartuTenaga';
 import { KeadaanGalat } from '../components/KeadaanGalat';
 import { RangkaHero, RangkaKartu } from '../components/Rangka';
 
@@ -153,6 +154,8 @@ export function DetailProduk() {
         </div>
       )}
 
+      {/* Ditaruh SETELAH rincian modal, bukan sebelum: pertanyaan "modalnya cuma
+          bahan?" baru muncul di kepala pedagang setelah ia melihat rinciannya. */}
       {d.bahan.length > 0 && (
         <div className="kartu mt-3 px-5 py-5">
           <p className="label-bagian">MODAL DATANG DARI SINI</p>
@@ -185,6 +188,14 @@ export function DetailProduk() {
             )}
           </div>
         </div>
+      )}
+
+      {d.bahan.length > 0 && d.hasil_per_batch != null && (
+        <KartuTenaga
+          produkId={d.id}
+          sudahDihitung={(d.biaya_tenaga_per_unit ?? 0) > 0}
+          onSelesai={() => void muat()}
+        />
       )}
 
       <NavBawah />

@@ -1,7 +1,9 @@
 ﻿import { Router } from 'express';
 import { wajibLogin } from '../../middleware/auth.ts';
 import { jalur } from '../../lib/http.ts';
-import { daftarProduk, detailProduk, usulanProduk, simpanProduk } from './produk.controller.ts';
+import {
+  daftarProduk, detailProduk, usulanProduk, simpanProduk, ubahOngkosTenaga,
+} from './produk.controller.ts';
 
 /**
  * Rute produk — HANYA pemetaan jalur ke controller.
@@ -16,3 +18,4 @@ rutProduk.post('/', jalur(simpanProduk));
 rutProduk.post('/dari-teks', jalur(usulanProduk));
 // Paling bawah: '/:id' menangkap apa pun, jadi jalur statis harus lebih dulu.
 rutProduk.get('/:id', jalur(detailProduk));
+rutProduk.patch('/:id/tenaga', jalur(ubahOngkosTenaga));

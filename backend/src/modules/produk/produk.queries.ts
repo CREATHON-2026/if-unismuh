@@ -135,3 +135,31 @@ export function saranHarga(produkId: number, userId: number): Promise<SaranMenta
     [produkId, userId],
   );
 }
+
+/**
+ * Catat ongkos tenaga pedagang — fitur 11.
+ *
+ * ★ PERKALIAN JAM x UPAH TERJADI DI SINI, DI DALAM SQL. Bukan di frontend
+ * (aturan #7), dan bukan di service TypeScript — semua rumus finansial hidup di
+ * lapisan database, sama seperti modal dan margin. Endpoint-nya menerima jam
+ * dan upah apa adanya; database yang mengalikannya.
+ *
+ * Yang disimpan hanya hasilnya, bukan jam dan upahnya terpisah. Konsekuensinya:
+ * pedagang yang ingin mengubah harus mengisi ulang keduanya. Itu ditukar dengan
+ * tidak perlu mengubah skema tabel di tengah lomba — dan mengisi dua angka lagi
+ * jauh lebih murah daripada memindahkan database yang sudah berisi data demo.
+ *
+ * `WHERE user_id` di dalam UPDATE, bukan diperiksa lebih dulu di aplikasi:
+ * produk pedagang lain tidak menghasilkan baris, jadi tidak ada yang berubah.
+ */
+export function simpanOngkosTenaga(
+  produkId: number, userId: number, jamPerBatch: number, upahPerJam: number,
+): Promise<{ id: number } | null> {
+  return satu<{ id: number }>(
+    `UPDATE produk
+     SET biaya_tenaga_per_batch = ROUND($3::numeric * $4::numeric)::int
+     WHERE id = $1 AND user_id = $2
+     RETURNING id`,
+    [produkId, userId, jamPerBatch, upahPerJam],
+  );
+}
