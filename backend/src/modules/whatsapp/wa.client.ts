@@ -28,8 +28,19 @@ let sock: any = null;
 let status: StatusWa = 'terputus';
 let qrTerakhir: string | null = null;
 let kodePairing: string | null = null;
+/** Diingat supaya sambung ulang tidak jatuh kembali ke mode QR. */
+let nomorPairing: string | null = null;
 let pemilik: number | null = null;
 let alasanBerhenti: string | null = null;
+
+/**
+ * Baca status lewat fungsi, bukan variabelnya langsung.
+ *
+ * `status` diubah dari dalam callback Baileys, tapi TypeScript tidak bisa
+ * melihat itu dan mempersempit tipenya ke nilai terakhir yang diberikan
+ * secara lurus — sehingga perbandingan yang sah dianggap mustahil.
+ */
+const statusKini = (): StatusWa => status;
 
 /**
  * Nomor pengirim disimpan TERSAMAR — empat digit terakhir saja.
@@ -99,34 +110,51 @@ export async function hubungkanWhatsapp(
   pemilik = userId;
   alasanBerhenti = null;
   kodePairing = null;
+  // Diingat supaya sambung ulang tetap memakai mode pairing, bukan jatuh ke QR.
+  if (nomorInternasional) nomorPairing = nomorInternasional;
   status = 'menyambung';
 
   const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
-  sock = makeWASocket({ auth: state });
-  const pakaiPairing = Boolean(nomorInternasional);
 
-  sock.ev.on('creds.update', saveCreds);
+  // Pegang instance-nya di variabel LOKAL. Variabel modul `sock` bisa
+  // di-null-kan oleh penangan 'close' sebelum permintaan pairing dijalankan —
+  // itulah yang membuat percobaan pertama gagal dengan
+  // "Cannot read properties of null (reading 'requestPairingCode')".
+  const s = makeWASocket({ auth: state });
+  sock = s;
+  const pakaiPairing = Boolean(nomorPairing);
 
-  // Pairing code hanya bisa diminta kalau perangkatnya belum terdaftar, dan
-  // socket butuh sesaat untuk siap sebelum permintaannya diterima.
+  s.ev.on('creds.update', saveCreds);
+
+  // Pairing code hanya bisa diminta kalau perangkatnya belum terdaftar.
+  // Socket butuh sesaat untuk siap; kalau belum, dicoba lagi beberapa kali
+  // daripada gagal sekali lalu menyerah.
   if (pakaiPairing && !state.creds.registered) {
-    setTimeout(async () => {
-      try {
-        const kode = await sock.requestPairingCode(nomorInternasional!);
-        kodePairing = kode;
-        status = 'menunggu_qr';
-        console.log(`\n[wa] KODE PAIRING: ${kode}`);
-        console.log('[wa] masukkan di HP: WhatsApp > Perangkat Tertaut >');
-        console.log('[wa] Tautkan perangkat > Tautkan dengan nomor telepon\n');
-      } catch (err) {
-        alasanBerhenti = 'Gagal meminta kode pairing. Coba lagi, atau pakai cara QR.';
-        console.error('[wa] gagal meminta pairing code:',
-          err instanceof Error ? err.message : err);
+    void (async () => {
+      for (let percobaan = 1; percobaan <= 5; percobaan++) {
+        await new Promise((r) => setTimeout(r, 3000));
+        if (kodePairing || statusKini() === 'tersambung') return;
+        try {
+          const kode = await s.requestPairingCode(nomorPairing!);
+          kodePairing = kode;
+          status = 'menunggu_qr';
+          console.log(`\n[wa] ==============================`);
+          console.log(`[wa]  KODE PAIRING: ${kode}`);
+          console.log(`[wa] ==============================`);
+          console.log('[wa] Di HP: WhatsApp > Perangkat Tertaut >');
+          console.log('[wa] Tautkan perangkat > Tautkan dengan nomor telepon\n');
+          return;
+        } catch (err) {
+          const pesan = err instanceof Error ? err.message : String(err);
+          console.error(`[wa] percobaan ${percobaan}/5 minta kode gagal: ${pesan}`);
+          alasanBerhenti = `Gagal meminta kode pairing: ${pesan}`;
+        }
       }
-    }, 4000);
+      console.error('[wa] menyerah meminta kode pairing. Coba panggil ulang endpoint-nya.');
+    })();
   }
 
-  sock.ev.on('connection.update', (u: any) => {
+  s.ev.on('connection.update', (u: any) => {
     if (u.qr && !pakaiPairing) {
       qrTerakhir = u.qr;
       status = 'menunggu_qr';
@@ -145,17 +173,18 @@ export async function hubungkanWhatsapp(
       status = 'terputus';
       sock = null;
       if (keluar) {
-        alasanBerhenti = 'Sesi dikeluarkan dari WhatsApp. Perlu pindai QR lagi.';
+        alasanBerhenti = 'Sesi dikeluarkan dari WhatsApp. Perlu ditautkan lagi.';
+        nomorPairing = null;
         console.log('[wa] sesi dikeluarkan, tidak menyambung ulang');
       } else {
         alasanBerhenti = 'Koneksi terputus, mencoba menyambung ulang.';
         console.log('[wa] terputus, menyambung ulang...');
-        setTimeout(() => hubungkanWhatsapp(userId).catch(() => {}), 3000);
+        setTimeout(() => hubungkanWhatsapp(userId, nomorPairing ?? undefined).catch(() => {}), 3000);
       }
     }
   });
 
-  sock.ev.on('messages.upsert', async ({ messages, type }: any) => {
+  s.ev.on('messages.upsert', async ({ messages, type }: any) => {
     if (type !== 'notify') return;   // abaikan sinkronisasi riwayat lama
     for (const m of messages) await tanganiPesan(m);
   });
