@@ -2,12 +2,36 @@
 
 ## Dua akun yang harus disiapkan
 
-| Akun | Isi | Dipakai untuk |
-|---|---|---|
-| **Kosong** | Belum ada data sama sekali | Menunjukkan onboarding dari nol — **ini yang paling berkesan**, karena juri melihat temuan pertama muncul dalam 90 detik |
-| **Terisi** | Data 3 bulan | Beranda, grafik, Pesanan Masuk |
+| Akun | Nomor | Isi | Dipakai untuk |
+|---|---|---|---|
+| **Kosong** | `081200000002` | Belum ada data sama sekali | Menunjukkan onboarding dari nol — **ini yang paling berkesan**, karena juri melihat temuan pertama muncul dalam 90 detik |
+| **Terisi** | `081200000001` | Data 3 bulan | Beranda, daftar produk, Pesanan Masuk |
+
+OTP untuk keduanya selalu `123456`.
 
 **Jujur saja bahwa data historisnya disiapkan.** Juri menilai alur, bukan keaslian data seed. Berpura-pura data itu asli adalah risiko tanpa imbalan.
+
+### Cara menyiapkan
+
+```bash
+cd backend
+npm run dev        # biarkan jalan di terminal lain
+npm run demo       # sekali saja
+```
+
+Skripnya menolak jalan dua kali supaya produk tidak tergandakan. Kalau perlu
+mengulang dari nol: hentikan server dengan **Ctrl+C** (jangan dimatikan paksa —
+lihat [backend/CLAUDE.md](../backend/CLAUDE.md)), hapus `backend/db/data`,
+nyalakan lagi, jalankan `npm run demo`.
+
+Skrip ini memasukkan data lewat **API yang sama dengan pengguna asli**, bukan
+`INSERT` langsung. Artinya seed tidak bisa menciptakan keadaan yang aplikasinya
+sendiri tidak bisa hasilkan — dan bug yang cuma muncul saat ada isi akan
+ketahuan sekarang, bukan di panggung.
+
+Kalimat untuk mengakuinya ke juri, sebelum ditanya:
+
+> "Data tiga bulannya kami siapkan lewat skrip, dan skripnya masuk lewat API yang sama dengan pengguna biasa. Yang tidak kami siapkan adalah angkanya — omzet, untung, dan margin di layar itu semuanya dihitung SQL dari data ini, sama persis seperti kalau pedagangnya sendiri yang mencatat."
 
 ## Skrip demo 2 menit
 
@@ -15,25 +39,35 @@
 
 ```
 Omzet          Rp 4.200.000
-Untung bersih  Rp   380.000
+Untung bersih  Rp   268.000
 ```
 
 Dua angka bersebelahan. Diam sebentar, biarkan selisihnya terbaca sendiri.
 
 > "Ini yang dikira untung. Ini yang sebenarnya untung."
 
-### 2. Foto buku asli dari pasar
+Angka itu bukan contoh — itu yang benar-benar keluar dari `GET /beranda` setelah
+`npm run demo`. Kalau berubah, yang salah adalah dokumen ini, bukan aplikasinya.
 
-Pakai foto **asli** hasil riset pedagang, bukan buku yang ditulis rapi khusus untuk demo.
+### 2. Catat penjualan dengan suara
+
+Tekan tombol suara, ucapkan seperti pedagang bicara:
+
+> "Hari ini kripik pisang laku sepuluh, kacang telur lima belas."
 
 ```
-→ 11 baris masuk
-→ 2 ditandai untuk dicek
+→ baris usulan muncul di layar konfirmasi
+→ yang tidak cocok meyakinkan ditandai untuk dicek
 ```
 
-Dua baris yang ditandai itu **bukan kelemahan — itu fiturnya.** Tunjukkan dengan sengaja:
+**Tidak ada yang tersimpan sampai tombol simpan ditekan.** Tunjukkan itu dengan sengaja:
 
-> "Yang AI tidak yakin, kami tandai. Tidak ada yang tersimpan diam-diam."
+> "Yang AI tidak yakin, kami tandai. Dan sampai detik ini belum ada satu pun yang masuk ke database — hasil AI selalu lewat mata manusia dulu."
+
+**Opsional, kalau waktu dan jaringan mengizinkan: foto buku.** Layar konfirmasinya
+sama persis dengan yang barusan, jadi ini menambah satu jalan masuk, bukan alur
+baru. Baca dulu batasannya di bagian tanya jawab di bawah — jangan janjikan lebih
+dari yang bisa ditunjukkan.
 
 ### 3. Detail produk — kripik pisang
 
@@ -49,11 +83,18 @@ Jual    Rp 20.000
 
 Tempel pesan asli dari pembeli.
 
+Teks yang dipakai:
+
+> "Bu, saya mau pesan kripik pisang 20 bungkus buat hari sabtu. Bisa Rp 18.000 saja per bungkus?"
+
 ```
-⚠ Harga yang diminta Rp 18.000 di bawah modal Rp 21.200
-  — rugi Rp 24.000 untuk pesanan ini
-⚠ Bahan hanya cukup untuk 14 bungkus dari 20 yang dipesan
+⚠ Harga Rp 18.000 di bawah modal Rp 21.200
+  — rugi Rp 64.000 untuk pesanan ini
+⚠ Bahan hanya cukup untuk 14 dari 20 yang dipesan
 ```
+
+Kedua kalimat itu keluar apa adanya dari `POST /pesanan/analisis` pada akun demo —
+angkanya dari SQL, bukan dari LLM.
 
 > "Dan dia tahu ini **sebelum** menerima pesanannya, bukan setelahnya."
 
@@ -119,10 +160,23 @@ Jawab ini **sebelum ditanya**, saat melewati layar login. Mengakui lebih dulu ja
 
 > "Ada tiga jalan masuk yang setara: foto, suara, dan ketik manual. Ketik manual bukan cadangan kelas dua — itu lantai dasar yang menahan semuanya. Dan yang AI tidak yakin selalu ditandai untuk dicek, tidak pernah disimpan diam-diam."
 
+### "Kenapa demonya pakai suara, bukan foto?"
+
+Ini pertanyaan yang paling mungkin muncul, dan jawabannya justru memperkuat aturan #8 — **kalau ragu, bertanya, jangan menebak.**
+
+> "Karena kami mengukurnya, dan model vision yang tersedia untuk kami belum lolos. Kami uji baca tabel tulisan tangan 29 baris: kolomnya bergeser, kolom saldo dikarang — dan yang paling berbahaya, model melaporkan yakin 100% untuk setiap baris yang salah itu. Kami uji lagi dengan empat baris saja, tetap salah. Kegagalan 'tidak terbaca' aman, karena akan ditandai dan diperiksa manusia. Kegagalan 'salah tapi yakin' lolos ke database dan merusak semua perhitungan di atasnya — persis hal yang kami janjikan tidak terjadi. Jadi foto kami turunkan jadi jalur opsional sampai skor keyakinannya bisa dipercaya, dan suara yang jadi jalur utama. Layar konfirmasinya sama."
+
+Hasil pengukurannya ada di [backend/spike/README.md](../backend/spike/README.md).
+
+Kalau ditanya lanjutan **"jadi fitur intinya gagal?"**:
+
+> "Tesis produk kami bukan 'kami bisa membaca foto'. Tesisnya 'pedagang tidak tahu untung sebenarnya, dan kami bisa memberitahunya dari catatan yang sudah dia punya'. Foto adalah jalan tercepat ke sana, bukan satu-satunya. Suara dan ketik manual sampai ke angka yang sama persis, lewat layar konfirmasi yang sama persis."
+
 ## Sebelum naik panggung
 
-- [ ] Kedua akun demo sudah disiapkan dan sudah dites
-- [ ] Foto buku asli sudah ada di perangkat, siap dipilih
+- [ ] `npm run demo` sudah dijalankan, dan angka Beranda cocok dengan yang tertulis di atas
+- [ ] Sudah login ke kedua akun dari HP yang akan dipakai — jangan pertama kali di panggung
+- [ ] Kalimat suara sudah dilatih, dan hasilnya benar di HP itu (Web Speech butuh izin mikrofon)
 - [ ] Teks pesanan asli sudah siap disalin
 - [ ] Alur demo dilatih minimal 3 kali, dari layar sambutan sampai penutup
 - [ ] Dua orang bisa menjawab semua pertanyaan di atas tanpa membuka kode
