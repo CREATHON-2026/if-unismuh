@@ -57,6 +57,50 @@ Saat `ekstraksi.status` jadi `dikonfirmasi`: hapus berkasnya, kosongkan `path_be
 
 `GEMINI_API_KEY` tidak pernah masuk kode, tidak pernah dikirim ke frontend. Semua panggilan Gemini terjadi di sini.
 
+## Struktur
+
+Disusun **per fitur**, bukan per lapisan. Buka satu folder modul, lihat semua
+yang berhubungan dengan domain itu.
+
+```
+src/
+  config/env.ts        satu-satunya tempat yang membaca process.env
+  db/index.ts          koneksi + helper query (query, satu, transaksiDb)
+  lib/                 http, token, nomor — dipakai lintas modul
+  middleware/          wajibLogin, tangkapGalat
+  modules/
+    auth/              auth.routes.ts   auth.queries.ts
+    onboarding/        onboarding.routes.ts   onboarding.queries.ts
+  server.ts            rakit app, periksa env, nyalakan
+db/schema.sql          tabel + view. Semua rumus hidup di sini
+```
+
+### Aturan yang membuat struktur ini ada gunanya
+
+**Semua SQL satu domain hidup di `*.queries.ts` domain itu. Tidak ada SQL di
+dalam route handler.**
+
+Ini bukan soal kerapian. Begitu ada modul produk, beranda, transaksi, dan
+pesanan, SQL yang tersebar akan membuat seseorang menulis rumus margin kedua di
+tempat lain — dan dua rumus yang berbeda tidak akan menghasilkan pesan galat,
+cuma angka yang salah. Satu berkas per domain membuat duplikasi itu terlihat.
+
+Route handler hanya boleh: memvalidasi masukan, memanggil query, mengirim
+jawaban. Kalau sebuah handler punya `SELECT` di dalamnya, itu tanda ada yang
+salah tempat.
+
+**Dan rumus finansial tidak hidup di `*.queries.ts` sekalipun** — semuanya ada
+di view SQL (`v_modal_produk`, `v_margin_produk`). Berkas query hanya membaca
+view itu.
+
+### Menambah modul baru
+
+1. Buat `src/modules/<nama>/<nama>.queries.ts` — semua SQL domain itu
+2. Buat `src/modules/<nama>/<nama>.routes.ts` — validasi + panggil query
+3. Daftarkan di `server.ts`
+4. Kalau butuh rumus finansial baru, tambahkan **view** di `db/schema.sql`,
+   jangan hitung di TypeScript
+
 ## Menjalankan
 
 ```bash

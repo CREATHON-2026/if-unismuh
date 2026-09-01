@@ -1,44 +1,46 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { DATABASE_URL, MODE_DB } from '../config/env.ts';
 
 /**
- * Dua mode database, dipilih otomatis:
+ * Dua mode database, dipilih otomatis dari DATABASE_URL:
  *
- *   DATABASE_URL diisi  -> PostgreSQL sungguhan lewat paket `pg`
- *   DATABASE_URL kosong -> PGlite: PostgreSQL asli yang dikompilasi ke WASM
- *                          dan jalan di dalam proses Node ini
+ *   diisi  -> PostgreSQL sungguhan lewat paket `pg`
+ *   kosong -> PGlite: PostgreSQL asli yang dikompilasi ke WASM dan jalan
+ *             di dalam proses Node ini
  *
  * PGlite dipakai supaya tiga orang bisa langsung `npm install && npm run dev`
  * tanpa memasang PostgreSQL, tanpa Docker, dan tanpa saling menebak password.
- * SQL-nya sama persis, jadi pindah ke PostgreSQL sungguhan cukup mengisi
- * DATABASE_URL — tidak ada satu baris query pun yang berubah.
+ * SQL-nya sama persis, jadi pindah ke PostgreSQL sungguhan cukup mengisi satu
+ * variabel — tidak ada satu baris query pun yang berubah.
  */
 
+// Skema dan data ada di backend/db/, bukan di dalam src/ — itu konvensi
+// yang lazim untuk migrasi, dan docker-compose.yml juga menunjuk ke sana.
 const DIR = path.dirname(fileURLToPath(import.meta.url));
-const SCHEMA = path.join(DIR, '..', 'db', 'schema.sql');
-const DATA_DIR = path.join(DIR, '..', 'db', 'data');
+const DB_DIR = path.join(DIR, '..', '..', 'db');
+const SCHEMA = path.join(DB_DIR, 'schema.sql');
+const DATA_DIR = path.join(DB_DIR, 'data');
 
 /** Antarmuka minimal yang dipenuhi kedua mode. */
-interface Pelaksana {
+export interface Pelaksana {
   query(sql: string, params?: unknown[]): Promise<{ rows: any[] }>;
 }
 
 let db: Pelaksana;
 let jalankanTransaksi: <T>(fn: (c: Pelaksana) => Promise<T>) => Promise<T>;
 
-export const MODE_DB = process.env.DATABASE_URL ? 'postgres' : 'pglite';
-
 export async function siapkanDb(): Promise<void> {
-  if (process.env.DATABASE_URL) {
+  if (MODE_DB === 'postgres') {
     const pg = (await import('pg')).default;
-    // pg mengembalikan NUMERIC dan BIGINT sebagai string supaya presisinya tidak
-    // hilang. Untuk lapakAi itu menyusahkan: semua uang kita INTEGER, dan kolom
-    // NUMERIC yang tersisa nilainya kecil dan aman jadi number.
+    // pg mengembalikan NUMERIC dan BIGINT sebagai string supaya presisinya
+    // tidak hilang. Untuk lapakAi itu menyusahkan: semua uang kita INTEGER,
+    // dan kolom NUMERIC yang tersisa nilainya kecil dan aman jadi number.
     pg.types.setTypeParser(pg.types.builtins.NUMERIC, (v) => (v === null ? null : Number(v)));
     pg.types.setTypeParser(pg.types.builtins.INT8, (v) => (v === null ? null : Number(v)));
 
-    const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 10 });
+    const pool = new pg.Pool({ connectionString: DATABASE_URL, max: 10 });
     db = pool;
     jalankanTransaksi = async (fn) => {
       const client = await pool.connect();
