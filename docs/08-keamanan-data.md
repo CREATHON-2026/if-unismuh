@@ -69,6 +69,33 @@ Ini pertanyaan yang mungkin muncul di sesi tanya jawab, dan jawaban yang sudah s
 
 Implementasinya: saat `ekstraksi.status` berubah jadi `dikonfirmasi`, berkasnya dihapus dan `path_berkas` dikosongkan. Lihat [05-model-data.md](05-model-data.md).
 
+## Membaca WhatsApp — dan batasnya
+
+Pesanan Masuk bisa membaca pesan pembeli langsung dari WhatsApp pedagang, lewat sesi **hanya-baca**. Ini menimbulkan dua kewajiban yang tidak boleh dilewati.
+
+### Kredensial sesi lebih sensitif daripada foto buku
+
+Auth state memegang akses penuh ke WhatsApp pedagang. Disimpan di `backend/db/baileys-auth/`, **wajib ada di `.gitignore`**, dan tidak pernah keluar dari mesin yang menjalankan backend.
+
+### Pembeli tidak pernah setuju datanya diproses
+
+Menempel manual berarti pedagang **memilih** apa yang diproses. Membaca inbox otomatis berarti menelan **semuanya** — termasuk chat keluarga, teman, dan orang yang sama sekali bukan pembeli. Mereka tidak pernah menyetujui apa pun.
+
+Karena itu penyaringannya ketat:
+
+| Aturan | Alasan |
+|---|---|
+| Hanya pesan pribadi | Grup dan status broadcast diabaikan |
+| Hanya teks | Media, dokumen, dan suara tidak disentuh |
+| Bukan pesanan → **dibuang** | Teksnya tidak disimpan sama sekali, tidak masuk daftar |
+| Nomor pengirim **empat digit terakhir saja** | Pedagang cukup butuh mengenali percakapan; kita tidak perlu menyimpan identitas orang lain |
+
+Nomor lengkap memang tidak diperlukan, karena sistem tidak pernah membalas sendiri — pedagang membalas dari WhatsApp-nya, tempat percakapan itu sudah ada.
+
+### Sistem tetap tidak pernah mengirim
+
+Aturan #4 ditegakkan **struktur, bukan janji**: socket WhatsApp disimpan privat dan modulnya tidak mengekspor apa pun yang bisa mengirim. Yang tidak ada tidak bisa dipanggil.
+
 ## Kunci API
 
 `GEMINI_API_KEY` dan kredensial lain:

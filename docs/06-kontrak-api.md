@@ -191,11 +191,16 @@ Menerima teks yang ditempel dari chat pembeli.
 
 // jawaban
 { "ok": true, "data": {
+    "pesan_id": 12,
     "jenis": "menawar",
     "produk": { "id": 1, "nama": "Kripik Pisang" },
+    "nama_produk_mentah": "kripik pisang",
     "jumlah": 20,
     "harga_diminta": 18000,
     "tanggal_dibutuhkan": "2026-09-06",
+
+    "perlu_dicek": false,
+    "kandidat": [],
 
     "nilai_pesanan": 360000,
     "untung_pesanan": -64000,
@@ -205,13 +210,38 @@ Menerima teks yang ditempel dari chat pembeli.
     "stok_kurang": true,
 
     "peringatan": [
-      "Harga yang diminta Rp 18.000 di bawah modal Rp 21.200 — rugi Rp 24.000 untuk pesanan ini",
-      "Bahan hanya cukup untuk 14 bungkus dari 20 yang dipesan"
+      "Harga Rp 18.000 di bawah modal Rp 21.200 — rugi Rp 64.000 untuk pesanan ini.",
+      "Bahan hanya cukup untuk 14 dari 20 yang dipesan."
     ]
 } }
 ```
 
 Semua angka di sini dihitung SQL. `peringatan` sudah berupa kalimat siap tampil.
+
+| Field | Catatan |
+|---|---|
+| `jenis` | `pesanan` · `tanya_harga` · `menawar` · `bukan_pesanan` |
+| `pesan_id` | **`null` kalau `bukan_pesanan`** — pesannya sengaja tidak disimpan |
+| `perlu_dicek` | `true` kalau pencocokan nama produk tidak meyakinkan. Tampilkan `kandidat` dan minta pengguna memilih |
+| `stok_cukup_untuk` | **`null` berarti stok belum dicatat**, bukan berarti nol. Jangan tampilkan sebagai "cukup 0" |
+| `untung_pesanan` | `null` kalau resep produk belum diisi — modal belum bisa dihitung |
+
+Kalau pesannya `bukan_pesanan`, semua field lain `null` dan `peringatan` kosong.
+
+### `GET /pesanan`
+Daftar pesanan masuk terbaru, lengkap dengan angka yang sudah dihitung SQL. Pesan yang bukan pesanan tidak pernah muncul di sini.
+
+### `GET /whatsapp/status`
+```json
+{ "ok": true, "data": { "status": "terputus", "qr": null, "hanya_baca": true, "alasan": null } }
+```
+
+`status`: `terputus` · `menunggu_qr` · `menyambung` · `tersambung`. Saat `menunggu_qr`, field `qr` berisi string QR untuk ditampilkan.
+
+`hanya_baca` selalu `true` — sistem tidak punya jalur mengirim sama sekali.
+
+### `POST /whatsapp/hubungkan`
+Memulai sesi baca. **Opsional.** Kalau tidak pernah dipanggil atau sesinya putus, Pesanan Masuk tetap berfungsi penuh lewat tempel manual.
 
 ### `POST /pesanan/balasan`
 ```json
