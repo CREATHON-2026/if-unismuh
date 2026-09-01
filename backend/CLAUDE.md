@@ -57,6 +57,89 @@ Saat `ekstraksi.status` jadi `dikonfirmasi`: hapus berkasnya, kosongkan `path_be
 
 `GEMINI_API_KEY` tidak pernah masuk kode, tidak pernah dikirim ke frontend. Semua panggilan Gemini terjadi di sini.
 
+## Struktur
+
+Disusun **per fitur**, bukan per lapisan. Buka satu folder modul, lihat semua
+yang berhubungan dengan domain itu.
+
+```
+src/
+  config/env.ts        satu-satunya tempat yang membaca process.env
+  db/index.ts          koneksi + helper query (query, satu, transaksiDb)
+  lib/                 http, token, nomor — dipakai lintas modul
+  middleware/          wajibLogin, tangkapGalat
+  modules/
+    auth/              auth.routes.ts   auth.queries.ts
+    onboarding/        onboarding.routes.ts   onboarding.queries.ts
+  server.ts            rakit app, periksa env, nyalakan
+db/schema.sql          tabel + view. Semua rumus hidup di sini
+```
+
+### Aturan yang membuat struktur ini ada gunanya
+
+**Semua SQL satu domain hidup di `*.queries.ts` domain itu. Tidak ada SQL di
+dalam route handler.**
+
+Ini bukan soal kerapian. Begitu ada modul produk, beranda, transaksi, dan
+pesanan, SQL yang tersebar akan membuat seseorang menulis rumus margin kedua di
+tempat lain — dan dua rumus yang berbeda tidak akan menghasilkan pesan galat,
+cuma angka yang salah. Satu berkas per domain membuat duplikasi itu terlihat.
+
+Route handler hanya boleh: memvalidasi masukan, memanggil query, mengirim
+jawaban. Kalau sebuah handler punya `SELECT` di dalamnya, itu tanda ada yang
+salah tempat.
+
+**Dan rumus finansial tidak hidup di `*.queries.ts` sekalipun** — semuanya ada
+di view SQL (`v_modal_produk`, `v_margin_produk`). Berkas query hanya membaca
+view itu.
+
+### Menambah modul baru
+
+1. Buat `src/modules/<nama>/<nama>.queries.ts` — semua SQL domain itu
+2. Buat `src/modules/<nama>/<nama>.routes.ts` — validasi + panggil query
+3. Daftarkan di `server.ts`
+4. Kalau butuh rumus finansial baru, tambahkan **view** di `db/schema.sql`,
+   jangan hitung di TypeScript
+
+## Menjalankan
+
+```bash
+npm install
+npm run dev            # tsx watch, port 3000
+node scripts/uji-alur.mjs   # uji asap: login -> onboarding -> temuan pertama
+```
+
+Tidak perlu memasang PostgreSQL dan tidak perlu Docker. Kalau `DATABASE_URL`
+kosong, backend memakai **PGlite** — PostgreSQL asli yang dikompilasi ke WASM
+dan jalan di dalam proses Node. Datanya di `backend/db/data/` (ter-gitignore).
+
+Mau pakai PostgreSQL sungguhan? Isi `DATABASE_URL` di `.env` akar repo. Tidak
+ada satu baris query pun yang berubah.
+
+### Hentikan dengan Ctrl+C, jangan dimatikan paksa
+
+Server menutup database dengan rapi saat menerima SIGINT/SIGTERM. Ctrl+C aman.
+
+**Yang tidak aman: `Stop-Process -Force`, Task Manager, atau `kill -9`.** SIGKILL
+tidak bisa ditangkap siapa pun, jadi PGlite tidak sempat menutup berkasnya dan
+direktori datanya rusak.
+
+### Kalau server gagal start dengan `RuntimeError: Aborted()`
+
+Itu gejalanya. Yang bisa dilakukan hanya menghapus datanya:
+
+```bash
+rm -rf backend/db/data     # dibuat ulang beserta skemanya saat start
+```
+
+Sebelum menghapus, pastikan dulu **tidak ada proses lain yang masih memegangnya** —
+PGlite satu-proses, dan dua server yang menunjuk direktori data yang sama juga
+menghasilkan galat yang sama persis:
+
+```powershell
+(Get-NetTCPConnection -LocalPort 3000 -State Listen).OwningProcess
+```
+
 ## Uang sebagai integer
 
 Rupiah disimpan dan dihitung sebagai **integer**, bukan float. `20000`, bukan `20000.00`.

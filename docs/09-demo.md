@@ -87,7 +87,19 @@ Latih sampai jawabannya keluar tanpa berpikir. Jawaban yang tergagap membuat ars
 
 ### "Kenapa tidak tersambung ke WhatsApp?"
 
-> "Tiga alasan. Pertama, sistem yang bisa mengirim pesan atas nama pedagang ke pelanggannya adalah sistem yang bisa mempermalukan dia — reputasinya ada di chat itu. Kedua, integrasi WhatsApp punya titik gagal di luar kendali kami. Ketiga, tempel manual sudah menyelesaikan masalah sebenarnya: pedagang tahu untung-ruginya sebelum membalas. Ini keputusan desain, bukan keterbatasan."
+> "Kami **membaca**, tapi tidak pernah **mengirim** — dan itu dua hal yang sangat berbeda. Sesi WhatsApp kami hanya-baca, dan itu ditegakkan di struktur kode: socket-nya privat, modulnya tidak mengekspor apa pun yang bisa mengirim. Alasannya, sistem yang bisa mengirim atas nama pedagang ke pelanggannya adalah sistem yang bisa mempermalukan dia — reputasinya ada di chat itu. Balasan tetap disalin dan dikirim pedagang sendiri."
+
+Kalau ditanya lanjutan **"kenapa tidak semua pedagang tersambung otomatis?"**:
+
+> "Karena menyambungkan butuh memindai QR dari menu Perangkat Tertaut, dan pengguna kami berusia 35–60 dengan literasi digital rendah. Seluruh produk ini ada untuk menghapus friksi semacam itu. Jadi tempel manual tetap jalur utamanya, dan WhatsApp cuma jalan pintas untuk yang mau. Kalau sesinya putus, HP-nya mati, atau nomornya bermasalah, Pesanan Masuk tetap berfungsi penuh."
+
+### "Aplikasi kalian membaca semua WhatsApp pedagang?"
+
+> "Tidak. Grup, status, dan media diabaikan — hanya pesan teks pribadi yang dibaca. Dan pesan yang ternyata bukan pesanan langsung dibuang, teksnya tidak kami simpan sama sekali. Nomor pengirim pun cuma kami simpan empat digit terakhir, karena pedagang hanya perlu mengenali percakapannya, bukan kami menyimpan identitas pelanggannya."
+
+### "OTP-nya di produksi bagaimana?"
+
+> "WhatsApp Cloud API resmi sebagai utama, SMS sebagai cadangan. Kami pilih WhatsApp karena pedagang kami semuanya lancar WhatsApp, tapi SMS jadi jaring pengaman untuk nomor yang tidak punya. Yang jelas tidak kami pakai adalah pustaka tidak resmi untuk mengirim OTP — pola pengiriman OTP persis memicu deteksi ban WhatsApp: nol balasan, selalu ke nomor asing, timing robotik."
 
 ### "Kenapa web, bukan aplikasi Android?"
 

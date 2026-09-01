@@ -57,6 +57,22 @@ Authorization: Bearer <token>
 
 `pengguna_baru` menentukan apakah frontend mengarahkan ke onboarding atau langsung ke Beranda.
 
+### `GET /auth/saya`
+**Dipanggil setiap aplikasi dibuka**, dengan token dari `localStorage`.
+
+```json
+{ "ok": true, "data": {
+    "pengguna": { "id": 1, "nomor_hp": "081234567890",
+                  "nama_usaha": "Warung Bu Sari", "jenis_usaha": "makanan" },
+    "pengguna_baru": false,
+    "token": "..."
+} }
+```
+
+Menjawab tiga hal sekaligus: tokennya masih sah atau tidak (`401` kalau tidak), penggunanya siapa, dan sudah selesai onboarding atau belum.
+
+**`token` yang dikembalikan adalah token BARU.** Simpan menimpa yang lama — sesinya diperpanjang tiap kali aplikasi dibuka, supaya pedagang yang membuka aplikasi seminggu sekali tidak pernah kehabisan sesi. Sesi pendek membunuh retensi; lihat [08-keamanan-data.md](08-keamanan-data.md).
+
 ## Onboarding
 
 ### `POST /onboarding/usaha`
@@ -94,14 +110,50 @@ Frontend **tidak** menghitung `20000 - 21200`. Backend yang mengirim `margin_per
 ## Beranda
 
 ### `GET /beranda?dari=2026-08-01&sampai=2026-08-31`
+Tanpa parameter, bawaannya **bulan berjalan** — pemilih tanggal adalah friksi untuk pengguna 35–60 tahun.
+
 ```json
 { "ok": true, "data": {
     "omzet": 4200000,
     "untung_bersih": 380000,
+    "ada_transaksi": true,
+    "baris_tanpa_modal": 0,
     "jumlah_produk_merugi": 2,
     "produk_paling_merugi": { "nama": "Kripik Pisang", "margin_per_unit": -1200 }
 } }
 ```
+
+| Field | Catatan |
+|---|---|
+| `ada_transaksi` | `false` → tampilkan ajakan mencatat, **jangan** tampilkan angka nol sebagai hasil |
+| `jumlah_produk_merugi` · `produk_paling_merugi` | **Terisi meski `ada_transaksi` false.** Dihitung dari resep, bukan penjualan |
+| `baris_tanpa_modal` | Penjualan yang untungnya belum bisa dihitung. Sudah masuk `omzet`, **tidak** masuk `untung_bersih`. Kalau > 0, beri tahu penggunanya |
+
+**Beranda kosong tetap punya isi.** Setelah onboarding, pengguna mendarat di sini dengan nol transaksi — tapi temuan produknya sudah ada. Pimpin dengan "1 produk Anda merugi", jangan dengan Rp 0; momentum dari momen "RUGI Rp 1.200" tidak boleh putus.
+
+**Kenapa `omzet` dan `untung_bersih` bisa tidak sebanding.** Uang masuk selalu diketahui, jadi omzet menghitung semua penjualan. Untung hanya menghitung penjualan yang modal produknya diketahui. Selisihnya dilaporkan lewat `baris_tanpa_modal` — bukan disembunyikan dengan membuang barisnya dari omzet juga.
+
+### `POST /transaksi`
+Fitur 3 — ketik manual. **Banyak baris sekaligus**, bentuknya sama dengan layar konfirmasi foto supaya komponen barisnya bisa dipakai untuk keduanya.
+
+```json
+// permintaan — tanggal boleh dikosongkan (dipakai hari ini)
+{ "tanggal": "2026-09-01",
+  "baris": [
+    { "produk_id": 1, "jumlah": 10 },
+    { "produk_id": 2, "jumlah": 5, "harga_satuan": 15000 }
+  ] }
+
+// jawaban
+{ "ok": true, "data": { "tersimpan": 2 } }
+```
+
+- `harga_satuan` boleh dikosongkan → dipakai harga jual produk yang tersimpan
+- **Semua baris masuk atau tidak sama sekali.** Kalau satu baris ditolak, tidak ada yang tersimpan — setengah tercatat lebih buruk daripada gagal, karena pedagang akan mengira semuanya masuk
+- Tidak lewat layar konfirmasi: aturan #2 mengatur hasil AI, sedangkan yang diketik manusia sudah dikonfirmasi saat diketik
+
+### `GET /transaksi?dari=&sampai=`
+Daftar transaksi beserta nama produknya. Bawaannya bulan berjalan.
 
 ## Produk
 
@@ -175,11 +227,16 @@ Menerima teks yang ditempel dari chat pembeli.
 
 // jawaban
 { "ok": true, "data": {
+    "pesan_id": 12,
     "jenis": "menawar",
     "produk": { "id": 1, "nama": "Kripik Pisang" },
+    "nama_produk_mentah": "kripik pisang",
     "jumlah": 20,
     "harga_diminta": 18000,
     "tanggal_dibutuhkan": "2026-09-06",
+
+    "perlu_dicek": false,
+    "kandidat": [],
 
     "nilai_pesanan": 360000,
     "untung_pesanan": -64000,
@@ -189,13 +246,38 @@ Menerima teks yang ditempel dari chat pembeli.
     "stok_kurang": true,
 
     "peringatan": [
-      "Harga yang diminta Rp 18.000 di bawah modal Rp 21.200 — rugi Rp 24.000 untuk pesanan ini",
-      "Bahan hanya cukup untuk 14 bungkus dari 20 yang dipesan"
+      "Harga Rp 18.000 di bawah modal Rp 21.200 — rugi Rp 64.000 untuk pesanan ini.",
+      "Bahan hanya cukup untuk 14 dari 20 yang dipesan."
     ]
 } }
 ```
 
 Semua angka di sini dihitung SQL. `peringatan` sudah berupa kalimat siap tampil.
+
+| Field | Catatan |
+|---|---|
+| `jenis` | `pesanan` · `tanya_harga` · `menawar` · `bukan_pesanan` |
+| `pesan_id` | **`null` kalau `bukan_pesanan`** — pesannya sengaja tidak disimpan |
+| `perlu_dicek` | `true` kalau pencocokan nama produk tidak meyakinkan. Tampilkan `kandidat` dan minta pengguna memilih |
+| `stok_cukup_untuk` | **`null` berarti stok belum dicatat**, bukan berarti nol. Jangan tampilkan sebagai "cukup 0" |
+| `untung_pesanan` | `null` kalau resep produk belum diisi — modal belum bisa dihitung |
+
+Kalau pesannya `bukan_pesanan`, semua field lain `null` dan `peringatan` kosong.
+
+### `GET /pesanan`
+Daftar pesanan masuk terbaru, lengkap dengan angka yang sudah dihitung SQL. Pesan yang bukan pesanan tidak pernah muncul di sini.
+
+### `GET /whatsapp/status`
+```json
+{ "ok": true, "data": { "status": "terputus", "qr": null, "hanya_baca": true, "alasan": null } }
+```
+
+`status`: `terputus` · `menunggu_qr` · `menyambung` · `tersambung`. Saat `menunggu_qr`, field `qr` berisi string QR untuk ditampilkan.
+
+`hanya_baca` selalu `true` — sistem tidak punya jalur mengirim sama sekali.
+
+### `POST /whatsapp/hubungkan`
+Memulai sesi baca. **Opsional.** Kalau tidak pernah dipanggil atau sesinya putus, Pesanan Masuk tetap berfungsi penuh lewat tempel manual.
 
 ### `POST /pesanan/balasan`
 ```json

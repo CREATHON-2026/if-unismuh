@@ -16,6 +16,10 @@ Thumbs.db
 node_modules/
 vendor/
 
+# Hasil spike dan foto uji: bahan mentah lokal, bukan sumber kebenaran
+backend/spike/hasil-mentah.json
+foto/
+
 # Build output
 dist/
 build/
@@ -36,3 +40,9 @@ graphify-out/.graphify_root
 graphify-out/cost.json
 # graphify: penanda waktu query terakhir, berubah tiap kali siapa pun bertanya
 graphify-out/cache/last_query_stamp
+
+# PGlite: berkas database lokal, bukan sumber kebenaran
+backend/db/data/
+
+# Baileys: kredensial sesi WhatsApp pedagang — LEBIH sensitif daripada foto buku
+backend/db/baileys-auth/
