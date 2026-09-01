@@ -70,8 +70,8 @@
     "semantic_hash": "930fe47eeb71acda303705152a75a342"
   },
   "docs/06-kontrak-api.md": {
-    "mtime": 1788290984.2201068,
-    "ast_hash": "f27ce49549059ce1373488c370e61bb4",
+    "mtime": 1788298058.6405647,
+    "ast_hash": "fa0ac02b3feaafae5e7dafd7f9492377",
     "semantic_hash": ""
   },
   "docs/07-alur-pengguna.md": {
@@ -245,13 +245,13 @@
     "semantic_hash": ""
   },
   "backend/src/modules/produk/produk.queries.ts": {
-    "mtime": 1788290994.1489303,
-    "ast_hash": "706268455f817909abf6434c8a7c8a37",
+    "mtime": 1788297589.8262963,
+    "ast_hash": "c0e8f51e56254d40f756854d7942d280",
     "semantic_hash": ""
   },
   "backend/src/modules/produk/produk.routes.ts": {
-    "mtime": 1788291072.172058,
-    "ast_hash": "b430d0b30dcba4d33dee3863dd813016",
+    "mtime": 1788297643.9823396,
+    "ast_hash": "19e48910dd5cd69490e482507720f841",
     "semantic_hash": ""
   },
   "backend/src/modules/stok/stok.queries.ts": {
@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "shared/types.ts": {
-    "mtime": 1788290984.2151062,
-    "ast_hash": "cb803342adafd22e213e78f58d1604e7",
+    "mtime": 1788297936.6461802,
+    "ast_hash": "d1a4ef8e0e38f9ebd73005326228bfe5",
     "semantic_hash": ""
   },
   "backend/spike/README.md": {
@@ -350,8 +350,8 @@
     "semantic_hash": ""
   },
   "frontend/src/api/client.ts": {
-    "mtime": 1788291003.8192692,
-    "ast_hash": "8339577ea2eadc7c750713b12056e8e7",
+    "mtime": 1788297953.0288503,
+    "ast_hash": "9c0718c0e51a240e111b9ed9514c0a1e",
     "semantic_hash": ""
   },
   "frontend/src/api/sesi.ts": {
@@ -405,8 +405,8 @@
     "semantic_hash": ""
   },
   "frontend/src/screens/Beranda.tsx": {
-    "mtime": 1788296486.205831,
-    "ast_hash": "00610289d242b152ee6135236378baa6",
+    "mtime": 1788296997.409999,
+    "ast_hash": "bf74a1acc4ecad4e558e4b55521ec1aa",
     "semantic_hash": ""
   },
   "frontend/src/screens/CatatSuara.tsx": {
@@ -420,8 +420,8 @@
     "semantic_hash": ""
   },
   "frontend/src/screens/DetailProduk.tsx": {
-    "mtime": 1788296486.2068324,
-    "ast_hash": "e79ce981b21c3c41c345bc158125a238",
+    "mtime": 1788298006.7504597,
+    "ast_hash": "c319d54d9938b12edd93d018d9e90a1b",
     "semantic_hash": ""
   },
   "frontend/src/screens/InfoWhatsApp.tsx": {
@@ -680,8 +680,8 @@
     "semantic_hash": ""
   },
   "backend/src/modules/produk/produk.controller.ts": {
-    "mtime": 1788291071.6587422,
-    "ast_hash": "c35689ddb2311344e9f44b443de946c0",
+    "mtime": 1788297625.719374,
+    "ast_hash": "a75c16e7a846a0f7c1d68d54d70d6c3a",
     "semantic_hash": ""
   },
   "backend/src/modules/produk/produk.llm.ts": {
@@ -690,8 +690,8 @@
     "semantic_hash": ""
   },
   "backend/src/modules/produk/produk.service.ts": {
-    "mtime": 1788291071.6444235,
-    "ast_hash": "3955aa21520bf2c463c7ed04b7cf8235",
+    "mtime": 1788297625.719374,
+    "ast_hash": "c4d819545e67199d3c32624e14811d78",
     "semantic_hash": ""
   },
   "backend/src/modules/produk/produk.types.ts": {
@@ -752,6 +752,16 @@
   "frontend/src/components/KeadaanKosong.tsx": {
     "mtime": 1788296441.4774773,
     "ast_hash": "71562fd30ea6d9da52e7d9245866b440",
+    "semantic_hash": ""
+  },
+  "backend/scripts/uji-tenaga.mjs": {
+    "mtime": 1788297545.5282319,
+    "ast_hash": "8b97561442fff6559f9b55499624d4f7",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/KartuTenaga.tsx": {
+    "mtime": 1788297987.1752374,
+    "ast_hash": "937d639899c6a8a3f4c8b5a773b3470a",
     "semantic_hash": ""
   }
 }
