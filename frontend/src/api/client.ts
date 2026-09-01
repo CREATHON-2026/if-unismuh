@@ -11,6 +11,7 @@ import type {
   PermintaanResep,
   DataResep,
   DataEkstraksi,
+  DataPratinjauEkstraksi,
   BarisKonfirmasi,
   DataKonfirmasi,
 } from '@shared/types/api';
@@ -63,36 +64,72 @@ export async function simpanResep(p: PermintaanResep): Promise<JawabanApi<DataRe
 export async function ekstraksiFoto(berkas: File): Promise<JawabanApi<DataEkstraksi>> {
   void berkas;
   await jeda(1200);
-  // Contoh baris dari kontrak: satu yakin, satu perlu dicek.
+  // Contoh baris + subtotal/total dari kontrak — semua angka dihitung backend.
   return {
     ok: true,
     data: {
       ekstraksi_id: 12,
+      total_item: 8,
+      total_belanja: 372500,
       baris: [
         {
           urutan: 1,
-          nama_mentah: 'kripik psg',
-          produk_id: 1,
-          nama_produk: 'Kripik Pisang',
-          jumlah: 10,
-          harga_satuan: 20000,
+          nama_mentah: 'indomie grg 2 krtn',
+          produk_id: 11,
+          nama_produk: 'Indomie Goreng (Karton)',
+          jumlah: 2,
+          harga_satuan: 105000,
+          subtotal: 210000,
           tanggal: '2026-09-01',
-          keyakinan: 0.94,
+          keyakinan: 0.95,
           perlu_dicek: false,
         },
         {
           urutan: 2,
-          nama_mentah: 'kacang',
+          nama_mentah: 'gula psr',
           produk_id: null,
-          nama_produk: null,
+          nama_produk: 'Gula Pasir 1kg',
           jumlah: 5,
-          harga_satuan: null,
+          harga_satuan: 17500,
+          subtotal: 87500,
           tanggal: '2026-09-01',
-          keyakinan: 0.41,
+          keyakinan: 0.42,
           perlu_dicek: true,
-          alasan_ragu: 'harga tidak terbaca',
+          alasan_ragu: 'harga tidak terbaca jelas',
+        },
+        {
+          urutan: 3,
+          nama_mentah: 'beras prem 5kg',
+          produk_id: 12,
+          nama_produk: 'Beras Premium 5kg',
+          jumlah: 1,
+          harga_satuan: 75000,
+          subtotal: 75000,
+          tanggal: '2026-09-01',
+          keyakinan: 0.91,
+          perlu_dicek: false,
         },
       ],
+    },
+  };
+}
+
+// Usulan POST /ekstraksi/pratinjau — di backend asli ini query SQL.
+// Perhitungan di bawah hanya pengganti sementara di mock, bukan tugas frontend.
+export async function pratinjauEkstraksi(
+  baris: BarisKonfirmasi[],
+): Promise<JawabanApi<DataPratinjauEkstraksi>> {
+  await jeda(150);
+  const rincian = baris.map((b) => ({
+    urutan: b.urutan,
+    subtotal: (b.jumlah ?? 0) * (b.harga_satuan ?? 0),
+  }));
+  return {
+    ok: true,
+    data: {
+      baris: rincian,
+      total_item: baris.reduce((a, b) => a + (b.jumlah ?? 0), 0),
+      total_belanja: rincian.reduce((a, b) => a + b.subtotal, 0),
     },
   };
 }

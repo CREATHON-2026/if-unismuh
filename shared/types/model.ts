@@ -25,6 +25,7 @@ export interface BarisEkstraksi {
   nama_produk: string | null;
   jumlah: number;
   harga_satuan: number | null;
+  subtotal: number; // dihitung backend (SQL), bukan frontend
   tanggal: string | null; // YYYY-MM-DD
   keyakinan: number; // 0..1, per baris
   perlu_dicek: boolean;

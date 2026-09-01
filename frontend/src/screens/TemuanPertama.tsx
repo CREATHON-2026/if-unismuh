@@ -28,7 +28,7 @@ export function TemuanPertama() {
     const jawaban = await ekstraksiFoto(berkas);
     if (jawaban.ok) {
       tulisEkstraksi(jawaban.data);
-      nav('/konfirmasi');
+      nav('/konfirmasi', { state: { fotoUrl: URL.createObjectURL(berkas) } });
       return;
     }
     setGalat(jawaban.error.pesan);

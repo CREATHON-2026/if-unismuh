@@ -47,6 +47,16 @@ export interface DataResep {
 export interface DataEkstraksi {
   ekstraksi_id: number;
   baris: BarisEkstraksi[];
+  total_item: number;
+  total_belanja: number;
+}
+
+// POST /ekstraksi/pratinjau (usulan frontend) — SQL menghitung ulang subtotal
+// dan total saat pengguna mengubah/menghapus baris di layar konfirmasi.
+export interface DataPratinjauEkstraksi {
+  baris: { urutan: number; subtotal: number }[];
+  total_item: number;
+  total_belanja: number;
 }
 
 // POST /ekstraksi/:id/konfirmasi — hanya baris yang disetujui pengguna.
