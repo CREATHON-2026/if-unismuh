@@ -1,0 +1,10 @@
+# Berkas yang tidak ikut masuk knowledge graph.
+# Tujuannya menjaga graf tetap berisi lapakAi, bukan hal lain.
+
+# Skill graphify yang di-vendor ke repo: itu dokumentasi tooling,
+# bukan dokumentasi proyek. Kalau ikut, graf jadi penuh node soal
+# internal graphify dan menenggelamkan isi lapakAi.
+.claude/skills/
+
+# Contoh konfigurasi, bukan sumber pengetahuan
+.env.example

@@ -1,22 +1,26 @@
 ---
-name: Bug report
-about: Laporkan bug atau perilaku yang tidak sesuai
+name: Laporan bug
+about: Laporkan sesuatu yang tidak berjalan semestinya
 title: "[BUG] "
 labels: bug
 ---
 
-## Deskripsi bug
+## Apa yang terjadi
 
-<!-- Apa yang terjadi -->
+<!-- Ceritakan apa yang kamu lihat -->
 
-## Langkah reproduksi
+## Seharusnya bagaimana
+
+## Langkah untuk memunculkannya lagi
 
 1.
 2.
 3.
 
-## Yang diharapkan
+## Seberapa mengganggu demo
 
-<!-- Seharusnya bagaimana -->
+- [ ] Merusak alur inti — harus diperbaiki sebelum demo
+- [ ] Mengganggu tapi ada jalan lain
+- [ ] Kecil, bisa ditunda
 
-## Screenshot / log (opsional)
+## Screenshot / pesan galat

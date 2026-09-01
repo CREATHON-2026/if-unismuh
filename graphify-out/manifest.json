@@ -1,37 +1,112 @@
 {
   ".claude/settings.json": {
-    "mtime": 1788246606.1330347,
-    "ast_hash": "21aa8feed779526e27ddf46609c4afdb",
-    "semantic_hash": "21aa8feed779526e27ddf46609c4afdb"
+    "mtime": 1788249038.8755822,
+    "ast_hash": "d2c247ef76355b3ae4f5de39601df295",
+    "semantic_hash": "d2c247ef76355b3ae4f5de39601df295"
   },
   ".github/ISSUE_TEMPLATE/bug_report.md": {
-    "mtime": 1788246227.5834694,
-    "ast_hash": "c43dc5a423dfc0d59a47d8d95c0e7dbf",
-    "semantic_hash": "c43dc5a423dfc0d59a47d8d95c0e7dbf"
+    "mtime": 1788249627.23059,
+    "ast_hash": "daacfa0be4b7f34b2bc7e9f105010f34",
+    "semantic_hash": "daacfa0be4b7f34b2bc7e9f105010f34"
   },
   ".github/ISSUE_TEMPLATE/feature_request.md": {
-    "mtime": 1788246230.2729547,
-    "ast_hash": "a74bd8911b49e0a59a2814c0a7c2ba14",
-    "semantic_hash": "a74bd8911b49e0a59a2814c0a7c2ba14"
+    "mtime": 1788249630.745195,
+    "ast_hash": "2ffb4d1bcfcda5d04f0ede6bd6eade0f",
+    "semantic_hash": "2ffb4d1bcfcda5d04f0ede6bd6eade0f"
   },
   ".github/PULL_REQUEST_TEMPLATE.md": {
-    "mtime": 1788246224.224314,
-    "ast_hash": "301af57f1ed66b91e3408709592a55d5",
-    "semantic_hash": "301af57f1ed66b91e3408709592a55d5"
+    "mtime": 1788249623.6891966,
+    "ast_hash": "dde4daf07babba100df333d6139f61c1",
+    "semantic_hash": "dde4daf07babba100df333d6139f61c1"
   },
   "CLAUDE.md": {
-    "mtime": 1788246205.042179,
-    "ast_hash": "79e65bba7035d7a9537b9a299012ad0a",
-    "semantic_hash": "79e65bba7035d7a9537b9a299012ad0a"
+    "mtime": 1788249091.1977835,
+    "ast_hash": "964f49025665e83915a17be1e60b227e",
+    "semantic_hash": "964f49025665e83915a17be1e60b227e"
   },
   "CONTRIBUTING.md": {
-    "mtime": 1788246216.7904017,
-    "ast_hash": "74a20df4cac9620431c499e23c44f8fe",
-    "semantic_hash": "74a20df4cac9620431c499e23c44f8fe"
+    "mtime": 1788249131.4095373,
+    "ast_hash": "df66b5b5e7ff265f946e628f8ee53642",
+    "semantic_hash": "df66b5b5e7ff265f946e628f8ee53642"
   },
   "README.md": {
-    "mtime": 1788245874.9788716,
-    "ast_hash": "2024c60adbd777cc58a49cb98c73e54f",
-    "semantic_hash": "2024c60adbd777cc58a49cb98c73e54f"
+    "mtime": 1788249109.3744016,
+    "ast_hash": "5847df7cb153441535005a4e7cbd89c6",
+    "semantic_hash": "5847df7cb153441535005a4e7cbd89c6"
+  },
+  "backend/CLAUDE.md": {
+    "mtime": 1788249599.440341,
+    "ast_hash": "b6a280d7291a29add68d07156db8f563",
+    "semantic_hash": "b6a280d7291a29add68d07156db8f563"
+  },
+  "docs/00-mulai-di-sini.md": {
+    "mtime": 1788249150.7283685,
+    "ast_hash": "3af3af2f5d2da83697a2da01f05de116",
+    "semantic_hash": "3af3af2f5d2da83697a2da01f05de116"
+  },
+  "docs/01-produk.md": {
+    "mtime": 1788249177.125501,
+    "ast_hash": "9eff3cbab2d6fc89a57dfbddf4f9313c",
+    "semantic_hash": "9eff3cbab2d6fc89a57dfbddf4f9313c"
+  },
+  "docs/02-fitur-prioritas.md": {
+    "mtime": 1788249205.733271,
+    "ast_hash": "beb9665b233aa5620f7c4d5214887958",
+    "semantic_hash": "beb9665b233aa5620f7c4d5214887958"
+  },
+  "docs/03-arsitektur.md": {
+    "mtime": 1788249247.9052439,
+    "ast_hash": "1bea52f94d98f22bc42e59ca2062ad77",
+    "semantic_hash": "1bea52f94d98f22bc42e59ca2062ad77"
+  },
+  "docs/04-pipeline-ai.md": {
+    "mtime": 1788249294.7657855,
+    "ast_hash": "e6aeb06122fd3df5a4201b60614f85ba",
+    "semantic_hash": "e6aeb06122fd3df5a4201b60614f85ba"
+  },
+  "docs/05-model-data.md": {
+    "mtime": 1788249341.0972252,
+    "ast_hash": "930fe47eeb71acda303705152a75a342",
+    "semantic_hash": "930fe47eeb71acda303705152a75a342"
+  },
+  "docs/06-kontrak-api.md": {
+    "mtime": 1788249382.4870915,
+    "ast_hash": "d94d7d4fe197b67bbcf361131b7b0c9d",
+    "semantic_hash": "d94d7d4fe197b67bbcf361131b7b0c9d"
+  },
+  "docs/07-alur-pengguna.md": {
+    "mtime": 1788249418.0906448,
+    "ast_hash": "71e97aaa5fa2b5ef8412cf80e9966c98",
+    "semantic_hash": "71e97aaa5fa2b5ef8412cf80e9966c98"
+  },
+  "docs/08-keamanan-data.md": {
+    "mtime": 1788249443.412743,
+    "ast_hash": "dd6c2750c9bd8b84b56ce5ceb841ebcf",
+    "semantic_hash": "dd6c2750c9bd8b84b56ce5ceb841ebcf"
+  },
+  "docs/09-demo.md": {
+    "mtime": 1788249481.1795015,
+    "ast_hash": "2c5dc1d175b7ba45e3ecf879037f46c0",
+    "semantic_hash": "2c5dc1d175b7ba45e3ecf879037f46c0"
+  },
+  "docs/10-kerja-tim.md": {
+    "mtime": 1788249510.310508,
+    "ast_hash": "5b009fd996686b68e4aebdeecf522835",
+    "semantic_hash": "5b009fd996686b68e4aebdeecf522835"
+  },
+  "docs/11-setup-tim.md": {
+    "mtime": 1788249657.3219826,
+    "ast_hash": "65c25870469e510dcb89ff17132ee405",
+    "semantic_hash": "65c25870469e510dcb89ff17132ee405"
+  },
+  "frontend/CLAUDE.md": {
+    "mtime": 1788249569.8101418,
+    "ast_hash": "19b2f4576dff2739bdae230e2af1c704",
+    "semantic_hash": "19b2f4576dff2739bdae230e2af1c704"
+  },
+  "shared/CLAUDE.md": {
+    "mtime": 1788249612.4047887,
+    "ast_hash": "a805dc4810e474af7949e692ce07d08c",
+    "semantic_hash": "a805dc4810e474af7949e692ce07d08c"
   }
 }
