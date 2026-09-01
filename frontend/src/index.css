@@ -1,6 +1,82 @@
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
+/*
+ * Bahasa rupa lapakAi.
+ *
+ * Palet krem hangat, bukan putih-biru. Alasannya bukan selera: layar ini dibuka
+ * di warung, sering di bawah cahaya terang, oleh mata yang tidak muda lagi.
+ * Latar krem memantulkan lebih sedikit cahaya daripada putih murni, dan tinta
+ * kehitaman yang kehangatan lebih nyaman dibaca berlama-lama daripada hitam
+ * pekat di atas putih.
+ *
+ * Dua warna dipakai untuk arti, bukan hiasan, dan tidak pernah untuk hal lain:
+ *   hijau = untung        merah = rugi
+ * Kalau suatu saat ada tombol hijau yang bukan soal untung, artinya rusak.
+ */
 @theme {
-  --font-logo: "Baloo 2", ui-rounded, system-ui, sans-serif;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
+  /* Dipertahankan supaya kelas `font-logo` yang sudah tersebar tetap sah —
+     sekarang menunjuk ke Geist, bukan lagi ke huruf yang berbeda sendiri. */
+  --font-logo: "Geist", ui-sans-serif, system-ui, sans-serif;
+
+  /* Tinta */
+  --color-tinta: #1A1714;
+  --color-sedang: #4A443D;
+  --color-redup: #6B635A;
+
+  /* Kertas */
+  --color-krem: #F5F1EA;
+  --color-pasir: #E7E0D5;
+
+  /* Untung */
+  --color-untung: #1E6F4C;
+  --color-untung-tua: #145037;
+  --color-untung-muda: #EAF1ED;
+  --color-untung-pucat: #F2F7F4;
+
+  /* Rugi */
+  --color-rugi: #B0111F;
+  --color-rugi-tua: #7A2A2F;
+  --color-rugi-muda: #FDEDEE;
+
+  /* Perlu diperhatikan, tapi bukan kesalahan */
+  --color-tanda: #FBF3E2;
+}
+
+html {
+  background: var(--color-krem);
+}
+
+body {
+  margin: 0;
+  background: var(--color-krem);
+  color: var(--color-tinta);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Angka uang selalu rata lebar per digit. Tanpa ini, Rp 4.200.000 dan
+ * Rp 268.000 yang berdampingan di Beranda bergeser satu sama lain dan jadi
+ * sulit dibandingkan sekilas — padahal membandingkan keduanya adalah seluruh
+ * gunanya layar itu.
+ */
+.angka {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/*
+ * Label bagian: huruf besar kecil, berjarak, monospace. Dipakai untuk menandai
+ * kelompok ("PALING MERUGI", "MODAL DATANG DARI SINI") tanpa menambah satu lagi
+ * ukuran judul yang bersaing dengan angkanya.
+ */
+.label-bagian {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-redup);
 }

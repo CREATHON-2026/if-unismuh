@@ -15,7 +15,7 @@ const TUJUAN = [
 ] as const;
 
 function Ikon({ nama, aktif }: { nama: string; aktif: boolean }) {
-  const warna = aktif ? '#A8500B' : '#8A7C70';
+  const warna = aktif ? '#1A1714' : '#6B635A';
   const p = {
     width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none',
     stroke: warna, strokeWidth: 1.8,
@@ -39,7 +39,7 @@ export function NavBawah() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="sticky bottom-0 -mx-6 mt-4 border-t border-[#EADFD4] bg-white/95 px-3 pb-2 pt-2 backdrop-blur">
+    <nav className="sticky bottom-0 -mx-6 mt-4 border-t border-[#E8E3DA] bg-white/95 px-3 pb-2 pt-2 backdrop-blur">
       <div className="flex items-stretch justify-between">
         {TUJUAN.map((t) => {
           const aktif = pathname === t.ke || pathname.startsWith(`${t.ke}/`);
@@ -53,7 +53,7 @@ export function NavBawah() {
             >
               <Ikon nama={t.label} aktif={aktif} />
               <span
-                className={`text-[13px] ${aktif ? 'font-bold text-[#A8500B]' : 'text-[#8A7C70]'}`}
+                className={`text-[13px] ${aktif ? 'font-bold text-[#1A1714]' : 'text-[#6B635A]'}`}
               >
                 {t.label}
               </span>

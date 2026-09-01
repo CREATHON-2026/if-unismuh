@@ -1,18 +1,29 @@
 import type { ButtonHTMLAttributes } from 'react';
 
-// Tombol target-sentuh besar. Varian: utama (pill oranye), gelap (CTA cokelat), garis.
+/**
+ * Tombol target-sentuh besar.
+ *
+ * Persegi membulat, bukan pil. Pil penuh membuat teks panjang terlihat
+ * mengambang dan memaksa tepi kiri-kanan kosong percuma — di layar 390px itu
+ * ruang yang mahal.
+ *
+ * Hanya ada satu tombol berisi penuh per layar. Kalau ada dua yang sama-sama
+ * gelap, pengguna harus memilih tanpa petunjuk mana yang dimaksud — jadi aksi
+ * kedua selalu `garis`.
+ */
 export function Tombol({
   varian = 'utama',
   className = '',
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { varian?: 'utama' | 'gelap' | 'garis' }) {
   const dasar =
-    'h-16 w-full rounded-full text-lg font-bold transition active:scale-[0.98] disabled:opacity-40';
+    'min-h-16 w-full rounded-2xl px-4 text-[17px] font-semibold transition active:scale-[0.98] disabled:opacity-35';
+  // `utama` dan `gelap` sengaja sama: keduanya sudah tersebar di layar yang
+  // ditulis dua orang, dan menyeragamkannya di sini lebih aman daripada
+  // menyisir semua pemanggilnya di tengah lomba.
   const gaya =
-    varian === 'utama'
-      ? 'bg-[#F5831F] text-[#7C2D12]'
-      : varian === 'gelap'
-        ? 'bg-[#A8500B] text-white'
-        : 'border-2 border-slate-300 bg-white text-slate-800';
+    varian === 'garis'
+      ? 'border-[1.5px] border-[#D6CFC4] bg-transparent text-[#1A1714]'
+      : 'bg-[#1A1714] text-[#F5F1EA]';
   return <button className={`${dasar} ${gaya} ${className}`} {...props} />;
 }

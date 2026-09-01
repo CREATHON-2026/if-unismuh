@@ -42,22 +42,22 @@ export function TemuanPertama() {
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
 
-      <h1 className="mt-10 text-center font-logo text-[28px] font-bold text-[#1C1917]">
+      <h1 className="mt-10 text-center font-logo text-[28px] font-bold text-[#1A1714]">
         Temuan Pertama!
       </h1>
-      <p className="text-center text-[17px] leading-relaxed text-[#44403C]">
+      <p className="text-center text-[17px] leading-relaxed text-[#4A443D]">
         Kami menemukan ketidaksesuaian pada pencatatan terbaru Anda.
       </p>
 
-      <div className="mt-4 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)] [background-image:radial-gradient(45%_35%_at_95%_5%,rgba(239,68,68,0.08),transparent_60%)]">
+      <div className="mt-4 rounded-[28px] bg-white p-6 [background-image:radial-gradient(45%_35%_at_95%_5%,rgba(176,17,31,0.07),transparent_60%)]">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-[22px] font-bold text-[#1C1917]">{namaProduk}</p>
+          <p className="text-[22px] font-bold text-[#1A1714]">{namaProduk}</p>
           {temuan.merugi ? (
-            <span className="rounded-xl bg-[#FBD5D5] px-4 py-1.5 font-semibold text-[#DC2626]">
+            <span className="rounded-xl bg-[#FDEDEE] px-4 py-1.5 font-semibold text-[#B0111F]">
               Rugi
             </span>
           ) : (
-            <span className="rounded-xl bg-[#D1F5DD] px-4 py-1.5 font-semibold text-[#15803D]">
+            <span className="rounded-xl bg-[#EAF1ED] px-4 py-1.5 font-semibold text-[#1E6F4C]">
               Untung
             </span>
           )}
@@ -66,25 +66,25 @@ export function TemuanPertama() {
         <div className="mt-6 text-center">
           {temuan.merugi ? (
             <>
-              <p className="text-[17px] font-medium text-[#DC2626]">Potensi Kerugian</p>
-              <p className="font-logo text-[34px] font-extrabold leading-snug text-[#DC2626]">
+              <p className="text-[17px] font-medium text-[#B0111F]">Potensi Kerugian</p>
+              <p className="font-logo text-[34px] font-extrabold leading-snug text-[#B0111F]">
                 - {selisih} / bungkus
               </p>
             </>
           ) : (
             <>
-              <p className="text-[17px] font-medium text-[#15803D]">Potensi Keuntungan</p>
-              <p className="font-logo text-[34px] font-extrabold leading-snug text-[#15803D]">
+              <p className="text-[17px] font-medium text-[#1E6F4C]">Potensi Keuntungan</p>
+              <p className="font-logo text-[34px] font-extrabold leading-snug text-[#1E6F4C]">
                 + {selisih} / bungkus
               </p>
             </>
           )}
         </div>
 
-        <div className="my-5 h-px bg-[#E7E5E4]" aria-hidden />
+        <div className="my-5 h-px bg-[#E8E3DA]" aria-hidden />
 
         <div className="flex items-center justify-between text-[17px]">
-          <span className="flex items-center gap-3 text-[#57534E]">
+          <span className="flex items-center gap-3 text-[#6B635A]">
             <svg
               width="20"
               height="20"
@@ -102,10 +102,10 @@ export function TemuanPertama() {
             </svg>
             Modal Anda
           </span>
-          <span className="font-bold text-[#1C1917]">{formatRupiah(temuan.modal_per_unit)}</span>
+          <span className="font-bold text-[#1A1714]">{formatRupiah(temuan.modal_per_unit)}</span>
         </div>
         <div className="mt-4 flex items-center justify-between text-[17px]">
-          <span className="flex items-center gap-3 text-[#57534E]">
+          <span className="flex items-center gap-3 text-[#6B635A]">
             <svg
               width="20"
               height="20"
@@ -122,11 +122,11 @@ export function TemuanPertama() {
             </svg>
             Dijual
           </span>
-          <span className="font-bold text-[#1C1917]">{formatRupiah(temuan.harga_jual)}</span>
+          <span className="font-bold text-[#1A1714]">{formatRupiah(temuan.harga_jual)}</span>
         </div>
       </div>
 
-      <p className="mt-8 text-center text-[17px] leading-relaxed text-[#1C1917]">
+      <p className="mt-8 text-center text-[17px] leading-relaxed text-[#1A1714]">
         Perbaiki data dengan cepat agar pembukuan Anda tetap akurat.
       </p>
 
@@ -155,7 +155,7 @@ export function TemuanPertama() {
       <button
         type="button"
         onClick={() => nav('/beranda')}
-        className="py-3 text-center font-logo text-lg font-bold text-[#C2570E] active:scale-95"
+        className="py-3 text-center font-logo text-lg font-bold text-[#1A1714] active:scale-95"
       >
         Abaikan Sementara
       </button>

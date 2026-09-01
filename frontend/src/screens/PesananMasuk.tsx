@@ -82,21 +82,21 @@ export function PesananMasuk() {
   return (
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
-      <h1 className="mt-8 font-logo text-[26px] font-bold text-[#1C1917]">Pesanan Masuk</h1>
-      <p className="mt-1 text-[17px] leading-relaxed text-[#57534E]">
+      <h1 className="mt-8 font-logo text-[26px] font-bold text-[#1A1714]">Pesanan Masuk</h1>
+      <p className="mt-1 text-[17px] leading-relaxed text-[#6B635A]">
         Salin chat pembeli dari WhatsApp, tempel di sini.
       </p>
 
       <button
         type="button"
         onClick={() => nav('/pesanan/whatsapp')}
-        className="mt-3 flex w-full items-center justify-between gap-3 rounded-2xl border-2 border-[#E4C7AC] bg-white px-4 py-4 text-left transition active:scale-[0.99]"
+        className="mt-3 flex w-full items-center justify-between gap-3 rounded-2xl border-2 border-[#D6CFC4] bg-white px-4 py-4 text-left transition active:scale-[0.99]"
       >
-        <span className="text-[15px] leading-relaxed text-[#44403C]">
+        <span className="text-[15px] leading-relaxed text-[#4A443D]">
           Atau sambungkan WhatsApp supaya pesanan terbaca sendiri.{' '}
-          <span className="font-bold text-[#7C2D12]">Hanya membaca, tidak pernah mengirim.</span>
+          <span className="font-bold text-[#1E6F4C]">Hanya membaca, tidak pernah mengirim.</span>
         </span>
-        <span aria-hidden className="text-2xl leading-none text-[#A8500B]">→</span>
+        <span aria-hidden className="text-2xl leading-none text-[#1A1714]">→</span>
       </button>
 
       <textarea
@@ -104,7 +104,7 @@ export function PesananMasuk() {
         onChange={(e) => setTeks(e.target.value)}
         placeholder={CONTOH}
         rows={4}
-        className="mt-4 w-full rounded-2xl border-2 border-[#E4C7AC] bg-white p-4 text-[17px] leading-relaxed outline-none placeholder:text-[#D8B49A] focus:border-[#A8500B]"
+        className="mt-4 w-full rounded-2xl border-2 border-[#D6CFC4] bg-white p-4 text-[17px] leading-relaxed outline-none placeholder:text-[#6B635A] focus:border-[#1A1714]"
       />
       <div className="mt-3">
         <Tombol varian="gelap" disabled={!teks.trim() || sibuk} onClick={periksa}>
@@ -113,43 +113,43 @@ export function PesananMasuk() {
       </div>
 
       {galat && (
-        <p className="mt-3 rounded-2xl bg-[#FBD5D5] p-4 text-[17px] text-[#B91C1C]">{galat}</p>
+        <p className="mt-3 rounded-2xl bg-[#FDEDEE] p-4 text-[17px] text-[#7A2A2F]">{galat}</p>
       )}
 
       {hasil && hasil.jenis === 'bukan_pesanan' && (
-        <p className="mt-4 rounded-2xl bg-white p-5 text-[17px] leading-relaxed text-[#44403C] shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+        <p className="mt-4 rounded-2xl bg-white p-5 text-[17px] leading-relaxed text-[#4A443D]">
           Ini sepertinya bukan pesanan, jadi tidak kami simpan.
         </p>
       )}
 
       {hasil && hasil.jenis !== 'bukan_pesanan' && (
-        <div className="mt-4 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+        <div className="mt-4 rounded-[28px] bg-white p-6">
           <div className="flex items-center justify-between gap-3">
-            <p className="text-[19px] font-bold text-[#1C1917]">
+            <p className="text-[19px] font-bold text-[#1A1714]">
               {hasil.produk?.nama ?? hasil.nama_produk_mentah ?? 'Produk belum dikenali'}
             </p>
             {hasil.jumlah != null && (
-              <span className="text-[17px] font-bold text-[#44403C]">{hasil.jumlah} pcs</span>
+              <span className="text-[17px] font-bold text-[#4A443D]">{hasil.jumlah} pcs</span>
             )}
           </div>
 
           {hasil.perlu_dicek && hasil.kandidat.length > 0 && (
-            <p className="mt-3 rounded-2xl bg-[#FDF3D8] p-4 text-[15px] leading-relaxed text-[#8A6100]">
+            <p className="mt-3 rounded-2xl bg-[#FBF3E2] p-4 text-[15px] leading-relaxed text-[#4A443D]">
               Maksudnya produk yang mana? {hasil.kandidat.map((k) => k.nama).join(', ')}
             </p>
           )}
 
           {hasil.nilai_pesanan != null && (
             <div className="mt-4 flex items-center justify-between text-[17px]">
-              <span className="text-[#57534E]">Nilai pesanan</span>
-              <span className="font-bold text-[#1C1917]">{formatRupiah(hasil.nilai_pesanan)}</span>
+              <span className="text-[#6B635A]">Nilai pesanan</span>
+              <span className="font-bold text-[#1A1714]">{formatRupiah(hasil.nilai_pesanan)}</span>
             </div>
           )}
           {hasil.untung_pesanan != null && (
             <div className="mt-2 flex items-center justify-between text-[17px]">
-              <span className="text-[#57534E]">Untung pesanan</span>
+              <span className="text-[#6B635A]">Untung pesanan</span>
               <span
-                className={`font-bold ${hasil.merugi ? 'text-[#DC2626]' : 'text-[#15803D]'}`}
+                className={`font-bold ${hasil.merugi ? 'text-[#B0111F]' : 'text-[#1E6F4C]'}`}
               >
                 {hasil.merugi ? '−' : '+'} {formatRupiah(Math.abs(hasil.untung_pesanan))}
               </span>
@@ -163,7 +163,7 @@ export function PesananMasuk() {
               {hasil.peringatan.map((p) => (
                 <p
                   key={p}
-                  className="rounded-2xl bg-[#FBD5D5] p-4 text-[17px] leading-relaxed text-[#B91C1C]"
+                  className="rounded-2xl bg-[#FDEDEE] p-4 text-[17px] leading-relaxed text-[#7A2A2F]"
                 >
                   {p}
                 </p>
@@ -173,8 +173,8 @@ export function PesananMasuk() {
 
           {hasil.produk && (
             <>
-              <div className="my-5 h-px bg-[#E7E5E4]" aria-hidden />
-              <p className="text-[15px] font-medium text-[#8A7C70]">Siapkan balasan</p>
+              <div className="my-5 h-px bg-[#E8E3DA]" aria-hidden />
+              <p className="text-[15px] font-medium text-[#6B635A]">Siapkan balasan</p>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {MAKSUD.map((m) => (
                   <button
@@ -182,7 +182,7 @@ export function PesananMasuk() {
                     type="button"
                     disabled={sibuk}
                     onClick={() => void susunBalasan(m.nilai)}
-                    className="min-h-14 rounded-2xl border-2 border-[#E4C7AC] bg-white px-3 text-[17px] font-bold text-[#7C2D12] transition active:scale-95 disabled:opacity-40"
+                    className="min-h-14 rounded-2xl border-2 border-[#D6CFC4] bg-white px-3 text-[17px] font-bold text-[#1A1714] transition active:scale-95 disabled:opacity-40"
                   >
                     {m.label}
                   </button>
@@ -194,9 +194,9 @@ export function PesananMasuk() {
       )}
 
       {balasan && (
-        <div className="mt-3 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-          <p className="text-[17px] font-bold text-[#1C1917]">Balasan siap disalin</p>
-          <p className="mt-3 rounded-2xl bg-[#F7F4F1] p-4 text-[17px] leading-relaxed text-[#1C1917]">
+        <div className="mt-3 rounded-[28px] bg-white p-6">
+          <p className="text-[17px] font-bold text-[#1A1714]">Balasan siap disalin</p>
+          <p className="mt-3 rounded-2xl bg-[#F5F1EA] p-4 text-[17px] leading-relaxed text-[#1A1714]">
             {balasan.teks}
           </p>
           <div className="mt-4">
@@ -206,7 +206,7 @@ export function PesananMasuk() {
           </div>
           {/* Bukan basa-basi: ini yang membedakan kami dari sistem yang
               mengirim atas nama pedagang. */}
-          <p className="mt-3 text-center text-[15px] leading-relaxed text-[#8A7C70]">
+          <p className="mt-3 text-center text-[15px] leading-relaxed text-[#6B635A]">
             Tempel sendiri di WhatsApp Anda. lapakAi tidak pernah mengirim pesan ke pembeli.
           </p>
         </div>

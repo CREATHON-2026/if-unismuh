@@ -34,7 +34,7 @@ export function DetailProduk() {
   if (galat) {
     return (
       <Layar kembali={() => nav('/produk')}>
-        <p className="rounded-2xl bg-[#FBD5D5] p-4 text-[17px] text-[#B91C1C]">{galat}</p>
+        <p className="rounded-2xl bg-[#FDEDEE] p-4 text-[17px] text-[#7A2A2F]">{galat}</p>
         <NavBawah />
       </Layar>
     );
@@ -42,7 +42,7 @@ export function DetailProduk() {
   if (!d) {
     return (
       <Layar kembali={() => nav('/produk')}>
-        <p className="text-[17px] text-[#8A7C70]">Memuat…</p>
+        <p className="text-[17px] text-[#6B635A]">Memuat…</p>
       </Layar>
     );
   }
@@ -50,52 +50,52 @@ export function DetailProduk() {
   return (
     <Layar kembali={() => nav('/produk')} atas>
       <div className="flex flex-wrap items-center gap-2">
-        <h1 className="font-logo text-[26px] font-bold text-[#1C1917]">{d.nama}</h1>
+        <h1 className="text-[26px] font-extrabold tracking-[-0.02em] text-[#1A1714]">{d.nama}</h1>
         {d.terlaris && (
-          <span className="rounded-lg bg-[#FAD9C0] px-2.5 py-1 text-[13px] font-bold text-[#7C2D12]">
+          <span className="rounded-lg bg-[#FBF3E2] px-2.5 py-1 text-[13px] font-bold text-[#4A443D]">
             TERLARIS
           </span>
         )}
         {d.merugi && (
-          <span className="rounded-lg bg-[#FBD5D5] px-2.5 py-1 text-[13px] font-bold text-[#DC2626]">
+          <span className="rounded-lg bg-[#FDEDEE] px-2.5 py-1 text-[13px] font-bold text-[#B0111F]">
             MERUGI
           </span>
         )}
       </div>
 
-      <div className="mt-4 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+      <div className="mt-4 rounded-[28px] bg-white p-6">
         <div className="flex items-center justify-between text-[17px]">
-          <span className="text-[#57534E]">Modal per unit</span>
-          <span className="font-bold text-[#1C1917]">
+          <span className="text-[#6B635A]">Modal per unit</span>
+          <span className="font-bold text-[#1A1714]">
             {d.modal_per_unit == null ? 'belum diisi' : formatRupiah(d.modal_per_unit)}
           </span>
         </div>
         <div className="mt-3 flex items-center justify-between text-[17px]">
-          <span className="text-[#57534E]">Harga jual</span>
-          <span className="font-bold text-[#1C1917]">{formatRupiah(d.harga_jual)}</span>
+          <span className="text-[#6B635A]">Harga jual</span>
+          <span className="font-bold text-[#1A1714]">{formatRupiah(d.harga_jual)}</span>
         </div>
 
-        <div className="my-5 h-px bg-[#E7E5E4]" aria-hidden />
+        <div className="my-5 h-px bg-[#E8E3DA]" aria-hidden />
 
         {d.margin_per_unit == null ? (
-          <p className="text-center text-[17px] leading-relaxed text-[#8A6100]">
+          <p className="text-center text-[17px] leading-relaxed text-[#4A443D]">
             Resepnya belum diisi, jadi untungnya belum bisa dihitung.
           </p>
         ) : (
           <div className="text-center">
             <p
-              className={`text-[17px] font-medium ${d.merugi ? 'text-[#DC2626]' : 'text-[#15803D]'}`}
+              className={`text-[17px] font-medium ${d.merugi ? 'text-[#B0111F]' : 'text-[#1E6F4C]'}`}
             >
               {d.merugi ? 'Rugi setiap kali terjual' : 'Untung setiap kali terjual'}
             </p>
             <p
-              className={`font-logo text-[34px] font-extrabold leading-snug ${
-                d.merugi ? 'text-[#DC2626]' : 'text-[#15803D]'
+              className={`angka text-[38px] font-extrabold leading-none ${
+                d.merugi ? 'text-[#B0111F]' : 'text-[#1E6F4C]'
               }`}
             >
               {d.merugi ? '−' : '+'} {formatRupiah(Math.abs(d.margin_per_unit))}
             </p>
-            <p className="text-[15px] text-[#A8A29E]">sudah terjual {d.total_terjual} kali</p>
+            <p className="text-[15px] text-[#6B635A]">sudah terjual {d.total_terjual} kali</p>
           </div>
         )}
       </div>
@@ -103,44 +103,48 @@ export function DetailProduk() {
       {/* Fitur 8. null = tidak ada yang perlu disarankan; sembunyikan, jangan
           tampilkan angka karangan. */}
       {d.saran_harga && (
-        <div className="mt-3 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)] [background-image:radial-gradient(50%_40%_at_93%_6%,rgba(21,128,61,0.10),transparent_62%)]">
-          <p className="text-[17px] font-bold text-[#15803D]">Sebaiknya dijual segini</p>
-          <p className="mt-1 font-logo text-[34px] font-extrabold leading-snug text-[#15803D]">
+        <div className="mt-3 rounded-[22px] bg-[#1E6F4C] p-6 text-[#F2F7F4]">
+          <p className="label-bagian !text-[#F2F7F4]/75">SARAN HARGA</p>
+          <p className="angka mt-2 text-[34px] font-extrabold leading-none">
             {formatRupiah(d.saran_harga.harga_disarankan)}
           </p>
-          <p className="mt-2 text-[17px] leading-relaxed text-[#44403C]">{d.saran_harga.alasan}</p>
+          <p className="mt-3 text-[14.5px] leading-relaxed text-[#F2F7F4]/90">
+            {d.saran_harga.alasan}
+          </p>
 
-          <div className="mt-4 flex items-center justify-between rounded-2xl bg-[#F7F4F1] px-4 py-3 text-[15px]">
-            <span className="text-[#57534E]">Batas tidak rugi</span>
-            <span className="font-bold text-[#1C1917]">
-              {formatRupiah(d.saran_harga.harga_impas)}
-            </span>
-          </div>
-          <div className="mt-2 flex items-center justify-between rounded-2xl bg-[#F7F4F1] px-4 py-3 text-[15px]">
-            <span className="text-[#57534E]">Untung jadi</span>
-            <span className="font-bold text-[#15803D]">
-              {formatRupiah(d.saran_harga.untung_per_unit)} per unit
-            </span>
+          <div className="mt-4 flex gap-2">
+            <div className="flex-1 rounded-2xl bg-[#145037] px-4 py-3">
+              <p className="text-[12.5px] text-[#F2F7F4]/70">Batas tidak rugi</p>
+              <p className="angka mt-0.5 text-[16px] font-bold">
+                {formatRupiah(d.saran_harga.harga_impas)}
+              </p>
+            </div>
+            <div className="flex-1 rounded-2xl bg-[#145037] px-4 py-3">
+              <p className="text-[12.5px] text-[#F2F7F4]/70">Untung jadi</p>
+              <p className="angka mt-0.5 text-[16px] font-bold">
+                {formatRupiah(d.saran_harga.untung_per_unit)}
+              </p>
+            </div>
           </div>
         </div>
       )}
 
       {d.bahan.length > 0 && (
-        <div className="mt-3 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-          <p className="text-[17px] font-bold text-[#1C1917]">Modal ini dari mana</p>
-          <p className="mt-1 text-[15px] text-[#8A7C70]">
+        <div className="mt-3 rounded-[28px] bg-white p-6">
+          <p className="label-bagian">MODAL DATANG DARI SINI</p>
+          <p className="mt-1 text-[13px] text-[#6B635A]">
             Sekali bikin jadi {d.hasil_per_batch ?? '—'} unit
           </p>
           <div className="mt-4 flex flex-col gap-3">
             {d.bahan.map((b) => (
               <div key={b.nama} className="flex items-center justify-between gap-3 text-[17px]">
-                <span className="text-[#44403C]">
+                <span className="text-[#4A443D]">
                   {b.nama}{' '}
-                  <span className="text-[15px] text-[#A8A29E]">
+                  <span className="text-[15px] text-[#6B635A]">
                     {b.jumlah_pakai} {b.satuan}
                   </span>
                 </span>
-                <span className="font-bold text-[#1C1917]">{formatRupiah(b.biaya_per_unit)}</span>
+                <span className="angka font-mono font-semibold text-[#1A1714]">{formatRupiah(b.biaya_per_unit)}</span>
               </div>
             ))}
           </div>

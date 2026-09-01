@@ -41,15 +41,15 @@ export function ResepHarga() {
     <Layar tanpaLogo atas>
       <KepalaResep langkah={3} label="Harga" />
 
-      <div className="mt-6 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-        <h1 className="font-logo text-[26px] font-bold text-[#16233B]">
+      <div className="mt-6 rounded-[28px] bg-white p-6">
+        <h1 className="font-logo text-[26px] font-bold text-[#1A1714]">
           Dijual berapa per bungkus?
         </h1>
-        <p className="mt-2 text-[17px] text-[#44403C]">Harga jual saat ini ke pembeli.</p>
+        <p className="mt-2 text-[17px] text-[#4A443D]">Harga jual saat ini ke pembeli.</p>
 
-        <div className="mt-5 flex h-[72px] items-center rounded-2xl border border-[#D5DCEA] bg-[#F1F4FB] px-4 focus-within:border-[#F5831F]">
-          <span className="text-lg font-bold text-[#1C1917]">Rp</span>
-          <span className="mx-3 h-8 w-px bg-[#D5DCEA]" aria-hidden="true" />
+        <div className="mt-5 flex h-[72px] items-center rounded-2xl border border-[#E8E3DA] bg-[#F5F1EA] px-4 focus-within:border-[#1A1714]">
+          <span className="text-lg font-bold text-[#1A1714]">Rp</span>
+          <span className="mx-3 h-8 w-px bg-[#E8E3DA]" aria-hidden="true" />
           <input
             type="tel"
             inputMode="numeric"
@@ -57,7 +57,7 @@ export function ResepHarga() {
             placeholder="Contoh: 20000"
             value={harga}
             onChange={(e) => setHarga(e.target.value.replace(/\D/g, ''))}
-            className="h-full flex-1 bg-transparent text-lg outline-none placeholder:text-[#8C93A3]"
+            className="h-full flex-1 bg-transparent text-lg outline-none placeholder:text-[#6B635A]"
           />
         </div>
         {galat && <p className="mt-3 font-semibold text-red-600">{galat}</p>}

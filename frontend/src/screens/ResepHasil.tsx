@@ -20,11 +20,11 @@ export function ResepHasil() {
     <Layar tanpaLogo atas>
       <KepalaResep langkah={2} label="Hasil" />
 
-      <div className="mt-6 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-        <h1 className="font-logo text-[26px] font-bold text-[#16233B]">
+      <div className="mt-6 rounded-[28px] bg-white p-6">
+        <h1 className="font-logo text-[26px] font-bold text-[#1A1714]">
           Sekali bikin jadi berapa bungkus?
         </h1>
-        <p className="mt-2 text-[17px] text-[#44403C]">Hasil sekali produksi dari resep ini.</p>
+        <p className="mt-2 text-[17px] text-[#4A443D]">Hasil sekali produksi dari resep ini.</p>
 
         <input
           type="tel"
@@ -33,7 +33,7 @@ export function ResepHasil() {
           placeholder="Contoh: 40"
           value={jumlah}
           onChange={(e) => setJumlah(e.target.value.replace(/\D/g, ''))}
-          className="mt-5 h-[72px] w-full rounded-2xl border border-[#D5DCEA] bg-[#F1F4FB] px-4 text-lg outline-none focus:border-[#F5831F] placeholder:text-[#8C93A3]"
+          className="mt-5 h-[72px] w-full rounded-2xl border border-[#E8E3DA] bg-[#F5F1EA] px-4 text-lg outline-none focus:border-[#1A1714] placeholder:text-[#6B635A]"
         />
       </div>
 

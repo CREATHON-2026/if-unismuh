@@ -114,7 +114,7 @@ export function KonfirmasiEkstraksi() {
           </Tombol>
         }
       >
-        <p className="text-[#57534E]">Foto buku catatan dulu, nanti hasilnya muncul di sini.</p>
+        <p className="text-[#6B635A]">Foto buku catatan dulu, nanti hasilnya muncul di sini.</p>
       </Layar>
     );
   }
@@ -130,7 +130,7 @@ export function KonfirmasiEkstraksi() {
           </Tombol>
         }
       >
-        <p className="text-lg text-[#44403C]">
+        <p className="text-lg text-[#4A443D]">
           {selesai.tersimpan} catatan tersimpan.
           {selesai.berkas_dihapus && ' Fotonya sudah dihapus dari server.'}
         </p>
@@ -140,25 +140,25 @@ export function KonfirmasiEkstraksi() {
 
   return (
     <Layar tanpaLogo atas>
-      <div className="-mx-6 flex items-center gap-4 border-b border-[#E5E7EE] px-6 pb-4">
+      <div className="-mx-6 flex items-center gap-4 border-b border-[#E8E3DA] px-6 pb-4">
         <button
           type="button"
           aria-label="Kembali"
           onClick={() => nav(-1)}
-          className="text-3xl leading-none text-slate-900 active:scale-95"
+          className="text-3xl leading-none text-[#1A1714] active:scale-95"
         >
           ←
         </button>
-        <h1 className="font-logo text-2xl font-bold text-[#1C1917]">Konfirmasi Transaksi</h1>
+        <h1 className="font-logo text-2xl font-bold text-[#1A1714]">Konfirmasi Transaksi</h1>
       </div>
 
       {fotoUrl && (
         <img src={fotoUrl} alt="Foto nota" className="mt-5 max-h-72 w-full rounded-2xl object-cover" />
       )}
 
-      <p className="mt-5 text-[17px] leading-relaxed text-[#44403C]">
+      <p className="mt-5 text-[17px] leading-relaxed text-[#4A443D]">
         Kami telah mendeteksi beberapa item dari foto nota Anda. Mohon periksa kembali, terutama
-        yang ditandai <span className="font-bold text-[#F5831F]">Oranye</span>.
+        yang ditandai <span className="font-bold text-[#1A1714]">Oranye</span>.
       </p>
 
       <div className="mt-5 flex flex-col gap-4">
@@ -170,10 +170,10 @@ export function KonfirmasiEkstraksi() {
                 <input
                   value={b.nama_produk ?? b.nama_mentah}
                   onChange={(e) => ubah(b.urutan, { nama_produk: e.target.value })}
-                  className="h-12 min-w-0 flex-1 rounded-xl bg-white px-3 text-[17px] font-semibold text-[#1C1917] shadow-sm outline-none focus:ring-2 focus:ring-[#F5831F]"
+                  className="h-12 min-w-0 flex-1 rounded-xl bg-white px-3 text-[17px] font-semibold text-[#1A1714] shadow-sm outline-none focus:ring-2 focus:ring-[#1A1714]"
                 />
                 <div className="flex h-12 shrink-0 items-center gap-1 rounded-xl bg-white px-3 shadow-sm">
-                  <span className="font-bold text-[#1C1917]">Rp</span>
+                  <span className="font-bold text-[#1A1714]">Rp</span>
                   <input
                     type="tel"
                     inputMode="numeric"
@@ -183,11 +183,11 @@ export function KonfirmasiEkstraksi() {
                       const angka = e.target.value.replace(/\D/g, '');
                       ubah(b.urutan, { harga_satuan: angka ? Number(angka) : null });
                     }}
-                    className="w-20 bg-transparent text-right text-[17px] font-bold text-[#1C1917] outline-none"
+                    className="w-20 bg-transparent text-right text-[17px] font-bold text-[#1A1714] outline-none"
                   />
                 </div>
               </div>
-              <div className="mt-3 flex items-center gap-2 text-[16px] text-[#44403C]">
+              <div className="mt-3 flex items-center gap-2 text-[16px] text-[#4A443D]">
                 <span>Qty:</span>
                 <input
                   type="tel"
@@ -196,7 +196,7 @@ export function KonfirmasiEkstraksi() {
                   onChange={(e) =>
                     ubah(b.urutan, { jumlah: Number(e.target.value.replace(/\D/g, '')) || 0 })
                   }
-                  className="h-11 w-16 rounded-lg bg-white text-center text-[17px] font-semibold text-[#1C1917] shadow-sm outline-none focus:ring-2 focus:ring-[#F5831F]"
+                  className="h-11 w-16 rounded-lg bg-white text-center text-[17px] font-semibold text-[#1A1714] shadow-sm outline-none focus:ring-2 focus:ring-[#1A1714]"
                 />
                 <span>x {b.harga_satuan !== null ? formatRupiah(b.harga_satuan) : '—'}</span>
               </div>
@@ -207,14 +207,14 @@ export function KonfirmasiEkstraksi() {
             return (
               <div
                 key={b.urutan}
-                className="relative overflow-hidden rounded-2xl bg-[#FBDCC3] p-5 pt-12 shadow-sm"
+                className="relative overflow-hidden rounded-2xl bg-[#FBF3E2] p-5 pt-12 shadow-sm"
               >
-                <span className="absolute left-0 top-0 h-full w-1.5 bg-[#F5831F]" aria-hidden />
-                <span className="absolute right-0 top-0 rounded-bl-2xl bg-[#F5831F] px-4 py-1.5 text-sm font-bold text-white">
+                <span className="absolute left-0 top-0 h-full w-1.5 bg-[#1A1714]" aria-hidden />
+                <span className="absolute right-0 top-0 rounded-bl-2xl bg-[#1A1714] px-4 py-1.5 text-sm font-bold text-white">
                   ⚠ Perlu Dicek
                 </span>
                 {editor}
-                <div className="mt-4 flex justify-end border-t border-[#EFC49E] pt-3">
+                <div className="mt-4 flex justify-end border-t border-[#FBF3E2] pt-3">
                   <button
                     type="button"
                     onClick={() => hapus(b.urutan)}
@@ -234,19 +234,19 @@ export function KonfirmasiEkstraksi() {
               ) : (
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-[18px] font-bold text-[#1C1917]">
+                    <p className="text-[18px] font-bold text-[#1A1714]">
                       {b.nama_produk ?? b.nama_mentah}
                     </p>
-                    <p className="mt-1 text-[15px] text-[#57534E]">
+                    <p className="mt-1 text-[15px] text-[#6B635A]">
                       Qty: {b.jumlah} x {b.harga_satuan !== null ? formatRupiah(b.harga_satuan) : '—'}
                     </p>
                   </div>
-                  <p className="whitespace-nowrap text-[22px] font-bold text-[#1C1917]">
+                  <p className="whitespace-nowrap text-[22px] font-bold text-[#1A1714]">
                     {formatRupiah(b.subtotal)}
                   </p>
                 </div>
               )}
-              <div className="mt-4 flex justify-end gap-6 border-t border-slate-100 pt-3">
+              <div className="mt-4 flex justify-end gap-6 border-t border-[#E8E3DA] pt-3">
                 {mengedit ? (
                   <button
                     type="button"
@@ -277,13 +277,13 @@ export function KonfirmasiEkstraksi() {
         })}
       </div>
 
-      <div className="mt-6 rounded-2xl bg-[#E9EDF6] p-5">
-        <div className="flex items-center justify-between text-lg text-[#1C1917]">
+      <div className="mt-6 rounded-2xl bg-[#E8E3DA] p-5">
+        <div className="flex items-center justify-between text-lg text-[#1A1714]">
           <span>Total Item</span>
           <span className="font-semibold">{total.item}</span>
         </div>
-        <div className="my-3 h-px bg-[#C9D2E4]" aria-hidden />
-        <div className="flex items-center justify-between text-xl font-bold text-[#1C1917]">
+        <div className="my-3 h-px bg-[#D6CFC4]" aria-hidden />
+        <div className="flex items-center justify-between text-xl font-bold text-[#1A1714]">
           <span>Total Belanja</span>
           <span>{formatRupiah(total.belanja)}</span>
         </div>
@@ -311,7 +311,7 @@ export function KonfirmasiEkstraksi() {
           </span>
         </Tombol>
       </div>
-      <p className="pt-2 text-center text-sm text-[#78716C]">
+      <p className="pt-2 text-center text-sm text-[#6B635A]">
         Belum ada yang tersimpan — periksa dulu, lalu tekan Simpan.
       </p>
     </Layar>

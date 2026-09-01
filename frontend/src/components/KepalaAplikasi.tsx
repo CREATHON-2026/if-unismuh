@@ -6,17 +6,17 @@ export function KepalaAplikasi() {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#FAD9C0] font-logo text-lg font-bold text-[#7C2D12]">
+        <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#FBF3E2] text-lg font-bold text-[#4A443D]">
           {inisial}
         </span>
-        <span className="font-logo text-2xl font-semibold text-[#D9A468]">lapakAi</span>
+        <span className="text-[19px] font-extrabold tracking-[-0.02em] text-[#1A1714]">lapakAi</span>
       </div>
       <svg
         width="26"
         height="26"
         viewBox="0 0 24 24"
         fill="none"
-        stroke="#2A2118"
+        stroke="#1A1714"
         strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"

@@ -76,28 +76,28 @@ export function SambungWhatsApp() {
 
   return (
     <Layar kembali={() => nav('/pesanan')} atas>
-      <h1 className="font-logo text-[26px] font-bold text-[#1C1917]">Sambungkan WhatsApp</h1>
-      <p className="mt-1 text-[17px] leading-relaxed text-[#57534E]">
+      <h1 className="font-logo text-[26px] font-bold text-[#1A1714]">Sambungkan WhatsApp</h1>
+      <p className="mt-1 text-[17px] leading-relaxed text-[#6B635A]">
         Supaya pesanan yang masuk terbaca sendiri, tanpa Anda salin satu-satu.
       </p>
 
       {/* Ini bukan basa-basi. Inilah yang membedakan kami dari sistem yang
           mengirim atas nama pedagang, dan pertanyaan pertama juri. */}
-      <div className="mt-4 rounded-2xl bg-[#D1F5DD] p-4">
-        <p className="text-[17px] font-bold text-[#15803D]">Hanya membaca</p>
-        <p className="mt-1 text-[15px] leading-relaxed text-[#166534]">
+      <div className="mt-4 rounded-2xl bg-[#EAF1ED] p-4">
+        <p className="text-[17px] font-bold text-[#1E6F4C]">Hanya membaca</p>
+        <p className="mt-1 text-[15px] leading-relaxed text-[#145037]">
           lapakAi <span className="font-bold">tidak pernah</span> mengirim pesan dari nomor Anda.
           Balasan tetap Anda salin dan kirim sendiri. Grup, status, dan media tidak dibaca sama
           sekali.
         </p>
       </div>
 
-      <div className="mt-4 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+      <div className="mt-4 rounded-[28px] bg-white p-6">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-[17px] text-[#57534E]">Status</span>
+          <span className="text-[17px] text-[#6B635A]">Status</span>
           <span
             className={`rounded-xl px-4 py-1.5 text-[15px] font-bold ${
-              tersambung ? 'bg-[#D1F5DD] text-[#15803D]' : 'bg-[#F7F4F1] text-[#57534E]'
+              tersambung ? 'bg-[#EAF1ED] text-[#1E6F4C]' : 'bg-[#F5F1EA] text-[#6B635A]'
             }`}
           >
             {data ? LABEL[data.status] : 'Memuat…'}
@@ -105,7 +105,7 @@ export function SambungWhatsApp() {
         </div>
 
         {data?.alasan && (
-          <p className="mt-3 rounded-2xl bg-[#FDF3D8] p-4 text-[15px] leading-relaxed text-[#8A6100]">
+          <p className="mt-3 rounded-2xl bg-[#FBF3E2] p-4 text-[15px] leading-relaxed text-[#4A443D]">
             {data.alasan}
           </p>
         )}
@@ -113,11 +113,11 @@ export function SambungWhatsApp() {
         {/* ★ Kode pairing: pengguna mengetik 8 digit ini di HP-nya sendiri. */}
         {data?.kode_pairing && !tersambung && (
           <div className="mt-5 text-center">
-            <p className="text-[15px] font-medium text-[#8A7C70]">Kode tautan Anda</p>
-            <p className="mt-1 font-logo text-[38px] font-extrabold leading-tight tracking-[0.15em] text-[#1C1917]">
+            <p className="text-[15px] font-medium text-[#6B635A]">Kode tautan Anda</p>
+            <p className="mt-1 font-logo text-[38px] font-extrabold leading-tight tracking-[0.15em] text-[#1A1714]">
               {data.kode_pairing}
             </p>
-            <div className="mt-4 rounded-2xl bg-[#F7F4F1] p-4 text-left text-[15px] leading-relaxed text-[#44403C]">
+            <div className="mt-4 rounded-2xl bg-[#F5F1EA] p-4 text-left text-[15px] leading-relaxed text-[#4A443D]">
               <p>1. Buka WhatsApp di HP Anda</p>
               <p>2. Menu titik tiga → <span className="font-bold">Perangkat Tertaut</span></p>
               <p>3. <span className="font-bold">Tautkan perangkat</span> → Tautkan dengan nomor telepon</p>
@@ -127,19 +127,19 @@ export function SambungWhatsApp() {
         )}
 
         {data?.qr && !data.kode_pairing && !tersambung && (
-          <p className="mt-4 rounded-2xl bg-[#F7F4F1] p-4 text-[15px] leading-relaxed text-[#44403C]">
+          <p className="mt-4 rounded-2xl bg-[#F5F1EA] p-4 text-[15px] leading-relaxed text-[#4A443D]">
             QR-nya muncul di terminal server. Untuk pemakaian sehari-hari, pakai kode tautan saja —
             isi nomor HP di bawah, jauh lebih mudah daripada memindai.
           </p>
         )}
 
         {tersambung ? (
-          <p className="mt-5 text-[17px] leading-relaxed text-[#44403C]">
+          <p className="mt-5 text-[17px] leading-relaxed text-[#4A443D]">
             Pesanan yang masuk sekarang terbaca sendiri. Buka Pesanan Masuk untuk melihatnya.
           </p>
         ) : (
           <>
-            <label className="mt-5 block text-[17px] font-bold text-[#1C1917]" htmlFor="wa-nomor">
+            <label className="mt-5 block text-[17px] font-bold text-[#1A1714]" htmlFor="wa-nomor">
               Nomor WhatsApp Anda
             </label>
             <div className="mt-2">
@@ -151,7 +151,7 @@ export function SambungWhatsApp() {
                 onChange={(e) => setNomor(e.target.value)}
               />
             </div>
-            <p className="mt-2 text-[15px] leading-relaxed text-[#8A7C70]">
+            <p className="mt-2 text-[15px] leading-relaxed text-[#6B635A]">
               Kosongkan kalau ingin memakai QR di terminal.
             </p>
             <div className="mt-4">
@@ -163,11 +163,11 @@ export function SambungWhatsApp() {
         )}
 
         {galat && (
-          <p className="mt-3 rounded-2xl bg-[#FBD5D5] p-4 text-[17px] text-[#B91C1C]">{galat}</p>
+          <p className="mt-3 rounded-2xl bg-[#FDEDEE] p-4 text-[17px] text-[#7A2A2F]">{galat}</p>
         )}
       </div>
 
-      <p className="mt-4 text-center text-[15px] leading-relaxed text-[#8A7C70]">
+      <p className="mt-4 text-center text-[15px] leading-relaxed text-[#6B635A]">
         Tidak wajib disambungkan. Tanpa ini pun Pesanan Masuk tetap jalan penuh — cukup salin chat
         pembeli lalu tempel.
       </p>

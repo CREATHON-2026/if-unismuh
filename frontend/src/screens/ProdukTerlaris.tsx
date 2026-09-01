@@ -10,10 +10,10 @@ const SARAN = ['Beras 5kg', 'Gula Pasir', 'Minyak Goreng'];
 function BarLangkah() {
   return (
     <div className="flex items-center justify-center gap-3" aria-hidden="true">
-      <span className="h-2 w-16 rounded-full bg-[#F8C89E]" />
-      <span className="h-2 w-16 rounded-full bg-[#F8C89E]" />
-      <span className="h-2.5 w-20 rounded-full bg-[#8B3A0E] shadow-sm" />
-      <span className="h-2 w-16 rounded-full bg-[#D9E1F0]" />
+      <span className="h-2 w-16 rounded-full bg-[#FBF3E2]" />
+      <span className="h-2 w-16 rounded-full bg-[#FBF3E2]" />
+      <span className="h-2.5 w-20 rounded-full bg-[#1A1714] shadow-sm" />
+      <span className="h-2 w-16 rounded-full bg-[#E8E3DA]" />
     </div>
   );
 }
@@ -32,15 +32,15 @@ export function ProdukTerlaris() {
     <Layar tanpaLogo atas>
       <BarLangkah />
 
-      <div className="mt-14 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)] [background-image:radial-gradient(45%_30%_at_92%_4%,rgba(45,212,191,0.12),transparent_60%)]">
+      <div className="mt-14 rounded-[28px] bg-white p-6 [background-image:radial-gradient(45%_30%_at_92%_4%,rgba(45,212,191,0.12),transparent_60%)]">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#FAD9C0]">
+          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-[#FBF3E2]">
             <svg
               width="46"
               height="46"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#7C2D12"
+              stroke="#F5F1EA"
               strokeWidth="1.7"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -51,24 +51,24 @@ export function ProdukTerlaris() {
               <path d="M10 20v-6h4v6" />
             </svg>
           </div>
-          <h1 className="font-logo text-[27px] font-bold leading-snug text-[#16233B]">
+          <h1 className="font-logo text-[27px] font-bold leading-snug text-[#1A1714]">
             Apa produk yang paling laku?
           </h1>
-          <p className="text-[17px] leading-relaxed text-[#6B5A4E]">
+          <p className="text-[17px] leading-relaxed text-[#6B635A]">
             Beritahu kami barang andalan warung Anda untuk menyesuaikan prediksi stok.
           </p>
         </div>
 
-        <label className="mt-5 block text-[17px] font-bold text-[#1C1917]" htmlFor="nama-produk">
+        <label className="mt-5 block text-[17px] font-bold text-[#1A1714]" htmlFor="nama-produk">
           Nama Produk
         </label>
-        <div className="mt-2 flex h-16 items-center gap-3 rounded-2xl border border-[#B07A4E] bg-white px-4">
+        <div className="mt-2 flex h-16 items-center gap-3 rounded-2xl border border-[#D6CFC4] bg-white px-4">
           <svg
             width="26"
             height="26"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#7C2D12"
+            stroke="#F5F1EA"
             strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -84,13 +84,13 @@ export function ProdukTerlaris() {
             placeholder="Misal: Indomie Goreng, Kopi Kapal"
             value={produk}
             onChange={(e) => setProduk(e.target.value)}
-            className="h-full flex-1 bg-transparent text-lg outline-none placeholder:text-[#D8B49A]"
+            className="h-full flex-1 bg-transparent text-lg outline-none placeholder:text-[#6B635A]"
           />
         </div>
-        <p className="mt-3 flex items-center gap-2 text-[15px] text-[#6B5A4E]">
+        <p className="mt-3 flex items-center gap-2 text-[15px] text-[#6B635A]">
           <span
             aria-hidden
-            className="flex h-5 w-5 items-center justify-center rounded-full border border-[#6B5A4E] text-xs"
+            className="flex h-5 w-5 items-center justify-center rounded-full border border-[#6B635A] text-xs"
           >
             i
           </span>
@@ -108,16 +108,16 @@ export function ProdukTerlaris() {
           </Tombol>
         </div>
 
-        <div className="my-6 h-px bg-[#DCE4F0]" />
+        <div className="my-6 h-px bg-[#E8E3DA]" />
 
-        <p className="text-center text-[17px] font-bold text-[#1C1917]">Saran populer:</p>
+        <p className="text-center text-[17px] font-bold text-[#1A1714]">Saran populer:</p>
         <div className="mt-4 flex flex-wrap justify-center gap-3 pb-2">
           {SARAN.map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => setProduk(s)}
-              className="rounded-full border border-[#E4C7AC] bg-white px-6 py-3 text-[17px] font-medium text-[#1C1917] transition active:scale-95"
+              className="rounded-full border border-[#D6CFC4] bg-white px-6 py-3 text-[17px] font-medium text-[#1A1714] transition active:scale-95"
             >
               {s}
             </button>

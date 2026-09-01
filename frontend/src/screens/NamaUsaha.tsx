@@ -31,22 +31,22 @@ export function NamaUsaha() {
         </Tombol>
       }
     >
-      <h1 className="font-logo text-[28px] font-bold text-[#C2570E]">Mulai Kenalan Yuk!</h1>
-      <p className="text-[17px] leading-relaxed text-[#44403C]">
+      <h1 className="font-logo text-[28px] font-bold text-[#1A1714]">Mulai Kenalan Yuk!</h1>
+      <p className="text-[17px] leading-relaxed text-[#4A443D]">
         Satu langkah lagi untuk pembukuan warung yang lebih gampang dan rapi.
       </p>
 
-      <div className="mt-6 rounded-3xl bg-white/95 p-6 shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
-        <label className="text-2xl font-bold text-[#1C1917]" htmlFor="nama-usaha">
+      <div className="mt-6 rounded-3xl bg-white/95 p-6">
+        <label className="text-2xl font-bold text-[#1A1714]" htmlFor="nama-usaha">
           Apa nama usaha Anda?
         </label>
-        <div className="mt-4 flex h-16 items-center gap-3 rounded-2xl border border-[#C9A98F] bg-white px-4">
+        <div className="mt-4 flex h-16 items-center gap-3 rounded-2xl border border-[#D6CFC4] bg-white px-4">
           <svg
             width="26"
             height="26"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#7C2D12"
+            stroke="#F5F1EA"
             strokeWidth="1.8"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -62,13 +62,13 @@ export function NamaUsaha() {
             placeholder="Contoh: Warung Bu Sri"
             value={nama}
             onChange={(e) => setNama(e.target.value)}
-            className="h-full flex-1 bg-transparent text-lg outline-none placeholder:text-[#D8B49A]"
+            className="h-full flex-1 bg-transparent text-lg outline-none placeholder:text-[#6B635A]"
           />
         </div>
-        <p className="mt-3 flex items-center gap-2 text-[15px] text-[#57534E]">
+        <p className="mt-3 flex items-center gap-2 text-[15px] text-[#6B635A]">
           <span
             aria-hidden
-            className="flex h-5 w-5 items-center justify-center rounded-full border border-[#57534E] text-xs"
+            className="flex h-5 w-5 items-center justify-center rounded-full border border-[#6B635A] text-xs"
           >
             i
           </span>

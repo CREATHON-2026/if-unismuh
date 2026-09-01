@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ambilSaya } from './api/client';
 import { ambilToken, simpanToken } from './api/sesi';
+import { tulisOnboarding } from './state/onboarding';
 import { Sambutan } from './screens/Sambutan';
 import { NomorHp } from './screens/NomorHp';
 import { KodeOtp } from './screens/KodeOtp';
@@ -31,6 +32,9 @@ export default function App() {
     void ambilSaya().then((jawaban) => {
       if (jawaban.ok) {
         simpanToken(jawaban.data.token);
+        if (jawaban.data.pengguna.nama_usaha) {
+          tulisOnboarding({ nama_usaha: jawaban.data.pengguna.nama_usaha });
+        }
         nav(jawaban.data.pengguna_baru ? '/onboarding/usaha' : '/beranda');
       }
     });

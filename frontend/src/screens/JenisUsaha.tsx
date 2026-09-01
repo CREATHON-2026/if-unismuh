@@ -7,7 +7,7 @@ import { Layar } from '../components/Layar';
 import { TitikLangkah } from '../components/TitikLangkah';
 import { bacaOnboarding, tulisOnboarding } from '../state/onboarding';
 
-const COKELAT = '#8B3A0E';
+const COKELAT = '#1A1714';
 
 function Ikon({ anak }: { anak: ReactNode }) {
   return (
@@ -146,8 +146,8 @@ export function JenisUsaha() {
           onClick={lanjut}
           className={`h-16 w-full rounded-full text-lg font-bold transition ${
             pilihan && !sibuk
-              ? 'bg-[#A8500B] text-white active:scale-[0.98]'
-              : 'bg-[#E4E9F5] text-[#9AA6B8]'
+              ? 'bg-[#1A1714] text-white active:scale-[0.98]'
+              : 'bg-[#E8E3DA] text-[#6B635A]'
           }`}
         >
           <span className="flex items-center justify-center gap-3">
@@ -164,15 +164,15 @@ export function JenisUsaha() {
           type="button"
           aria-label="Kembali"
           onClick={() => nav(-1)}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E4E9F5] text-2xl text-slate-900 active:scale-95"
+          className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8E3DA] text-2xl text-[#1A1714] active:scale-95"
         >
           ←
         </button>
         <TitikLangkah aktif={1} />
       </div>
 
-      <h1 className="pt-6 font-logo text-[28px] font-bold text-[#1C1917]">Apa jenis usahamu?</h1>
-      <p className="text-[17px] leading-relaxed text-[#8A5A33]">
+      <h1 className="pt-6 font-logo text-[28px] font-bold text-[#1A1714]">Apa jenis usahamu?</h1>
+      <p className="text-[17px] leading-relaxed text-[#6B635A]">
         Pilih satu yang paling menggambarkan bisnismu agar LapakAi bisa beradaptasi.
       </p>
       {galat && <p className="font-semibold text-red-600">{galat}</p>}
@@ -187,16 +187,16 @@ export function JenisUsaha() {
               onClick={() => setPilihan(p.id as JenisUsahaTipe)}
               className={`flex items-center gap-4 rounded-[22px] border p-4 text-left transition active:scale-[0.99] ${
                 dipilih
-                  ? 'border-[#F5831F] bg-[#FFF6EE] ring-1 ring-[#F5831F]'
-                  : 'border-[#E4C7AC] bg-white/80'
+                  ? 'border-[#1A1714] bg-[#F5F1EA] ring-1 ring-[#1A1714]'
+                  : 'border-[#D6CFC4] bg-white/80'
               }`}
             >
-              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#E3E9F8]">
+              <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#E8E3DA]">
                 {p.ikon}
               </span>
               <span>
-                <span className="block text-xl font-bold text-[#1C1917]">{p.judul}</span>
-                <span className="text-[15px] leading-snug text-[#57534E]">{p.deskripsi}</span>
+                <span className="block text-xl font-bold text-[#1A1714]">{p.judul}</span>
+                <span className="text-[15px] leading-snug text-[#6B635A]">{p.deskripsi}</span>
               </span>
             </button>
           );

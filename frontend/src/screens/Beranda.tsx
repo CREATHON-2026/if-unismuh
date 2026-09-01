@@ -7,13 +7,15 @@ import { Layar } from '../components/Layar';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
 import { NavBawah } from '../components/NavBawah';
 import { Tombol } from '../components/Tombol';
+import { bacaOnboarding } from '../state/onboarding';
 
 /**
  * Beranda — fitur 7, dan tamparan pertama demo.
  *
- * Omzet dan untung bersih BERSEBELAHAN, ukuran sama, tanpa penjelasan di
- * antaranya. Selisihnya yang harus berbicara, bukan kalimat kita. Inilah satu
- * hal yang paling sering keliru dipahami pedagang: omzet dikira untung.
+ * Untung jadi angka utama, uang masuk jadi pembandingnya tepat di bawah. Ini
+ * inti seluruh layar: pedagang datang mengira omzet adalah untung. Menaruh
+ * keduanya sama besar justru membuatnya terasa setara — padahal yang satu uang
+ * lewat, yang satu uang tinggal.
  *
  * Tidak ada satu pun angka di berkas ini yang dihitung. Semuanya datang jadi
  * dari GET /beranda — aturan #7.
@@ -27,20 +29,17 @@ export function Beranda() {
     void ambilBeranda().then((j) => (j.ok ? setData(j.data) : setGalat(j.error.pesan)));
   }, []);
 
-  if (galat) {
+  if (galat || !data) {
     return (
       <Layar tanpaLogo atas>
         <KepalaAplikasi />
-        <p className="mt-10 rounded-2xl bg-[#FBD5D5] p-4 text-[17px] text-[#B91C1C]">{galat}</p>
-        <NavBawah />
-      </Layar>
-    );
-  }
-  if (!data) {
-    return (
-      <Layar tanpaLogo atas>
-        <KepalaAplikasi />
-        <p className="mt-10 text-center text-[17px] text-[#8A7C70]">Memuat…</p>
+        {galat ? (
+          <p className="mt-10 rounded-[14px] bg-[#FDEDEE] px-4 py-3.5 text-[15px] text-[#7A2A2F]">
+            {galat}
+          </p>
+        ) : (
+          <p className="mt-10 text-center text-[15px] text-[#6B635A]">Memuat…</p>
+        )}
         <NavBawah />
       </Layar>
     );
@@ -50,82 +49,84 @@ export function Beranda() {
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
 
-      <h1 className="mt-8 font-logo text-[26px] font-bold text-[#1C1917]">Bulan ini</h1>
+      <div className="mt-6">
+        <p className="text-[14px] text-[#6B635A]">Bulan ini</p>
+        <p className="text-[22px] font-bold tracking-[-0.02em] text-[#1A1714]">
+          {bacaOnboarding().nama_usaha ?? 'Warung Anda'}
+        </p>
+      </div>
 
-      {/* ★ Bersebelahan, ukuran sama. Diam sebentar di sini saat demo.
-          Ukuran angkanya 21px, bukan 27px: pada layar 430px, "Rp 4.200.000"
-          turun ke baris kedua sementara "Rp 268.000" tetap satu baris — dan dua
-          angka yang seharusnya dibandingkan jadi tidak sejajar. Justru
-          perbandingan itu yang menjadi inti layar ini. */}
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div className="min-w-0 rounded-[24px] bg-white p-4 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-          <p className="text-[15px] font-medium text-[#8A7C70]">Omzet</p>
-          <p className="mt-1 whitespace-nowrap font-logo text-[21px] font-extrabold leading-tight text-[#1C1917] tabular-nums">
-            {formatRupiah(data.omzet)}
-          </p>
-          <p className="mt-1 text-[13px] leading-snug text-[#A8A29E]">uang yang masuk</p>
-        </div>
-        <div className="min-w-0 rounded-[24px] bg-white p-4 shadow-[0_10px_40px_rgba(0,0,0,0.06)] [background-image:radial-gradient(60%_45%_at_92%_6%,rgba(21,128,61,0.09),transparent_65%)]">
-          <p className="text-[15px] font-medium text-[#8A7C70]">Untung bersih</p>
-          <p className="mt-1 whitespace-nowrap font-logo text-[21px] font-extrabold leading-tight text-[#15803D] tabular-nums">
-            {formatRupiah(data.untung_bersih)}
-          </p>
-          <p className="mt-1 text-[13px] leading-snug text-[#A8A29E]">
-            yang benar-benar dibawa pulang
-          </p>
+      <div className="mt-3 rounded-[22px] bg-white p-6">
+        <p className="text-[14px] text-[#6B635A]">Untung bersih</p>
+        <p className="angka mt-1 text-[40px] font-extrabold leading-none text-[#1E6F4C]">
+          {formatRupiah(data.untung_bersih)}
+        </p>
+        <div className="mt-4 flex gap-7 border-t border-[#E8E3DA] pt-4">
+          <div>
+            <p className="text-[13px] text-[#6B635A]">Uang masuk</p>
+            <p className="angka mt-0.5 text-[18px] font-semibold text-[#1A1714]">
+              {formatRupiah(data.omzet)}
+            </p>
+          </div>
+          <div>
+            <p className="text-[13px] text-[#6B635A]">Produk merugi</p>
+            <p className="angka mt-0.5 text-[18px] font-semibold text-[#1A1714]">
+              {data.jumlah_produk_merugi}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Angka yang tidak lengkap harus mengaku tidak lengkap. */}
       {data.baris_tanpa_modal > 0 && (
-        <p className="mt-3 rounded-2xl bg-[#FDF3D8] p-4 text-[15px] leading-relaxed text-[#8A6100]">
-          {data.baris_tanpa_modal} penjualan belum terhitung untungnya karena modal produknya
-          belum diisi. Sudah masuk omzet, belum masuk untung bersih.
+        <p className="mt-3 rounded-[14px] bg-[#FBF3E2] px-4 py-3.5 text-[14px] leading-relaxed text-[#4A443D]">
+          {data.baris_tanpa_modal} penjualan belum ikut dihitung untungnya — modal produknya belum
+          lengkap. Sudah masuk uang masuk, belum masuk untung bersih.
         </p>
       )}
 
       {!data.ada_transaksi && (
-        <div className="mt-3 rounded-2xl bg-white p-5 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
-          <p className="text-[17px] leading-relaxed text-[#44403C]">
-            Belum ada penjualan yang dicatat bulan ini. Catat yang hari ini dulu — cukup
-            diucapkan, tidak perlu diketik satu-satu.
+        <div className="mt-3 rounded-[22px] bg-white p-6">
+          <p className="text-[16px] leading-relaxed text-[#4A443D]">
+            Belum ada penjualan yang dicatat bulan ini. Catat yang hari ini dulu — cukup diucapkan,
+            tidak perlu diketik satu-satu.
           </p>
-          <div className="mt-4">
-            <Tombol varian="gelap" onClick={() => nav('/catat')}>
-              Catat penjualan
-            </Tombol>
-          </div>
         </div>
       )}
 
       {/* Terisi meski belum ada transaksi — dihitung dari resep, bukan penjualan. */}
-      {data.jumlah_produk_merugi > 0 && (
-        <button
-          type="button"
-          onClick={() => nav('/produk')}
-          className="mt-3 w-full rounded-[24px] bg-white p-5 text-left shadow-[0_10px_40px_rgba(0,0,0,0.06)] [background-image:radial-gradient(45%_35%_at_95%_5%,rgba(239,68,68,0.09),transparent_60%)] transition active:scale-[0.99]"
-        >
-          <div className="flex items-center justify-between gap-3">
-            <p className="text-[17px] font-bold text-[#1C1917]">
-              {data.jumlah_produk_merugi} produk Anda merugi
+      {data.produk_paling_merugi && (
+        <>
+          <p className="label-bagian mt-6">PALING MERUGI</p>
+          <button
+            type="button"
+            onClick={() => nav('/produk')}
+            className="mt-2 w-full rounded-[22px] bg-white p-5 text-left transition active:scale-[0.99]"
+          >
+            <div className="flex w-full items-baseline justify-between gap-3">
+              <span className="text-[18px] font-bold text-[#1A1714]">
+                {data.produk_paling_merugi.nama}
+              </span>
+              <span className="angka text-[16px] font-bold text-[#B0111F]">
+                &minus; {formatRupiah(Math.abs(data.produk_paling_merugi.margin_per_unit))}
+              </span>
+            </div>
+            <p className="mt-2 text-[14px] leading-relaxed text-[#6B635A]">
+              Rugi sebanyak itu setiap kali terjual. Ketuk untuk melihat harga yang sebaiknya
+              dipakai.
             </p>
-            <span aria-hidden className="text-2xl leading-none text-[#A8500B]">
-              →
-            </span>
-          </div>
-          {data.produk_paling_merugi && (
-            <p className="mt-2 text-[17px] leading-relaxed text-[#44403C]">
-              Paling parah{' '}
-              <span className="font-bold text-[#1C1917]">{data.produk_paling_merugi.nama}</span> —
-              rugi{' '}
-              <span className="font-bold text-[#DC2626]">
-                {formatRupiah(Math.abs(data.produk_paling_merugi.margin_per_unit))}
-              </span>{' '}
-              setiap kali terjual.
-            </p>
-          )}
-        </button>
+          </button>
+        </>
       )}
+
+      <div className="mt-4 flex gap-2.5">
+        <Tombol className="flex-1" onClick={() => nav('/catat')}>
+          Catat penjualan
+        </Tombol>
+        <Tombol varian="garis" className="flex-1" onClick={() => nav('/pesanan')}>
+          Pesanan
+        </Tombol>
+      </div>
 
       <NavBawah />
     </Layar>

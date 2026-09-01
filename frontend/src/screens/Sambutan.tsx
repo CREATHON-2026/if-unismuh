@@ -19,21 +19,21 @@ export function Sambutan() {
               </span>
             </span>
           </Tombol>
-          <p className="pt-1 text-center text-[15px] font-medium text-[#57534E]">
+          <p className="pt-1 text-center text-[15px] font-medium text-[#6B635A]">
             Mudah. Cepat. Otomatis.
           </p>
         </>
       }
     >
       <div className="flex flex-col items-center gap-5 text-center">
-        <div className="flex items-center gap-3 rounded-3xl bg-white px-8 py-6 shadow-lg ring-1 ring-slate-100">
+        <div className="flex items-center gap-3 rounded-3xl bg-white px-8 py-6  ring-1 ring-[#E8E3DA]">
           <LogoIkon ukuran={64} />
-          <span className="font-logo text-4xl font-bold tracking-tight text-[#2B4C9B]">
+          <span className="font-logo text-4xl font-bold tracking-tight text-[#1A1714]">
             LapakAI
           </span>
         </div>
-        <p className="mt-4 font-logo text-4xl font-bold text-[#B4530A]">LapakAI</p>
-        <p className="text-2xl text-[#484440]">Bantu UMKM Makin Cuan!</p>
+        <p className="mt-4 font-logo text-4xl font-bold text-[#1A1714]">LapakAI</p>
+        <p className="text-2xl text-[#4A443D]">Bantu UMKM Makin Cuan!</p>
       </div>
     </Layar>
   );

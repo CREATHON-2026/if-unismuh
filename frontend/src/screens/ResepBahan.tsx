@@ -42,19 +42,19 @@ export function ResepBahan() {
   }
 
   const kelasInput =
-    'h-14 rounded-2xl border border-[#D5DCEA] bg-[#F1F4FB] px-4 text-lg outline-none focus:border-[#F5831F] placeholder:text-[#8C93A3]';
+    'h-14 rounded-2xl border border-[#E8E3DA] bg-[#F5F1EA] px-4 text-lg outline-none focus:border-[#1A1714] placeholder:text-[#6B635A]';
 
   return (
     <Layar tanpaLogo atas>
       <KepalaResep langkah={1} label="Bahan" />
 
-      <div className="mt-6 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+      <div className="mt-6 rounded-[28px] bg-white p-6">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h1 className="font-logo text-[26px] font-bold text-[#16233B]">
+            <h1 className="font-logo text-[26px] font-bold text-[#1A1714]">
               Apa saja bahan yang dipakai?
             </h1>
-            <p className="mt-2 text-[17px] text-[#44403C]">
+            <p className="mt-2 text-[17px] text-[#4A443D]">
               Isi satu per satu bahan untuk sekali bikin.
             </p>
           </div>
@@ -62,14 +62,14 @@ export function ResepBahan() {
             type="button"
             aria-label="Rekam suara"
             onClick={() => setCatatan('Fitur suara segera aktif — sementara ketik dulu ya')}
-            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#F5831F] shadow-md active:scale-95"
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#1A1714] shadow-md active:scale-95"
           >
             <svg
               width="26"
               height="26"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#3A2410"
+              stroke="#1A1714"
               strokeWidth="1.8"
               strokeLinecap="round"
               aria-hidden="true"
@@ -80,16 +80,16 @@ export function ResepBahan() {
             </svg>
           </button>
         </div>
-        {catatan && <p className="mt-2 text-sm text-[#78716C]">{catatan}</p>}
+        {catatan && <p className="mt-2 text-sm text-[#6B635A]">{catatan}</p>}
 
         {daftar.length > 0 && (
           <div className="mt-4 flex flex-col gap-2">
             {daftar.map((b, i) => (
               <div
                 key={`${b.nama}-${i}`}
-                className="flex items-center justify-between rounded-xl bg-[#F6F7FB] px-4 py-3"
+                className="flex items-center justify-between rounded-xl bg-[#F5F1EA] px-4 py-3"
               >
-                <p className="text-[16px] text-[#1C1917]">
+                <p className="text-[16px] text-[#1A1714]">
                   <span className="font-bold">{b.nama}</span> — {b.jumlah} {b.satuan}, beli{' '}
                   {b.jumlah_beli} {b.satuan} {formatRupiah(b.harga_beli)}
                 </p>
@@ -151,7 +151,7 @@ export function ResepBahan() {
             type="button"
             disabled={!formValid}
             onClick={tambah}
-            className="h-12 rounded-full border-2 border-[#F5831F] font-bold text-[#C2570E] transition active:scale-[0.98] disabled:opacity-40"
+            className="h-12 rounded-full border-2 border-[#1A1714] font-bold text-[#1A1714] transition active:scale-[0.98] disabled:opacity-40"
           >
             + Tambah Bahan
           </button>

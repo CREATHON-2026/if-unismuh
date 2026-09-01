@@ -42,9 +42,9 @@ export function NomorHp() {
               )}
             </span>
           </Tombol>
-          <p className="text-center text-sm text-[#57534E]">
+          <p className="text-center text-sm text-[#6B635A]">
             Dengan melanjutkan, kamu setuju dengan{' '}
-            <a href="#" className="font-semibold text-[#C2570E] underline">
+            <a href="#" className="font-semibold text-[#1A1714] underline">
               Syarat & Ketentuan
             </a>
             .
@@ -52,7 +52,7 @@ export function NomorHp() {
         </>
       }
     >
-      <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[22px] bg-[#F5831F]">
+      <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[22px] bg-[#1A1714]">
         <svg
           width="34"
           height="34"
@@ -68,18 +68,18 @@ export function NomorHp() {
         </svg>
       </div>
 
-      <h1 className="pt-2 font-logo text-[28px] font-bold text-[#1C1917]">Masuk ke Warungmu</h1>
-      <p className="text-[17px] leading-relaxed text-[#57534E]">
+      <h1 className="pt-2 font-logo text-[28px] font-bold text-[#1A1714]">Masuk ke Warungmu</h1>
+      <p className="text-[17px] leading-relaxed text-[#6B635A]">
         Kami akan mengirimkan kode verifikasi via WhatsApp atau SMS untuk memastikan ini benar
         kamu.
       </p>
 
-      <label className="pt-4 text-lg font-bold text-[#1C1917]" htmlFor="nomor-hp">
+      <label className="pt-4 text-lg font-bold text-[#1A1714]" htmlFor="nomor-hp">
         Masukkan Nomor HP
       </label>
-      <div className="flex h-16 items-center rounded-2xl border border-[#C9A98F] bg-white px-4">
-        <span className="text-lg font-bold text-[#1C1917]">+62</span>
-        <span className="mx-3 h-8 w-px bg-[#E7D8C9]" aria-hidden="true" />
+      <div className="flex h-16 items-center rounded-2xl border border-[#D6CFC4] bg-white px-4">
+        <span className="text-lg font-bold text-[#1A1714]">+62</span>
+        <span className="mx-3 h-8 w-px bg-[#E8E3DA]" aria-hidden="true" />
         <input
           id="nomor-hp"
           type="tel"
@@ -88,10 +88,10 @@ export function NomorHp() {
           placeholder="812 3456 7890"
           value={nomor}
           onChange={(e) => setNomor(e.target.value.replace(/\D/g, '').replace(/^0+/, ''))}
-          className="h-full flex-1 bg-transparent text-lg tracking-wider outline-none placeholder:text-[#E7B896]"
+          className="h-full flex-1 bg-transparent text-lg tracking-wider outline-none placeholder:text-[#FBF3E2]"
         />
       </div>
-      <p className="text-[15px] text-[#78716C]">Pastikan nomor aktif dan bisa menerima pesan.</p>
+      <p className="text-[15px] text-[#6B635A]">Pastikan nomor aktif dan bisa menerima pesan.</p>
       {galat && <p className="font-semibold text-red-600">{galat}</p>}
     </Layar>
   );

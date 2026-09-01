@@ -33,23 +33,23 @@ export function InfoWhatsApp() {
         </Tombol>
       }
     >
-      <h1 className="text-center font-logo text-[28px] font-bold text-[#1C1917]">
+      <h1 className="text-center font-logo text-[28px] font-bold text-[#1A1714]">
         Pesanan Lewat WhatsApp?
       </h1>
-      <p className="text-center text-[17px] leading-relaxed text-[#8A5A33]">
+      <p className="text-center text-[17px] leading-relaxed text-[#6B635A]">
         lapakAi membaca chat pesanan yang Anda tempel — tanpa perlu menghubungkan akun WhatsApp
         Anda.
       </p>
 
-      <div className="mt-4 rounded-[28px] bg-white p-8 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+      <div className="mt-4 rounded-[28px] bg-white p-8">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#D1F5DD]">
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#EAF1ED]">
             <svg
               width="42"
               height="42"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#15803D"
+              stroke="#1E6F4C"
               strokeWidth="1.8"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -60,14 +60,14 @@ export function InfoWhatsApp() {
               <path d="M8.5 14h4.5" />
             </svg>
           </div>
-          <p className="text-[17px] leading-relaxed text-[#44403C]">
+          <p className="text-[17px] leading-relaxed text-[#4A443D]">
             Salin chat pembeli, tempel di <span className="font-bold">Pesanan Masuk</span> —
             lapakAi mengecek untung dan stoknya, lalu menyiapkan balasan untuk Anda salin.
           </p>
         </div>
       </div>
 
-      <div className="mt-5 rounded-[24px] bg-[#E9EFFB] p-6 text-[17px] leading-relaxed text-[#1C1917]">
+      <div className="mt-5 rounded-[24px] bg-[#E8E3DA] p-6 text-[17px] leading-relaxed text-[#1A1714]">
         <p>1. Buka WhatsApp di HP Anda</p>
         <p className="mt-3">
           2. Tekan lama pesan pembeli, lalu ketuk <span className="font-bold">Salin</span>
@@ -80,7 +80,7 @@ export function InfoWhatsApp() {
         </p>
       </div>
 
-      <p className="mt-5 text-center text-[15px] text-[#78716C]">
+      <p className="mt-5 text-center text-[15px] text-[#6B635A]">
         lapakAi tidak pernah mengirim pesan ke pembeli Anda — balasan selalu Anda kirim sendiri.
       </p>
     </Layar>
