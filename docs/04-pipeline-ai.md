@@ -82,11 +82,41 @@ Untuk pesanan dan tawaran, keluarannya: nama produk, jumlah, harga yang diminta 
 
 | Skor kemiripan | Tindakan |
 |---|---|
-| ≥ 0,90 | Cocokkan otomatis, tapi tetap tampilkan di layar konfirmasi |
-| 0,70 – 0,89 | **Tanya**: "Maksudnya Kripik Pisang?" dengan tombol Ya/Bukan |
-| < 0,70 | Perlakukan sebagai produk baru, tawarkan untuk ditambahkan |
+| ≥ 0,85 | Cocokkan otomatis, tapi tetap tampilkan di layar konfirmasi |
+| 0,40 – 0,84 | **Tanya**: "Maksudnya Kripik Pisang?" dengan tombol Ya/Bukan |
+| < 0,40 | Perlakukan sebagai produk baru, tawarkan untuk ditambahkan |
 
-Angka ambang di atas adalah titik awal. Setel ulang setelah diuji dengan data asli.
+### Angka ini hasil pengukuran, bukan tebakan
+
+Diukur dengan `pg_trgm` di PostgreSQL 18:
+
+| Nama mentah | Produk | Skor | Seharusnya |
+|---|---|---|---|
+| `kripik pisang` | Kripik Pisang | **1,000** | cocok |
+| `kripik sgkong` | Kripik Singkong | **0,667** | cocok |
+| `krpk pisang` | Kripik Pisang | **0,529** | cocok |
+| `kripik` | Kripik Pisang | **0,500** | cocok |
+| `kripik psg` | Kripik Pisang | **0,471** | cocok |
+| `kripik psg` | Kripik Singkong | **0,350** | jangan cocok |
+| `kacang` | Kripik Pisang | **0,167** | jangan cocok |
+| `air mineral` | Kripik Pisang | **0,000** | jangan cocok |
+
+**Ambang 0,70 yang sempat tertulis di dokumen ini keliru dan berbahaya.** Dengan angka itu, `"kripik psg"` akan diperlakukan sebagai produk baru — membuat produk duplikat, memecah datanya, dan diam-diam merusak seluruh perhitungan margin produk itu. Tidak akan ada pesan galat; angkanya cuma jadi salah.
+
+### Skor mutlak saja tidak cukup
+
+Perhatikan jaraknya: kandidat benar terburuk 0,471, kandidat salah terbaik 0,350. Bandnya sempit, dan itu berarti satu ambang mutlak akan salah cepat atau lambat.
+
+Karena itu **bandingkan juga kandidat teratas dengan kandidat kedua.** Kalau selisihnya kecil (di bawah 0,15), model memang tidak bisa membedakan — tanya, jangan pilih sendiri:
+
+```sql
+SELECT id, nama, similarity(nama, $2) AS skor
+FROM produk
+WHERE user_id = $1 AND similarity(nama, $2) > 0.3
+ORDER BY skor DESC LIMIT 2;
+```
+
+Kalau `skor[0] - skor[1] < 0.15`, tampilkan keduanya dan biarkan pengguna memilih. Ini penerapan langsung [aturan #8](../CLAUDE.md): kalau ragu, bertanya.
 
 ### Kenapa ada ambang
 
