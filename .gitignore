@@ -32,3 +32,5 @@ npm-debug.log*
 # graphify: file lokal spesifik mesin (path python/scan root), bukan hasil graf
 graphify-out/.graphify_python
 graphify-out/.graphify_root
+# graphify: log biaya per-run, selalu bertambah -> dijamin bentrok antar anggota tim
+graphify-out/cost.json
