@@ -1,0 +1,37 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1788246606.1330347,
+    "ast_hash": "21aa8feed779526e27ddf46609c4afdb",
+    "semantic_hash": "21aa8feed779526e27ddf46609c4afdb"
+  },
+  ".github/ISSUE_TEMPLATE/bug_report.md": {
+    "mtime": 1788246227.5834694,
+    "ast_hash": "c43dc5a423dfc0d59a47d8d95c0e7dbf",
+    "semantic_hash": "c43dc5a423dfc0d59a47d8d95c0e7dbf"
+  },
+  ".github/ISSUE_TEMPLATE/feature_request.md": {
+    "mtime": 1788246230.2729547,
+    "ast_hash": "a74bd8911b49e0a59a2814c0a7c2ba14",
+    "semantic_hash": "a74bd8911b49e0a59a2814c0a7c2ba14"
+  },
+  ".github/PULL_REQUEST_TEMPLATE.md": {
+    "mtime": 1788246224.224314,
+    "ast_hash": "301af57f1ed66b91e3408709592a55d5",
+    "semantic_hash": "301af57f1ed66b91e3408709592a55d5"
+  },
+  "CLAUDE.md": {
+    "mtime": 1788246205.042179,
+    "ast_hash": "79e65bba7035d7a9537b9a299012ad0a",
+    "semantic_hash": "79e65bba7035d7a9537b9a299012ad0a"
+  },
+  "CONTRIBUTING.md": {
+    "mtime": 1788246216.7904017,
+    "ast_hash": "74a20df4cac9620431c499e23c44f8fe",
+    "semantic_hash": "74a20df4cac9620431c499e23c44f8fe"
+  },
+  "README.md": {
+    "mtime": 1788245874.9788716,
+    "ast_hash": "2024c60adbd777cc58a49cb98c73e54f",
+    "semantic_hash": "2024c60adbd777cc58a49cb98c73e54f"
+  }
+}

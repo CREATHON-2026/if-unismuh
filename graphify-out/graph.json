@@ -1,0 +1,638 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "ai_generated_code_governance",
+        "label": "AI-Generated Code Governance Flow",
+        "nodes": [
+          "claude_ai_pr_review_rule",
+          "contributing_ai_generated_code_rule",
+          "github_pull_request_template_ai_generated_checkbox"
+        ],
+        "relation": "form",
+        "confidence": "INFERRED",
+        "confidence_score": 0.85,
+        "source_file": "CONTRIBUTING.md"
+      },
+      {
+        "id": "secret_credential_handling_flow",
+        "label": "Secret/Credential Handling Rules Across Repo",
+        "nodes": [
+          "claude_env_secret_storage",
+          "contributing_secret_credential_rule",
+          "github_pull_request_template_checklist"
+        ],
+        "relation": "form",
+        "confidence": "INFERRED",
+        "confidence_score": 0.85,
+        "source_file": "CONTRIBUTING.md"
+      },
+      {
+        "id": "contribution_workflow",
+        "label": "Branch-to-Merge Contribution Workflow",
+        "nodes": [
+          "contributing_branch_naming_convention",
+          "contributing_conventional_commits",
+          "contributing_pr_review_requirement",
+          "contributing_squash_merge"
+        ],
+        "relation": "participate_in",
+        "confidence": "INFERRED",
+        "confidence_score": 0.85,
+        "source_file": "CONTRIBUTING.md"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "Bug Report Issue Template",
+      "file_type": "document",
+      "source_file": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_issue_template_bug_report_document",
+      "community": 4,
+      "norm_label": "bug report issue template"
+    },
+    {
+      "label": "Bug Report Template Structure",
+      "file_type": "concept",
+      "source_file": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_issue_template_bug_report_structure",
+      "community": 4,
+      "norm_label": "bug report template structure"
+    },
+    {
+      "label": "Feature Request Issue Template",
+      "file_type": "document",
+      "source_file": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_issue_template_feature_request_document",
+      "community": 4,
+      "norm_label": "feature request issue template"
+    },
+    {
+      "label": "Feature Request Template Structure",
+      "file_type": "concept",
+      "source_file": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_issue_template_feature_request_structure",
+      "community": 4,
+      "norm_label": "feature request template structure"
+    },
+    {
+      "label": "Pull Request Template",
+      "file_type": "document",
+      "source_file": ".github/PULL_REQUEST_TEMPLATE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_pull_request_template_document",
+      "community": 0,
+      "norm_label": "pull request template"
+    },
+    {
+      "label": "PR Template AI-Generated Disclosure Checkbox",
+      "file_type": "concept",
+      "source_file": ".github/PULL_REQUEST_TEMPLATE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_pull_request_template_ai_generated_checkbox",
+      "community": 0,
+      "norm_label": "pr template ai-generated disclosure checkbox"
+    },
+    {
+      "label": "PR Template Checklist (tested, no secrets, docs updated)",
+      "file_type": "concept",
+      "source_file": ".github/PULL_REQUEST_TEMPLATE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_pull_request_template_checklist",
+      "community": 2,
+      "norm_label": "pr template checklist (tested, no secrets, docs updated)"
+    },
+    {
+      "label": "CLAUDE.md Project Guide",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_document",
+      "community": 1,
+      "norm_label": "claude.md project guide"
+    },
+    {
+      "label": "AI-Generated Code Must Go Through PR Review",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_ai_pr_review_rule",
+      "community": 0,
+      "norm_label": "ai-generated code must go through pr review"
+    },
+    {
+      "label": "Secrets Must Live in .env, Not in Code",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_env_secret_storage",
+      "community": 2,
+      "norm_label": "secrets must live in .env, not in code"
+    },
+    {
+      "label": "Discuss Large AI-Proposed Changes Before Executing",
+      "file_type": "rationale",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "claude_ai_major_change_rule",
+      "community": 0,
+      "norm_label": "discuss large ai-proposed changes before executing"
+    },
+    {
+      "label": "CONTRIBUTING.md",
+      "file_type": "document",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_document",
+      "community": 3,
+      "norm_label": "contributing.md"
+    },
+    {
+      "label": "Branch Naming Convention (feature/, fix/, chore/)",
+      "file_type": "concept",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_branch_naming_convention",
+      "community": 1,
+      "norm_label": "branch naming convention (feature/, fix/, chore/)"
+    },
+    {
+      "label": "Conventional Commits",
+      "file_type": "concept",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_conventional_commits",
+      "community": 1,
+      "norm_label": "conventional commits"
+    },
+    {
+      "label": "Main Branch Always Deployable, No Direct Commits",
+      "file_type": "rationale",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_main_branch_protection",
+      "community": 3,
+      "norm_label": "main branch always deployable, no direct commits"
+    },
+    {
+      "label": "Minimum One Review Before Merge",
+      "file_type": "rationale",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_pr_review_requirement",
+      "community": 3,
+      "norm_label": "minimum one review before merge"
+    },
+    {
+      "label": "Disclose and Scrutinize AI-Generated PR Content",
+      "file_type": "rationale",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_ai_generated_code_rule",
+      "community": 0,
+      "norm_label": "disclose and scrutinize ai-generated pr content"
+    },
+    {
+      "label": "No Committing Secrets/Credentials",
+      "file_type": "rationale",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_secret_credential_rule",
+      "community": 2,
+      "norm_label": "no committing secrets/credentials"
+    },
+    {
+      "label": "Squash and Merge Policy",
+      "file_type": "rationale",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_squash_merge",
+      "community": 3,
+      "norm_label": "squash and merge policy"
+    },
+    {
+      "label": "AI-Written Tests Must Actually Run and Pass",
+      "file_type": "rationale",
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "contributing_ai_test_rule",
+      "community": 2,
+      "norm_label": "ai-written tests must actually run and pass"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_document",
+      "community": 1,
+      "norm_label": "readme.md"
+    }
+  ],
+  "links": [
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_issue_template_bug_report_document",
+      "target": "github_issue_template_bug_report_structure"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.65,
+      "source_file": ".github/ISSUE_TEMPLATE/bug_report.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_issue_template_bug_report_structure",
+      "target": "github_issue_template_feature_request_structure"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/ISSUE_TEMPLATE/feature_request.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_issue_template_feature_request_document",
+      "target": "github_issue_template_feature_request_structure"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_document",
+      "target": "github_pull_request_template_document"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/PULL_REQUEST_TEMPLATE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_pull_request_template_document",
+      "target": "github_pull_request_template_ai_generated_checkbox"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/PULL_REQUEST_TEMPLATE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_pull_request_template_document",
+      "target": "github_pull_request_template_checklist"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".github/PULL_REQUEST_TEMPLATE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_pull_request_template_ai_generated_checkbox",
+      "target": "contributing_ai_generated_code_rule"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": ".github/PULL_REQUEST_TEMPLATE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_pull_request_template_checklist",
+      "target": "claude_env_secret_storage"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": ".github/PULL_REQUEST_TEMPLATE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_pull_request_template_checklist",
+      "target": "contributing_ai_test_rule"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".github/PULL_REQUEST_TEMPLATE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_pull_request_template_checklist",
+      "target": "contributing_secret_credential_rule"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_document",
+      "target": "contributing_branch_naming_convention"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_document",
+      "target": "contributing_conventional_commits"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_document",
+      "target": "contributing_document"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.2,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "readme_document",
+      "target": "claude_document"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_ai_pr_review_rule",
+      "target": "contributing_ai_generated_code_rule"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_env_secret_storage",
+      "target": "contributing_secret_credential_rule"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "claude_ai_major_change_rule",
+      "target": "contributing_ai_generated_code_rule"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_document",
+      "target": "contributing_ai_generated_code_rule"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_document",
+      "target": "contributing_ai_test_rule"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_document",
+      "target": "contributing_branch_naming_convention"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_document",
+      "target": "contributing_conventional_commits"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_document",
+      "target": "contributing_main_branch_protection"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_document",
+      "target": "contributing_pr_review_requirement"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_document",
+      "target": "contributing_secret_credential_rule"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_document",
+      "target": "contributing_squash_merge"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_conventional_commits",
+      "target": "contributing_branch_naming_convention"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CONTRIBUTING.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "contributing_pr_review_requirement",
+      "target": "contributing_squash_merge"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "ai_generated_code_governance",
+      "label": "AI-Generated Code Governance Flow",
+      "nodes": [
+        "claude_ai_pr_review_rule",
+        "contributing_ai_generated_code_rule",
+        "github_pull_request_template_ai_generated_checkbox"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CONTRIBUTING.md"
+    },
+    {
+      "id": "secret_credential_handling_flow",
+      "label": "Secret/Credential Handling Rules Across Repo",
+      "nodes": [
+        "claude_env_secret_storage",
+        "contributing_secret_credential_rule",
+        "github_pull_request_template_checklist"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CONTRIBUTING.md"
+    },
+    {
+      "id": "contribution_workflow",
+      "label": "Branch-to-Merge Contribution Workflow",
+      "nodes": [
+        "contributing_branch_naming_convention",
+        "contributing_conventional_commits",
+        "contributing_pr_review_requirement",
+        "contributing_squash_merge"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "CONTRIBUTING.md"
+    }
+  ],
+  "built_at_commit": "464384f99ce87e8115e8f5b29bdfb559f300ee56"
+}
