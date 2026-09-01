@@ -68,6 +68,25 @@ export const MASA_SESI = '90d';
 export const JWT_SECRET = process.env.JWT_SECRET ?? '';
 
 /**
+ * Midtrans — QRIS untuk pesanan yang pembelinya tidak datang membawa uang tunai.
+ *
+ * OPSIONAL. Tanpa kunci, seluruh jalur QRIS mati total dan tombolnya
+ * disembunyikan; tunai, transfer, dan kasbon tetap jalan. Itu disengaja: fitur
+ * pembayaran yang bergantung pada layanan luar tidak boleh bisa menjatuhkan
+ * alur inti saat demo, apalagi saat jaringan panggung sedang buruk.
+ *
+ * ⚠️ Kunci yang berawalan `Mid-` adalah kunci PRODUCTION — tagihan yang dibuat
+ * dengannya menagih uang sungguhan. Kunci sandbox berawalan `SB-Mid-`.
+ * `MIDTRANS_PRODUKSI` sengaja harus diisi 'true' SECARA EKSPLISIT: server yang
+ * diam-diam menagih uang sungguhan karena salah tebak adalah kegagalan yang
+ * tidak bisa dibatalkan.
+ */
+export const MIDTRANS_SERVER_KEY = process.env.MIDTRANS_SERVER_KEY ?? '';
+export const MIDTRANS_CLIENT_KEY = process.env.MIDTRANS_CLIENT_KEY ?? '';
+export const MIDTRANS_PRODUKSI = process.env.MIDTRANS_PRODUKSI === 'true';
+export const MIDTRANS_AKTIF = MIDTRANS_SERVER_KEY.length > 0;
+
+/**
  * Diperiksa saat start, bukan saat permintaan pertama. Gagal cepat jauh lebih
  * murah daripada server yang kelihatan sehat tapi menolak setiap login.
  */
@@ -79,6 +98,16 @@ export function periksaEnv(): void {
       `Konfigurasi belum lengkap di ${path.join(AKAR_REPO, '.env')}:\n` +
       kurang.map((k) => `  - ${k}`).join('\n') +
       `\nSalin .env.example jadi .env lalu isi nilainya.`,
+    );
+  }
+
+  // Peringatan, bukan galat: server tetap boleh hidup. Tapi orang yang
+  // menjalankannya harus TAHU bahwa tombol QRIS di layar akan menagih uang
+  // sungguhan, dan harus tahu itu sekarang — bukan setelah tagihan pertama.
+  if (MIDTRANS_AKTIF && MIDTRANS_PRODUKSI) {
+    console.warn(
+      '\n  ⚠ MIDTRANS MODE PRODUCTION — QRIS yang dibuat menagih UANG SUNGGUHAN.\n' +
+      '    Untuk uji coba, pakai kunci sandbox (SB-Mid-...) dan hapus MIDTRANS_PRODUKSI.\n',
     );
   }
 }

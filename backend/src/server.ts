@@ -10,6 +10,7 @@ import { tangkapGalat } from './middleware/galat.ts';
 import { rutAuth } from './modules/auth/auth.routes.ts';
 import { rutOnboarding } from './modules/onboarding/onboarding.routes.ts';
 import { rutPesanan } from './modules/pesanan/pesanan.routes.ts';
+import { rutProses } from './modules/proses/proses.routes.ts';
 import { rutWhatsapp } from './modules/whatsapp/wa.routes.ts';
 import { pulihkanWhatsapp } from './modules/whatsapp/wa.client.ts';
 import { rutTransaksi } from './modules/transaksi/transaksi.routes.ts';
@@ -32,6 +33,7 @@ export function buatApp() {
   app.use('/auth', rutAuth);
   app.use('/onboarding', rutOnboarding);
   app.use('/pesanan', rutPesanan);
+  app.use('/proses', rutProses);
   app.use('/whatsapp', rutWhatsapp);
   app.use('/transaksi', rutTransaksi);
   app.use('/beranda', rutBeranda);

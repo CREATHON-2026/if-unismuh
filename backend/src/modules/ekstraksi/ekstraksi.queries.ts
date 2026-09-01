@@ -109,6 +109,6 @@ export function konfirmasi(
 
     // Tanggal diambil dari baris pertama yang punya; kalau tidak ada, hari ini.
     const tanggal = baris.find((b) => b.tanggal)?.tanggal ?? null;
-    return tulisBaris(c, userId, tanggal, siap, sumber);
+    return (await tulisBaris(c, userId, tanggal, siap, sumber)).length;
   });
 }

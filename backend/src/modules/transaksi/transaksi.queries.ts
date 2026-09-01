@@ -32,6 +32,11 @@ export class ProdukTidakSah extends Error {
  *
  * `sumber` menentukan asal-usul baris. Itu bukan hiasan: inilah yang membuat
  * setiap angka di layar bisa ditelusuri sampai ke sumbernya saat juri bertanya.
+ *
+ * Mengembalikan id baris yang tertulis, bukan sekadar jumlahnya. Modul proses
+ * memerlukannya untuk mencetak nomor transaksi di struk; pemanggil lain cukup
+ * memakai `.length`. Satu pintu menuju buku besar — jalur INSERT kedua akan
+ * berbeda diam-diam begitu salah satunya diubah.
  */
 export async function tulisBaris(
   c: Pelaksana,
@@ -39,7 +44,8 @@ export async function tulisBaris(
   tanggal: string | null,
   baris: BarisTransaksi[],
   sumber: SumberTransaksi = 'manual',
-): Promise<number> {
+): Promise<number[]> {
+  const idBaru: number[] = [];
   for (const b of baris) {
     // INSERT ... SELECT: kepemilikan produk DAN harga bawaan diperiksa di
     // dalam SQL sekaligus. Kalau produknya bukan milik pengguna ini,
@@ -54,14 +60,16 @@ export async function tulisBaris(
       [userId, b.produk_id, b.jumlah, b.harga_satuan ?? null, tanggal, sumber],
     );
     if (hasil.rows.length === 0) throw new ProdukTidakSah(b.produk_id);
+    idBaru.push(Number(hasil.rows[0].id));
   }
-  return baris.length;
+  return idBaru;
 }
 
 export function simpanTransaksi(
   userId: number, tanggal: string | null, baris: BarisTransaksi[],
 ): Promise<number> {
-  return transaksiDb((c: Pelaksana) => tulisBaris(c, userId, tanggal, baris, 'manual'));
+  return transaksiDb(async (c: Pelaksana) =>
+    (await tulisBaris(c, userId, tanggal, baris, 'manual')).length);
 }
 
 export function daftarTransaksi(userId: number, dari: string | null, sampai: string | null) {
