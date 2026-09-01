@@ -513,9 +513,10 @@ Semua angka di sini dihitung SQL. `peringatan` sudah berupa kalimat siap tampil.
 
 | Field | Catatan |
 |---|---|
-| `jenis` | `pesanan` · `tanya_harga` · `menawar` · `bukan_pesanan` |
+| `jenis` | `pesanan` · `tanya_harga` · `menawar` · `bukan_pesanan`. Dikoreksi kode setelah LLM: kalau angka yang disebut pembeli **di bawah** harga jual tersimpan, `pesanan` dinaikkan jadi `menawar`; kata tawar-menawar di kalimatnya punya hak veto atas angka |
 | `pesan_id` | **`null` kalau `bukan_pesanan`** — pesannya sengaja tidak disimpan |
-| `perlu_dicek` | `true` kalau pencocokan nama produk tidak meyakinkan. Tampilkan `kandidat` dan minta pengguna memilih |
+| `perlu_dicek` | `true` karena **dua sebab berbeda**: pencocokan nama produk tidak meyakinkan (tampilkan `kandidat`), **atau** ada angka yang tidak bisa dipertanggungjawabkan. Sebabnya selalu dijelaskan di `peringatan[0]` |
+| `harga_diminta` | **`null` kalau angkanya ternyata harga total, bukan per satuan.** Angkanya dibuang, bukan dibagi — membagi berarti menebak (aturan #8). Perhitungan kembali memakai harga jual tersimpan, dan `peringatan[0]` memberi tahu pedagang untuk memastikan sendiri |
 | `stok_cukup_untuk` | **`null` berarti stok belum dicatat**, bukan berarti nol. Jangan tampilkan sebagai "cukup 0" |
 | `untung_pesanan` | `null` kalau resep produk belum diisi — modal belum bisa dihitung |
 
@@ -523,6 +524,8 @@ Kalau pesannya `bukan_pesanan`, semua field lain `null` dan `peringatan` kosong.
 
 ### `GET /pesanan`
 Daftar pesanan masuk terbaru (maks 30), dari jalur tempel maupun WhatsApp, lengkap dengan angka yang sudah dihitung SQL. Pesan yang bukan pesanan tidak pernah muncul di sini.
+
+**Baris di sini membawa angka yang sama dengan jawaban `POST /pesanan/analisis`,** termasuk saat `perlu_dicek` bernilai `true`. Dugaan produk tetap disimpan, ditemani penandanya — jadi peringatan "rugi" tidak menguap saat layarnya dimuat ulang. Ini penting untuk jalur WhatsApp: pesan masuk saat pedagang tidak menatap layar, dan yang ia lihat kemudian hanyalah daftar ini.
 
 ```json
 { "ok": true, "data": [ {
