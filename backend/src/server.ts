@@ -14,6 +14,7 @@ import { rutWhatsapp } from './modules/whatsapp/wa.routes.ts';
 import { rutTransaksi } from './modules/transaksi/transaksi.routes.ts';
 import { rutBeranda } from './modules/beranda/beranda.routes.ts';
 import { rutProduk } from './modules/produk/produk.routes.ts';
+import { rutEkstraksi } from './modules/ekstraksi/ekstraksi.routes.ts';
 import { rutStok } from './modules/stok/stok.routes.ts';
 
 export function buatApp() {
@@ -35,6 +36,7 @@ export function buatApp() {
   app.use('/beranda', rutBeranda);
   app.use('/produk', rutProduk);
   app.use('/stok', rutStok);
+  app.use('/ekstraksi', rutEkstraksi);
 
   // Harus paling belakang, setelah semua rute terpasang.
   app.use(tangkapGalat);
