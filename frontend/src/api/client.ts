@@ -12,6 +12,7 @@ import type {
   KirimOtpRes,
   VerifikasiOtpRes,
   SayaRes,
+  Pengguna,
   SimpanUsahaReq,
   SimpanResepReq,
   TemuanPertama,
@@ -60,7 +61,7 @@ export function ambilSaya(): Promise<Jawaban<SayaRes>> {
   return panggil('/auth/saya');
 }
 
-export function simpanUsaha(p: SimpanUsahaReq): Promise<Jawaban<Record<string, never>>> {
+export function simpanUsaha(p: SimpanUsahaReq): Promise<Jawaban<Pengguna>> {
   return panggil('/onboarding/usaha', { method: 'POST', body: JSON.stringify(p) });
 }
 
