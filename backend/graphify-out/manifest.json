@@ -1,0 +1,357 @@
+{
+  "db/schema.sql": {
+    "mtime": 1788272931.3788512,
+    "ast_hash": "953ba2be84187553f998df9918f3f34d",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1788278070.520292,
+    "ast_hash": "1f1c3a37845eeb0c0110716334283843",
+    "semantic_hash": ""
+  },
+  "scripts/siapkan-demo.mjs": {
+    "mtime": 1788277945.8517582,
+    "ast_hash": "8a7c9e4aafb3dc5a35bc2a2c90fb9ee7",
+    "semantic_hash": ""
+  },
+  "scripts/uji-alur.mjs": {
+    "mtime": 1788255303.4149258,
+    "ast_hash": "7df440d65d19c95d79a1077e68d67063",
+    "semantic_hash": ""
+  },
+  "scripts/uji-beranda.mjs": {
+    "mtime": 1788260627.5643673,
+    "ast_hash": "38d36bb197c9cb5cfd0e6cef0351ae41",
+    "semantic_hash": ""
+  },
+  "scripts/uji-ekstraksi.mjs": {
+    "mtime": 1788281114.9209726,
+    "ast_hash": "dc34f8407a9712d3665a5ad3b0996777",
+    "semantic_hash": ""
+  },
+  "scripts/uji-pesanan.mjs": {
+    "mtime": 1788258748.904143,
+    "ast_hash": "086a71ea2bca29f64ddc56154364f93e",
+    "semantic_hash": ""
+  },
+  "scripts/uji-produk-baru.mjs": {
+    "mtime": 1788279481.423776,
+    "ast_hash": "c363107c9233c7ec2847b24e674339b1",
+    "semantic_hash": ""
+  },
+  "scripts/uji-produk.mjs": {
+    "mtime": 1788272900.2812748,
+    "ast_hash": "da6276025d19b9d1f0469ac32a1c67de",
+    "semantic_hash": ""
+  },
+  "scripts/uji-stok-balasan.mjs": {
+    "mtime": 1788267926.629923,
+    "ast_hash": "b8d149d712032092c56a8bc842a46e58",
+    "semantic_hash": ""
+  },
+  "scripts/uji-suara.mjs": {
+    "mtime": 1788271492.7949963,
+    "ast_hash": "c153d7937cd4924645746f870da8d387",
+    "semantic_hash": ""
+  },
+  "spike/ekstraksi-foto.mjs": {
+    "mtime": 1788252632.309202,
+    "ast_hash": "64a75ff1788d9bfbdf241ac654479b98",
+    "semantic_hash": ""
+  },
+  "src/config/env.ts": {
+    "mtime": 1788289177.565301,
+    "ast_hash": "76105581c1054d5c4976cd6757828384",
+    "semantic_hash": ""
+  },
+  "src/db/index.ts": {
+    "mtime": 1788278904.4733293,
+    "ast_hash": "85cbf7ff4adf7b81ed3073af4004e946",
+    "semantic_hash": ""
+  },
+  "src/lib/http.ts": {
+    "mtime": 1788254792.8627625,
+    "ast_hash": "9f3355081cfdbbadf40a6b3dc429f473",
+    "semantic_hash": ""
+  },
+  "src/lib/llm.ts": {
+    "mtime": 1788269077.8436675,
+    "ast_hash": "fff2a84392b98826ecbc7876a1230f59",
+    "semantic_hash": ""
+  },
+  "src/lib/nomor.ts": {
+    "mtime": 1788263048.7888198,
+    "ast_hash": "1159d876134c595d9039cd2872e611f0",
+    "semantic_hash": ""
+  },
+  "src/lib/rupiah.ts": {
+    "mtime": 1788258580.7865653,
+    "ast_hash": "ec8c749c701b66de1c737d32a78e21cf",
+    "semantic_hash": ""
+  },
+  "src/lib/token.ts": {
+    "mtime": 1788254800.4329846,
+    "ast_hash": "8588198fff6c7f2e3868ce1e60c41095",
+    "semantic_hash": ""
+  },
+  "src/lib/validasi.ts": {
+    "mtime": 1788290673.998737,
+    "ast_hash": "7b1a6ac923f91a3914afa54929bd6b13",
+    "semantic_hash": ""
+  },
+  "src/middleware/auth.ts": {
+    "mtime": 1788254809.6098382,
+    "ast_hash": "b19c9c68c36a4121adbd5c2d6b72733b",
+    "semantic_hash": ""
+  },
+  "src/middleware/galat.ts": {
+    "mtime": 1788254813.0681908,
+    "ast_hash": "86e0690563e702a104866e003163701e",
+    "semantic_hash": ""
+  },
+  "src/modules/auth/auth.controller.ts": {
+    "mtime": 1788291138.6132116,
+    "ast_hash": "c7c335583cd4870923a9fc2c0e136d31",
+    "semantic_hash": ""
+  },
+  "src/modules/auth/auth.queries.ts": {
+    "mtime": 1788255262.614573,
+    "ast_hash": "c75a2e8c06c5af234c51d1c954e7028f",
+    "semantic_hash": ""
+  },
+  "src/modules/auth/auth.routes.ts": {
+    "mtime": 1788291170.1111448,
+    "ast_hash": "6be33633e51855ff55bc9c3284e227bf",
+    "semantic_hash": ""
+  },
+  "src/modules/auth/auth.service.ts": {
+    "mtime": 1788291138.610211,
+    "ast_hash": "0af7ca630247030cdb611253780d066a",
+    "semantic_hash": ""
+  },
+  "src/modules/beranda/beranda.controller.ts": {
+    "mtime": 1788291138.6192205,
+    "ast_hash": "8b5cb54bf648af5bf20dadab6c7dab21",
+    "semantic_hash": ""
+  },
+  "src/modules/beranda/beranda.queries.ts": {
+    "mtime": 1788291169.5408866,
+    "ast_hash": "d1ac2a1f08e6a06dabec45604c75c353",
+    "semantic_hash": ""
+  },
+  "src/modules/beranda/beranda.routes.ts": {
+    "mtime": 1788291170.112157,
+    "ast_hash": "7c4debeadeaba022351af25ffe6f9f13",
+    "semantic_hash": ""
+  },
+  "src/modules/beranda/beranda.service.ts": {
+    "mtime": 1788291138.6182199,
+    "ast_hash": "c9b72e52fb76ee235b8f1c64a5412842",
+    "semantic_hash": ""
+  },
+  "src/modules/beranda/beranda.types.ts": {
+    "mtime": 1788291169.53091,
+    "ast_hash": "2d7079e6fa70ff88d5f9c7bf5ddcfed6",
+    "semantic_hash": ""
+  },
+  "src/modules/ekstraksi/ekstraksi.controller.ts": {
+    "mtime": 1788290922.4533086,
+    "ast_hash": "81467dd83d73c614ed5f0b5554bd8239",
+    "semantic_hash": ""
+  },
+  "src/modules/ekstraksi/ekstraksi.queries.ts": {
+    "mtime": 1788290943.343956,
+    "ast_hash": "66f414ead092b7868be69469f38c64bc",
+    "semantic_hash": ""
+  },
+  "src/modules/ekstraksi/ekstraksi.routes.ts": {
+    "mtime": 1788290943.9620447,
+    "ast_hash": "686f439c191427bbf2a12f0c9ec9412d",
+    "semantic_hash": ""
+  },
+  "src/modules/ekstraksi/ekstraksi.service.ts": {
+    "mtime": 1788290922.4341164,
+    "ast_hash": "b51a2eff41ebcb32903b613624d71322",
+    "semantic_hash": ""
+  },
+  "src/modules/ekstraksi/ekstraksi.types.ts": {
+    "mtime": 1788290922.4321165,
+    "ast_hash": "6a4312a934bb4235050b94854d6b82c2",
+    "semantic_hash": ""
+  },
+  "src/modules/onboarding/onboarding.controller.ts": {
+    "mtime": 1788290674.0057354,
+    "ast_hash": "9ab51713f7194d9c3ca08c460c15fc05",
+    "semantic_hash": ""
+  },
+  "src/modules/onboarding/onboarding.queries.ts": {
+    "mtime": 1788278787.1382632,
+    "ast_hash": "97bc1e26f659a88fe49f9e40950f6fdc",
+    "semantic_hash": ""
+  },
+  "src/modules/onboarding/onboarding.routes.ts": {
+    "mtime": 1788290686.2689486,
+    "ast_hash": "90ac001bfe70d0fe42ca171ced14704e",
+    "semantic_hash": ""
+  },
+  "src/modules/onboarding/onboarding.service.ts": {
+    "mtime": 1788290674.0017369,
+    "ast_hash": "cb2cf0ec46cd0afcef785518a3149798",
+    "semantic_hash": ""
+  },
+  "src/modules/pesanan/pesanan.controller.ts": {
+    "mtime": 1788290597.8439305,
+    "ast_hash": "e85821664940999ad299c39863234a42",
+    "semantic_hash": ""
+  },
+  "src/modules/pesanan/pesanan.llm.ts": {
+    "mtime": 1788290290.2549155,
+    "ast_hash": "e25b228d50dcd1f3eaca218d8340f30c",
+    "semantic_hash": ""
+  },
+  "src/modules/pesanan/pesanan.queries.ts": {
+    "mtime": 1788290952.5984929,
+    "ast_hash": "2a20c02b8e454b7997d1db364d7aeac4",
+    "semantic_hash": ""
+  },
+  "src/modules/pesanan/pesanan.routes.ts": {
+    "mtime": 1788290611.180507,
+    "ast_hash": "bc1f065553f9f78a537de0204f0b0bd9",
+    "semantic_hash": ""
+  },
+  "src/modules/pesanan/pesanan.service.ts": {
+    "mtime": 1788290560.6934228,
+    "ast_hash": "497820b2c3df01e750fee68bf0eaf67d",
+    "semantic_hash": ""
+  },
+  "src/modules/pesanan/pesanan.types.ts": {
+    "mtime": 1788290227.3489177,
+    "ast_hash": "aadf653ce31d7a2b95ece6f95ff6ae08",
+    "semantic_hash": ""
+  },
+  "src/modules/produk/produk.controller.ts": {
+    "mtime": 1788291071.6587422,
+    "ast_hash": "c35689ddb2311344e9f44b443de946c0",
+    "semantic_hash": ""
+  },
+  "src/modules/produk/produk.llm.ts": {
+    "mtime": 1788290980.750262,
+    "ast_hash": "aca9a2a686d16cea526b9f653038c986",
+    "semantic_hash": ""
+  },
+  "src/modules/produk/produk.queries.ts": {
+    "mtime": 1788290994.1489303,
+    "ast_hash": "706268455f817909abf6434c8a7c8a37",
+    "semantic_hash": ""
+  },
+  "src/modules/produk/produk.routes.ts": {
+    "mtime": 1788291072.172058,
+    "ast_hash": "b430d0b30dcba4d33dee3863dd813016",
+    "semantic_hash": ""
+  },
+  "src/modules/produk/produk.service.ts": {
+    "mtime": 1788291071.6444235,
+    "ast_hash": "3955aa21520bf2c463c7ed04b7cf8235",
+    "semantic_hash": ""
+  },
+  "src/modules/produk/produk.types.ts": {
+    "mtime": 1788290980.750262,
+    "ast_hash": "116faa5b7be399d654e1276f88bc10d2",
+    "semantic_hash": ""
+  },
+  "src/modules/stok/stok.controller.ts": {
+    "mtime": 1788291138.6252224,
+    "ast_hash": "054152d797415cf2aa8fe1781572f89e",
+    "semantic_hash": ""
+  },
+  "src/modules/stok/stok.queries.ts": {
+    "mtime": 1788268116.043921,
+    "ast_hash": "473ac610b908ec9089a4df3c8d8b2846",
+    "semantic_hash": ""
+  },
+  "src/modules/stok/stok.routes.ts": {
+    "mtime": 1788291170.1137183,
+    "ast_hash": "3560cd756c70df0419828f59a346e206",
+    "semantic_hash": ""
+  },
+  "src/modules/stok/stok.service.ts": {
+    "mtime": 1788291138.6222227,
+    "ast_hash": "326f526d10f15e2080c5d5a53c93cb5a",
+    "semantic_hash": ""
+  },
+  "src/modules/transaksi/transaksi.controller.ts": {
+    "mtime": 1788290838.5914927,
+    "ast_hash": "f73c23e35bf89d8ffe51c1d7a68df1da",
+    "semantic_hash": ""
+  },
+  "src/modules/transaksi/transaksi.llm.ts": {
+    "mtime": 1788291372.506297,
+    "ast_hash": "a9206d6edabf5ab31da0bccce5519a36",
+    "semantic_hash": ""
+  },
+  "src/modules/transaksi/transaksi.queries.ts": {
+    "mtime": 1788281172.7177823,
+    "ast_hash": "5dd0911cc542e0d76ff263e3584db09c",
+    "semantic_hash": ""
+  },
+  "src/modules/transaksi/transaksi.routes.ts": {
+    "mtime": 1788290838.9415936,
+    "ast_hash": "f0fe523403287a38fe2e02750d42874e",
+    "semantic_hash": ""
+  },
+  "src/modules/transaksi/transaksi.service.ts": {
+    "mtime": 1788290838.5781407,
+    "ast_hash": "1f8cc2d3dab23427302ac89647a2c84a",
+    "semantic_hash": ""
+  },
+  "src/modules/transaksi/transaksi.types.ts": {
+    "mtime": 1788290770.8377242,
+    "ast_hash": "3152b8cdc14ec418fee944a0e5343add",
+    "semantic_hash": ""
+  },
+  "src/modules/whatsapp/wa.client.ts": {
+    "mtime": 1788291789.303842,
+    "ast_hash": "a6b3193f10273503ed62300a46069deb",
+    "semantic_hash": ""
+  },
+  "src/modules/whatsapp/wa.controller.ts": {
+    "mtime": 1788291247.4144049,
+    "ast_hash": "a4580729c26fd909b010450da7e8a8b8",
+    "semantic_hash": ""
+  },
+  "src/modules/whatsapp/wa.routes.ts": {
+    "mtime": 1788291247.9581306,
+    "ast_hash": "ea8c172d7e992187c1d47367228f2068",
+    "semantic_hash": ""
+  },
+  "src/modules/whatsapp/wa.types.ts": {
+    "mtime": 1788291214.978773,
+    "ast_hash": "ebf0740ea2c3a41fafeff52f3723e6b7",
+    "semantic_hash": ""
+  },
+  "src/server.ts": {
+    "mtime": 1788291522.0048625,
+    "ast_hash": "4f89f755e254b78312e4fdbdcb22deec",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1788253586.6530502,
+    "ast_hash": "b3f628e3c3398a4e986a18ace89ff690",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1788291468.0356934,
+    "ast_hash": "5cb39c839bc973d8ea6c7fda8a217cf9",
+    "semantic_hash": ""
+  },
+  "spike/README.md": {
+    "mtime": 1788251666.1896179,
+    "ast_hash": "0ac44d3bd36edaf12d3f8bb53aeab501",
+    "semantic_hash": ""
+  },
+  "spike/Screenshot 2026-09-01 164114.png": {
+    "mtime": 1788252105.4657938,
+    "ast_hash": "e6ad8866f761bf68f476c9d9d9e142ab",
+    "semantic_hash": ""
+  }
+}
