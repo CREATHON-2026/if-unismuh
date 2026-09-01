@@ -52,6 +52,7 @@ graphify query "pertanyaanmu di sini"
 | [09-demo.md](09-demo.md) | Skrip demo, akun demo, persiapan tanya jawab |
 | [10-kerja-tim.md](10-kerja-tim.md) | Pembagian kerja, kepemilikan, aturan freeze |
 | [11-setup-tim.md](11-setup-tim.md) | Pasang Claude Code, superpowers, graphify |
+| [12-kriteria-foto-buku.md](12-kriteria-foto-buku.md) | Foto buku seperti apa yang terpakai — panduan untuk yang mengumpulkan |
 
 ## Kalau dokumen dan kode berbeda
 

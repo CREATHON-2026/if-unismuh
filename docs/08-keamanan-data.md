@@ -69,17 +69,49 @@ Ini pertanyaan yang mungkin muncul di sesi tanya jawab, dan jawaban yang sudah s
 
 Implementasinya: saat `ekstraksi.status` berubah jadi `dikonfirmasi`, berkasnya dihapus dan `path_berkas` dikosongkan. Lihat [05-model-data.md](05-model-data.md).
 
-## Kunci API
+## Membaca WhatsApp — dan batasnya
 
-`GEMINI_API_KEY` dan kredensial lain:
+Pesanan Masuk bisa membaca pesan pembeli langsung dari WhatsApp pedagang, lewat sesi **hanya-baca**. Ini menimbulkan dua kewajiban yang tidak boleh dilewati.
 
-- Disimpan di `.env`, yang sudah ada di `.gitignore`.
-- **Tidak pernah** masuk ke kode.
-- **Tidak pernah** masuk ke frontend.
+### Kredensial sesi lebih sensitif daripada foto buku
 
-Semua panggilan Gemini terjadi di backend. Kunci yang ada di frontend bisa diambil siapa pun dari browser dan dipakai atas tanggungan kita.
+Auth state memegang akses penuh ke WhatsApp pedagang. Disimpan di `backend/db/baileys-auth/`, **wajib ada di `.gitignore`**, dan tidak pernah keluar dari mesin yang menjalankan backend.
 
-Sediakan `.env.example` berisi nama variabelnya saja tanpa nilainya, supaya rekan tim tahu apa yang perlu diisi.
+### Pembeli tidak pernah setuju datanya diproses
+
+Menempel manual berarti pedagang **memilih** apa yang diproses. Membaca inbox otomatis berarti menelan **semuanya** — termasuk chat keluarga, teman, dan orang yang sama sekali bukan pembeli. Mereka tidak pernah menyetujui apa pun.
+
+Karena itu penyaringannya ketat:
+
+| Aturan | Alasan |
+|---|---|
+| Hanya pesan pribadi | Grup dan status broadcast diabaikan |
+| Hanya teks | Media, dokumen, dan suara tidak disentuh |
+| Bukan pesanan → **dibuang** | Teksnya tidak disimpan sama sekali, tidak masuk daftar |
+| Nomor pengirim **empat digit terakhir saja** | Pedagang cukup butuh mengenali percakapan; kita tidak perlu menyimpan identitas orang lain |
+
+Nomor lengkap memang tidak diperlukan, karena sistem tidak pernah membalas sendiri — pedagang membalas dari WhatsApp-nya, tempat percakapan itu sudah ada.
+
+### Sistem tetap tidak pernah mengirim
+
+Aturan #4 ditegakkan **struktur, bukan janji**: socket WhatsApp disimpan privat dan modulnya tidak mengekspor apa pun yang bisa mengirim. Yang tidak ada tidak bisa dipanggil.
+
+## Kredensial
+
+**LLM tidak memakai kunci API sama sekali.** Ollama kampus tidak memintanya, jadi tidak ada kunci yang bisa bocor dan tidak ada yang perlu disiapkan rekan tim.
+
+Yang tetap rahasia dan disimpan di `.env` (sudah ter-`.gitignore`):
+
+| Isi | Kenapa rahasia |
+|---|---|
+| `JWT_SECRET` | Siapa pun yang tahu ini bisa membuat token atas nama pedagang mana pun |
+| `DATABASE_URL` | Berisi kata sandi database saat memakai PostgreSQL sungguhan |
+
+Aturannya tetap: **tidak pernah masuk ke kode, tidak pernah masuk ke frontend.**
+
+Semua panggilan LLM tetap terjadi di **backend**. Meski tanpa kunci, memindahkannya ke frontend berarti memajang alamat server internal kampus ke browser — dan siapa pun bisa memakai kuotanya lewat aplikasi kita.
+
+`.env.example` berisi nama variabelnya saja, supaya rekan tim tahu apa yang perlu diisi.
 
 ## Yang tidak dikerjakan untuk lomba, dan alasannya
 

@@ -1,0 +1,35 @@
+# Database untuk pengembangan lokal.
+#
+# Dipakai Docker, bukan PostgreSQL yang terpasang langsung di laptop, supaya
+# tiga orang mendapat database yang persis sama tanpa saling menebak password.
+#
+#   docker compose up -d      jalankan
+#   docker compose down       hentikan
+#   docker compose down -v    hentikan DAN hapus datanya
+#
+# Port 5433, bukan 5432, supaya tidak bentrok dengan PostgreSQL yang mungkin
+# sudah terpasang di laptop masing-masing.
+
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: lapakai-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lapakai
+      POSTGRES_PASSWORD: lapakai
+      POSTGRES_DB: lapakai
+    ports:
+      - "5433:5432"
+    volumes:
+      - lapakai-data:/var/lib/postgresql/data
+      # Dijalankan otomatis saat container pertama kali dibuat
+      - ./backend/db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lapakai -d lapakai"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  lapakai-data:
