@@ -1,6 +1,36 @@
 # Pipeline AI
 
-Semua tahap di sini dikerjakan **Gemini**. Aturan yang mengikat seluruh dokumen ini: [aturan #1 — LLM tidak pernah menghitung](../CLAUDE.md).
+Semua tahap di sini dikerjakan **Ollama kampus**. Aturan yang mengikat seluruh dokumen ini: [aturan #1 — LLM tidak pernah menghitung](../CLAUDE.md).
+
+## Penyedia: Ollama kampus, bukan Gemini
+
+`https://ollama.if.unismuh.ac.id/api/generate`, model **`gemma4:latest`**. **Tanpa kunci API** — rekan tim tidak perlu menyiapkan apa pun.
+
+Model dipilih dengan mengujinya berdampingan memakai prompt asli kita, bukan dari reputasi:
+
+| Model | Waktu | Hasil untuk *"pesan 20 bungkus kripik pisang, bisa 18rb ga bu?"* |
+|---|---|---|
+| **`gemma4:latest`** | **3 dtk** | `menawar` ✓ · nama, jumlah, harga semua terekstrak |
+| `sahabatai` (Indonesia) | 6 dtk | `menawar` ✓ tapi **kehilangan** nama produk dan jumlah |
+| `qwen2.5:7b-instruct` | 5 dtk | `pesanan` ✗ **salah** |
+
+### Model lokal butuh pembersihan keluaran — ini bukan opsional
+
+Gemini menghormati `nullable` dan mengembalikan `null`. **Model lokal tidak.** Dua bug nyata yang ditemukan saat migrasi, keduanya merusak:
+
+| Yang dikembalikan model | Akibatnya kalau tidak dibersihkan |
+|---|---|
+| `harga_diminta: 0` saat pembeli tidak menyebut harga | `COALESCE(0, harga_jual)` = 0. Hitungannya jadi *"rugi Rp 106.000"* — dan ini terjadi pada **mayoritas** pesanan |
+| `tanggal_dibutuhkan: "hari sabtu"` | Menjatuhkan `INSERT` ke kolom `DATE`; seluruh permintaan gagal |
+
+Ditutup di `backend/src/lib/llm.ts` lewat `kosongJadiNull()` dan `tanggalSah()`. **Setiap field baru yang boleh kosong harus didaftarkan ke sana** — kalau lupa, gejalanya bukan galat, melainkan angka yang salah diam-diam.
+
+### Apa yang berubah dan hilang
+
+- **Audio tidak ada.** Server ini tidak punya model audio, jadi Tahap 2 (voice note) **tidak bisa dikerjakan lewat Ollama**. Pilihannya: Web Speech API di browser (gratis, `id-ID`, Chrome), atau fitur 2 dicoret. Belum diputuskan.
+- **Vision masih mungkin** lewat `qwen2.5vl:latest`. Tapi `backend/spike/ekstraksi-foto.mjs` masih memakai SDK Gemini dan akan gagal sampai dimigrasikan.
+- **Embedding tidak terpakai** — pencocokan nama produk memakai `pg_trgm`, jadi tidak terpengaruh.
+- **Panggilan pertama 13 detik**, setelah model dimuat 3 detik. `keep_alive: 30m` dipasang; panggil sekali sebelum naik panggung untuk memanaskan model.
 
 ## Prinsip yang mengikat semua tahap
 
@@ -42,9 +72,18 @@ Simpan sebagai test set. Setiap perubahan prompt harus diuji ulang terhadap set 
 
 ## Tahap 2 — Catatan suara → transaksi
 
-Gemini menerima audio **langsung**. Tidak ada ASR terpisah, tidak ada langkah transkripsi menengah.
-
-Ini keuntungan nyata: satu panggilan API, satu titik kegagalan, bukan dua.
+> **BELUM ADA JALAN, DAN JANGAN DIANGGAP SUDAH.** Rancangan awal mengandalkan
+> audio native Gemini. Setelah pindah ke Ollama kampus, **tidak ada model audio
+> sama sekali** di server itu — tahap ini tidak bisa dikerjakan sebagaimana
+> ditulis di bawah.
+>
+> Dua pilihan yang tersisa, belum diputuskan:
+> 1. **Web Speech API di browser** — gratis, mendukung `id-ID`, transkripsi
+>    terjadi di perangkat pengguna. Teksnya lalu masuk ke Tahap 3 seperti
+>    teks ketikan biasa. Butuh Chrome
+> 2. **Fitur 2 dicoret** — ketik manual dan foto sudah menutupi kebutuhannya
+>
+> Bagian di bawah ini disimpan sebagai rancangan untuk pilihan pertama.
 
 ### Yang perlu diperhatikan
 - Bahasa Indonesia bercampur bahasa daerah dan istilah pasar. Sebutkan konteks ini di prompt.
@@ -76,7 +115,11 @@ Untuk pesanan dan tawaran, keluarannya: nama produk, jumlah, harga yang diminta 
 
 ### Cara kerja
 
-1. Hitung embedding untuk nama mentah dan untuk nama-nama produk yang sudah ada.
+Memakai `pg_trgm` di PostgreSQL, **bukan embedding**. Deterministik, tanpa
+panggilan jaringan, tanpa biaya — dan hasilnya bisa ditelusuri, tidak seperti
+kemiripan vektor yang tidak bisa dijelaskan ke juri.
+
+1. Hitung `similarity()` antara nama mentah dan nama produk yang sudah ada.
 2. Ambil kandidat dengan kemiripan tertinggi.
 3. Bandingkan dengan ambang:
 
@@ -156,12 +199,12 @@ Setiap tahap harus punya jalan keluar. Kalau AI gagal total, pengguna tetap bisa
 | Ekstraksi foto | Ketik manual (fitur 3) |
 | Catatan suara | Ketik manual |
 | Pencocokan nama | Pilih dari daftar produk |
-| API Gemini mati | Semua jalur manual tetap hidup; tampilkan pesan jujur, jangan layar putih |
+| Server Ollama mati / lambat | Semua jalur manual tetap hidup; tampilkan pesan jujur, jangan layar putih. Rantai model cadangan dicoba otomatis |
 
 **Ketik manual bukan fitur cadangan yang boleh dikorbankan.** Itu lantai dasar yang menahan semuanya.
 
 ## Biaya & kunci API
 
-`GEMINI_API_KEY` disimpan di `.env`, **tidak pernah** di kode dan tidak pernah di frontend. Semua panggilan Gemini terjadi di backend.
+**Tidak ada kunci API sama sekali.** Ollama kampus tidak memintanya, jadi tidak ada yang bisa bocor dan tidak ada yang perlu disiapkan rekan tim.
 
-Kalau kunci ada di frontend, siapa pun bisa mengambilnya dari browser dan memakainya atas tanggungan kita.
+Tetap saja semua panggilan LLM terjadi di **backend**, bukan frontend — alamat server internal tidak perlu dipajang ke browser, dan menaruhnya di frontend berarti siapa pun bisa memakai kuota kampus lewat aplikasi kita.

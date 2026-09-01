@@ -212,6 +212,54 @@ export interface AnalisisPesanan {
   peringatan: string[];
 }
 
+/** Balasan siap salin untuk pembeli — fitur 9, penutup alur Pesanan Masuk. */
+export interface BalasanReq {
+  maksud: 'tawar_harga' | 'terima' | 'tolak' | 'jawab_harga';
+  produk_id: number;
+  jumlah?: number;
+  harga_diminta?: number;
+}
+
+export interface BalasanRes {
+  /**
+   * Kalimat yang DISALIN PEDAGANG SENDIRI. Sistem tidak pernah mengirimnya —
+   * lihat aturan #4 di CLAUDE.md.
+   */
+  teks: string;
+  /**
+   * Angka yang dipakai LLM saat menyusun kalimat, semuanya dari SQL.
+   * Disertakan supaya bisa dicocokkan: kalau angka di kalimat berbeda dari
+   * yang di sini, berarti model mengarang dan itu kegagalan.
+   */
+  acuan: {
+    nama: string;
+    modal_per_unit: number | null;
+    harga_jual: number;
+    harga_diminta: number | null;
+    jumlah: number | null;
+    untung_pesanan: number | null;
+    merugi: boolean | null;
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Stok (fitur 12)
+// ---------------------------------------------------------------------------
+
+export interface BarisStok {
+  bahan_id: number;
+  jumlah: number;
+}
+
+export interface StokBahan {
+  bahan_id: number;
+  nama: string;
+  satuan: string;
+  /** null = belum pernah dicatat. BUKAN nol — jangan tampilkan sebagai "habis" */
+  jumlah: number | null;
+  diperbarui: string | null;
+}
+
 // ---------------------------------------------------------------------------
 // Transaksi
 // ---------------------------------------------------------------------------

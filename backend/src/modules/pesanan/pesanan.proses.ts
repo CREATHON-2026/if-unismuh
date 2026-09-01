@@ -1,5 +1,5 @@
 import { rupiah } from '../../lib/rupiah.ts';
-import { geminiSiap } from '../../lib/gemini.ts';
+import { llmSiap } from '../../lib/llm.ts';
 import { GalatTampil } from '../../lib/http.ts';
 import { KODE_GALAT, type AnalisisPesanan } from '../../../../shared/types.ts';
 import { klasifikasiPesan } from './pesanan.klasifikasi.ts';
@@ -66,7 +66,7 @@ export async function prosesPesan(
   sumber: 'tempel' | 'whatsapp',
   pengirimSamar: string | null = null,
 ): Promise<AnalisisPesanan> {
-  if (!geminiSiap()) {
+  if (!llmSiap()) {
     throw new GalatTampil(
       KODE_GALAT.EKSTRAKSI_GAGAL,
       'Layanan pembaca pesan belum siap. Coba lagi sebentar lagi.', 503,
@@ -102,9 +102,13 @@ export async function prosesPesan(
     ? await hitungPesanan(cocok.produkId, userId, baca.jumlah, baca.harga_diminta)
     : null;
 
+  // Dua keadaan yang berbeda, dan pedagang perlu tahu bedanya:
+  // barangnya tidak disebut sama sekali, vs disebut tapi belum terdaftar.
   const peringatan = hitung
     ? susunPeringatan(hitung, baca.jumlah, cocok.perluDicek, baca.nama_produk_mentah)
-    : [`Produk "${baca.nama_produk_mentah ?? '(tidak disebut)'}" belum ada di daftar. Tambahkan dulu supaya untung-ruginya bisa dicek.`];
+    : baca.nama_produk_mentah
+      ? [`Produk "${baca.nama_produk_mentah}" belum ada di daftar. Tambahkan dulu supaya untung-ruginya bisa dicek.`]
+      : ['Pembeli belum menyebutkan barang apa yang dipesan. Tanyakan dulu ke pembelinya.'];
 
   const pesanId = await simpanPesan({
     userId, teks, sumber, pengirimSamar,

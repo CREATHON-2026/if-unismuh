@@ -96,17 +96,22 @@ Nomor lengkap memang tidak diperlukan, karena sistem tidak pernah membalas sendi
 
 Aturan #4 ditegakkan **struktur, bukan janji**: socket WhatsApp disimpan privat dan modulnya tidak mengekspor apa pun yang bisa mengirim. Yang tidak ada tidak bisa dipanggil.
 
-## Kunci API
+## Kredensial
 
-`GEMINI_API_KEY` dan kredensial lain:
+**LLM tidak memakai kunci API sama sekali.** Ollama kampus tidak memintanya, jadi tidak ada kunci yang bisa bocor dan tidak ada yang perlu disiapkan rekan tim.
 
-- Disimpan di `.env`, yang sudah ada di `.gitignore`.
-- **Tidak pernah** masuk ke kode.
-- **Tidak pernah** masuk ke frontend.
+Yang tetap rahasia dan disimpan di `.env` (sudah ter-`.gitignore`):
 
-Semua panggilan Gemini terjadi di backend. Kunci yang ada di frontend bisa diambil siapa pun dari browser dan dipakai atas tanggungan kita.
+| Isi | Kenapa rahasia |
+|---|---|
+| `JWT_SECRET` | Siapa pun yang tahu ini bisa membuat token atas nama pedagang mana pun |
+| `DATABASE_URL` | Berisi kata sandi database saat memakai PostgreSQL sungguhan |
 
-Sediakan `.env.example` berisi nama variabelnya saja tanpa nilainya, supaya rekan tim tahu apa yang perlu diisi.
+Aturannya tetap: **tidak pernah masuk ke kode, tidak pernah masuk ke frontend.**
+
+Semua panggilan LLM tetap terjadi di **backend**. Meski tanpa kunci, memindahkannya ke frontend berarti memajang alamat server internal kampus ke browser — dan siapa pun bisa memakai kuotanya lewat aplikasi kita.
+
+`.env.example` berisi nama variabelnya saja, supaya rekan tim tahu apa yang perlu diisi.
 
 ## Yang tidak dikerjakan untuk lomba, dan alasannya
 

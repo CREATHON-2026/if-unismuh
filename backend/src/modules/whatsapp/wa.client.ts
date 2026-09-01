@@ -95,14 +95,31 @@ async function tanganiPesan(m: any): Promise<void> {
     return;
   }
   const teks = ambilTeks(m)!;
+  const dari = samarkan(m.key.remoteJid);
+  const cuplikan = teks.length > 60 ? teks.slice(0, 60) + '…' : teks;
+
   try {
-    const hasil = await prosesPesan(pemilik, teks, 'whatsapp', samarkan(m.key.remoteJid));
-    if (hasil.jenis !== 'bukan_pesanan') {
-      console.log(`[wa] pesanan masuk dari ${samarkan(m.key.remoteJid)}: ${hasil.jenis}`);
+    const hasil = await prosesPesan(pemilik, teks, 'whatsapp', dari);
+
+    // SETIAP hasil dicatat, termasuk bukan_pesanan. Sebelumnya kasus itu
+    // diam-diam tidak mencetak apa pun, sehingga pesan yang sebenarnya sudah
+    // terbaca dan terklasifikasi tampak persis seperti pesan yang tidak pernah
+    // sampai. Itu membuat fitur yang berfungsi terlihat rusak selama berjam-jam.
+    if (hasil.jenis === 'bukan_pesanan') {
+      console.log(`[wa] dibaca dari ${dari}: "${cuplikan}" -> bukan pesanan (tidak disimpan)`);
+      return;
     }
+    const angka = hasil.untung_pesanan !== null
+      ? `, untung ${hasil.untung_pesanan}` : '';
+    console.log(
+      `[wa] PESANAN dari ${dari}: "${cuplikan}" -> ${hasil.jenis}` +
+      `${hasil.produk ? `, produk ${hasil.produk.nama}` : ''}${angka}`,
+    );
+    for (const p of hasil.peringatan) console.log(`[wa]    ! ${p}`);
   } catch (err) {
     // Kegagalan membaca satu pesan tidak boleh menjatuhkan koneksi.
-    console.error('[wa] gagal memproses pesan:', err instanceof Error ? err.message : err);
+    console.error(`[wa] GAGAL memproses pesan dari ${dari}: "${cuplikan}" —`,
+      err instanceof Error ? err.message : err);
   }
 }
 

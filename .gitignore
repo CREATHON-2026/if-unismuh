@@ -46,3 +46,6 @@ backend/db/data/
 
 # Baileys: kredensial sesi WhatsApp pedagang — LEBIH sensitif daripada foto buku
 backend/db/baileys-auth/
+
+# UI sementara untuk menguji backend — BUKAN frontend tim, jangan pernah di-push
+dev-ui/

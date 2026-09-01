@@ -168,16 +168,31 @@ Daftar transaksi beserta nama produknya. Bawaannya bulan berjalan.
 Diurutkan dari margin terendah — produk merugi muncul lebih dulu (fitur 6).
 
 ### `GET /produk/:id`
-Tambahan dari daftar: rincian bahan, riwayat penjualan, dan saran harga.
+Tambahan dari daftar: rincian bahan dan total terjual.
 
 ```json
 { "ok": true, "data": {
     "id": 1, "nama": "Kripik Pisang",
     "harga_jual": 20000, "modal_per_unit": 21200, "margin_per_unit": -1200,
-    "bahan": [ { "nama": "pisang", "biaya_per_unit": 7500 } ],
-    "saran_harga": { "harga_disarankan": 26500, "alasan": "margin 20% di atas modal" }
+    "merugi": true, "terlaris": false,
+    "hasil_per_batch": 40,
+    "total_terjual": 10,
+    "bahan": [
+      { "nama": "pisang",  "satuan": "kg",     "jumlah_pakai": 20, "biaya_per_unit": 7500 },
+      { "nama": "gas",     "satuan": "tabung", "jumlah_pakai": 1,  "biaya_per_unit": 5000 },
+      { "nama": "minyak",  "satuan": "liter",  "jumlah_pakai": 10, "biaya_per_unit": 4500 },
+      { "nama": "gula",    "satuan": "kg",     "jumlah_pakai": 10, "biaya_per_unit": 3750 },
+      { "nama": "kemasan", "satuan": "buah",   "jumlah_pakai": 40, "biaya_per_unit": 450 }
+    ],
+    "saran_harga": null
 } }
 ```
+
+**`biaya_per_unit` semua bahan dijamin berjumlah tepat sama dengan `modal_per_unit`** — di contoh ini 7.500 + 5.000 + 4.500 + 3.750 + 450 = 21.200. Itu diuji, bukan kebetulan. Rincian yang tidak menjumlah ke totalnya sendiri membuat pedagang berhenti percaya pada semua angka lain di aplikasi.
+
+`saran_harga` masih `null` — fitur 8 belum dibangun. Sembunyikan bagiannya selama masih null, jangan tampilkan angka karangan.
+
+`terlaris` dihitung sepanjang waktu, bukan per periode: sifatnya melekat pada produknya, dan angka yang berubah mengikuti rentang tanggal justru membingungkan.
 
 ## Ekstraksi
 
@@ -289,7 +304,45 @@ Memulai sesi baca. **Opsional.** Kalau tidak pernah dipanggil atau sesinya putus
 } }
 ```
 
+```json
+// jawaban sesungguhnya
+{ "ok": true, "data": {
+    "teks": "Kak, terima kasih atas tawarannya. Untuk Kripik Pisang harga terbaik kami tetap Rp 20.000 per unit ya...",
+    "acuan": {
+      "nama": "Kripik Pisang", "modal_per_unit": 21200, "harga_jual": 20000,
+      "harga_diminta": 18000, "jumlah": 20,
+      "untung_pesanan": -64000, "merugi": true
+    }
+} }
+```
+
+`maksud`: `tawar_harga` · `terima` · `tolak` · `jawab_harga`
+
 LLM menyusun kalimatnya, tapi angka di dalamnya berasal dari SQL dan disodorkan sebagai fakta. Hasilnya **disalin pedagang sendiri** — sistem tidak mengirim apa pun.
+
+**`acuan` adalah angka SQL yang dipakai menyusun kalimat.** Disertakan supaya bisa dicocokkan: kalau angka di `teks` berbeda dari yang di `acuan`, berarti model mengarang — dan itu kegagalan, bukan sekadar kalimat yang kurang enak.
+
+Kalimatnya sengaja **tidak pernah menyebut modal, rugi, atau untung** kepada pembeli. Itu urusan dalam pedagang.
+
+### `GET /stok`
+```json
+{ "ok": true, "data": [
+    { "bahan_id": 1, "nama": "pisang", "satuan": "kg", "jumlah": 7, "diperbarui": "2026-09-01T..." },
+    { "bahan_id": 2, "nama": "minyak", "satuan": "liter", "jumlah": null, "diperbarui": null }
+] }
+```
+
+**`jumlah: null` berarti belum pernah dicatat — bukan habis.** Jangan tampilkan sebagai "stok 0"; itu mengaku tahu sesuatu yang tidak diketahui.
+
+### `POST /stok`
+```json
+// permintaan
+{ "baris": [ { "bahan_id": 1, "jumlah": 7 }, { "bahan_id": 2, "jumlah": 12.5 } ] }
+// jawaban
+{ "ok": true, "data": { "tersimpan": 2 } }
+```
+
+Semua baris masuk atau tidak sama sekali. Mencatat stok inilah yang menghidupkan peringatan *"Bahan hanya cukup untuk 14 dari 20 yang dipesan"* di Pesanan Masuk — sebelum ada stok, jawabannya selalu *"stok belum dicatat"*.
 
 ## Kode galat
 

@@ -32,7 +32,14 @@ export const MODE_DB: 'postgres' | 'pglite' = DATABASE_URL ? 'postgres' : 'pglit
 export const MODE_DEMO = process.env.DEMO_MODE !== 'false';
 export const KODE_DEMO = '123456';
 
-export const GEMINI_API_KEY = process.env.GEMINI_API_KEY ?? '';
+/**
+ * LLM: Ollama milik kampus. TIDAK butuh kunci API.
+ *
+ * Nilai bawaannya sengaja diisi supaya rekan tim cukup `npm install` lalu
+ * jalan — tidak ada yang perlu disiapkan, tidak ada kunci yang perlu diminta.
+ */
+export const OLLAMA_URL = process.env.OLLAMA_URL ?? 'https://ollama.if.unismuh.ac.id';
+export const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? 'gemma4:latest';
 
 /** Sesi 90 hari, tidak pernah logout otomatis. */
 export const MASA_SESI = '90d';
