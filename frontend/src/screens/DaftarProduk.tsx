@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package } from 'lucide-react';
+import { Package, PackagePlus, ThumbsUp } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { RingkasanProduk } from '@shared/types';
 import { ambilDaftarProduk } from '../api/client';
@@ -11,6 +11,7 @@ import { Lencana } from '../components/Lencana';
 import { Segmented } from '../components/Segmented';
 import { NavBawah } from '../components/NavBawah';
 import { KeadaanGalat } from '../components/KeadaanGalat';
+import { KeadaanKosong } from '../components/KeadaanKosong';
 import { RangkaDaftar } from '../components/Rangka';
 
 type Saringan = 'semua' | 'merugi' | 'untung';
@@ -63,7 +64,7 @@ export function DaftarProduk() {
   return (
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
-      <h1 className="mt-7 text-[26px] font-bold tracking-[-0.02em] text-tinta">Produk Anda</h1>
+      <h1 className="mt-7 text-judul font-bold tracking-[-0.02em] text-tinta">Produk Anda</h1>
 
       {galat && <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />}
       {!daftar && !galat && (
@@ -84,17 +85,33 @@ export function DaftarProduk() {
       )}
 
       {daftar?.length === 0 && (
-        <p className="mt-6 text-[17px] leading-relaxed text-sedang">
-          Belum ada produk. Tambahkan lewat wawancara resep supaya modalnya bisa dihitung.
-        </p>
+        <KeadaanKosong
+          ikon={PackagePlus}
+          judul="Belum ada produk"
+          pesan="Ceritakan satu produk beserta bahannya, lalu modal dan untungnya dihitung sendiri."
+          labelAksi="Tambah produk"
+          onAksi={() => nav('/onboarding/produk')}
+        />
       )}
 
+      {/* Saringan yang tidak menghasilkan apa-apa. "Tidak ada yang merugi"
+          adalah kabar baik, bukan pekerjaan — jadi tanpa tombol. */}
       {terlihat?.length === 0 && daftar && daftar.length > 0 && (
-        <p className="mt-6 text-[16px] leading-relaxed text-sedang">
-          {saring === 'merugi'
-            ? 'Tidak ada produk yang merugi. Bagus.'
-            : 'Belum ada produk yang sudah pasti untung.'}
-        </p>
+        saring === 'merugi' ? (
+          <KeadaanKosong
+            ikon={ThumbsUp}
+            judul="Tidak ada yang merugi"
+            pesan="Semua produk Anda menutup modalnya. Tidak ada yang perlu dibetulkan sekarang."
+          />
+        ) : (
+          <KeadaanKosong
+            ikon={Package}
+            judul="Belum ada yang pasti untung"
+            pesan="Produk yang resepnya belum lengkap tidak dihitung untung — modalnya belum diketahui."
+            labelAksi="Lengkapi resep"
+            onAksi={() => nav('/onboarding/produk')}
+          />
+        )
       )}
 
       {terlihat && terlihat.length > 0 && (

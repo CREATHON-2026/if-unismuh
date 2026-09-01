@@ -33,14 +33,14 @@ export function KeadaanGalat({
         <WifiOff size={26} strokeWidth={1.8} />
       </span>
 
-      <p className="mt-4 text-[17px] font-semibold text-tinta">Belum bisa dimuat</p>
-      <p className="mt-1.5 max-w-[30ch] text-[15px] leading-relaxed text-sedang">{pesan}</p>
+      <p className="mt-4 text-utama font-semibold text-tinta">Belum bisa dimuat</p>
+      <p className="mt-1.5 max-w-[30ch] text-isi leading-relaxed text-sedang">{pesan}</p>
 
       <button
         type="button"
         onClick={onCoba}
         disabled={sedangMencoba}
-        className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-kontrol border-[1.5px] border-garis-tua px-5 text-[16px] font-semibold text-tinta transition active:scale-95 disabled:opacity-40"
+        className="mt-5 inline-flex min-h-12 items-center gap-2 rounded-kontrol border-[1.5px] border-garis-tua px-5 text-utama font-semibold text-tinta transition active:scale-95 disabled:opacity-40"
       >
         <RefreshCw
           size={18}

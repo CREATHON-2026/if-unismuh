@@ -1505,6 +1505,72 @@
       "norm_label": "siapsimpan"
     },
     {
+      "label": "uji-tenaga.mjs",
+      "file_type": "code",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "backend_scripts_uji_tenaga",
+      "community": 55,
+      "community_name": "uji-tenaga.mjs",
+      "norm_label": "uji-tenaga.mjs"
+    },
+    {
+      "label": "periksa()",
+      "file_type": "code",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "backend_scripts_uji_tenaga_periksa",
+      "community": 55,
+      "community_name": "uji-tenaga.mjs",
+      "norm_label": "periksa()"
+    },
+    {
+      "label": "panggil()",
+      "file_type": "code",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "backend_scripts_uji_tenaga_panggil",
+      "community": 55,
+      "community_name": "uji-tenaga.mjs",
+      "norm_label": "panggil()"
+    },
+    {
+      "label": "rupiah()",
+      "file_type": "code",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "backend_scripts_uji_tenaga_rupiah",
+      "community": 55,
+      "community_name": "uji-tenaga.mjs",
+      "norm_label": "rupiah()"
+    },
+    {
+      "label": "DONAT",
+      "file_type": "code",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "backend_scripts_uji_tenaga_donat",
+      "community": 55,
+      "community_name": "uji-tenaga.mjs",
+      "norm_label": "donat"
+    },
+    {
+      "label": "jumlahBahan",
+      "file_type": "code",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L122",
+      "_origin": "ast",
+      "id": "backend_scripts_uji_tenaga_jumlahbahan",
+      "community": 55,
+      "community_name": "uji-tenaga.mjs",
+      "norm_label": "jumlahbahan"
+    },
+    {
       "label": "ekstraksi-foto.mjs",
       "file_type": "code",
       "source_file": "backend/spike/ekstraksi-foto.mjs",
@@ -1610,8 +1676,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_config_env",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "env.ts"
     },
     {
@@ -1621,8 +1687,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "backend_src_config_env_akar_repo",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "akar_repo"
     },
     {
@@ -1632,8 +1698,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "backend_src_config_env_port",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "port"
     },
     {
@@ -1643,8 +1709,8 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "backend_src_config_env_periksaenv",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "periksaenv()"
     },
     {
@@ -1655,7 +1721,7 @@
       "_origin": "ast",
       "id": "backend_src_db_index",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "index.ts"
     },
     {
@@ -1666,7 +1732,7 @@
       "_origin": "ast",
       "id": "backend_src_db_index_dir",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "dir"
     },
     {
@@ -1677,7 +1743,7 @@
       "_origin": "ast",
       "id": "backend_src_db_index_db_dir",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "db_dir"
     },
     {
@@ -1688,7 +1754,7 @@
       "_origin": "ast",
       "id": "backend_src_db_index_schema",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "schema"
     },
     {
@@ -1699,7 +1765,7 @@
       "_origin": "ast",
       "id": "backend_src_db_index_pelaksana",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "pelaksana"
     },
     {
@@ -1710,7 +1776,7 @@
       "_origin": "ast",
       "id": "backend_src_db_index_pelaksana_query",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": ".query()"
     },
     {
@@ -1731,8 +1797,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "backend_src_db_index_siapkandb",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "siapkandb()"
     },
     {
@@ -1753,8 +1819,8 @@
       "source_location": "L107",
       "_origin": "ast",
       "id": "backend_src_db_index_satu",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "satu()"
     },
     {
@@ -1765,7 +1831,7 @@
       "_origin": "ast",
       "id": "backend_src_db_index_transaksidb",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "transaksidb()"
     },
     {
@@ -2050,8 +2116,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_lib_token",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "token.ts"
     },
     {
@@ -2061,8 +2127,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "backend_src_lib_token_buattoken",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "buattoken()"
     },
     {
@@ -2204,8 +2270,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_auth_auth_queries",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "auth.queries.ts"
     },
     {
@@ -2215,8 +2281,8 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "backend_src_modules_auth_auth_queries_caripenggunalewatnomor",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "caripenggunalewatnomor()"
     },
     {
@@ -2226,8 +2292,8 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "backend_src_modules_auth_auth_queries_ambilpengguna",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "ambilpengguna()"
     },
     {
@@ -2237,8 +2303,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "backend_src_modules_auth_auth_queries_buatpengguna",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "buatpengguna()"
     },
     {
@@ -2270,8 +2336,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_auth_auth_service",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "auth.service.ts"
     },
     {
@@ -2281,8 +2347,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_src_modules_auth_auth_service_sesi",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "sesi"
     },
     {
@@ -2303,8 +2369,8 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "backend_src_modules_auth_auth_service_verifikasiotp",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "verifikasiotp()"
     },
     {
@@ -2314,8 +2380,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "backend_src_modules_auth_auth_service_pulihkansesi",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "pulihkansesi()"
     },
     {
@@ -2347,8 +2413,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_beranda_beranda_queries",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "beranda.queries.ts"
     },
     {
@@ -2358,8 +2424,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "backend_src_modules_beranda_beranda_queries_ringkasanpenjualan",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "ringkasanpenjualan()"
     },
     {
@@ -2369,8 +2435,8 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "backend_src_modules_beranda_beranda_queries_temuanproduk",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "temuanproduk()"
     },
     {
@@ -2402,8 +2468,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_beranda_beranda_service",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "beranda.service.ts"
     },
     {
@@ -2413,8 +2479,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_src_modules_beranda_beranda_service_ringkasberanda",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "ringkasberanda()"
     },
     {
@@ -2424,8 +2490,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_beranda_beranda_types",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "beranda.types.ts"
     },
     {
@@ -2435,8 +2501,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "backend_src_modules_beranda_beranda_types_ringkasanpenjualan",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "ringkasanpenjualan"
     },
     {
@@ -2446,8 +2512,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_src_modules_beranda_beranda_types_temuanproduk",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "temuanproduk"
     },
     {
@@ -2457,8 +2523,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_controller",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "ekstraksi.controller.ts"
     },
     {
@@ -2468,8 +2534,8 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_controller_bacabariskonfirmasi",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "bacabariskonfirmasi()"
     },
     {
@@ -2479,8 +2545,8 @@
       "source_location": "L41",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_controller_dariteks",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "dariteks()"
     },
     {
@@ -2490,8 +2556,8 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_controller_pratinjau",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "pratinjau()"
     },
     {
@@ -2501,8 +2567,8 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_controller_konfirmasi",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "konfirmasi()"
     },
     {
@@ -2513,7 +2579,7 @@
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_queries",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "ekstraksi.queries.ts"
     },
     {
@@ -2523,8 +2589,8 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_queries_hitungbaris",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "hitungbaris()"
     },
     {
@@ -2534,8 +2600,8 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_queries_simpanekstraksi",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "simpanekstraksi()"
     },
     {
@@ -2546,7 +2612,7 @@
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_queries_ekstraksitidaksah",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "ekstraksitidaksah"
     },
     {
@@ -2557,7 +2623,7 @@
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_queries_konfirmasi",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "konfirmasi()"
     },
     {
@@ -2567,8 +2633,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_routes",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "ekstraksi.routes.ts"
     },
     {
@@ -2589,8 +2655,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_service",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "ekstraksi.service.ts"
     },
     {
@@ -2600,8 +2666,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_service_usulanekstraksidariteks",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "usulanekstraksidariteks()"
     },
     {
@@ -2611,8 +2677,8 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_service_hitungpratinjau",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "hitungpratinjau()"
     },
     {
@@ -2622,8 +2688,8 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_service_konfirmasiekstraksi",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "konfirmasiekstraksi()"
     },
     {
@@ -2634,7 +2700,7 @@
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_types",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "ekstraksi.types.ts"
     },
     {
@@ -2645,7 +2711,7 @@
       "_origin": "ast",
       "id": "backend_src_modules_ekstraksi_ekstraksi_types_hitungbaris",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "hitungbaris"
     },
     {
@@ -2699,8 +2765,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_onboarding_onboarding_queries",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "onboarding.queries.ts"
     },
     {
@@ -2710,8 +2776,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_src_modules_onboarding_onboarding_queries_simpanusaha",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "simpanusaha()"
     },
     {
@@ -2721,8 +2787,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "backend_src_modules_onboarding_onboarding_queries_simpanresep",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "simpanresep()"
     },
     {
@@ -2732,8 +2798,8 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "backend_src_modules_onboarding_onboarding_queries_ambiltemuanpertama",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "ambiltemuanpertama()"
     },
     {
@@ -2765,8 +2831,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_onboarding_onboarding_service",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "onboarding.service.ts"
     },
     {
@@ -2776,8 +2842,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "backend_src_modules_onboarding_onboarding_service_perbaruiusaha",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "perbaruiusaha()"
     },
     {
@@ -2787,8 +2853,8 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "backend_src_modules_onboarding_onboarding_service_buatprodukdenganresep",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "buatprodukdenganresep()"
     },
     {
@@ -3029,8 +3095,8 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "backend_src_modules_pesanan_pesanan_service_putuskancocok",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "putuskancocok()"
     },
     {
@@ -3040,8 +3106,8 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "backend_src_modules_pesanan_pesanan_service_cocokkannamaproduk",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "cocokkannamaproduk()"
     },
     {
@@ -3106,8 +3172,8 @@
       "source_location": "L259",
       "_origin": "ast",
       "id": "backend_src_modules_pesanan_pesanan_service_ambildaftarpesan",
-      "community": 14,
-      "community_name": "pesanan.service.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "ambildaftarpesan()"
     },
     {
@@ -3191,7 +3257,7 @@
       "label": "daftarProduk()",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L22",
+      "source_location": "L23",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_controller_daftarproduk",
       "community": 59,
@@ -3202,7 +3268,7 @@
       "label": "detailProduk()",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L28",
+      "source_location": "L29",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_controller_detailproduk",
       "community": 59,
@@ -3213,7 +3279,7 @@
       "label": "usulanProduk()",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L49",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_controller_usulanproduk",
       "community": 59,
@@ -3224,12 +3290,23 @@
       "label": "simpanProduk()",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L68",
+      "source_location": "L69",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_controller_simpanproduk",
       "community": 59,
       "community_name": "kirim",
       "norm_label": "simpanproduk()"
+    },
+    {
+      "label": "ubahOngkosTenaga()",
+      "file_type": "code",
+      "source_file": "backend/src/modules/produk/produk.controller.ts",
+      "source_location": "L113",
+      "_origin": "ast",
+      "id": "backend_src_modules_produk_produk_controller_ubahongkostenaga",
+      "community": 59,
+      "community_name": "kirim",
+      "norm_label": "ubahongkostenaga()"
     },
     {
       "label": "produk.llm.ts",
@@ -3386,6 +3463,17 @@
       "norm_label": "saranharga()"
     },
     {
+      "label": "simpanOngkosTenaga()",
+      "file_type": "code",
+      "source_file": "backend/src/modules/produk/produk.queries.ts",
+      "source_location": "L155",
+      "_origin": "ast",
+      "id": "backend_src_modules_produk_produk_queries_simpanongkostenaga",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
+      "norm_label": "simpanongkostenaga()"
+    },
+    {
       "label": "produk.routes.ts",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.routes.ts",
@@ -3400,7 +3488,7 @@
       "label": "rutProduk",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.routes.ts",
-      "source_location": "L11",
+      "source_location": "L13",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_routes_rutproduk",
       "community": 59,
@@ -3422,7 +3510,7 @@
       "label": "alasanSaran()",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L31",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_service_alasansaran",
       "community": 14,
@@ -3433,18 +3521,18 @@
       "label": "ambilDaftarProduk()",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L37",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_service_ambildaftarproduk",
-      "community": 14,
-      "community_name": "pesanan.service.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "ambildaftarproduk()"
     },
     {
       "label": "ambilDetailProduk()",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L46",
+      "source_location": "L52",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_service_ambildetailproduk",
       "community": 14,
@@ -3455,23 +3543,34 @@
       "label": "usulkanProdukDariTeks()",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L74",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_service_usulkanprodukdariteks",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "usulkanprodukdariteks()"
     },
     {
       "label": "simpanProdukBaru()",
       "file_type": "code",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L140",
+      "source_location": "L146",
       "_origin": "ast",
       "id": "backend_src_modules_produk_produk_service_simpanprodukbaru",
       "community": 59,
       "community_name": "kirim",
       "norm_label": "simpanprodukbaru()"
+    },
+    {
+      "label": "catatOngkosTenaga()",
+      "file_type": "code",
+      "source_file": "backend/src/modules/produk/produk.service.ts",
+      "source_location": "L168",
+      "_origin": "ast",
+      "id": "backend_src_modules_produk_produk_service_catatongkostenaga",
+      "community": 59,
+      "community_name": "kirim",
+      "norm_label": "catatongkostenaga()"
     },
     {
       "label": "produk.types.ts",
@@ -3568,8 +3667,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_stok_stok_queries",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "stok.queries.ts"
     },
     {
@@ -3579,8 +3678,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "backend_src_modules_stok_stok_queries_bahantidaksah",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "bahantidaksah"
     },
     {
@@ -3590,8 +3689,8 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "backend_src_modules_stok_stok_queries_bahantidaksah_constructor",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": ".constructor()"
     },
     {
@@ -3601,8 +3700,8 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "backend_src_modules_stok_stok_queries_daftarstok",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "daftarstok()"
     },
     {
@@ -3612,8 +3711,8 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "backend_src_modules_stok_stok_queries_simpanstok",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "simpanstok()"
     },
     {
@@ -3645,8 +3744,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_stok_stok_service",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "stok.service.ts"
     },
     {
@@ -3656,8 +3755,8 @@
       "source_location": "L14",
       "_origin": "ast",
       "id": "backend_src_modules_stok_stok_service_ambildaftarstok",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "ambildaftarstok()"
     },
     {
@@ -3667,8 +3766,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "backend_src_modules_stok_stok_service_catatstok",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "catatstok()"
     },
     {
@@ -3733,8 +3832,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "transaksi.llm.ts"
     },
     {
@@ -3744,8 +3843,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_barismodel",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "barismodel"
     },
     {
@@ -3755,8 +3854,8 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_hasilekstraksi",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "hasilekstraksi"
     },
     {
@@ -3766,8 +3865,8 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_skema",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "skema"
     },
     {
@@ -3777,8 +3876,8 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_bangunprompt",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "bangunprompt()"
     },
     {
@@ -3788,8 +3887,8 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_ekstrakbarispenjualan",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "ekstrakbarispenjualan()"
     },
     {
@@ -3799,8 +3898,8 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_bukan_barang",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "bukan_barang"
     },
     {
@@ -3810,8 +3909,8 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_ada_bilangan",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "ada_bilangan"
     },
     {
@@ -3821,8 +3920,8 @@
       "source_location": "L150",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_slang_uang",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "slang_uang"
     },
     {
@@ -3832,8 +3931,8 @@
       "source_location": "L159",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_angkaditeks",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "angkaditeks()"
     },
     {
@@ -3843,8 +3942,8 @@
       "source_location": "L173",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_llm_saringbaris",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "saringbaris()"
     },
     {
@@ -3855,7 +3954,7 @@
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_queries",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "transaksi.queries.ts"
     },
     {
@@ -3865,8 +3964,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_queries_produktidaksah",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "produktidaksah"
     },
     {
@@ -3876,8 +3975,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_queries_produktidaksah_constructor",
-      "community": 59,
-      "community_name": "kirim",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": ".constructor()"
     },
     {
@@ -3888,7 +3987,7 @@
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_queries_tulisbaris",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "tulisbaris()"
     },
     {
@@ -3899,7 +3998,7 @@
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_queries_simpantransaksi",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "simpantransaksi()"
     },
     {
@@ -3986,8 +4085,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_types",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "transaksi.types.ts"
     },
     {
@@ -3997,8 +4096,8 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "backend_src_modules_transaksi_transaksi_types_barismentah",
-      "community": 66,
-      "community_name": "transaksi.llm.ts",
+      "community": 14,
+      "community_name": "pesanan.service.ts",
       "norm_label": "barismentah"
     },
     {
@@ -4855,7 +4954,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_app",
-      "community": 61,
+      "community": 54,
       "community_name": "App.tsx",
       "norm_label": "app.tsx"
     },
@@ -4867,7 +4966,7 @@
       "_origin": "ast",
       "id": "frontend_src_app_app",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "app()"
     },
     {
@@ -4885,54 +4984,54 @@
       "label": "panggil()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L37",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "frontend_src_api_client_panggil",
-      "community": 54,
-      "community_name": "panggil",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "panggil()"
     },
     {
       "label": "kirimOtp()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L57",
+      "source_location": "L58",
       "_origin": "ast",
       "id": "frontend_src_api_client_kirimotp",
-      "community": 54,
-      "community_name": "panggil",
+      "community": 61,
+      "community_name": "Layar.tsx",
       "norm_label": "kirimotp()"
     },
     {
       "label": "verifikasiOtp()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L61",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "frontend_src_api_client_verifikasiotp",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "verifikasiotp()"
     },
     {
       "label": "ambilSaya()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L69",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "frontend_src_api_client_ambilsaya",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "ambilsaya()"
     },
     {
       "label": "simpanUsaha()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L73",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "frontend_src_api_client_simpanusaha",
-      "community": 10,
+      "community": 56,
       "community_name": "JenisUsaha.tsx",
       "norm_label": "simpanusaha()"
     },
@@ -4940,29 +5039,29 @@
       "label": "simpanResep()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L77",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "frontend_src_api_client_simpanresep",
-      "community": 54,
-      "community_name": "panggil",
+      "community": 61,
+      "community_name": "Layar.tsx",
       "norm_label": "simpanresep()"
     },
     {
       "label": "ambilBeranda()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L88",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "frontend_src_api_client_ambilberanda",
-      "community": 54,
-      "community_name": "panggil",
+      "community": 53,
+      "community_name": "Beranda.tsx",
       "norm_label": "ambilberanda()"
     },
     {
       "label": "ambilDaftarProduk()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L92",
+      "source_location": "L93",
       "_origin": "ast",
       "id": "frontend_src_api_client_ambildaftarproduk",
       "community": 53,
@@ -4970,21 +5069,32 @@
       "norm_label": "ambildaftarproduk()"
     },
     {
+      "label": "ubahOngkosTenaga()",
+      "file_type": "code",
+      "source_file": "frontend/src/api/client.ts",
+      "source_location": "L98",
+      "_origin": "ast",
+      "id": "frontend_src_api_client_ubahongkostenaga",
+      "community": 50,
+      "community_name": "types.ts",
+      "norm_label": "ubahongkostenaga()"
+    },
+    {
       "label": "ambilDetailProduk()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L96",
+      "source_location": "L102",
       "_origin": "ast",
       "id": "frontend_src_api_client_ambildetailproduk",
-      "community": 53,
-      "community_name": "Beranda.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "ambildetailproduk()"
     },
     {
       "label": "analisisPesanan()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L101",
+      "source_location": "L107",
       "_origin": "ast",
       "id": "frontend_src_api_client_analisispesanan",
       "community": 67,
@@ -4995,99 +5105,99 @@
       "label": "daftarPesanan()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L106",
+      "source_location": "L112",
       "_origin": "ast",
       "id": "frontend_src_api_client_daftarpesanan",
-      "community": 54,
-      "community_name": "panggil",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "daftarpesanan()"
     },
     {
       "label": "buatBalasan()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L111",
+      "source_location": "L117",
       "_origin": "ast",
       "id": "frontend_src_api_client_buatbalasan",
-      "community": 67,
-      "community_name": "PesananMasuk.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "buatbalasan()"
     },
     {
       "label": "usulanDariTeks()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L116",
+      "source_location": "L122",
       "_origin": "ast",
       "id": "frontend_src_api_client_usulandariteks",
-      "community": 52,
-      "community_name": "CatatSuara.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "usulandariteks()"
     },
     {
       "label": "catatTransaksi()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L120",
+      "source_location": "L126",
       "_origin": "ast",
       "id": "frontend_src_api_client_catattransaksi",
-      "community": 54,
-      "community_name": "panggil",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "catattransaksi()"
     },
     {
       "label": "statusWhatsapp()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L125",
+      "source_location": "L131",
       "_origin": "ast",
       "id": "frontend_src_api_client_statuswhatsapp",
-      "community": 4,
-      "community_name": "SambungWhatsApp.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "statuswhatsapp()"
     },
     {
       "label": "hubungkanWhatsapp()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L133",
+      "source_location": "L139",
       "_origin": "ast",
       "id": "frontend_src_api_client_hubungkanwhatsapp",
-      "community": 4,
-      "community_name": "SambungWhatsApp.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "hubungkanwhatsapp()"
     },
     {
       "label": "ekstraksiFoto()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L163",
+      "source_location": "L169",
       "_origin": "ast",
       "id": "frontend_src_api_client_ekstraksifoto",
-      "community": 52,
-      "community_name": "CatatSuara.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "ekstraksifoto()"
     },
     {
       "label": "pratinjauEkstraksi()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L179",
+      "source_location": "L185",
       "_origin": "ast",
       "id": "frontend_src_api_client_pratinjauekstraksi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "pratinjauekstraksi()"
     },
     {
       "label": "konfirmasiEkstraksi()",
       "file_type": "code",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L186",
+      "source_location": "L192",
       "_origin": "ast",
       "id": "frontend_src_api_client_konfirmasiekstraksi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "konfirmasiekstraksi()"
     },
     {
@@ -5098,7 +5208,7 @@
       "_origin": "ast",
       "id": "frontend_src_api_sesi",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "sesi.ts"
     },
     {
@@ -5109,7 +5219,7 @@
       "_origin": "ast",
       "id": "frontend_src_api_sesi_simpantoken",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "simpantoken()"
     },
     {
@@ -5120,7 +5230,7 @@
       "_origin": "ast",
       "id": "frontend_src_api_sesi_ambiltoken",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "ambiltoken()"
     },
     {
@@ -5185,8 +5295,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_inputteks",
-      "community": 4,
-      "community_name": "SambungWhatsApp.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "inputteks.tsx"
     },
     {
@@ -5196,8 +5306,8 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "frontend_src_components_inputteks_inputteks",
-      "community": 4,
-      "community_name": "SambungWhatsApp.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "inputteks()"
     },
     {
@@ -5207,8 +5317,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_kartuhero",
-      "community": 52,
-      "community_name": "CatatSuara.tsx",
+      "community": 53,
+      "community_name": "Beranda.tsx",
       "norm_label": "kartuhero.tsx"
     },
     {
@@ -5218,8 +5328,8 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "frontend_src_components_kartuhero_kartuhero",
-      "community": 52,
-      "community_name": "CatatSuara.tsx",
+      "community": 53,
+      "community_name": "Beranda.tsx",
       "norm_label": "kartuhero()"
     },
     {
@@ -5256,6 +5366,28 @@
       "norm_label": "kartumetrik()"
     },
     {
+      "label": "KartuTenaga.tsx",
+      "file_type": "code",
+      "source_file": "frontend/src/components/KartuTenaga.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "frontend_src_components_kartutenaga",
+      "community": 61,
+      "community_name": "Layar.tsx",
+      "norm_label": "kartutenaga.tsx"
+    },
+    {
+      "label": "KartuTenaga()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/KartuTenaga.tsx",
+      "source_location": "L21",
+      "_origin": "ast",
+      "id": "frontend_src_components_kartutenaga_kartutenaga",
+      "community": 53,
+      "community_name": "Beranda.tsx",
+      "norm_label": "kartutenaga()"
+    },
+    {
       "label": "KeadaanGalat.tsx",
       "file_type": "code",
       "source_file": "frontend/src/components/KeadaanGalat.tsx",
@@ -5278,6 +5410,28 @@
       "norm_label": "keadaangalat()"
     },
     {
+      "label": "KeadaanKosong.tsx",
+      "file_type": "code",
+      "source_file": "frontend/src/components/KeadaanKosong.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "frontend_src_components_keadaankosong",
+      "community": 61,
+      "community_name": "Layar.tsx",
+      "norm_label": "keadaankosong.tsx"
+    },
+    {
+      "label": "KeadaanKosong()",
+      "file_type": "code",
+      "source_file": "frontend/src/components/KeadaanKosong.tsx",
+      "source_location": "L20",
+      "_origin": "ast",
+      "id": "frontend_src_components_keadaankosong_keadaankosong",
+      "community": 53,
+      "community_name": "Beranda.tsx",
+      "norm_label": "keadaankosong()"
+    },
+    {
       "label": "KepalaAplikasi.tsx",
       "file_type": "code",
       "source_file": "frontend/src/components/KepalaAplikasi.tsx",
@@ -5292,7 +5446,7 @@
       "label": "KepalaAplikasi()",
       "file_type": "code",
       "source_file": "frontend/src/components/KepalaAplikasi.tsx",
-      "source_location": "L7",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "frontend_src_components_kepalaaplikasi_kepalaaplikasi",
       "community": 52,
@@ -5307,7 +5461,7 @@
       "_origin": "ast",
       "id": "frontend_src_components_kepalaresep",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "kepalaresep.tsx"
     },
     {
@@ -5318,7 +5472,7 @@
       "_origin": "ast",
       "id": "frontend_src_components_kepalaresep_kepalaresep",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "kepalaresep()"
     },
     {
@@ -5329,7 +5483,7 @@
       "_origin": "ast",
       "id": "frontend_src_components_layar",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "layar.tsx"
     },
     {
@@ -5340,7 +5494,7 @@
       "_origin": "ast",
       "id": "frontend_src_components_layar_layar",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "layar()"
     },
     {
@@ -5395,7 +5549,7 @@
       "_origin": "ast",
       "id": "frontend_src_components_logo",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "logo.tsx"
     },
     {
@@ -5406,7 +5560,7 @@
       "_origin": "ast",
       "id": "frontend_src_components_logo_logoikon",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "logoikon()"
     },
     {
@@ -5417,7 +5571,7 @@
       "_origin": "ast",
       "id": "frontend_src_components_logo_logo",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "logo()"
     },
     {
@@ -5537,7 +5691,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_components_titiklangkah",
-      "community": 10,
+      "community": 56,
       "community_name": "JenisUsaha.tsx",
       "norm_label": "titiklangkah.tsx"
     },
@@ -5548,7 +5702,7 @@
       "source_location": "L2",
       "_origin": "ast",
       "id": "frontend_src_components_titiklangkah_titiklangkah",
-      "community": 10,
+      "community": 56,
       "community_name": "JenisUsaha.tsx",
       "norm_label": "titiklangkah()"
     },
@@ -5560,7 +5714,7 @@
       "_origin": "ast",
       "id": "frontend_src_components_tombol",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "tombol.tsx"
     },
     {
@@ -5571,7 +5725,7 @@
       "_origin": "ast",
       "id": "frontend_src_components_tombol_tombol",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "tombol()"
     },
     {
@@ -5582,7 +5736,7 @@
       "_origin": "ast",
       "id": "frontend_src_main",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "main.tsx"
     },
     {
@@ -5600,11 +5754,11 @@
       "label": "Beranda()",
       "file_type": "code",
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L36",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "frontend_src_screens_beranda_beranda",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "beranda()"
     },
     {
@@ -5666,7 +5820,7 @@
       "label": "Saringan",
       "file_type": "code",
       "source_file": "frontend/src/screens/DaftarProduk.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "_origin": "ast",
       "id": "frontend_src_screens_daftarproduk_saringan",
       "community": 53,
@@ -5677,11 +5831,11 @@
       "label": "DaftarProduk()",
       "file_type": "code",
       "source_file": "frontend/src/screens/DaftarProduk.tsx",
-      "source_location": "L35",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_src_screens_daftarproduk_daftarproduk",
-      "community": 52,
-      "community_name": "CatatSuara.tsx",
+      "community": 53,
+      "community_name": "Beranda.tsx",
       "norm_label": "daftarproduk()"
     },
     {
@@ -5699,11 +5853,11 @@
       "label": "DetailProduk()",
       "file_type": "code",
       "source_file": "frontend/src/screens/DetailProduk.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "frontend_src_screens_detailproduk_detailproduk",
-      "community": 52,
-      "community_name": "CatatSuara.tsx",
+      "community": 53,
+      "community_name": "Beranda.tsx",
       "norm_label": "detailproduk()"
     },
     {
@@ -5714,7 +5868,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_infowhatsapp",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "infowhatsapp.tsx"
     },
     {
@@ -5725,7 +5879,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_infowhatsapp_infowhatsapp",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "infowhatsapp()"
     },
     {
@@ -5735,7 +5889,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_screens_jenisusaha",
-      "community": 10,
+      "community": 56,
       "community_name": "JenisUsaha.tsx",
       "norm_label": "jenisusaha.tsx"
     },
@@ -5746,7 +5900,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "frontend_src_screens_jenisusaha_pilihan",
-      "community": 10,
+      "community": 56,
       "community_name": "JenisUsaha.tsx",
       "norm_label": "pilihan"
     },
@@ -5757,7 +5911,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "frontend_src_screens_jenisusaha_jenisusaha",
-      "community": 10,
+      "community": 56,
       "community_name": "JenisUsaha.tsx",
       "norm_label": "jenisusaha()"
     },
@@ -5769,7 +5923,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_kodeotp",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "kodeotp.tsx"
     },
     {
@@ -5780,7 +5934,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_kodeotp_kodeotp",
       "community": 54,
-      "community_name": "panggil",
+      "community_name": "App.tsx",
       "norm_label": "kodeotp()"
     },
     {
@@ -5790,8 +5944,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_screens_konfirmasiekstraksi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "konfirmasiekstraksi.tsx"
     },
     {
@@ -5801,8 +5955,8 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "frontend_src_screens_konfirmasiekstraksi_kebariskonfirmasi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "kebariskonfirmasi()"
     },
     {
@@ -5812,8 +5966,8 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "frontend_src_screens_konfirmasiekstraksi_konfirmasiekstraksi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "konfirmasiekstraksi()"
     },
     {
@@ -5824,7 +5978,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_namausaha",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "namausaha.tsx"
     },
     {
@@ -5835,7 +5989,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_namausaha_namausaha",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "namausaha()"
     },
     {
@@ -5846,7 +6000,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_nomorhp",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "nomorhp.tsx"
     },
     {
@@ -5857,7 +6011,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_nomorhp_nomorhp",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "nomorhp()"
     },
     {
@@ -5912,7 +6066,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_produkterlaris",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "produkterlaris.tsx"
     },
     {
@@ -5923,7 +6077,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_produkterlaris_saran",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "saran"
     },
     {
@@ -5934,7 +6088,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_produkterlaris_barlangkah",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "barlangkah()"
     },
     {
@@ -5945,7 +6099,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_produkterlaris_produkterlaris",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "produkterlaris()"
     },
     {
@@ -5956,7 +6110,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_resepbahan",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "resepbahan.tsx"
     },
     {
@@ -5967,7 +6121,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_resepbahan_form_kosong",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "form_kosong"
     },
     {
@@ -5978,7 +6132,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_resepbahan_kolom",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "kolom()"
     },
     {
@@ -5988,8 +6142,8 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "frontend_src_screens_resepbahan_resepbahan",
-      "community": 52,
-      "community_name": "CatatSuara.tsx",
+      "community": 61,
+      "community_name": "Layar.tsx",
       "norm_label": "resepbahan()"
     },
     {
@@ -6000,7 +6154,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_resepharga",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "resepharga.tsx"
     },
     {
@@ -6011,7 +6165,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_resepharga_resepharga",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "resepharga()"
     },
     {
@@ -6022,7 +6176,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_resephasil",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "resephasil.tsx"
     },
     {
@@ -6033,7 +6187,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_resephasil_resephasil",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "resephasil()"
     },
     {
@@ -6043,8 +6197,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_screens_sambungwhatsapp",
-      "community": 4,
-      "community_name": "SambungWhatsApp.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "sambungwhatsapp.tsx"
     },
     {
@@ -6054,8 +6208,8 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "frontend_src_screens_sambungwhatsapp_label",
-      "community": 4,
-      "community_name": "SambungWhatsApp.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "label"
     },
     {
@@ -6065,8 +6219,8 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "frontend_src_screens_sambungwhatsapp_sambungwhatsapp",
-      "community": 4,
-      "community_name": "SambungWhatsApp.tsx",
+      "community": 50,
+      "community_name": "types.ts",
       "norm_label": "sambungwhatsapp()"
     },
     {
@@ -6077,7 +6231,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_sambutan",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "sambutan.tsx"
     },
     {
@@ -6088,7 +6242,7 @@
       "_origin": "ast",
       "id": "frontend_src_screens_sambutan_sambutan",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "sambutan()"
     },
     {
@@ -6120,8 +6274,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_state_ekstraksi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "ekstraksi.ts"
     },
     {
@@ -6131,8 +6285,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_src_state_ekstraksi_tulisekstraksi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "tulisekstraksi()"
     },
     {
@@ -6142,8 +6296,8 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "frontend_src_state_ekstraksi_bacaekstraksi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "bacaekstraksi()"
     },
     {
@@ -6153,8 +6307,8 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "frontend_src_state_ekstraksi_hapusekstraksi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "hapusekstraksi()"
     },
     {
@@ -6164,8 +6318,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "frontend_src_state_onboarding",
-      "community": 61,
-      "community_name": "App.tsx",
+      "community": 52,
+      "community_name": "CatatSuara.tsx",
       "norm_label": "onboarding.ts"
     },
     {
@@ -6175,8 +6329,8 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "frontend_src_state_onboarding_jawabanonboarding",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "jawabanonboarding"
     },
     {
@@ -6198,7 +6352,7 @@
       "_origin": "ast",
       "id": "frontend_src_state_onboarding_tulisonboarding",
       "community": 61,
-      "community_name": "App.tsx",
+      "community_name": "Layar.tsx",
       "norm_label": "tulisonboarding()"
     },
     {
@@ -6604,8 +6758,8 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "shared_types_pengguna",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "pengguna"
     },
     {
@@ -6626,8 +6780,8 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "shared_types_jenisusaha",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "jenisusaha"
     },
     {
@@ -6648,8 +6802,8 @@
       "source_location": "L78",
       "_origin": "ast",
       "id": "shared_types_bahanmasukan",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "bahanmasukan"
     },
     {
@@ -6670,8 +6824,8 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "shared_types_temuanpertama",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 4,
+      "community_name": "satu",
       "norm_label": "temuanpertama"
     },
     {
@@ -6857,8 +7011,8 @@
       "source_location": "L379",
       "_origin": "ast",
       "id": "shared_types_barisstok",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "barisstok"
     },
     {
@@ -6868,8 +7022,8 @@
       "source_location": "L384",
       "_origin": "ast",
       "id": "shared_types_stokbahan",
-      "community": 57,
-      "community_name": "index.ts",
+      "community": 59,
+      "community_name": "kirim",
       "norm_label": "stokbahan"
     },
     {
@@ -6880,7 +7034,7 @@
       "_origin": "ast",
       "id": "shared_types_sumbertransaksi",
       "community": 57,
-      "community_name": "index.ts",
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "sumbertransaksi"
     },
     {
@@ -6956,8 +7110,8 @@
       "source_location": "L475",
       "_origin": "ast",
       "id": "shared_types_barisekstraksi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 10,
+      "community_name": "KonfirmasiEkstraksi.tsx",
       "norm_label": "barisekstraksi"
     },
     {
@@ -6978,8 +7132,8 @@
       "source_location": "L499",
       "_origin": "ast",
       "id": "shared_types_bariskonfirmasi",
-      "community": 50,
-      "community_name": "types.ts",
+      "community": 57,
+      "community_name": "ekstraksi.service.ts",
       "norm_label": "bariskonfirmasi"
     },
     {
@@ -7036,6 +7190,17 @@
       "community": 50,
       "community_name": "types.ts",
       "norm_label": "hubungkanwhatsappreq"
+    },
+    {
+      "label": "OngkosTenagaReq",
+      "file_type": "code",
+      "source_file": "shared/types.ts",
+      "source_location": "L573",
+      "_origin": "ast",
+      "id": "shared_types_ongkostenagareq",
+      "community": 50,
+      "community_name": "types.ts",
+      "norm_label": "ongkostenagareq"
     },
     {
       "label": "SKILL.md",
@@ -7965,7 +8130,7 @@
       "contributor": null,
       "community": 8,
       "norm_label": "aturan 3 \u2014 jangan pernah minta email atau password",
-      "community_name": "Aturan UI untuk pengguna 35-60 tahun",
+      "community_name": "Kontrak API sebagai sumber kebenaran backend",
       "id": "claude_aturan_3"
     },
     {
@@ -8007,7 +8172,7 @@
       "contributor": null,
       "community": 8,
       "norm_label": "aturan 6 \u2014 web mobile-first, bukan aplikasi native",
-      "community_name": "Aturan UI untuk pengguna 35-60 tahun",
+      "community_name": "Kontrak API sebagai sumber kebenaran backend",
       "id": "claude_aturan_6"
     },
     {
@@ -8273,7 +8438,7 @@
       "contributor": null,
       "community": 8,
       "norm_label": "platform web app mobile-first",
-      "community_name": "Aturan UI untuk pengguna 35-60 tahun",
+      "community_name": "Kontrak API sebagai sumber kebenaran backend",
       "id": "readme_mobile_first"
     },
     {
@@ -8413,7 +8578,7 @@
       "contributor": null,
       "community": 8,
       "norm_label": "setiap query menyertakan user_id di where",
-      "community_name": "Aturan UI untuk pengguna 35-60 tahun",
+      "community_name": "Kontrak API sebagai sumber kebenaran backend",
       "id": "backend_claude_user_id_where"
     },
     {
@@ -8469,7 +8634,7 @@
       "contributor": null,
       "community": 43,
       "norm_label": "uang sebagai integer, bukan float",
-      "community_name": "Kontrak API sebagai sumber kebenaran backend",
+      "community_name": "format/rupiah.ts \u2014 pemformat tampilan",
       "id": "backend_claude_uang_integer"
     },
     {
@@ -8523,7 +8688,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 43,
+      "community": 8,
       "norm_label": "kontrak api sebagai sumber kebenaran backend",
       "community_name": "Kontrak API sebagai sumber kebenaran backend",
       "id": "backend_claude_kontrak_api"
@@ -8553,7 +8718,7 @@
       "contributor": null,
       "community": 43,
       "norm_label": "frontend tidak pernah menghitung angka finansial",
-      "community_name": "Kontrak API sebagai sumber kebenaran backend",
+      "community_name": "format/rupiah.ts \u2014 pemformat tampilan",
       "id": "frontend_claude_tidak_menghitung"
     },
     {
@@ -8595,7 +8760,7 @@
       "contributor": null,
       "community": 8,
       "norm_label": "aturan ui untuk pengguna 35-60 tahun",
-      "community_name": "Aturan UI untuk pengguna 35-60 tahun",
+      "community_name": "Kontrak API sebagai sumber kebenaran backend",
       "id": "frontend_claude_aturan_ui"
     },
     {
@@ -8663,7 +8828,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 43,
+      "community": 8,
       "norm_label": "mulai dengan data tiruan sesuai kontrak api",
       "community_name": "Kontrak API sebagai sumber kebenaran backend",
       "id": "frontend_claude_data_tiruan"
@@ -8693,7 +8858,7 @@
       "contributor": null,
       "community": 43,
       "norm_label": "frontend memakai tipe dari shared/",
-      "community_name": "Kontrak API sebagai sumber kebenaran backend",
+      "community_name": "format/rupiah.ts \u2014 pemformat tampilan",
       "id": "frontend_claude_tipe_bersama"
     },
     {
@@ -8707,7 +8872,7 @@
       "contributor": null,
       "community": 43,
       "norm_label": "tipe typescript bersama frontend dan backend",
-      "community_name": "Kontrak API sebagai sumber kebenaran backend",
+      "community_name": "format/rupiah.ts \u2014 pemformat tampilan",
       "id": "shared_claude_tipe_bersama"
     },
     {
@@ -8749,7 +8914,7 @@
       "contributor": null,
       "community": 8,
       "norm_label": "nama field snake_case bahasa indonesia",
-      "community_name": "Aturan UI untuk pengguna 35-60 tahun",
+      "community_name": "Kontrak API sebagai sumber kebenaran backend",
       "id": "shared_claude_nama_field_indonesia"
     },
     {
@@ -8763,7 +8928,7 @@
       "contributor": null,
       "community": 43,
       "norm_label": "format/rupiah.ts \u2014 pemformat tampilan",
-      "community_name": "Kontrak API sebagai sumber kebenaran backend",
+      "community_name": "format/rupiah.ts \u2014 pemformat tampilan",
       "id": "shared_claude_format_rupiah"
     },
     {
@@ -8831,9 +8996,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 18,
+      "community": 3,
       "norm_label": "peta baca dokumentasi lapakai",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Rumus SQL: Modal per Produk",
       "id": "docs_00_mulai_di_sini_peta_baca_dokumentasi"
     },
     {
@@ -8845,9 +9010,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 18,
+      "community": 3,
       "norm_label": "jalur baca per peran (frontend, ai/backend, presenter, ai assistant)",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Rumus SQL: Modal per Produk",
       "id": "docs_00_mulai_di_sini_jalur_baca_per_peran"
     },
     {
@@ -8859,9 +9024,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 18,
+      "community": 3,
       "norm_label": "kalau dokumen dan kode berbeda, perbaiki dokumennya",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Rumus SQL: Modal per Produk",
       "id": "docs_00_mulai_di_sini_kode_benar_dokumen_salah"
     },
     {
@@ -8945,7 +9110,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "profil pengguna: pedagang mikro usia 35-60",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_01_produk_profil_pengguna_pedagang_mikro"
     },
     {
@@ -8973,7 +9138,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "nomor hp jadi identitas",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_01_produk_nomor_hp_jadi_identitas"
     },
     {
@@ -9113,7 +9278,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "fitur 7 \u2014 beranda: omzet vs untung bersih",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_02_fitur_prioritas_fitur_7_beranda_omzet_vs_untung"
     },
     {
@@ -9237,9 +9402,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 36,
+      "community": 0,
       "norm_label": "tulang punggung demo (fitur 1, 4, 7, 9)",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Fitur 1 \u2014 Foto Buku Catatan ke Transaksi Terstruktur",
       "id": "docs_02_fitur_prioritas_tulang_punggung_demo"
     },
     {
@@ -9335,9 +9500,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 18,
+      "community": 30,
       "norm_label": "platform: web app mobile-first",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "LLM Tidak Pernah Menghitung",
       "id": "docs_03_arsitektur_web_app_mobile_first"
     },
     {
@@ -9379,7 +9544,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "alur data: gemini ke konfirmasi ke postgresql ke api express",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_03_arsitektur_alur_data"
     },
     {
@@ -9393,7 +9558,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "tidak ada panah dari gemini langsung ke database",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_03_arsitektur_tidak_ada_panah_gemini_ke_database"
     },
     {
@@ -9405,9 +9570,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 55,
+      "community": 30,
       "norm_label": "isolasi data di level query",
-      "community_name": "Isolasi di Level Query, Bukan Level Tampilan",
+      "community_name": "LLM Tidak Pernah Menghitung",
       "id": "docs_03_arsitektur_isolasi_data_level_query"
     },
     {
@@ -9433,9 +9598,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 30,
+      "community": 36,
       "norm_label": "prinsip: skor keyakinan per baris",
-      "community_name": "LLM Tidak Pernah Menghitung",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_04_pipeline_ai_skor_keyakinan_per_baris"
     },
     {
@@ -9449,7 +9614,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "prinsip: di bawah ambang ditandai, tidak dibuang, tidak disimpan diam-diam",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_04_pipeline_ai_di_bawah_ambang_tandai_jangan_buang"
     },
     {
@@ -9601,9 +9766,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 30,
+      "community": 36,
       "norm_label": "ambang kemiripan 0,90 / 0,70",
-      "community_name": "LLM Tidak Pernah Menghitung",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_04_pipeline_ai_ambang_kemiripan"
     },
     {
@@ -9673,7 +9838,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "prinsip: uang disimpan sebagai integer rupiah",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_05_model_data_uang_integer_rupiah"
     },
     {
@@ -9685,9 +9850,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 55,
+      "community": 30,
       "norm_label": "prinsip: setiap tabel milik pengguna punya user_id",
-      "community_name": "Isolasi di Level Query, Bukan Level Tampilan",
+      "community_name": "LLM Tidak Pernah Menghitung",
       "id": "docs_05_model_data_user_id_di_setiap_tabel"
     },
     {
@@ -9855,7 +10020,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "rumus sql: omzet vs untung bersih",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_05_model_data_rumus_omzet_vs_untung_bersih"
     },
     {
@@ -9939,7 +10104,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "bentuk jawaban baku (ok/data, ok/error)",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_06_kontrak_api_bentuk_jawaban_baku"
     },
     {
@@ -9981,7 +10146,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "post /auth/otp/verifikasi",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_06_kontrak_api_post_auth_otp_verifikasi"
     },
     {
@@ -10023,7 +10188,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "get /beranda",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_06_kontrak_api_get_beranda"
     },
     {
@@ -10177,7 +10342,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "prinsip ui untuk pengguna 35-60",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_07_alur_pengguna_prinsip_ui"
     },
     {
@@ -10191,7 +10356,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "autentikasi nomor hp + otp (alur layar)",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_07_alur_pengguna_autentikasi_nomor_hp_otp"
     },
     {
@@ -10217,9 +10382,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 18,
       "norm_label": "onboarding: 3 pertanyaan, bukan form",
-      "community_name": "Fitur 1 \u2014 Foto Buku Catatan ke Transaksi Terstruktur",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_07_alur_pengguna_onboarding_tiga_pertanyaan"
     },
     {
@@ -10275,7 +10440,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "layar beranda (omzet dan untung bersih bersebelahan)",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_07_alur_pengguna_layar_beranda"
     },
     {
@@ -10303,7 +10468,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "layar konfirmasi ekstraksi",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_07_alur_pengguna_layar_konfirmasi"
     },
     {
@@ -10345,7 +10510,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "autentikasi: nomor hp + otp, tanpa email dan password",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_08_keamanan_data_autentikasi_nomor_hp_otp"
     },
     {
@@ -10359,7 +10524,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "sesi 90 hari di localstorage, tanpa logout otomatis",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_08_keamanan_data_sesi_90_hari"
     },
     {
@@ -10385,9 +10550,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 55,
+      "community": 30,
       "norm_label": "isolasi di level query, bukan level tampilan",
-      "community_name": "Isolasi di Level Query, Bukan Level Tampilan",
+      "community_name": "LLM Tidak Pernah Menghitung",
       "id": "docs_08_keamanan_data_isolasi_level_query"
     },
     {
@@ -10471,7 +10636,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "skrip demo 2 menit",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_09_demo_skrip_demo_dua_menit"
     },
     {
@@ -10485,7 +10650,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "tamparan pertama (rp 4.200.000 vs rp 380.000)",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_09_demo_tamparan_pertama"
     },
     {
@@ -10499,7 +10664,7 @@
       "contributor": null,
       "community": 36,
       "norm_label": "baris yang ditandai bukan kelemahan, itu fiturnya",
-      "community_name": "Tulang Punggung Demo (fitur 1, 4, 7, 9)",
+      "community_name": "Rumus SQL: Omzet vs Untung Bersih",
       "id": "docs_09_demo_baris_ditandai_adalah_fitur"
     },
     {
@@ -10611,7 +10776,7 @@
       "contributor": null,
       "community": 18,
       "norm_label": "urutan kerja yang mencegah saling menunggu (kontrak dulu, data tiruan)",
-      "community_name": "Peta Baca Dokumentasi lapakAi",
+      "community_name": "Autentikasi: Nomor HP + OTP, Tanpa Email dan Password",
       "id": "docs_10_kerja_tim_urutan_kerja_paralel"
     },
     {
@@ -10623,9 +10788,9 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 3,
+      "community": 0,
       "norm_label": "urutan pengerjaan backend sesuai kebutuhan demo",
-      "community_name": "Rumus SQL: Modal per Produk",
+      "community_name": "Fitur 1 \u2014 Foto Buku Catatan ke Transaksi Terstruktur",
       "id": "docs_10_kerja_tim_urutan_pengerjaan_backend"
     },
     {
@@ -12346,6 +12511,61 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L46",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_scripts_uji_tenaga",
+      "target": "backend_scripts_uji_tenaga_donat",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L122",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_scripts_uji_tenaga",
+      "target": "backend_scripts_uji_tenaga_jumlahbahan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L29",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_scripts_uji_tenaga",
+      "target": "backend_scripts_uji_tenaga_panggil",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L23",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_scripts_uji_tenaga",
+      "target": "backend_scripts_uji_tenaga_periksa",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/scripts/uji-tenaga.mjs",
+      "source_location": "L42",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_scripts_uji_tenaga",
+      "target": "backend_scripts_uji_tenaga_rupiah",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "backend/spike/ekstraksi-foto.mjs",
       "source_location": "L110",
       "weight": 1.0,
@@ -13316,6 +13536,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_queries_saranharga",
+      "target": "backend_src_db_index_satu"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/modules/produk/produk.queries.ts",
+      "source_location": "L158",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_queries_simpanongkostenaga",
       "target": "backend_src_db_index_satu"
     },
     {
@@ -14291,7 +14523,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller_daftarproduk",
@@ -14303,7 +14535,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L41",
+      "source_location": "L42",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller_detailproduk",
@@ -14315,7 +14547,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L99",
+      "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller_simpanproduk",
@@ -14327,7 +14559,19 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L57",
+      "source_location": "L134",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_controller_ubahongkostenaga",
+      "target": "backend_src_lib_http_kirim"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/modules/produk/produk.controller.ts",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller_usulanproduk",
@@ -15414,7 +15658,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L32",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service_alasansaran",
@@ -15640,7 +15884,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L96",
+      "source_location": "L97",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller_simpanproduk",
@@ -16081,7 +16325,7 @@
       "context": "argument",
       "confidence": "INFERRED",
       "source_file": "backend/src/modules/produk/produk.routes.ts",
-      "source_location": "L12",
+      "source_location": "L14",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 0.8,
@@ -17959,6 +18203,18 @@
       "confidence_score": 1.0
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/modules/produk/produk.service.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_service",
+      "target": "backend_src_modules_onboarding_onboarding_queries",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -18028,6 +18284,30 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_onboarding_onboarding_service_buatprodukdenganresep",
+      "target": "backend_src_modules_onboarding_onboarding_queries_ambiltemuanpertama"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/modules/produk/produk.service.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_service",
+      "target": "backend_src_modules_onboarding_onboarding_queries_ambiltemuanpertama",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/modules/produk/produk.service.ts",
+      "source_location": "L177",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_service_catatongkostenaga",
       "target": "backend_src_modules_onboarding_onboarding_queries_ambiltemuanpertama"
     },
     {
@@ -18152,7 +18432,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L13",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -18164,7 +18444,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L13",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -18177,7 +18457,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L147",
+      "source_location": "L153",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service_simpanprodukbaru",
@@ -19124,7 +19404,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L16",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -19184,7 +19464,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L16",
+      "source_location": "L22",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -19197,7 +19477,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L127",
+      "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service_usulkanprodukdariteks",
@@ -19406,7 +19686,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller",
@@ -19417,7 +19697,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller",
@@ -19428,7 +19708,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L68",
+      "source_location": "L69",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller",
@@ -19439,7 +19719,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L49",
+      "source_location": "L113",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_controller",
+      "target": "backend_src_modules_produk_produk_controller_ubahongkostenaga",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/modules/produk/produk.controller.ts",
+      "source_location": "L50",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller",
@@ -19480,6 +19771,18 @@
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller",
       "target": "backend_src_modules_produk_produk_service_ambildetailproduk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/modules/produk/produk.controller.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_controller",
+      "target": "backend_src_modules_produk_produk_service_catatongkostenaga",
       "confidence_score": 1.0
     },
     {
@@ -19560,7 +19863,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller_daftarproduk",
@@ -19571,7 +19874,7 @@
       "context": "argument",
       "confidence": "INFERRED",
       "source_file": "backend/src/modules/produk/produk.routes.ts",
-      "source_location": "L14",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 0.8,
@@ -19584,7 +19887,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller_detailproduk",
@@ -19595,7 +19898,7 @@
       "context": "argument",
       "confidence": "INFERRED",
       "source_file": "backend/src/modules/produk/produk.routes.ts",
-      "source_location": "L18",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 0.8,
@@ -19608,7 +19911,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L57",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller_usulanproduk",
@@ -19619,7 +19922,7 @@
       "context": "argument",
       "confidence": "INFERRED",
       "source_file": "backend/src/modules/produk/produk.routes.ts",
-      "source_location": "L16",
+      "source_location": "L18",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 0.8,
@@ -19632,7 +19935,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.controller.ts",
-      "source_location": "L99",
+      "source_location": "L100",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_controller_simpanproduk",
@@ -19643,12 +19946,36 @@
       "context": "argument",
       "confidence": "INFERRED",
       "source_file": "backend/src/modules/produk/produk.routes.ts",
-      "source_location": "L15",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "confidence_score": 0.8,
       "source": "backend_src_modules_produk_produk_routes",
       "target": "backend_src_modules_produk_produk_controller_simpanproduk"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/modules/produk/produk.controller.ts",
+      "source_location": "L134",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_controller_ubahongkostenaga",
+      "target": "backend_src_modules_produk_produk_service_catatongkostenaga"
+    },
+    {
+      "relation": "indirect_call",
+      "context": "argument",
+      "confidence": "INFERRED",
+      "source_file": "backend/src/modules/produk/produk.routes.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "confidence_score": 0.8,
+      "source": "backend_src_modules_produk_produk_routes",
+      "target": "backend_src_modules_produk_produk_controller_ubahongkostenaga"
     },
     {
       "relation": "contains",
@@ -19779,7 +20106,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L9",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -19839,7 +20166,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L9",
+      "source_location": "L11",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -19852,7 +20179,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L79",
+      "source_location": "L85",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service_usulkanprodukdariteks",
@@ -19900,6 +20227,17 @@
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_queries",
       "target": "backend_src_modules_produk_produk_queries_saranharga",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/modules/produk/produk.queries.ts",
+      "source_location": "L155",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_queries",
+      "target": "backend_src_modules_produk_produk_queries_simpanongkostenaga",
       "confidence_score": 1.0
     },
     {
@@ -20004,7 +20342,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L38",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service_ambildaftarproduk",
@@ -20028,7 +20366,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L49",
+      "source_location": "L55",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service_ambildetailproduk",
@@ -20052,7 +20390,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L53",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service_ambildetailproduk",
@@ -20076,17 +20414,41 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L54",
+      "source_location": "L60",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service_ambildetailproduk",
       "target": "backend_src_modules_produk_produk_queries_saranharga"
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/modules/produk/produk.service.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_service",
+      "target": "backend_src_modules_produk_produk_queries_simpanongkostenaga",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/src/modules/produk/produk.service.ts",
+      "source_location": "L171",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_service_catatongkostenaga",
+      "target": "backend_src_modules_produk_produk_queries_simpanongkostenaga"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.routes.ts",
-      "source_location": "L11",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_routes",
@@ -20121,7 +20483,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L31",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -20132,7 +20494,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L37",
+      "source_location": "L43",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -20143,7 +20505,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L46",
+      "source_location": "L52",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -20154,7 +20516,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L140",
+      "source_location": "L168",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "backend_src_modules_produk_produk_service",
+      "target": "backend_src_modules_produk_produk_service_catatongkostenaga",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/src/modules/produk/produk.service.ts",
+      "source_location": "L146",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -20165,7 +20538,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L74",
+      "source_location": "L80",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -20177,7 +20550,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L17",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -20189,7 +20562,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L17",
+      "source_location": "L23",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service",
@@ -20309,7 +20682,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/src/modules/produk/produk.service.ts",
-      "source_location": "L60",
+      "source_location": "L66",
       "weight": 1.0,
       "_origin": "ast",
       "source": "backend_src_modules_produk_produk_service_ambildetailproduk",
@@ -23276,7 +23649,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L88",
+      "source_location": "L89",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23287,7 +23660,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L92",
+      "source_location": "L93",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23298,7 +23671,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L96",
+      "source_location": "L102",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23309,7 +23682,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L69",
+      "source_location": "L70",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23320,7 +23693,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L101",
+      "source_location": "L107",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23331,7 +23704,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L111",
+      "source_location": "L117",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23342,7 +23715,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L120",
+      "source_location": "L126",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23353,7 +23726,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L106",
+      "source_location": "L112",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23364,7 +23737,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L163",
+      "source_location": "L169",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23375,7 +23748,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L133",
+      "source_location": "L139",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23386,7 +23759,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L57",
+      "source_location": "L58",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23397,7 +23770,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L186",
+      "source_location": "L192",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23408,7 +23781,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L37",
+      "source_location": "L38",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23419,7 +23792,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L179",
+      "source_location": "L185",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23430,7 +23803,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L77",
+      "source_location": "L78",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23441,7 +23814,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L73",
+      "source_location": "L74",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23452,7 +23825,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L125",
+      "source_location": "L131",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23463,7 +23836,18 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L116",
+      "source_location": "L98",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_api_client",
+      "target": "frontend_src_api_client_ubahongkostenaga",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api/client.ts",
+      "source_location": "L122",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23474,7 +23858,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L61",
+      "source_location": "L62",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23486,7 +23870,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23498,7 +23882,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
@@ -23670,6 +24054,18 @@
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client",
+      "target": "shared_types_ongkostenagareq",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api/client.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_api_client",
       "target": "shared_types_pengguna",
       "confidence_score": 1.0
     },
@@ -23791,6 +24187,18 @@
       "_origin": "ast",
       "source": "frontend_src_api_client",
       "target": "shared_types_verifikasiotpres",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/KartuTenaga.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_components_kartutenaga",
+      "target": "frontend_src_api_client",
       "confidence_score": 1.0
     },
     {
@@ -23942,7 +24350,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L89",
+      "source_location": "L90",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_ambilberanda",
@@ -23954,7 +24362,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L93",
+      "source_location": "L94",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_ambildaftarproduk",
@@ -23966,7 +24374,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L97",
+      "source_location": "L103",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_ambildetailproduk",
@@ -23978,7 +24386,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L70",
+      "source_location": "L71",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_ambilsaya",
@@ -23990,7 +24398,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L102",
+      "source_location": "L108",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_analisispesanan",
@@ -24002,7 +24410,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L112",
+      "source_location": "L118",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_buatbalasan",
@@ -24014,7 +24422,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L121",
+      "source_location": "L127",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_catattransaksi",
@@ -24026,7 +24434,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L107",
+      "source_location": "L113",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_daftarpesanan",
@@ -24038,7 +24446,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L165",
+      "source_location": "L171",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_ekstraksifoto",
@@ -24050,7 +24458,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L134",
+      "source_location": "L140",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_hubungkanwhatsapp",
@@ -24062,7 +24470,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L58",
+      "source_location": "L59",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_kirimotp",
@@ -24074,7 +24482,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L190",
+      "source_location": "L196",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_konfirmasiekstraksi",
@@ -24086,7 +24494,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L38",
+      "source_location": "L39",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_panggil",
@@ -24098,7 +24506,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L182",
+      "source_location": "L188",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_pratinjauekstraksi",
@@ -24110,7 +24518,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L78",
+      "source_location": "L79",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_simpanresep",
@@ -24122,7 +24530,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L74",
+      "source_location": "L75",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_simpanusaha",
@@ -24134,7 +24542,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L126",
+      "source_location": "L132",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_statuswhatsapp",
@@ -24146,7 +24554,19 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L117",
+      "source_location": "L99",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_api_client_ubahongkostenaga",
+      "target": "frontend_src_api_client_panggil",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/api/client.ts",
+      "source_location": "L123",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_usulandariteks",
@@ -24158,7 +24578,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/api/client.ts",
-      "source_location": "L62",
+      "source_location": "L63",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_api_client_verifikasiotp",
@@ -24231,7 +24651,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L66",
+      "source_location": "L67",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda_beranda",
@@ -24283,6 +24703,18 @@
       "_origin": "ast",
       "source": "frontend_src_screens_daftarproduk",
       "target": "frontend_src_api_client_ambildaftarproduk",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/KartuTenaga.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_components_kartutenaga",
+      "target": "frontend_src_api_client_ubahongkostenaga",
       "confidence_score": 1.0
     },
     {
@@ -24831,6 +25263,65 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/KartuTenaga.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_components_kartutenaga",
+      "target": "frontend_src_components_kartutenaga_kartutenaga",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/KartuTenaga.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_components_kartutenaga",
+      "target": "frontend_src_components_tombol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/KartuTenaga.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_components_kartutenaga",
+      "target": "frontend_src_components_tombol_tombol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/screens/DetailProduk.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_screens_detailproduk",
+      "target": "frontend_src_components_kartutenaga",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/screens/DetailProduk.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_screens_detailproduk",
+      "target": "frontend_src_components_kartutenaga_kartutenaga",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/KeadaanGalat.tsx",
       "source_location": "L18",
       "weight": 1.0,
@@ -24868,7 +25359,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DetailProduk.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_detailproduk",
@@ -24904,7 +25395,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DetailProduk.tsx",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_detailproduk",
@@ -24914,8 +25405,91 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/KeadaanKosong.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_components_keadaankosong",
+      "target": "frontend_src_components_keadaankosong_keadaankosong",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/KeadaanKosong.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_components_keadaankosong",
+      "target": "frontend_src_components_tombol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/components/KeadaanKosong.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_components_keadaankosong",
+      "target": "frontend_src_components_tombol_tombol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/screens/Beranda.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_screens_beranda",
+      "target": "frontend_src_components_keadaankosong",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/screens/DaftarProduk.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_screens_daftarproduk",
+      "target": "frontend_src_components_keadaankosong",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/screens/Beranda.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_screens_beranda",
+      "target": "frontend_src_components_keadaankosong_keadaankosong",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/screens/DaftarProduk.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "frontend_src_screens_daftarproduk",
+      "target": "frontend_src_components_keadaankosong_keadaankosong",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/KepalaAplikasi.tsx",
-      "source_location": "L7",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_components_kepalaaplikasi",
@@ -24927,7 +25501,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/KepalaAplikasi.tsx",
-      "source_location": "L2",
+      "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_components_kepalaaplikasi",
@@ -24939,7 +25513,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/components/KepalaAplikasi.tsx",
-      "source_location": "L2",
+      "source_location": "L1",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_components_kepalaaplikasi",
@@ -25024,7 +25598,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/components/KepalaAplikasi.tsx",
-      "source_location": "L8",
+      "source_location": "L20",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_components_kepalaaplikasi_kepalaaplikasi",
@@ -25994,7 +26568,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda",
@@ -26006,7 +26580,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DaftarProduk.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_daftarproduk",
@@ -26018,7 +26592,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DetailProduk.tsx",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_detailproduk",
@@ -26030,7 +26604,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda",
@@ -26042,7 +26616,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DetailProduk.tsx",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_detailproduk",
@@ -26054,7 +26628,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DaftarProduk.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_daftarproduk",
@@ -26066,7 +26640,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda",
@@ -26078,7 +26652,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DetailProduk.tsx",
-      "source_location": "L12",
+      "source_location": "L13",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_detailproduk",
@@ -26171,7 +26745,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda",
@@ -26339,7 +26913,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L15",
+      "source_location": "L16",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda",
@@ -26506,7 +27080,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda",
@@ -26518,7 +27092,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda",
@@ -26530,7 +27104,7 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda",
@@ -26591,7 +27165,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L43",
+      "source_location": "L44",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda_beranda",
@@ -26603,7 +27177,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/screens/Beranda.tsx",
-      "source_location": "L112",
+      "source_location": "L113",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_beranda_beranda",
@@ -26730,7 +27304,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DaftarProduk.tsx",
-      "source_location": "L35",
+      "source_location": "L36",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_daftarproduk",
@@ -26741,7 +27315,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DaftarProduk.tsx",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_daftarproduk",
@@ -26802,7 +27376,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/screens/DaftarProduk.tsx",
-      "source_location": "L116",
+      "source_location": "L133",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_daftarproduk_daftarproduk",
@@ -26812,7 +27386,7 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/screens/DetailProduk.tsx",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_detailproduk",
@@ -26873,7 +27447,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/screens/DetailProduk.tsx",
-      "source_location": "L97",
+      "source_location": "L98",
       "weight": 1.0,
       "_origin": "ast",
       "source": "frontend_src_screens_detailproduk_detailproduk",
@@ -28566,6 +29140,17 @@
       "_origin": "ast",
       "source": "shared_types",
       "target": "shared_types_konfirmasires",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "shared/types.ts",
+      "source_location": "L573",
+      "weight": 1.0,
+      "_origin": "ast",
+      "source": "shared_types",
+      "target": "shared_types_ongkostenagareq",
       "confidence_score": 1.0
     },
     {
@@ -32480,5 +33065,5 @@
       "source_file": "docs/06-kontrak-api.md"
     }
   ],
-  "built_at_commit": "7572da9269fc55fdd2fdf7c9460b7701e7615d38"
+  "built_at_commit": "6ac901c6bfdced69bebeff69d296f7225e834eda"
 }

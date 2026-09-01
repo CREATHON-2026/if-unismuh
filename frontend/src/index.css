@@ -72,6 +72,33 @@
   --color-tanda: #FEF6E4;
   --color-tanda-tinta: #7C5A15;
 
+  /*
+   * Tangga ukuran huruf.
+   *
+   * Sebelum ini ada 20 ukuran berbeda ditulis sebagai nilai mentah, termasuk
+   * lima ukuran BERBEDA untuk peran yang sama — judul layar ditulis 25, 26, 27,
+   * dan 28px di berkas yang berbeda. Warna dan sudut sudah punya token;
+   * tipografi belum, dan itu sumber ketidakkonsistenan terbesar yang tersisa.
+   *
+   * Sembilan tingkat, bukan enam: rentangnya 12,5-40px, dan memaksanya lebih
+   * sedikit membuat lompatan antar tingkat terlalu jauh. `judul-kecil`
+   * ditambahkan setelah ternyata ada empat tempat memakai 22px untuk peran yang
+   * memang berbeda dari 19px maupun 26px — tangga yang melompat 19 ke 26
+   * memaksa pemakainya keluar sistem lagi.
+   *
+   * Nama sengaja tidak memakai `hero`, `untung`, atau `rugi` — ketiganya sudah
+   * jadi nama warna, dan `text-hero` akan berarti dua hal sekaligus.
+   */
+  --text-nomor-besar: 40px;   /* angka utama di kartu gelap */
+  --text-nomor: 34px;         /* angka besar kedua, mis. saran harga */
+  --text-judul: 26px;         /* judul layar */
+  --text-judul-kecil: 22px;   /* nama usaha, judul layar sekunder, angka metrik */
+  --text-sub: 19px;           /* nama produk, subjudul */
+  --text-utama: 17px;         /* teks utama, tombol */
+  --text-isi: 15px;           /* isi dan keterangan pendamping */
+  --text-kecil: 13px;         /* metadata */
+  --text-label: 12.5px;       /* label bagian monospace */
+
   /* Sudut. Kartu besar tumpul, kontrol kecil lebih rapat. */
   --radius-kartu: 20px;
   --radius-kontrol: 14px;

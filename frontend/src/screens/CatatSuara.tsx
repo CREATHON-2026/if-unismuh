@@ -128,18 +128,18 @@ export function CatatSuara() {
   return (
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
-      <h1 className="mt-8 tracking-[-0.02em] text-[26px] font-bold text-tinta">Catat penjualan</h1>
-      <p className="mt-1 text-[17px] leading-relaxed text-sedang">
+      <h1 className="mt-8 tracking-[-0.02em] text-judul font-bold text-tinta">Catat penjualan</h1>
+      <p className="mt-1 text-utama leading-relaxed text-sedang">
         Ucapkan seperti biasa: "hari ini laku 10 kripik pisang sama 5 kacang telur"
       </p>
 
       {!adaSuara && (
-        <p className="mt-3 rounded-kontrol bg-tanda p-4 text-[15px] leading-relaxed text-tanda-tinta">
+        <p className="mt-3 rounded-kontrol bg-tanda p-4 text-isi leading-relaxed text-tanda-tinta">
           Browser ini belum mendukung suara. Pakai Chrome, atau ketik saja di bawah — hasilnya sama.
         </p>
       )}
       {adaSuara && !amanUntukMic && (
-        <p className="mt-3 rounded-kontrol bg-tanda p-4 text-[15px] leading-relaxed text-tanda-tinta">
+        <p className="mt-3 rounded-kontrol bg-tanda p-4 text-isi leading-relaxed text-tanda-tinta">
           Halaman ini dibuka lewat http, jadi browser memblokir mikrofon. Ketik saja di bawah.
         </p>
       )}
@@ -148,13 +148,13 @@ export function CatatSuara() {
         type="button"
         disabled={!adaSuara || !amanUntukMic || mendengar}
         onClick={mulaiRekam}
-        className="mt-4 flex min-h-20 w-full items-center justify-center gap-3 rounded-full bg-hero text-[19px] font-bold text-white transition active:scale-[0.98] disabled:opacity-40"
+        className="mt-4 flex min-h-20 w-full items-center justify-center gap-3 rounded-full bg-hero text-sub font-bold text-white transition active:scale-[0.98] disabled:opacity-40"
       >
         <Mic size={26} strokeWidth={1.9} aria-hidden="true" />
         {mendengar ? 'Mendengarkan…' : 'Mulai bicara'}
       </button>
 
-      <label className="mt-5 block text-[17px] font-bold text-tinta" htmlFor="kalimat">
+      <label className="mt-5 block text-utama font-bold text-tinta" htmlFor="kalimat">
         Atau ketik
       </label>
       <textarea
@@ -163,7 +163,7 @@ export function CatatSuara() {
         onChange={(e) => setTeks(e.target.value)}
         rows={3}
         placeholder="hari ini laku 10 kripik pisang"
-        className="mt-2 w-full rounded-kartu border-[1.5px] border-garis-tua bg-kartu p-4 text-[16.5px] leading-relaxed text-tinta outline-none placeholder:text-redup focus:border-hero"
+        className="mt-2 w-full rounded-kartu border-[1.5px] border-garis-tua bg-kartu p-4 text-utama leading-relaxed text-tinta outline-none placeholder:text-redup focus:border-hero"
       />
       <div className="mt-3">
         <Tombol varian="gelap" disabled={!teks.trim() || sibuk} onClick={() => void bacaKalimat(teks)}>
@@ -172,13 +172,13 @@ export function CatatSuara() {
       </div>
 
       {galat && (
-        <p className="mt-3 rounded-2xl bg-rugi-muda p-4 text-[17px] text-rugi-tua">{galat}</p>
+        <p className="mt-3 rounded-2xl bg-rugi-muda p-4 text-utama text-rugi-tua">{galat}</p>
       )}
 
       {usulan && (
         <div className="kartu mt-4 p-6">
-          <p className="text-[18px] font-bold text-tinta">Belum tersimpan</p>
-          <p className="mt-1 text-[15px] leading-relaxed text-sedang">
+          <p className="text-sub font-bold text-tinta">Belum tersimpan</p>
+          <p className="mt-1 text-isi leading-relaxed text-sedang">
             Tanggal {usulan.tanggal}. Periksa dulu, tidak ada yang masuk sebelum Anda menekan
             simpan.
           </p>
@@ -197,15 +197,15 @@ export function CatatSuara() {
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-[16.5px] font-semibold text-tinta">"{b.nama_mentah}"</p>
+                  <p className="text-utama font-semibold text-tinta">"{b.nama_mentah}"</p>
                   {b.perlu_dicek && (
-                    <span className="shrink-0 rounded-full bg-tanda-tinta px-2.5 py-1 text-[12.5px] font-semibold text-white">
+                    <span className="shrink-0 rounded-full bg-tanda-tinta px-2.5 py-1 text-label font-semibold text-white">
                       PERLU DICEK
                     </span>
                   )}
                 </div>
 
-                <p className="mt-1 text-[15px] text-sedang">
+                <p className="mt-1 text-isi text-sedang">
                   {b.nama_produk ? `→ ${b.nama_produk}` : 'Produknya belum dikenali'}
                   {b.harga_satuan != null && ` · ${formatRupiah(b.harga_satuan)}`}
                 </p>
@@ -223,7 +223,7 @@ export function CatatSuara() {
                             perlu_dicek: false,
                           })
                         }
-                        className={`min-h-12 rounded-full border-2 px-4 text-[15px] font-medium transition active:scale-95 ${
+                        className={`min-h-12 rounded-full border-2 px-4 text-isi font-medium transition active:scale-95 ${
                           b.produk_id === k.id && !b.perlu_dicek
                             ? 'border-hero bg-kanvas text-tinta'
                             : 'border-garis-tua bg-white text-tinta'
@@ -236,7 +236,7 @@ export function CatatSuara() {
                 )}
 
                 <div className="mt-3 flex items-center gap-3">
-                  <label className="text-[15px] text-sedang" htmlFor={`jumlah-${i}`}>
+                  <label className="text-isi text-sedang" htmlFor={`jumlah-${i}`}>
                     Jumlah
                   </label>
                   <input
@@ -255,7 +255,7 @@ export function CatatSuara() {
           </div>
 
           {usulan.baris.length === 0 && (
-            <p className="mt-3 text-[17px] leading-relaxed text-sedang">
+            <p className="mt-3 text-utama leading-relaxed text-sedang">
               Tidak ada barang yang bisa dikenali dari kalimat itu. Coba sebutkan lagi.
             </p>
           )}

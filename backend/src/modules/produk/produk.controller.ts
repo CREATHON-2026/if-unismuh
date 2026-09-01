@@ -5,6 +5,7 @@ import { pastikanBahanLengkap } from '../../lib/validasi.ts';
 import { KODE_GALAT, type BahanMasukan } from '../../../../shared/types.ts';
 import {
   ambilDaftarProduk, ambilDetailProduk, usulkanProdukDariTeks, simpanProdukBaru,
+  catatOngkosTenaga,
 } from './produk.service.ts';
 
 /**
@@ -97,4 +98,38 @@ export async function simpanProduk(req: Request, res: Response): Promise<void> {
   }
 
   kirim(res, await simpanProdukBaru(userId, namaProduk, hargaJual, hasilPerBatch, bahan), 201);
+}
+
+/**
+ * PATCH /produk/:id/tenaga — fitur 11.
+ *
+ * Menerima DUA angka yang benar-benar diketahui pedagang: berapa jam sekali
+ * bikin, dan sejam kerja dihargai berapa. Bukan "biaya tenaga per batch" —
+ * tidak ada pedagang yang bisa menjawab pertanyaan itu langsung.
+ *
+ * Perkaliannya terjadi di SQL, bukan di sini. Controller ini hanya memastikan
+ * kedua angkanya masuk akal.
+ */
+export async function ubahOngkosTenaga(req: Request, res: Response): Promise<void> {
+  const { userId } = req as ReqBerpengguna;
+  const id = Number(req.params.id);
+  const jam = Number(req.body?.jam_per_batch);
+  const upah = Number(req.body?.upah_per_jam);
+
+  if (!Number.isInteger(id)) {
+    throw new GalatTampil(KODE_GALAT.PERMINTAAN_TIDAK_VALID, 'Produknya tidak dikenali.');
+  }
+  // Nol sah dan berguna: itulah cara pedagang membatalkan perhitungan waktunya.
+  if (!Number.isFinite(jam) || jam < 0) {
+    throw new GalatTampil(
+      KODE_GALAT.PERMINTAAN_TIDAK_VALID, 'Sekali bikin butuh berapa jam? Isinya tidak boleh minus.',
+    );
+  }
+  if (!Number.isFinite(upah) || upah < 0) {
+    throw new GalatTampil(
+      KODE_GALAT.PERMINTAAN_TIDAK_VALID, 'Upah per jamnya belum benar.',
+    );
+  }
+
+  kirim(res, await catatOngkosTenaga(id, userId, jam, upah));
 }

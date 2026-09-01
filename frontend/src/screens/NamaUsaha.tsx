@@ -32,8 +32,8 @@ export function NamaUsaha() {
         </Tombol>
       }
     >
-      <h1 className="tracking-[-0.02em] text-[28px] font-bold text-tinta">Mulai Kenalan Yuk!</h1>
-      <p className="text-[17px] leading-relaxed text-sedang">
+      <h1 className="tracking-[-0.02em] text-judul font-bold text-tinta">Mulai Kenalan Yuk!</h1>
+      <p className="text-utama leading-relaxed text-sedang">
         Satu langkah lagi untuk pembukuan warung yang lebih gampang dan rapi.
       </p>
 
@@ -52,7 +52,7 @@ export function NamaUsaha() {
             className="h-full min-w-0 flex-1 bg-transparent text-lg text-tinta outline-none placeholder:text-redup"
           />
         </div>
-        <p className="mt-3 flex items-center gap-2 text-[15px] text-sedang">
+        <p className="mt-3 flex items-center gap-2 text-isi text-sedang">
           <Info size={17} strokeWidth={1.9} className="shrink-0 text-redup" aria-hidden="true" />
           Nama ini akan muncul di laporan keuangan Anda.
         </p>

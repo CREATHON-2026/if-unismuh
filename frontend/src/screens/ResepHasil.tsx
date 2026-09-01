@@ -22,10 +22,10 @@ export function ResepHasil() {
       <KepalaResep langkah={2} label="Hasil" />
 
       <div className="kartu mt-6 p-6">
-        <h1 className="text-[25px] font-bold leading-snug tracking-[-0.02em] text-tinta">
+        <h1 className="text-judul font-bold leading-snug tracking-[-0.02em] text-tinta">
           Sekali bikin jadi berapa bungkus?
         </h1>
-        <p className="mt-2 text-[16px] leading-relaxed text-sedang">
+        <p className="mt-2 text-utama leading-relaxed text-sedang">
           Hasil sekali produksi dari resep ini.
         </p>
 
@@ -37,7 +37,7 @@ export function ResepHasil() {
           placeholder="Contoh: 40"
           value={jumlah}
           onChange={(e) => setJumlah(e.target.value.replace(/\D/g, ''))}
-          className="angka mt-5 h-[72px] w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-[26px] font-bold text-tinta outline-none transition placeholder:text-[19px] placeholder:font-normal placeholder:text-redup focus:border-hero"
+          className="angka mt-5 h-[72px] w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-judul font-bold text-tinta outline-none transition placeholder:text-sub placeholder:font-normal placeholder:text-redup focus:border-hero"
         />
       </div>
 

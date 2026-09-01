@@ -44,13 +44,13 @@ export function TemuanPertama() {
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
 
-      <h1 className="mt-9 text-center text-[28px] font-bold tracking-[-0.02em] text-tinta">
+      <h1 className="mt-9 text-center text-judul font-bold tracking-[-0.02em] text-tinta">
         Temuan pertama
       </h1>
       {/* Kalimat ini mengikuti temuannya. Sebelumnya selalu berbunyi "kami
           menemukan ketidaksesuaian" — padahal separuh kasus justru kabar baik,
           dan menuduh pengguna salah di layar pertama bukan cara membuka. */}
-      <p className="mt-1 text-center text-[16px] leading-relaxed text-sedang">
+      <p className="mt-1 text-center text-utama leading-relaxed text-sedang">
         {temuan.merugi
           ? 'Setiap bungkus yang laku justru mengurangi uang Anda.'
           : 'Sekarang untung Anda per bungkus sudah terbaca, bukan tebakan.'}
@@ -67,7 +67,7 @@ export function TemuanPertama() {
           catatan={`${namaProduk} — setiap satu bungkus terjual.`}
           bawah={
             <div className="flex flex-col gap-2.5">
-              <div className="flex items-center justify-between text-[15px]">
+              <div className="flex items-center justify-between text-isi">
                 <span className="flex items-center gap-2.5 text-white/55">
                   <ShoppingCart size={17} strokeWidth={1.8} aria-hidden="true" />
                   Modal Anda
@@ -76,7 +76,7 @@ export function TemuanPertama() {
                   {formatRupiah(temuan.modal_per_unit)}
                 </span>
               </div>
-              <div className="flex items-center justify-between text-[15px]">
+              <div className="flex items-center justify-between text-isi">
                 <span className="flex items-center gap-2.5 text-white/55">
                   <Tag size={17} strokeWidth={1.8} aria-hidden="true" />
                   Dijual
@@ -90,7 +90,7 @@ export function TemuanPertama() {
         />
       </div>
 
-      <p className="mt-7 text-center text-[16px] leading-relaxed text-sedang">
+      <p className="mt-7 text-center text-utama leading-relaxed text-sedang">
         Foto buku catatan Anda supaya penjualan hariannya ikut terhitung.
       </p>
 
@@ -105,12 +105,12 @@ export function TemuanPertama() {
       <button
         type="button"
         onClick={() => nav('/beranda')}
-        className="min-h-12 py-3 text-center text-[16px] font-semibold text-sedang active:scale-95"
+        className="min-h-12 py-3 text-center text-utama font-semibold text-sedang active:scale-95"
       >
         Nanti saja
       </button>
       {galat && (
-        <p className="mt-1 text-center text-[15.5px] font-semibold text-rugi">{galat}</p>
+        <p className="mt-1 text-center text-isi font-semibold text-rugi">{galat}</p>
       )}
 
       <input

@@ -26,7 +26,7 @@ export function Lencana({
 }) {
   return (
     <span
-      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[12.5px] font-semibold ${GAYA[nada]}`}
+      className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-label font-semibold ${GAYA[nada]}`}
     >
       {children}
     </span>

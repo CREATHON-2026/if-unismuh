@@ -39,7 +39,7 @@ export function NavBawah() {
                 className={aktif ? 'text-tinta' : 'text-redup'}
                 aria-hidden="true"
               />
-              <span className={`text-[13px] ${aktif ? 'font-bold text-tinta' : 'text-redup'}`}>
+              <span className={`text-kecil ${aktif ? 'font-bold text-tinta' : 'text-redup'}`}>
                 {t.label}
               </span>
             </button>

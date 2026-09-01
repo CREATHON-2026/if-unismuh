@@ -58,9 +58,9 @@ export function KartuMetrik({
       >
         <Ikon size={20} strokeWidth={1.8} />
       </span>
-      <p className="mt-3 text-[13.5px] font-medium text-redup">{label}</p>
-      <p className={`angka mt-0.5 text-[22px] font-bold leading-tight ${warnaAngka}`}>{nilai}</p>
-      {sub && <p className="mt-1.5 text-[13px] leading-relaxed text-sedang">{sub}</p>}
+      <p className="mt-3 text-kecil font-medium text-redup">{label}</p>
+      <p className={`angka mt-0.5 text-judul-kecil font-bold leading-tight ${warnaAngka}`}>{nilai}</p>
+      {sub && <p className="mt-1.5 text-kecil leading-relaxed text-sedang">{sub}</p>}
     </>
   );
 

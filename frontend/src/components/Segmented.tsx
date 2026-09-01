@@ -28,7 +28,7 @@ export function Segmented<T extends string>({
             role="tab"
             aria-selected={aktif}
             onClick={() => onPilih(p.nilai)}
-            className={`min-h-11 flex-1 rounded-[10px] px-2 text-[14.5px] font-semibold transition ${
+            className={`min-h-11 flex-1 rounded-[10px] px-2 text-isi font-semibold transition ${
               aktif ? 'bg-kartu text-tinta shadow-sm' : 'text-sedang active:scale-95'
             }`}
           >

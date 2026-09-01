@@ -110,11 +110,11 @@ export function KonfirmasiEkstraksi() {
           type="button"
           aria-label="Kembali"
           onClick={() => nav(-1)}
-          className="-ml-1 flex h-10 w-10 items-center justify-center rounded-full text-tinta active:scale-95"
+          className="-ml-1 flex h-11 w-11 items-center justify-center rounded-full text-tinta transition active:scale-95"
         >
           <ArrowLeft size={24} strokeWidth={2} />
         </button>
-        <h1 className="text-[22px] font-bold tracking-[-0.02em] text-tinta">
+        <h1 className="text-judul-kecil font-bold tracking-[-0.02em] text-tinta">
           Konfirmasi Transaksi
         </h1>
       </div>
@@ -129,7 +129,7 @@ export function KonfirmasiEkstraksi() {
 
       {/* Aturan #2: layar ini adalah gerbangnya. Kalimat ini menjelaskan
           mengapa gerbangnya ada, bukan sekadar basa-basi. */}
-      <p className="mt-5 text-[16px] leading-relaxed text-sedang">
+      <p className="mt-5 text-utama leading-relaxed text-sedang">
         Kami membaca beberapa item dari foto Anda. Belum ada yang tersimpan — periksa dulu,
         terutama baris yang <span className="font-semibold text-tanda-tinta">Perlu Dicek</span>.
       </p>
@@ -143,10 +143,10 @@ export function KonfirmasiEkstraksi() {
                 <input
                   value={b.nama_produk ?? b.nama_mentah}
                   onChange={(e) => ubah(b.urutan, { nama_produk: e.target.value })}
-                  className="h-12 min-w-0 flex-1 rounded-kontrol border border-garis bg-kartu px-3 text-[16.5px] font-semibold text-tinta outline-none focus:border-hero"
+                  className="h-12 min-w-0 flex-1 rounded-kontrol border border-garis bg-kartu px-3 text-utama font-semibold text-tinta outline-none focus:border-hero"
                 />
                 <div className="flex h-12 shrink-0 items-center gap-1 rounded-kontrol border border-garis bg-kartu px-3">
-                  <span className="text-[15px] font-semibold text-redup">Rp</span>
+                  <span className="text-isi font-semibold text-redup">Rp</span>
                   <input
                     type="tel"
                     inputMode="numeric"
@@ -156,11 +156,11 @@ export function KonfirmasiEkstraksi() {
                       const angka = e.target.value.replace(/\D/g, '');
                       ubah(b.urutan, { harga_satuan: angka ? Number(angka) : null });
                     }}
-                    className="angka w-20 bg-transparent text-right text-[16.5px] font-bold text-tinta outline-none"
+                    className="angka w-20 bg-transparent text-right text-utama font-bold text-tinta outline-none"
                   />
                 </div>
               </div>
-              <div className="mt-2.5 flex items-center gap-2 text-[15px] text-sedang">
+              <div className="mt-2.5 flex items-center gap-2 text-isi text-sedang">
                 <span>Qty</span>
                 <input
                   type="tel"
@@ -169,7 +169,7 @@ export function KonfirmasiEkstraksi() {
                   onChange={(e) =>
                     ubah(b.urutan, { jumlah: Number(e.target.value.replace(/\D/g, '')) || 0 })
                   }
-                  className="angka h-11 w-16 rounded-kontrol border border-garis bg-kartu text-center text-[16.5px] font-semibold text-tinta outline-none focus:border-hero"
+                  className="angka h-11 w-16 rounded-kontrol border border-garis bg-kartu text-center text-utama font-semibold text-tinta outline-none focus:border-hero"
                 />
                 <span className="angka">
                   × {b.harga_satuan !== null ? formatRupiah(b.harga_satuan) : '—'}
@@ -182,7 +182,7 @@ export function KonfirmasiEkstraksi() {
             <button
               type="button"
               onClick={() => hapus(b.urutan)}
-              className="flex min-h-11 items-center gap-1.5 px-1 text-[15px] font-semibold text-rugi active:scale-95"
+              className="flex min-h-11 items-center gap-1.5 px-1 text-isi font-semibold text-rugi active:scale-95"
             >
               <Trash2 size={17} strokeWidth={1.9} /> Hapus
             </button>
@@ -202,7 +202,7 @@ export function KonfirmasiEkstraksi() {
                   className="absolute left-0 top-0 h-full w-1.5 bg-tanda-tinta"
                   aria-hidden="true"
                 />
-                <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-tanda-tinta px-2.5 py-1 text-[12.5px] font-semibold text-white">
+                <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-tanda-tinta px-2.5 py-1 text-label font-semibold text-white">
                   <TriangleAlert size={13} strokeWidth={2.2} /> PERLU DICEK
                 </span>
                 {editor}
@@ -220,14 +220,14 @@ export function KonfirmasiEkstraksi() {
               ) : (
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="text-[16.5px] font-semibold text-tinta">
+                    <p className="text-utama font-semibold text-tinta">
                       {b.nama_produk ?? b.nama_mentah}
                     </p>
-                    <p className="angka mt-0.5 text-[13.5px] text-redup">
+                    <p className="angka mt-0.5 text-kecil text-redup">
                       {b.jumlah} × {b.harga_satuan !== null ? formatRupiah(b.harga_satuan) : '—'}
                     </p>
                   </div>
-                  <p className="angka shrink-0 text-[18px] font-bold text-tinta">
+                  <p className="angka shrink-0 text-sub font-bold text-tinta">
                     {formatRupiah(b.subtotal)}
                   </p>
                 </div>
@@ -237,7 +237,7 @@ export function KonfirmasiEkstraksi() {
                   <button
                     type="button"
                     onClick={() => setEditUrutan(null)}
-                    className="flex min-h-11 items-center gap-1.5 px-1 text-[15px] font-semibold text-tinta active:scale-95"
+                    className="flex min-h-11 items-center gap-1.5 px-1 text-isi font-semibold text-tinta active:scale-95"
                   >
                     <Check size={17} strokeWidth={2.2} /> Selesai
                   </button>
@@ -245,7 +245,7 @@ export function KonfirmasiEkstraksi() {
                   <button
                     type="button"
                     onClick={() => setEditUrutan(b.urutan)}
-                    className="flex min-h-11 items-center gap-1.5 px-1 text-[15px] font-semibold text-sedang active:scale-95"
+                    className="flex min-h-11 items-center gap-1.5 px-1 text-isi font-semibold text-sedang active:scale-95"
                   >
                     <Pencil size={17} strokeWidth={1.9} /> Ubah
                   </button>
@@ -265,7 +265,7 @@ export function KonfirmasiEkstraksi() {
           nilai={formatRupiah(total.belanja)}
           nada="netral"
           bawah={
-            <div className="flex items-center justify-between text-[15px]">
+            <div className="flex items-center justify-between text-isi">
               <span className="text-white/55">Total item</span>
               <span className="angka font-semibold text-white">{total.item}</span>
             </div>
@@ -281,7 +281,7 @@ export function KonfirmasiEkstraksi() {
           </span>
         </Tombol>
       </div>
-      <p className="pt-2.5 text-center text-[14px] text-redup">
+      <p className="pt-2.5 text-center text-isi text-redup">
         Belum ada yang tersimpan — periksa dulu, lalu tekan Simpan.
       </p>
     </Layar>

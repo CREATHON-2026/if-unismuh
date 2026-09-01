@@ -339,6 +339,45 @@ Tampilkan produk seperti itu sebagai **"modal belum diisi"**, bukan sebagai untu
 
 Kalau `bahan` diisi, `hasil_per_batch` wajib dan setiap bahan wajib punya `jumlah`, `jumlah_beli`, dan `harga_beli` — resep setengah jadi menghasilkan modal yang salah tanpa pesan galat.
 
+### `PATCH /produk/:id/tenaga` — fitur 11
+
+Hitung waktu pedagang sebagai bagian dari modal.
+
+```jsonc
+// permintaan
+{ "jam_per_batch": 5, "upah_per_jam": 15000 }
+
+// jawaban — bentuknya sama dengan POST /onboarding/resep
+{ "ok": true, "data": {
+    "produk_id": 3, "nama": "Donat",
+    "modal_per_unit": 3550, "harga_jual": 3500,
+    "margin_per_unit": -50, "merugi": true
+} }
+```
+
+**Kenapa dua angka, bukan satu.** Tidak ada pedagang yang bisa menjawab "berapa
+biaya tenaga per batch". Yang bisa dijawab: *sekali bikin butuh berapa jam*, dan
+*sejam kerja di tempat orang dibayar berapa*. **Perkaliannya terjadi di SQL** —
+frontend mengirim kedua angka apa adanya (aturan #7).
+
+**Ini lapisan kedua dari temuan pertama.** Pedagang hampir tidak pernah
+menghitung waktunya sendiri, jadi "untung" yang mereka rasakan selama ini sudah
+termasuk membayar diri sendiri nol rupiah. Contoh di atas nyata: Donat yang
+terlihat untung Rp 700 ternyata **rugi Rp 50** setelah 5 jam kerja dihitung.
+
+| Field | Catatan |
+|---|---|
+| `jam_per_batch` | `0` sah dan berguna — itu cara membatalkan perhitungan waktu |
+| `upah_per_jam` | Rupiah per jam. Tidak boleh minus |
+
+Yang disimpan hanya hasil perkaliannya, bukan jam dan upah terpisah. Pedagang
+yang ingin mengubah harus mengisi ulang keduanya.
+
+Hasilnya muncul di `GET /produk/:id` sebagai `biaya_tenaga_per_unit` dan
+`persen_tenaga`. **Tampilkan barisnya di rincian modal** — tanpa itu, rincian
+bahan terlihat seolah sudah menjelaskan seluruh modal, dan pedagang menyimpulkan
+modalnya cuma bahan.
+
 ## Ekstraksi
 
 **Status: sudah jadi**, kecuali foto. Uji: `node scripts/uji-ekstraksi.mjs`.

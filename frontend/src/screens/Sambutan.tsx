@@ -18,7 +18,7 @@ export function Sambutan() {
               <ArrowRight size={21} strokeWidth={2} aria-hidden="true" />
             </span>
           </Tombol>
-          <p className="pt-1 text-center text-[15px] font-medium text-redup">
+          <p className="pt-1 text-center text-isi font-medium text-redup">
             Mudah. Cepat. Otomatis.
           </p>
         </>
@@ -29,7 +29,7 @@ export function Sambutan() {
           <LogoIkon ukuran={64} />
           <span className="text-4xl font-extrabold tracking-[-0.03em] text-tinta">lapakAi</span>
         </div>
-        <p className="text-[22px] leading-relaxed text-sedang">
+        <p className="text-judul-kecil leading-relaxed text-sedang">
           Tahu untung sebenarnya,
           <br />
           dari buku tulis yang sudah Anda pakai.

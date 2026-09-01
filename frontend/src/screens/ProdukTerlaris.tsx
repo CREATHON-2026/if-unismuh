@@ -39,15 +39,15 @@ export function ProdukTerlaris() {
           <div className="flex h-28 w-28 items-center justify-center rounded-full bg-kanvas text-sedang">
             <Store size={46} strokeWidth={1.7} aria-hidden="true" />
           </div>
-          <h1 className="tracking-[-0.02em] text-[27px] font-bold leading-snug text-tinta">
+          <h1 className="tracking-[-0.02em] text-judul font-bold leading-snug text-tinta">
             Apa produk yang paling laku?
           </h1>
-          <p className="text-[17px] leading-relaxed text-sedang">
+          <p className="text-utama leading-relaxed text-sedang">
             Beritahu kami barang andalan warung Anda untuk menyesuaikan prediksi stok.
           </p>
         </div>
 
-        <label className="mt-5 block text-[17px] font-bold text-tinta" htmlFor="nama-produk">
+        <label className="mt-5 block text-utama font-bold text-tinta" htmlFor="nama-produk">
           Nama Produk
         </label>
         <div className="mt-2 flex h-16 items-center gap-3 rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4">
@@ -61,7 +61,7 @@ export function ProdukTerlaris() {
             className="h-full min-w-0 flex-1 bg-transparent text-lg text-tinta outline-none placeholder:text-redup"
           />
         </div>
-        <p className="mt-3 flex items-center gap-2 text-[15px] text-sedang">
+        <p className="mt-3 flex items-center gap-2 text-isi text-sedang">
           <Info size={17} strokeWidth={1.9} className="shrink-0 text-redup" aria-hidden="true" />
           Anda bisa mengubahnya nanti di pengaturan.
         </p>
@@ -79,14 +79,14 @@ export function ProdukTerlaris() {
 
         <div className="my-6 h-px bg-garis" />
 
-        <p className="text-center text-[17px] font-bold text-tinta">Saran populer:</p>
+        <p className="text-center text-utama font-bold text-tinta">Saran populer:</p>
         <div className="mt-4 flex flex-wrap justify-center gap-3 pb-2">
           {SARAN.map((s) => (
             <button
               key={s}
               type="button"
               onClick={() => setProduk(s)}
-              className="rounded-full border-[1.5px] border-garis-tua bg-kartu px-6 py-3 text-[17px] font-medium text-tinta transition active:scale-95"
+              className="rounded-full border-[1.5px] border-garis-tua bg-kartu px-6 py-3 text-utama font-medium text-tinta transition active:scale-95"
             >
               {s}
             </button>

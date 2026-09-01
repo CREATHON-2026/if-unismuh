@@ -5,12 +5,18 @@ import {
   type BahanMasukan, type BahanUsulan, type DetailProduk, type RingkasanProduk,
   type SaranHarga, type TemuanPertama, type UsulanProduk,
 } from '../../../../shared/types.ts';
-import { daftarProduk, detailProduk, bahanProduk, saranHarga } from './produk.queries.ts';
+import {
+  daftarProduk, detailProduk, bahanProduk, saranHarga, simpanOngkosTenaga,
+} from './produk.queries.ts';
 import { ekstrakProdukBaru } from './produk.llm.ts';
 // Penyimpanan produk hidup di modul onboarding karena di sanalah ia lahir.
 // Dipakai ulang, BUKAN disalin: dua jalur INSERT untuk produk yang sama akan
 // berbeda diam-diam saat salah satunya diubah — lihat backend/CLAUDE.md.
 import { buatProdukDenganResep } from '../onboarding/onboarding.service.ts';
+// Dipakai ulang untuk MEMBACA ULANG angka setelah menulis — supaya yang
+// dikembalikan ke layar datang dari view yang sama dengan yang dipakai di
+// tempat lain, bukan dari perhitungan kedua.
+import { ambilTemuanPertama } from '../onboarding/onboarding.queries.ts';
 // Pencocokan nama yang sama dengan yang dipakai suara dan chat, supaya
 // "kacang telor" mengenali "Kacang Telur" yang sudah ada di semua jalur.
 import { cocokkanNamaProduk } from '../pesanan/pesanan.service.ts';
@@ -145,4 +151,28 @@ export function simpanProdukBaru(
   bahan: BahanMasukan[],
 ): Promise<TemuanPertama | null> {
   return buatProdukDenganResep(userId, namaProduk, hargaJual, hasilPerBatch, bahan);
+}
+
+/**
+ * Catat ongkos tenaga pedagang — fitur 11.
+ *
+ * Pedagang hampir tidak pernah menghitung waktunya sendiri, jadi "untung" yang
+ * mereka rasakan selama ini sudah termasuk membayar diri sendiri nol rupiah.
+ * Setelah waktunya ikut dihitung, produk yang tadinya terlihat untung bisa
+ * berbalik jadi rugi — dan itu bukan efek samping, itu seluruh gunanya.
+ *
+ * Tidak ada perkalian di berkas ini. `simpanOngkosTenaga` mengalikan jam dengan
+ * upah di dalam SQL, dan angka yang dikembalikan dibaca ulang dari
+ * v_margin_produk lewat `ambilTemuanPertama` — bukan dihitung di sini.
+ */
+export async function catatOngkosTenaga(
+  produkId: number, userId: number, jamPerBatch: number, upahPerJam: number,
+): Promise<TemuanPertama | null> {
+  const baris = await simpanOngkosTenaga(produkId, userId, jamPerBatch, upahPerJam);
+  if (!baris) {
+    throw new GalatTampil(
+      KODE_GALAT.PRODUK_TIDAK_DITEMUKAN, 'Produk tidak ditemukan.', 404,
+    );
+  }
+  return ambilTemuanPertama(produkId, userId);
 }

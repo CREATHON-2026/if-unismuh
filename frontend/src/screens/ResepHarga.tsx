@@ -43,15 +43,15 @@ export function ResepHarga() {
       <KepalaResep langkah={3} label="Harga" />
 
       <div className="kartu mt-6 p-6">
-        <h1 className="text-[25px] font-bold leading-snug tracking-[-0.02em] text-tinta">
+        <h1 className="text-judul font-bold leading-snug tracking-[-0.02em] text-tinta">
           Dijual berapa per bungkus?
         </h1>
-        <p className="mt-2 text-[16px] leading-relaxed text-sedang">
+        <p className="mt-2 text-utama leading-relaxed text-sedang">
           Harga jual saat ini ke pembeli.
         </p>
 
         <div className="mt-5 flex h-[72px] items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 transition focus-within:border-hero">
-          <span className="text-[19px] font-bold text-sedang">Rp</span>
+          <span className="text-sub font-bold text-sedang">Rp</span>
           <span className="mx-3 h-8 w-px bg-garis" aria-hidden="true" />
           <input
             type="tel"
@@ -61,10 +61,10 @@ export function ResepHarga() {
             placeholder="20000"
             value={harga}
             onChange={(e) => setHarga(e.target.value.replace(/\D/g, ''))}
-            className="angka h-full min-w-0 flex-1 bg-transparent text-[26px] font-bold text-tinta outline-none placeholder:text-[19px] placeholder:font-normal placeholder:text-redup"
+            className="angka h-full min-w-0 flex-1 bg-transparent text-judul font-bold text-tinta outline-none placeholder:text-sub placeholder:font-normal placeholder:text-redup"
           />
         </div>
-        {galat && <p className="mt-3 text-[15.5px] font-semibold text-rugi">{galat}</p>}
+        {galat && <p className="mt-3 text-isi font-semibold text-rugi">{galat}</p>}
       </div>
 
       <div className="mt-8">

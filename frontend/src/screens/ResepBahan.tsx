@@ -11,14 +11,14 @@ import { tulisOnboarding } from '../state/onboarding';
 const FORM_KOSONG = { nama: '', jumlah: '', satuan: '', harga_beli: '', jumlah_beli: '' };
 
 const KELAS_INPUT =
-  'h-14 w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-[17px] text-tinta outline-none transition placeholder:text-redup focus:border-hero';
+  'h-14 w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-utama text-tinta outline-none transition placeholder:text-redup focus:border-hero';
 
 // Label di ATAS kolom, bukan di dalam placeholder. Di lebar setengah layar
 // placeholder panjang terpotong di tengah kata dan pertanyaannya jadi hilang.
 function Kolom({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex w-1/2 flex-col gap-1.5">
-      <span className="text-[14px] font-semibold text-sedang">{label}</span>
+      <span className="text-isi font-semibold text-sedang">{label}</span>
       {children}
     </label>
   );
@@ -63,10 +63,10 @@ export function ResepBahan() {
       <div className="kartu mt-6 p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <h1 className="text-[25px] font-bold leading-snug tracking-[-0.02em] text-tinta">
+            <h1 className="text-judul font-bold leading-snug tracking-[-0.02em] text-tinta">
               Apa saja bahan yang dipakai?
             </h1>
-            <p className="mt-2 text-[16px] leading-relaxed text-sedang">
+            <p className="mt-2 text-utama leading-relaxed text-sedang">
               Isi satu per satu bahan untuk sekali bikin.
             </p>
           </div>
@@ -79,7 +79,7 @@ export function ResepBahan() {
             <Mic size={24} strokeWidth={1.8} aria-hidden="true" />
           </button>
         </div>
-        {catatan && <p className="mt-3 text-[15px] text-sedang">{catatan}</p>}
+        {catatan && <p className="mt-3 text-isi text-sedang">{catatan}</p>}
 
         {daftar.length > 0 && (
           <div className="mt-5">
@@ -91,10 +91,10 @@ export function ResepBahan() {
                   className="flex items-center gap-3 rounded-kontrol bg-kanvas px-4 py-3"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="text-[16px] font-bold text-tinta">{b.nama}</p>
+                    <p className="text-utama font-bold text-tinta">{b.nama}</p>
                     {/* Tiap potongan tidak boleh patah di tengah — "beli 25 / kg"
                         membuat angkanya kehilangan satuan sesaat saat dibaca. */}
-                    <p className="mt-0.5 flex flex-wrap gap-x-1.5 text-[14px] text-sedang">
+                    <p className="mt-0.5 flex flex-wrap gap-x-1.5 text-isi text-sedang">
                       <span className="whitespace-nowrap">
                         Dipakai {b.jumlah} {b.satuan}
                       </span>
@@ -103,7 +103,7 @@ export function ResepBahan() {
                       </span>
                     </p>
                   </div>
-                  <p className="angka shrink-0 whitespace-nowrap text-[15.5px] font-semibold text-tinta">
+                  <p className="angka shrink-0 whitespace-nowrap text-isi font-semibold text-tinta">
                     {formatRupiah(b.harga_beli)}
                   </p>
                   <button
@@ -122,7 +122,7 @@ export function ResepBahan() {
 
         <div className="mt-5 flex flex-col gap-3">
           <label className="flex flex-col gap-1.5">
-            <span className="text-[14px] font-semibold text-sedang">Nama bahan</span>
+            <span className="text-isi font-semibold text-sedang">Nama bahan</span>
             <input
               placeholder="Contoh: Tepung"
               value={form.nama}
@@ -183,7 +183,7 @@ export function ResepBahan() {
             type="button"
             disabled={!formValid}
             onClick={tambah}
-            className="flex h-14 items-center justify-center gap-2 rounded-kontrol border-[1.5px] border-garis-tua text-[16.5px] font-bold text-tinta transition active:scale-[0.98] disabled:border-garis disabled:text-redup"
+            className="flex h-14 items-center justify-center gap-2 rounded-kontrol border-[1.5px] border-garis-tua text-utama font-bold text-tinta transition active:scale-[0.98] disabled:border-garis disabled:text-redup"
           >
             <Plus size={19} strokeWidth={2.2} aria-hidden="true" />
             Tambah bahan
