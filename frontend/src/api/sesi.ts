@@ -1,0 +1,12 @@
+// Sesi 90 hari: token disimpan di localStorage, tidak pernah logout otomatis.
+// Perpanjangan masa berlaku diurus backend saat token dipakai.
+
+const KUNCI_TOKEN = 'lapakai_token';
+
+export function simpanToken(token: string): void {
+  localStorage.setItem(KUNCI_TOKEN, token);
+}
+
+export function ambilToken(): string | null {
+  return localStorage.getItem(KUNCI_TOKEN);
+}

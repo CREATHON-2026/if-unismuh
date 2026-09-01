@@ -411,3 +411,55 @@ export interface UsulanTransaksi {
   tanggal: string;
   baris: BarisUsulan[];
 }
+
+// ---------------------------------------------------------------------------
+// Ekstraksi foto/suara (fitur 1, 2, 4) — lihat docs/06-kontrak-api.md.
+// Ditambahkan dari sisi frontend untuk layar konfirmasi; kabari tim bila berubah.
+// ---------------------------------------------------------------------------
+
+export interface BarisEkstraksi {
+  urutan: number;
+  nama_mentah: string;
+  produk_id: number | null;
+  nama_produk: string | null;
+  jumlah: number;
+  harga_satuan: number | null;
+  /** Dihitung SQL di backend, bukan frontend */
+  subtotal: number;
+  tanggal: string | null;
+  /** 0..1, per baris — bukan per foto */
+  keyakinan: number;
+  perlu_dicek: boolean;
+  alasan_ragu?: string;
+}
+
+export interface EkstraksiRes {
+  ekstraksi_id: number;
+  baris: BarisEkstraksi[];
+  total_item: number;
+  total_belanja: number;
+}
+
+/** Baris yang disetujui pengguna di layar konfirmasi. */
+export interface BarisKonfirmasi {
+  urutan: number;
+  produk_id: number | null;
+  jumlah: number;
+  harga_satuan: number | null;
+  tanggal: string | null;
+}
+
+export interface KonfirmasiRes {
+  tersimpan: number;
+  berkas_dihapus: boolean;
+}
+
+/**
+ * POST /ekstraksi/pratinjau (usulan, lihat docs/06-kontrak-api.md) — SQL
+ * menghitung ulang subtotal dan total saat pengguna menyunting baris.
+ */
+export interface PratinjauEkstraksiRes {
+  baris: { urutan: number; subtotal: number }[];
+  total_item: number;
+  total_belanja: number;
+}

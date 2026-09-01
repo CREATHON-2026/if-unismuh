@@ -336,19 +336,42 @@ Kalau `bahan` diisi, `hasil_per_batch` wajib dan setiap bahan wajib punya `jumla
 ```json
 { "ok": true, "data": {
     "ekstraksi_id": 12,
+    "total_item": 15,
+    "total_belanja": 200000,
     "baris": [
       { "urutan": 1, "nama_mentah": "kripik psg", "produk_id": 1,
         "nama_produk": "Kripik Pisang", "jumlah": 10, "harga_satuan": 20000,
+        "subtotal": 200000,
         "tanggal": "2026-09-01", "keyakinan": 0.94, "perlu_dicek": false },
       { "urutan": 2, "nama_mentah": "kacang", "produk_id": null,
         "nama_produk": null, "jumlah": 5, "harga_satuan": null,
+        "subtotal": 0,
         "tanggal": "2026-09-01", "keyakinan": 0.41, "perlu_dicek": true,
         "alasan_ragu": "harga tidak terbaca" }
     ]
 } }
 ```
 
+`subtotal`, `total_item`, dan `total_belanja` dihitung SQL di backend — layar konfirmasi hanya menampilkan (aturan #7).
+
 **Tidak ada yang tersimpan pada tahap ini.** Ini hanya usulan. Frontend menampilkan layar konfirmasi, baris `perlu_dicek: true` ditandai.
+
+### `POST /ekstraksi/pratinjau` (usulan dari frontend, belum disepakati)
+
+Layar konfirmasi membolehkan pengguna mengubah/menghapus baris sebelum menyimpan.
+Subtotal dan total harus ikut berubah — dan frontend tidak boleh menghitungnya sendiri.
+Endpoint ini menerima baris hasil suntingan dan mengembalikan angka yang dihitung SQL.
+
+```json
+// permintaan
+{ "baris": [ { "urutan": 1, "produk_id": 1, "jumlah": 10, "harga_satuan": 20000, "tanggal": "2026-09-01" } ] }
+// jawaban
+{ "ok": true, "data": {
+    "baris": [ { "urutan": 1, "subtotal": 200000 } ],
+    "total_item": 10,
+    "total_belanja": 200000
+} }
+```
 
 ### `POST /ekstraksi/suara`
 `multipart/form-data`, field `berkas`. Bentuk jawabannya sama persis dengan `/ekstraksi/foto`, jadi frontend bisa memakai komponen konfirmasi yang sama.
