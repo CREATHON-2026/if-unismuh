@@ -2,48 +2,73 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
-import { bacaOnboarding, tulisOnboarding } from '../state/onboarding';
+import { KepalaResep } from '../components/KepalaResep';
+import { tulisOnboarding } from '../state/onboarding';
 
 export function ResepBahan() {
   const nav = useNavigate();
   const [teks, setTeks] = useState('');
   const [catatan, setCatatan] = useState('');
-  const namaProduk = bacaOnboarding().nama_produk ?? 'Produk Anda';
+
+  function lanjut() {
+    if (!teks.trim()) return;
+    tulisOnboarding({ bahan_teks: teks.trim() });
+    nav('/resep/hasil');
+  }
 
   return (
-    <Layar
-      pertanyaan={`${namaProduk}, sekali bikin habis bahan apa saja?`}
-      aksi={
-        <Tombol
-          disabled={!teks.trim()}
-          onClick={() => {
-            tulisOnboarding({ bahan_teks: teks.trim() });
-            nav('/resep/hasil');
-          }}
-        >
-          Lanjut
-        </Tombol>
-      }
-    >
-      <div className="flex items-start gap-2">
-        <textarea
-          autoFocus
-          rows={4}
-          placeholder="Contoh: pisang 5 kg 60 ribu, minyak 2 liter 36 ribu"
-          value={teks}
-          onChange={(e) => setTeks(e.target.value)}
-          className="w-full flex-1 rounded-2xl border-2 border-slate-300 p-4 text-lg outline-none focus:border-slate-900"
-        />
-        <button
-          type="button"
-          aria-label="Rekam suara"
-          onClick={() => setCatatan('Fitur suara segera aktif — sementara ketik dulu ya')}
-          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-slate-300 text-2xl active:scale-95"
-        >
-          🎤
-        </button>
+    <Layar tanpaLogo atas>
+      <KepalaResep langkah={1} label="Bahan" />
+
+      <div className="mt-6 rounded-[28px] bg-white p-6 shadow-[0_10px_40px_rgba(0,0,0,0.06)]">
+        <h1 className="font-logo text-[26px] font-bold text-[#16233B]">
+          Apa saja bahan yang dipakai?
+        </h1>
+        <p className="mt-2 text-[17px] text-[#44403C]">Sebutkan bahan utama untuk resep ini.</p>
+
+        <div className="mt-5 flex items-center gap-4">
+          <input
+            autoFocus
+            placeholder="Contoh: Tepung 1kg, Telur 2"
+            value={teks}
+            onChange={(e) => setTeks(e.target.value)}
+            className="h-[72px] w-full flex-1 rounded-2xl border border-[#D5DCEA] bg-[#F1F4FB] px-4 text-lg outline-none focus:border-[#F5831F] placeholder:text-[#8C93A3]"
+          />
+          <button
+            type="button"
+            aria-label="Rekam suara"
+            onClick={() => setCatatan('Fitur suara segera aktif — sementara ketik dulu ya')}
+            className="flex h-[72px] w-[72px] shrink-0 items-center justify-center rounded-full bg-[#F5831F] shadow-md active:scale-95"
+          >
+            <svg
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#3A2410"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <rect x="9.25" y="3" width="5.5" height="10" rx="2.75" />
+              <path d="M6.5 11.5a5.5 5.5 0 0 0 11 0" />
+              <path d="M12 17v3.5" />
+            </svg>
+          </button>
+        </div>
+        {catatan && <p className="mt-3 text-sm text-[#78716C]">{catatan}</p>}
       </div>
-      {catatan && <p className="text-sm text-slate-500">{catatan}</p>}
+
+      <div className="mt-8">
+        <Tombol varian="gelap" disabled={!teks.trim()} onClick={lanjut}>
+          <span className="flex items-center justify-center gap-3">
+            Selanjutnya
+            <span aria-hidden className="text-2xl leading-none">
+              →
+            </span>
+          </span>
+        </Tombol>
+      </div>
     </Layar>
   );
 }
