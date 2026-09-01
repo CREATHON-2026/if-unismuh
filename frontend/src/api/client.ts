@@ -23,7 +23,7 @@ import type {
 } from '@shared/types';
 import { ambilToken } from './sesi';
 
-const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+const BASE = import.meta.env.VITE_API_URL ?? '/api';
 
 async function panggil<T>(jalurApi: string, opsi: RequestInit = {}): Promise<Jawaban<T>> {
   const token = ambilToken();

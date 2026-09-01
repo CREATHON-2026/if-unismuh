@@ -9,17 +9,20 @@ export function NomorHp() {
   const nav = useNavigate();
   const [nomor, setNomor] = useState('');
   const [sibuk, setSibuk] = useState(false);
+  const [galat, setGalat] = useState('');
   // Disimpan dengan awalan 0 mengikuti format kontrak (+62 hanya tampilan).
   const valid = /^8\d{8,11}$/.test(nomor);
 
   async function kirim() {
     setSibuk(true);
+    setGalat('');
     const jawaban = await kirimOtp(`0${nomor}`);
     if (jawaban.ok) {
       tulisOnboarding({ nomor_hp: `0${nomor}` });
       nav('/masuk/otp');
       return;
     }
+    setGalat(jawaban.error.pesan);
     setSibuk(false);
   }
 
@@ -89,6 +92,7 @@ export function NomorHp() {
         />
       </div>
       <p className="text-[15px] text-[#78716C]">Pastikan nomor aktif dan bisa menerima pesan.</p>
+      {galat && <p className="font-semibold text-red-600">{galat}</p>}
     </Layar>
   );
 }

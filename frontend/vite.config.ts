@@ -10,4 +10,15 @@ export default defineConfig({
       '@shared': fileURLToPath(new URL('../shared', import.meta.url)),
     },
   },
+  // Browser memanggil /api relatif; dev server meneruskan ke backend lokal.
+  // Wajib di Codespaces: localhost:3000 codespace tidak terlihat dari browser.
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api/, ''),
+      },
+    },
+  },
 });

@@ -116,13 +116,23 @@ export function JenisUsaha() {
   const nav = useNavigate();
   const [pilihan, setPilihan] = useState<JenisUsahaTipe | ''>('');
   const [sibuk, setSibuk] = useState(false);
+  const [galat, setGalat] = useState('');
 
   async function lanjut() {
     if (!pilihan) return;
     setSibuk(true);
+    setGalat('');
     tulisOnboarding({ jenis_usaha: pilihan });
-    await simpanUsaha({ nama_usaha: bacaOnboarding().nama_usaha ?? '', jenis_usaha: pilihan });
-    nav('/onboarding/produk');
+    const jawaban = await simpanUsaha({
+      nama_usaha: bacaOnboarding().nama_usaha ?? '',
+      jenis_usaha: pilihan,
+    });
+    if (jawaban.ok) {
+      nav('/onboarding/produk');
+      return;
+    }
+    setGalat(jawaban.error.pesan);
+    setSibuk(false);
   }
 
   return (
@@ -165,6 +175,7 @@ export function JenisUsaha() {
       <p className="text-[17px] leading-relaxed text-[#8A5A33]">
         Pilih satu yang paling menggambarkan bisnismu agar LapakAi bisa beradaptasi.
       </p>
+      {galat && <p className="font-semibold text-red-600">{galat}</p>}
 
       <div className="flex flex-col gap-4 pt-2">
         {PILIHAN.map((p) => {
