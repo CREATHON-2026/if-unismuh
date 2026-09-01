@@ -102,9 +102,13 @@ export async function prosesPesan(
     ? await hitungPesanan(cocok.produkId, userId, baca.jumlah, baca.harga_diminta)
     : null;
 
+  // Dua keadaan yang berbeda, dan pedagang perlu tahu bedanya:
+  // barangnya tidak disebut sama sekali, vs disebut tapi belum terdaftar.
   const peringatan = hitung
     ? susunPeringatan(hitung, baca.jumlah, cocok.perluDicek, baca.nama_produk_mentah)
-    : [`Produk "${baca.nama_produk_mentah ?? '(tidak disebut)'}" belum ada di daftar. Tambahkan dulu supaya untung-ruginya bisa dicek.`];
+    : baca.nama_produk_mentah
+      ? [`Produk "${baca.nama_produk_mentah}" belum ada di daftar. Tambahkan dulu supaya untung-ruginya bisa dicek.`]
+      : ['Pembeli belum menyebutkan barang apa yang dipesan. Tanyakan dulu ke pembelinya.'];
 
   const pesanId = await simpanPesan({
     userId, teks, sumber, pengirimSamar,

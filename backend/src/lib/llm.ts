@@ -109,13 +109,31 @@ export function mintaJson<T>(
  * memesan 0 bungkus dan tidak menawar Rp 0. Jadi memperlakukan 0 sebagai
  * "tidak disebut" aman di sini.
  */
+/**
+ * Frasa penampung yang dipakai model saat sebenarnya tidak ada isinya.
+ *
+ * Ditemukan dari pesan WhatsApp sungguhan: "saya mau pesan 5" (tanpa menyebut
+ * barang) menghasilkan nama_produk_mentah = "tidak disebutkan". Kalau tidak
+ * disaring, frasa itu ikut dicocokkan ke daftar produk dan pedagang melihat
+ * peringatan tak masuk akal: 'Produk "tidak disebutkan" belum ada di daftar'.
+ */
+const FRASA_KOSONG = new Set([
+  'tidak disebutkan', 'tidak disebut', 'tidak ada', 'tidak diketahui',
+  'belum disebutkan', 'tidak jelas', 'kosong', 'tidak tersedia',
+  'null', 'none', 'n/a', 'na', 'unknown', 'unspecified', '-', '?',
+]);
+
+function isiPalsu(v: unknown): boolean {
+  if (v === 0 || v === '' || v === undefined || v === null) return true;
+  return typeof v === 'string' && FRASA_KOSONG.has(v.trim().toLowerCase());
+}
+
 export function kosongJadiNull<T extends Record<string, any>>(
   obj: T, field: (keyof T)[],
 ): T {
   const hasil = { ...obj };
   for (const f of field) {
-    const v = hasil[f];
-    if (v === 0 || v === '' || v === undefined) hasil[f] = null as T[keyof T];
+    if (isiPalsu(hasil[f])) hasil[f] = null as T[keyof T];
   }
   return hasil;
 }
