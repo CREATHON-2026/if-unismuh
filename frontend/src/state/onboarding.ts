@@ -1,14 +1,14 @@
 // Jawaban antar layar onboarding, disimpan di sessionStorage supaya
 // tiap layar tetap satu pertanyaan dan tahan muat-ulang.
 
-import type { TemuanPertama } from '@shared/types';
+import type { BahanMasukan, TemuanPertama } from '@shared/types';
 
 export interface JawabanOnboarding {
   nomor_hp?: string;
   nama_usaha?: string;
   jenis_usaha?: string;
   nama_produk?: string;
-  bahan_teks?: string;
+  bahan?: BahanMasukan[];
   hasil_per_batch?: number;
   harga_jual?: number;
   temuan?: TemuanPertama;

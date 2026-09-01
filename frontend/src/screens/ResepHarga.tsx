@@ -17,14 +17,14 @@ export function ResepHarga() {
     setSibuk(true);
     setGalat('');
     const data = bacaOnboarding();
-    // Mock memakai contoh bahan dari kontrak; backend asli akan mengekstrak
-    // bahan_teks/suara menjadi bahan terstruktur lalu SQL menghitung modalnya.
+    if (!data.bahan || data.bahan.length === 0) {
+      setGalat('Bahannya belum diisi — kembali ke langkah 1 dulu ya');
+      setSibuk(false);
+      return;
+    }
     const jawaban = await simpanResep({
       nama_produk: data.nama_produk ?? '',
-      bahan: [
-        { nama: 'pisang', jumlah: 5, satuan: 'kg', harga_beli: 60000, jumlah_beli: 5 },
-        { nama: 'minyak', jumlah: 2, satuan: 'liter', harga_beli: 36000, jumlah_beli: 2 },
-      ],
+      bahan: data.bahan,
       hasil_per_batch: data.hasil_per_batch ?? 0,
       harga_jual: Number(harga),
     });

@@ -3,10 +3,15 @@
 // (aturan #7: frontend tidak pernah menghitung; SQL di backend yang menghitung).
 // Saat endpoint asli siap, ganti isi fungsi-fungsi ini dengan fetch.
 
+// Klien API lapakAi — endpoint asli backend (port 3000, CORS terbuka).
+// Ekstraksi foto BELUM ada di backend (baru spike), jadi bagian itu masih mock
+// dan angka finansialnya hardcoded dari contoh kontrak (aturan #7).
+
 import type {
   Jawaban,
   KirimOtpRes,
   VerifikasiOtpRes,
+  SayaRes,
   SimpanUsahaReq,
   SimpanResepReq,
   TemuanPertama,
@@ -15,59 +20,61 @@ import type {
   BarisKonfirmasi,
   KonfirmasiRes,
 } from '@shared/types';
+import { ambilToken } from './sesi';
+
+const BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
+
+async function panggil<T>(jalurApi: string, opsi: RequestInit = {}): Promise<Jawaban<T>> {
+  const token = ambilToken();
+  try {
+    const res = await fetch(`${BASE}${jalurApi}`, {
+      ...opsi,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...opsi.headers,
+      },
+    });
+    return (await res.json()) as Jawaban<T>;
+  } catch {
+    return {
+      ok: false,
+      error: { kode: 'GALAT_SERVER', pesan: 'Tidak bisa terhubung ke server. Coba lagi ya.' },
+    };
+  }
+}
+
+export function kirimOtp(nomor_hp: string): Promise<Jawaban<KirimOtpRes>> {
+  return panggil('/auth/otp/kirim', { method: 'POST', body: JSON.stringify({ nomor_hp }) });
+}
+
+export function verifikasiOtp(nomor_hp: string, kode: string): Promise<Jawaban<VerifikasiOtpRes>> {
+  return panggil('/auth/otp/verifikasi', {
+    method: 'POST',
+    body: JSON.stringify({ nomor_hp, kode }),
+  });
+}
+
+// Dipanggil tiap aplikasi dibuka — memperpanjang sesi 90 hari.
+export function ambilSaya(): Promise<Jawaban<SayaRes>> {
+  return panggil('/auth/saya');
+}
+
+export function simpanUsaha(p: SimpanUsahaReq): Promise<Jawaban<Record<string, never>>> {
+  return panggil('/onboarding/usaha', { method: 'POST', body: JSON.stringify(p) });
+}
+
+export function simpanResep(p: SimpanResepReq): Promise<Jawaban<TemuanPertama>> {
+  return panggil('/onboarding/resep', { method: 'POST', body: JSON.stringify(p) });
+}
 
 const jeda = (ms = 400) => new Promise((r) => setTimeout(r, ms));
-
-export async function kirimOtp(nomor_hp: string): Promise<Jawaban<KirimOtpRes>> {
-  void nomor_hp;
-  await jeda();
-  return { ok: true, data: { terkirim: true, mode_demo: true } };
-}
-
-export async function verifikasiOtp(
-  nomor_hp: string,
-  kode: string,
-): Promise<Jawaban<VerifikasiOtpRes>> {
-  await jeda();
-  if (kode !== '123456') {
-    return { ok: false, error: { kode: 'OTP_SALAH', pesan: 'Kodenya belum cocok, coba lagi ya' } };
-  }
-  return {
-    ok: true,
-    data: {
-      token: 'token-demo',
-      pengguna_baru: true,
-      pengguna: { id: 1, nomor_hp, nama_usaha: null, jenis_usaha: null },
-    },
-  };
-}
-
-export async function simpanUsaha(p: SimpanUsahaReq): Promise<Jawaban<Record<string, never>>> {
-  void p;
-  await jeda();
-  return { ok: true, data: {} };
-}
-
-export async function simpanResep(p: SimpanResepReq): Promise<Jawaban<TemuanPertama>> {
-  await jeda(700);
-  // Angka contoh dari kontrak. Backend asli menghitungnya lewat SQL dari resep.
-  return {
-    ok: true,
-    data: {
-      produk_id: 1,
-      nama: p.nama_produk,
-      modal_per_unit: 21200,
-      harga_jual: 20000,
-      margin_per_unit: -1200,
-      merugi: true,
-    },
-  };
-}
 
 export async function ekstraksiFoto(berkas: File): Promise<Jawaban<EkstraksiRes>> {
   void berkas;
   await jeda(1200);
-  // Contoh baris + subtotal/total dari kontrak — semua angka dihitung backend.
+  // MOCK — backend belum punya endpoint ekstraksi (baru spike). Contoh baris
+  // + subtotal/total dari kontrak; semua angka dihitung backend nantinya.
   return {
     ok: true,
     data: {

@@ -1,4 +1,7 @@
-import { Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { ambilSaya } from './api/client';
+import { ambilToken, simpanToken } from './api/sesi';
 import { Sambutan } from './screens/Sambutan';
 import { NomorHp } from './screens/NomorHp';
 import { KodeOtp } from './screens/KodeOtp';
@@ -14,6 +17,21 @@ import { KonfirmasiEkstraksi } from './screens/KonfirmasiEkstraksi';
 import { Beranda } from './screens/Beranda';
 
 export default function App() {
+  const nav = useNavigate();
+  const lokasi = useLocation();
+
+  // GET /auth/saya tiap aplikasi dibuka: pulihkan + perpanjang sesi 90 hari.
+  useEffect(() => {
+    if (lokasi.pathname !== '/' || !ambilToken()) return;
+    void ambilSaya().then((jawaban) => {
+      if (jawaban.ok) {
+        simpanToken(jawaban.data.token);
+        nav(jawaban.data.pengguna_baru ? '/onboarding/usaha' : '/beranda');
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<Sambutan />} />
