@@ -1,7 +1,7 @@
 // Jawaban antar layar onboarding, disimpan di sessionStorage supaya
 // tiap layar tetap satu pertanyaan dan tahan muat-ulang.
 
-import type { DataResep } from '@shared/types/api';
+import type { TemuanPertama } from '@shared/types';
 
 export interface JawabanOnboarding {
   nomor_hp?: string;
@@ -11,7 +11,7 @@ export interface JawabanOnboarding {
   bahan_teks?: string;
   hasil_per_batch?: number;
   harga_jual?: number;
-  temuan?: DataResep;
+  temuan?: TemuanPertama;
 }
 
 const KUNCI = 'lapakai_onboarding';

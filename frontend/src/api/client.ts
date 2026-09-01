@@ -4,55 +4,58 @@
 // Saat endpoint asli siap, ganti isi fungsi-fungsi ini dengan fetch.
 
 import type {
-  JawabanApi,
-  DataKirimOtp,
-  DataVerifikasiOtp,
-  PermintaanUsaha,
-  PermintaanResep,
-  DataResep,
-  DataEkstraksi,
-  DataPratinjauEkstraksi,
+  Jawaban,
+  KirimOtpRes,
+  VerifikasiOtpRes,
+  SimpanUsahaReq,
+  SimpanResepReq,
+  TemuanPertama,
+  EkstraksiRes,
+  PratinjauEkstraksiRes,
   BarisKonfirmasi,
-  DataKonfirmasi,
-} from '@shared/types/api';
+  KonfirmasiRes,
+} from '@shared/types';
 
 const jeda = (ms = 400) => new Promise((r) => setTimeout(r, ms));
 
-export async function kirimOtp(nomor_hp: string): Promise<JawabanApi<DataKirimOtp>> {
+export async function kirimOtp(nomor_hp: string): Promise<Jawaban<KirimOtpRes>> {
   void nomor_hp;
   await jeda();
-  return { ok: true, data: { terkirim: true } };
+  return { ok: true, data: { terkirim: true, mode_demo: true } };
 }
 
 export async function verifikasiOtp(
   nomor_hp: string,
   kode: string,
-): Promise<JawabanApi<DataVerifikasiOtp>> {
-  void nomor_hp;
+): Promise<Jawaban<VerifikasiOtpRes>> {
   await jeda();
   if (kode !== '123456') {
     return { ok: false, error: { kode: 'OTP_SALAH', pesan: 'Kodenya belum cocok, coba lagi ya' } };
   }
   return {
     ok: true,
-    data: { token: 'token-demo', pengguna_baru: true, pengguna: { id: 1, nama_usaha: null } },
+    data: {
+      token: 'token-demo',
+      pengguna_baru: true,
+      pengguna: { id: 1, nomor_hp, nama_usaha: null, jenis_usaha: null },
+    },
   };
 }
 
-export async function simpanUsaha(p: PermintaanUsaha): Promise<JawabanApi<Record<string, never>>> {
+export async function simpanUsaha(p: SimpanUsahaReq): Promise<Jawaban<Record<string, never>>> {
   void p;
   await jeda();
   return { ok: true, data: {} };
 }
 
-export async function simpanResep(p: PermintaanResep): Promise<JawabanApi<DataResep>> {
-  void p;
+export async function simpanResep(p: SimpanResepReq): Promise<Jawaban<TemuanPertama>> {
   await jeda(700);
   // Angka contoh dari kontrak. Backend asli menghitungnya lewat SQL dari resep.
   return {
     ok: true,
     data: {
       produk_id: 1,
+      nama: p.nama_produk,
       modal_per_unit: 21200,
       harga_jual: 20000,
       margin_per_unit: -1200,
@@ -61,7 +64,7 @@ export async function simpanResep(p: PermintaanResep): Promise<JawabanApi<DataRe
   };
 }
 
-export async function ekstraksiFoto(berkas: File): Promise<JawabanApi<DataEkstraksi>> {
+export async function ekstraksiFoto(berkas: File): Promise<Jawaban<EkstraksiRes>> {
   void berkas;
   await jeda(1200);
   // Contoh baris + subtotal/total dari kontrak — semua angka dihitung backend.
@@ -118,7 +121,7 @@ export async function ekstraksiFoto(berkas: File): Promise<JawabanApi<DataEkstra
 // Perhitungan di bawah hanya pengganti sementara di mock, bukan tugas frontend.
 export async function pratinjauEkstraksi(
   baris: BarisKonfirmasi[],
-): Promise<JawabanApi<DataPratinjauEkstraksi>> {
+): Promise<Jawaban<PratinjauEkstraksiRes>> {
   await jeda(150);
   const rincian = baris.map((b) => ({
     urutan: b.urutan,
@@ -137,7 +140,7 @@ export async function pratinjauEkstraksi(
 export async function konfirmasiEkstraksi(
   ekstraksiId: number,
   baris: BarisKonfirmasi[],
-): Promise<JawabanApi<DataKonfirmasi>> {
+): Promise<Jawaban<KonfirmasiRes>> {
   void ekstraksiId;
   await jeda();
   return { ok: true, data: { tersimpan: baris.length, berkas_dihapus: true } };

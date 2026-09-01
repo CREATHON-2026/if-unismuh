@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { BarisEkstraksi } from '@shared/types/model';
-import type { BarisKonfirmasi, DataKonfirmasi } from '@shared/types/api';
+import type { BarisEkstraksi, BarisKonfirmasi, KonfirmasiRes } from '@shared/types';
 import { formatRupiah } from '@shared/format/rupiah';
 import { konfirmasiEkstraksi, pratinjauEkstraksi } from '../api/client';
 import { Layar } from '../components/Layar';
@@ -67,7 +66,7 @@ export function KonfirmasiEkstraksi() {
   });
   const [editUrutan, setEditUrutan] = useState<number | null>(null);
   const [sibuk, setSibuk] = useState(false);
-  const [selesai, setSelesai] = useState<DataKonfirmasi | null>(null);
+  const [selesai, setSelesai] = useState<KonfirmasiRes | null>(null);
 
   // Setiap suntingan dikirim ke pratinjau — subtotal & total selalu dari API.
   async function perbarui(berikut: BarisEkstraksi[]) {

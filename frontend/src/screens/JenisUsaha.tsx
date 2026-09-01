@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
+import type { JenisUsaha as JenisUsahaTipe } from '@shared/types';
 import { simpanUsaha } from '../api/client';
 import { Layar } from '../components/Layar';
 import { TitikLangkah } from '../components/TitikLangkah';
@@ -113,7 +114,7 @@ const PILIHAN = [
 
 export function JenisUsaha() {
   const nav = useNavigate();
-  const [pilihan, setPilihan] = useState('');
+  const [pilihan, setPilihan] = useState<JenisUsahaTipe | ''>('');
   const [sibuk, setSibuk] = useState(false);
 
   async function lanjut() {
@@ -172,7 +173,7 @@ export function JenisUsaha() {
             <button
               key={p.id}
               type="button"
-              onClick={() => setPilihan(p.id)}
+              onClick={() => setPilihan(p.id as JenisUsahaTipe)}
               className={`flex items-center gap-4 rounded-[22px] border p-4 text-left transition active:scale-[0.99] ${
                 dipilih
                   ? 'border-[#F5831F] bg-[#FFF6EE] ring-1 ring-[#F5831F]'
