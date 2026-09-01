@@ -4,7 +4,7 @@ import type { InputHTMLAttributes } from 'react';
 export function InputTeks(props: InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
-      className="h-14 w-full rounded-2xl border-2 border-[#D6CFC4] px-4 text-lg outline-none focus:border-[#1A1714]"
+      className="h-14 w-full rounded-2xl border-[1.5px] border-garis-tua bg-kartu px-4 text-lg text-tinta outline-none transition placeholder:text-redup focus:border-hero"
       {...props}
     />
   );

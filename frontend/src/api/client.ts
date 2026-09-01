@@ -22,6 +22,7 @@ import type {
   RingkasanProduk,
   DetailProduk,
   AnalisisPesanan,
+  PesanMasukItem,
   BalasanReq,
   BalasanRes,
   UsulanTransaksi,
@@ -99,6 +100,11 @@ export function ambilDetailProduk(id: number): Promise<Jawaban<DetailProduk>> {
 /** Fitur 9 — teks chat pembeli yang ditempel pedagang. */
 export function analisisPesanan(teks: string): Promise<Jawaban<AnalisisPesanan>> {
   return panggil('/pesanan/analisis', { method: 'POST', body: JSON.stringify({ teks }) });
+}
+
+/** Daftar pesanan tersimpan — jalur tempel dan WhatsApp jadi satu. */
+export function daftarPesanan(): Promise<Jawaban<PesanMasukItem[]>> {
+  return panggil('/pesanan');
 }
 
 /** Balasan siap SALIN. Sistem tidak pernah mengirimnya — aturan #4. */

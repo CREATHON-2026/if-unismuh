@@ -7,14 +7,14 @@ export function KepalaResep({ langkah, label }: { langkah: number; label: string
       <KepalaAplikasi />
 
       <div className="mt-8 flex items-center justify-between">
-        <span className="text-[17px] font-bold text-[#1A1714]">Langkah {langkah} dari 3</span>
-        <span className="text-[17px] font-bold text-[#1A1714]">{label}</span>
+        <span className="text-[17px] font-bold text-tinta">Langkah {langkah} dari 3</span>
+        <span className="text-[17px] font-bold text-tinta">{label}</span>
       </div>
       <div className="mt-3 flex gap-1.5" aria-hidden="true">
         {[1, 2, 3].map((i) => (
           <span
             key={i}
-            className={`h-2.5 flex-1 rounded-full ${i <= langkah ? 'bg-[#1A1714]' : 'bg-[#E8E3DA]'}`}
+            className={`h-2.5 flex-1 rounded-full ${i <= langkah ? 'bg-hero' : 'bg-garis'}`}
           />
         ))}
       </div>

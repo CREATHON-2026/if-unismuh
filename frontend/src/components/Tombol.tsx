@@ -23,7 +23,7 @@ export function Tombol({
   // menyisir semua pemanggilnya di tengah lomba.
   const gaya =
     varian === 'garis'
-      ? 'border-[1.5px] border-[#D6CFC4] bg-transparent text-[#1A1714]'
-      : 'bg-[#1A1714] text-[#F5F1EA]';
+      ? 'border-[1.5px] border-garis-tua bg-transparent text-tinta'
+      : 'bg-hero text-white';
   return <button className={`${dasar} ${gaya} ${className}`} {...props} />;
 }

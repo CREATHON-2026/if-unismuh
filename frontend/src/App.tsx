@@ -26,15 +26,25 @@ export default function App() {
   const nav = useNavigate();
   const lokasi = useLocation();
 
-  // GET /auth/saya tiap aplikasi dibuka: pulihkan + perpanjang sesi 90 hari.
+  /**
+   * GET /auth/saya tiap aplikasi dibuka: pulihkan + perpanjang sesi 90 hari,
+   * dan ambil ulang nama usaha.
+   *
+   * Dijalankan di rute MANA PUN, bukan hanya "/". Nama usaha disimpan di
+   * sessionStorage — hilang tiap tab ditutup. Kalau pemulihannya hanya terjadi
+   * di "/", pengguna yang membuka ulang lewat bookmark atau sekadar me-refresh
+   * /beranda akan disambut "Warung Anda" dan inisial "W", padahal namanya ada
+   * di server. Yang dibatasi ke "/" cuma pengalihan halamannya.
+   */
   useEffect(() => {
-    if (lokasi.pathname !== '/' || !ambilToken()) return;
+    if (!ambilToken()) return;
     void ambilSaya().then((jawaban) => {
-      if (jawaban.ok) {
-        simpanToken(jawaban.data.token);
-        if (jawaban.data.pengguna.nama_usaha) {
-          tulisOnboarding({ nama_usaha: jawaban.data.pengguna.nama_usaha });
-        }
+      if (!jawaban.ok) return;
+      simpanToken(jawaban.data.token);
+      if (jawaban.data.pengguna.nama_usaha) {
+        tulisOnboarding({ nama_usaha: jawaban.data.pengguna.nama_usaha });
+      }
+      if (lokasi.pathname === '/') {
         nav(jawaban.data.pengguna_baru ? '/onboarding/usaha' : '/beranda');
       }
     });

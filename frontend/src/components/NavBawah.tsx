@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Home, Package, Mic, MessageCircle, type LucideIcon } from 'lucide-react';
 
 /**
  * Navigasi bawah — empat tujuan, target sentuh besar.
@@ -7,42 +8,23 @@ import { useLocation, useNavigate } from 'react-router-dom';
  * rendah kehilangan orientasi kalau pilihannya banyak. Yang tidak masuk ke sini
  * dicapai dari dalam layar, bukan ditambahkan sebagai ikon kelima.
  */
-const TUJUAN = [
-  { ke: '/beranda', label: 'Beranda' },
-  { ke: '/produk', label: 'Produk' },
-  { ke: '/catat', label: 'Catat' },
-  { ke: '/pesanan', label: 'Pesanan' },
-] as const;
-
-function Ikon({ nama, aktif }: { nama: string; aktif: boolean }) {
-  const warna = aktif ? '#1A1714' : '#6B635A';
-  const p = {
-    width: 24, height: 24, viewBox: '0 0 24 24', fill: 'none',
-    stroke: warna, strokeWidth: 1.8,
-    strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const,
-    'aria-hidden': true,
-  };
-  if (nama === 'Beranda') {
-    return <svg {...p}><path d="M3.5 11 12 4l8.5 7" /><path d="M6 10v9h12v-9" /></svg>;
-  }
-  if (nama === 'Produk') {
-    return <svg {...p}><rect x="3.5" y="6" width="17" height="5" rx="1.2" /><path d="M5 11v7.5A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5V11" /><path d="M10 14.5h4" /></svg>;
-  }
-  if (nama === 'Catat') {
-    return <svg {...p}><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5.5 11a6.5 6.5 0 0 0 13 0" /><path d="M12 17.5V21" /></svg>;
-  }
-  return <svg {...p}><path d="M20 11.5a7.5 7.5 0 0 1-11 6.6L4 19.5l1.4-4.4A7.5 7.5 0 1 1 20 11.5Z" /></svg>;
-}
+const TUJUAN: readonly { ke: string; label: string; ikon: LucideIcon }[] = [
+  { ke: '/beranda', label: 'Beranda', ikon: Home },
+  { ke: '/produk', label: 'Produk', ikon: Package },
+  { ke: '/catat', label: 'Catat', ikon: Mic },
+  { ke: '/pesanan', label: 'Pesanan', ikon: MessageCircle },
+];
 
 export function NavBawah() {
   const nav = useNavigate();
   const { pathname } = useLocation();
 
   return (
-    <nav className="sticky bottom-0 -mx-6 mt-4 border-t border-[#E8E3DA] bg-white/95 px-3 pb-2 pt-2 backdrop-blur">
+    <nav className="sticky bottom-0 -mx-5 mt-4 border-t border-garis bg-kartu/95 px-2 pb-2 pt-2 backdrop-blur">
       <div className="flex items-stretch justify-between">
         {TUJUAN.map((t) => {
           const aktif = pathname === t.ke || pathname.startsWith(`${t.ke}/`);
+          const Ikon = t.ikon;
           return (
             <button
               key={t.ke}
@@ -51,10 +33,13 @@ export function NavBawah() {
               aria-current={aktif ? 'page' : undefined}
               className="flex min-h-16 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-1 transition active:scale-95"
             >
-              <Ikon nama={t.label} aktif={aktif} />
-              <span
-                className={`text-[13px] ${aktif ? 'font-bold text-[#1A1714]' : 'text-[#6B635A]'}`}
-              >
+              <Ikon
+                size={24}
+                strokeWidth={aktif ? 2.2 : 1.8}
+                className={aktif ? 'text-tinta' : 'text-redup'}
+                aria-hidden="true"
+              />
+              <span className={`text-[13px] ${aktif ? 'font-bold text-tinta' : 'text-redup'}`}>
                 {t.label}
               </span>
             </button>

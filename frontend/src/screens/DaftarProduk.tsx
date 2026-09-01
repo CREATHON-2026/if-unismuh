@@ -1,11 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Package } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { RingkasanProduk } from '@shared/types';
 import { ambilDaftarProduk } from '../api/client';
 import { Layar } from '../components/Layar';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
+import { BarisDaftar, KartuDaftar } from '../components/BarisDaftar';
+import { Lencana } from '../components/Lencana';
+import { Segmented } from '../components/Segmented';
 import { NavBawah } from '../components/NavBawah';
+
+type Saringan = 'semua' | 'merugi' | 'untung';
+
+const SARINGAN: readonly { nilai: Saringan; label: string }[] = [
+  { nilai: 'semua', label: 'Semua' },
+  { nilai: 'merugi', label: 'Merugi' },
+  { nilai: 'untung', label: 'Untung' },
+];
 
 /**
  * Daftar produk — fitur 6.
@@ -14,81 +26,119 @@ import { NavBawah } from '../components/NavBawah';
  * fiturnya, bukan selera — pedagang tidak tahu produk mana yang merugikan,
  * jadi yang merugi harus terlihat tanpa perlu dicari.
  *
- * Frontend tidak mengurutkan ulang dan tidak menghitung apa pun.
+ * Frontend tidak mengurutkan ulang dan tidak menghitung apa pun. Penyaring di
+ * bawah hanya MENYEMBUNYIKAN baris memakai penanda `merugi` yang sudah dikirim
+ * API; ia tidak pernah memutuskan sendiri mana yang merugi.
  */
 export function DaftarProduk() {
   const nav = useNavigate();
   const [daftar, setDaftar] = useState<RingkasanProduk[] | null>(null);
+  const [saring, setSaring] = useState<Saringan>('semua');
   const [galat, setGalat] = useState('');
 
   useEffect(() => {
     void ambilDaftarProduk().then((j) => (j.ok ? setDaftar(j.data) : setGalat(j.error.pesan)));
   }, []);
 
+  // `merugi` bisa null kalau modalnya belum diketahui. Yang belum diketahui
+  // tidak masuk "Untung" — belum tahu bukan berarti aman.
+  const terlihat = daftar?.filter((p) =>
+    saring === 'semua' ? true : saring === 'merugi' ? p.merugi === true : p.merugi === false,
+  );
+
   return (
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
-      <h1 className="mt-8 font-logo text-[26px] font-bold text-[#1A1714]">Produk Anda</h1>
+      <h1 className="mt-7 text-[26px] font-bold tracking-[-0.02em] text-tinta">Produk Anda</h1>
 
       {galat && (
-        <p className="mt-4 rounded-2xl bg-[#FDEDEE] p-4 text-[17px] text-[#7A2A2F]">{galat}</p>
+        <p className="mt-4 rounded-kartu bg-rugi-muda p-4 text-[17px] text-rugi-tua">{galat}</p>
       )}
-      {!daftar && !galat && <p className="mt-6 text-[17px] text-[#6B635A]">Memuat…</p>}
+      {!daftar && !galat && <p className="mt-6 text-[17px] text-redup">Memuat…</p>}
+
+      {daftar && daftar.length > 0 && (
+        <div className="mt-4">
+          <Segmented
+            label="Saring produk"
+            pilihan={SARINGAN}
+            nilai={saring}
+            onPilih={setSaring}
+          />
+        </div>
+      )}
 
       {daftar?.length === 0 && (
-        <p className="mt-6 text-[17px] leading-relaxed text-[#4A443D]">
+        <p className="mt-6 text-[17px] leading-relaxed text-sedang">
           Belum ada produk. Tambahkan lewat wawancara resep supaya modalnya bisa dihitung.
         </p>
       )}
 
-      <div className="mt-4 flex flex-col gap-3">
-        {daftar?.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => nav(`/produk/${p.id}`)}
-            className="w-full rounded-[24px] bg-white p-5 text-left transition active:scale-[0.99]"
-          >
-            <div className="flex flex-wrap items-center gap-2">
-              <p className="text-[19px] font-bold text-[#1A1714]">{p.nama}</p>
-              {p.terlaris && (
-                <span className="rounded-lg bg-[#FBF3E2] px-2.5 py-1 text-[13px] font-bold text-[#4A443D]">
-                  TERLARIS
-                </span>
-              )}
-              {p.merugi && (
-                <span className="rounded-lg bg-[#FDEDEE] px-2.5 py-1 text-[13px] font-bold text-[#B0111F]">
-                  MERUGI
-                </span>
-              )}
-            </div>
+      {terlihat?.length === 0 && daftar && daftar.length > 0 && (
+        <p className="mt-6 text-[16px] leading-relaxed text-sedang">
+          {saring === 'merugi'
+            ? 'Tidak ada produk yang merugi. Bagus.'
+            : 'Belum ada produk yang sudah pasti untung.'}
+        </p>
+      )}
 
-            <div className="mt-3 flex items-end justify-between gap-3">
-              <p className="text-[15px] leading-relaxed text-[#6B635A]">
-                Modal{' '}
-                <span className="font-bold text-[#1A1714]">
-                  {p.modal_per_unit == null ? 'belum diisi' : formatRupiah(p.modal_per_unit)}
-                </span>
-                <br />
-                Jual <span className="font-bold text-[#1A1714]">{formatRupiah(p.harga_jual)}</span>
-              </p>
+      {terlihat && terlihat.length > 0 && (
+        <div className="mt-3">
+          <KartuDaftar>
+            {terlihat.map((p) => (
+              <BarisDaftar
+                key={p.id}
+                ikon={Package}
+                nadaIkon={p.merugi ? 'rugi' : 'netral'}
+                judul={p.nama}
+                meta={
+                  <span className="flex flex-col gap-0.5">
+                    <span className="whitespace-nowrap">
+                      Modal{' '}
+                      <span className="font-semibold text-sedang">
+                        {p.modal_per_unit == null
+                          ? 'belum diisi'
+                          : formatRupiah(p.modal_per_unit)}
+                      </span>
+                    </span>
+                    <span className="whitespace-nowrap">
+                      Jual{' '}
+                      <span className="font-semibold text-sedang">
+                        {formatRupiah(p.harga_jual)}
+                      </span>
+                    </span>
+                  </span>
+                }
+                /* null = belum diketahui. Bukan nol, dan bukan untung penuh. */
+                nilai={
+                  p.margin_per_unit == null
+                    ? '—'
+                    : `${p.merugi ? '\u2212' : '+'} ${formatRupiah(Math.abs(p.margin_per_unit))}`
+                }
+                nadaNilai={p.margin_per_unit == null ? 'netral' : p.merugi ? 'rugi' : 'untung'}
+                /* Produk bisa TERLARIS sekaligus MERUGI — dan justru itu inti
+                   ceritanya. Menampilkan salah satu saja menghapus satu-satunya
+                   temuan yang membuat pedagang berhenti dan membaca.
 
-              {/* null = belum diketahui. Bukan nol, dan bukan untung penuh. */}
-              {p.margin_per_unit == null ? (
-                <span className="text-[17px] font-medium text-[#6B635A]">—</span>
-              ) : (
-                <span
-                  className={`font-logo text-[24px] font-extrabold leading-none ${
-                    p.merugi ? 'text-[#B0111F]' : 'text-[#1E6F4C]'
-                  }`}
-                >
-                  {p.merugi ? '−' : '+'} {formatRupiah(Math.abs(p.margin_per_unit))}
-                </span>
-              )}
-            </div>
-          </button>
-        ))}
-      </div>
+                   TERLARIS kuning HANYA kalau produknya juga merugi: kuning di
+                   aplikasi ini berarti "perlu dicek manusia", dan terlaris-tapi-
+                   rugi persis itu. Terlaris yang untung bukan peringatan, jadi
+                   pilnya netral. */
+                kanan={
+                  p.merugi || p.terlaris ? (
+                    <>
+                      {p.merugi && <Lencana nada="rugi">MERUGI</Lencana>}
+                      {p.terlaris && (
+                        <Lencana nada={p.merugi ? 'tanda' : 'netral'}>TERLARIS</Lencana>
+                      )}
+                    </>
+                  ) : undefined
+                }
+                onClick={() => nav(`/produk/${p.id}`)}
+              />
+            ))}
+          </KartuDaftar>
+        </div>
+      )}
 
       <NavBawah />
     </Layar>

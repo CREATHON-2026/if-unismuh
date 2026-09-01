@@ -4,15 +4,26 @@
 /*
  * Bahasa rupa lapakAi.
  *
- * Palet krem hangat, bukan putih-biru. Alasannya bukan selera: layar ini dibuka
- * di warung, sering di bawah cahaya terang, oleh mata yang tidak muda lagi.
- * Latar krem memantulkan lebih sedikit cahaya daripada putih murni, dan tinta
- * kehitaman yang kehangatan lebih nyaman dibaca berlama-lama daripada hitam
- * pekat di atas putih.
+ * Palet netral: kanvas abu-abu sangat muda, kartu putih, satu kartu gelap untuk
+ * angka terpenting. Sebelumnya palet ini krem hangat dengan alasan kenyamanan
+ * mata di bawah cahaya terang warung. Alasan itu tidak salah, tapi kalah oleh
+ * satu hal yang lebih menentukan: pemisahan. Di atas krem, kartu krem-muda
+ * nyaris tidak terbaca sebagai kartu — semuanya meleleh jadi satu bidang. Di
+ * atas abu netral, kartu putih berdiri sendiri tanpa perlu bayangan tebal, dan
+ * angkanya lebih dulu tertangkap mata daripada kotaknya.
  *
- * Dua warna dipakai untuk arti, bukan hiasan, dan tidak pernah untuk hal lain:
- *   hijau = untung        merah = rugi
- * Kalau suatu saat ada tombol hijau yang bukan soal untung, artinya rusak.
+ * Kenyamanan mata tidak dibuang, dipindah tempatnya: ukuran huruf dan target
+ * sentuh di sini lebih BESAR daripada dashboard kebanyakan, bukan lebih kecil.
+ * Yang diambil dari rujukan adalah sistem rupanya, bukan kepadatannya.
+ *
+ * Warna dipakai untuk arti, bukan hiasan:
+ *   hijau  = untung. Hanya itu. Tidak untuk "aman", "berhasil", atau hiasan —
+ *            kalau ada hijau yang bukan soal uang masuk, artinya rusak.
+ *   merah  = rugi, galat, dan tindakan yang menghapus. Satu register rasa:
+ *            "ini salah / ini hilang".
+ *   kuning = perlu diperiksa manusia. Bukan rugi, bukan selesai — menunggu
+ *            mata Anda. Tidak pernah untuk "sudah lewat" atau hiasan.
+ * Sisanya netral. Layar yang sepi warna berarti tidak ada yang perlu dicemaskan.
  */
 @theme {
   --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
@@ -22,36 +33,52 @@
   --font-logo: "Geist", ui-sans-serif, system-ui, sans-serif;
 
   /* Tinta */
-  --color-tinta: #1A1714;
-  --color-sedang: #4A443D;
-  --color-redup: #6B635A;
+  --color-tinta: #0F172A;
+  --color-sedang: #475569;
+  --color-redup: #8A94A6;
 
   /* Kertas */
-  --color-krem: #F5F1EA;
-  --color-pasir: #E7E0D5;
+  --color-kanvas: #F1F3F5;
+  --color-kartu: #FFFFFF;
+  --color-garis: #E4E8EC;
+  --color-garis-tua: #CBD3DC;
+
+  /* Kartu gelap — untuk SATU angka terpenting per layar, tidak lebih.
+     Kalau ada dua kartu gelap, tidak ada lagi yang "paling penting". */
+  --color-hero: #1B2536;
+  --color-hero-muda: #2A3648;
 
   /* Untung */
   --color-untung: #1E6F4C;
   --color-untung-tua: #145037;
-  --color-untung-muda: #EAF1ED;
-  --color-untung-pucat: #F2F7F4;
+  --color-untung-muda: #E7F4EE;
+  --color-untung-pucat: #F1F9F5;
+  /* Hijau yang cukup terang untuk terbaca di atas kartu gelap */
+  --color-untung-terang: #4ADE80;
 
   /* Rugi */
   --color-rugi: #B0111F;
   --color-rugi-tua: #7A2A2F;
-  --color-rugi-muda: #FDEDEE;
+  --color-rugi-muda: #FDECEE;
+  /* Merah yang cukup terang untuk terbaca di atas kartu gelap */
+  --color-rugi-terang: #FCA5A5;
 
   /* Perlu diperhatikan, tapi bukan kesalahan */
-  --color-tanda: #FBF3E2;
+  --color-tanda: #FEF6E4;
+  --color-tanda-tinta: #7C5A15;
+
+  /* Sudut. Kartu besar tumpul, kontrol kecil lebih rapat. */
+  --radius-kartu: 20px;
+  --radius-kontrol: 14px;
 }
 
 html {
-  background: var(--color-krem);
+  background: var(--color-kanvas);
 }
 
 body {
   margin: 0;
-  background: var(--color-krem);
+  background: var(--color-kanvas);
   color: var(--color-tinta);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -79,4 +106,16 @@ body {
   font-weight: 600;
   letter-spacing: 0.08em;
   color: var(--color-redup);
+}
+
+/*
+ * Kartu. Garis tipis, bukan bayangan tebal. Di ponsel murah yang kontras
+ * layarnya rendah dan sering dipakai di bawah matahari, bayangan halus hilang
+ * sama sekali — garis tidak. Ditulis sekali di sini supaya dua puluh layar
+ * tidak masing-masing menebak radius dan warna garisnya sendiri.
+ */
+.kartu {
+  background: var(--color-kartu);
+  border: 1px solid var(--color-garis);
+  border-radius: var(--radius-kartu);
 }

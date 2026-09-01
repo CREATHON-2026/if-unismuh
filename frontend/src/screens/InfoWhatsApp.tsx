@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { CircleCheck, MessageCircle } from 'lucide-react';
 import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
 
@@ -13,61 +14,34 @@ export function InfoWhatsApp() {
       kembali={() => nav(-1)}
       aksi={
         <Tombol onClick={() => nav('/onboarding/usaha')}>
-          <span className="flex items-center justify-center gap-3">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <circle cx="12" cy="12" r="9" />
-              <path d="M8.5 12.5l2.5 2.5 4.5-5" />
-            </svg>
+          <span className="flex items-center justify-center gap-2.5">
+            <CircleCheck size={22} strokeWidth={1.9} aria-hidden="true" />
             Mengerti, Lanjut
           </span>
         </Tombol>
       }
     >
-      <h1 className="text-center font-logo text-[28px] font-bold text-[#1A1714]">
+      <h1 className="text-center tracking-[-0.02em] text-[28px] font-bold text-tinta">
         Pesanan Lewat WhatsApp?
       </h1>
-      <p className="text-center text-[17px] leading-relaxed text-[#6B635A]">
+      <p className="text-center text-[17px] leading-relaxed text-sedang">
         lapakAi membaca chat pesanan yang Anda tempel — tanpa perlu menghubungkan akun WhatsApp
         Anda.
       </p>
 
-      <div className="mt-4 rounded-[28px] bg-white p-8">
+      <div className="kartu mt-4 p-8">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-[#EAF1ED]">
-            <svg
-              width="42"
-              height="42"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#1E6F4C"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M21 12a9 9 0 1 1-4.6-7.9L21 3l-1.1 4.4A9 9 0 0 1 21 12Z" />
-              <path d="M8.5 10.5h7" />
-              <path d="M8.5 14h4.5" />
-            </svg>
+          <div className="flex h-24 w-24 items-center justify-center rounded-full bg-kanvas text-sedang">
+            <MessageCircle size={42} strokeWidth={1.8} aria-hidden="true" />
           </div>
-          <p className="text-[17px] leading-relaxed text-[#4A443D]">
+          <p className="text-[17px] leading-relaxed text-sedang">
             Salin chat pembeli, tempel di <span className="font-bold">Pesanan Masuk</span> —
             lapakAi mengecek untung dan stoknya, lalu menyiapkan balasan untuk Anda salin.
           </p>
         </div>
       </div>
 
-      <div className="mt-5 rounded-[24px] bg-[#E8E3DA] p-6 text-[17px] leading-relaxed text-[#1A1714]">
+      <div className="mt-5 rounded-kartu bg-garis p-6 text-[16.5px] leading-relaxed text-tinta">
         <p>1. Buka WhatsApp di HP Anda</p>
         <p className="mt-3">
           2. Tekan lama pesan pembeli, lalu ketuk <span className="font-bold">Salin</span>
@@ -80,7 +54,7 @@ export function InfoWhatsApp() {
         </p>
       </div>
 
-      <p className="mt-5 text-center text-[15px] text-[#6B635A]">
+      <p className="mt-5 text-center text-[15px] text-sedang">
         lapakAi tidak pernah mengirim pesan ke pembeli Anda — balasan selalu Anda kirim sendiri.
       </p>
     </Layar>

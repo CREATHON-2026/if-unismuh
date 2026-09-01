@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
 import { KepalaResep } from '../components/KepalaResep';
@@ -20,30 +21,31 @@ export function ResepHasil() {
     <Layar tanpaLogo atas>
       <KepalaResep langkah={2} label="Hasil" />
 
-      <div className="mt-6 rounded-[28px] bg-white p-6">
-        <h1 className="font-logo text-[26px] font-bold text-[#1A1714]">
+      <div className="kartu mt-6 p-6">
+        <h1 className="text-[25px] font-bold leading-snug tracking-[-0.02em] text-tinta">
           Sekali bikin jadi berapa bungkus?
         </h1>
-        <p className="mt-2 text-[17px] text-[#4A443D]">Hasil sekali produksi dari resep ini.</p>
+        <p className="mt-2 text-[16px] leading-relaxed text-sedang">
+          Hasil sekali produksi dari resep ini.
+        </p>
 
         <input
           type="tel"
           inputMode="numeric"
           autoFocus
+          aria-label="Jumlah hasil sekali bikin"
           placeholder="Contoh: 40"
           value={jumlah}
           onChange={(e) => setJumlah(e.target.value.replace(/\D/g, ''))}
-          className="mt-5 h-[72px] w-full rounded-2xl border border-[#E8E3DA] bg-[#F5F1EA] px-4 text-lg outline-none focus:border-[#1A1714] placeholder:text-[#6B635A]"
+          className="angka mt-5 h-[72px] w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-[26px] font-bold text-tinta outline-none transition placeholder:text-[19px] placeholder:font-normal placeholder:text-redup focus:border-hero"
         />
       </div>
 
       <div className="mt-8">
         <Tombol varian="gelap" disabled={!valid} onClick={lanjut}>
-          <span className="flex items-center justify-center gap-3">
+          <span className="flex items-center justify-center gap-2.5">
             Selanjutnya
-            <span aria-hidden className="text-2xl leading-none">
-              →
-            </span>
+            <ArrowRight size={20} strokeWidth={2.2} aria-hidden="true" />
           </span>
         </Tombol>
       </div>
