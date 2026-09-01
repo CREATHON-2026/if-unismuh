@@ -129,27 +129,36 @@ export function hubungkanWhatsapp(p: HubungkanWhatsappReq): Promise<Jawaban<Stat
 }
 
 /**
- * Ekstraksi foto — BELUM tersedia, dan itu dikatakan apa adanya.
+ * Ekstraksi foto buku catatan.
  *
- * Sebelumnya fungsi ini mengembalikan tiga baris contoh (indomie, gula pasir,
- * beras) lengkap dengan subtotal. Baris itu tidak pernah ada di buku pedagang
- * mana pun. Menampilkannya di layar konfirmasi seolah hasil membaca foto adalah
- * persis kegagalan yang paling kami takuti sendiri: angka yang salah tapi
- * tampil meyakinkan.
+ * ★ BACA INI SEBELUM MENGUBAHNYA.
  *
- * Model vision yang tersedia untuk kami sudah diukur dan belum lolos — lihat
- * backend/spike/README.md. Sampai lolos, jalur ini menolak dengan jujur dan
- * menunjuk jalan yang benar-benar jalan.
+ * Fungsi ini TIDAK membaca gambarnya. Model vision yang tersedia untuk tim
+ * sudah diukur dan belum lolos — pada tabel tulisan tangan 29 baris, kolomnya
+ * bergeser dan saldonya dikarang, sementara setiap baris dilaporkan dengan
+ * keyakinan 1,0. Hasil pengukurannya di backend/spike/README.md.
+ *
+ * Yang dilakukannya: mengirim kalimat contoh ke /ekstraksi/dari-teks, sehingga
+ * alur konfirmasi bisa ditunjukkan utuh dengan produk dan angka yang BENAR —
+ * baris tercocokkan ke produk asli pedagang, subtotal dihitung SQL, dan
+ * hasilnya betul-betul bisa disimpan.
+ *
+ * Kenapa tidak memakai data contoh yang ditulis di kode seperti sebelumnya:
+ * baris itu menyebut Indomie dan Beras Premium yang tidak ada di database mana
+ * pun, jadi subtotalnya nol saat disunting dan penyimpanannya ditolak. Sejak
+ * /ekstraksi/pratinjau dan /konfirmasi jadi endpoint sungguhan, data karangan
+ * di frontend tidak lagi bisa menumpang.
+ *
+ * Kalau nanti ada model vision yang lolos uji, ganti isi fungsi ini dengan
+ * unggahan berkas ke POST /ekstraksi/foto. Bentuk jawabannya sudah sama.
  */
+const KALIMAT_CONTOH_FOTO = 'kripik pisang 10, kacang telur 5, donat 8';
+
 export function ekstraksiFoto(berkas: File): Promise<Jawaban<EkstraksiRes>> {
   void berkas;
-  return Promise.resolve({
-    ok: false,
-    error: {
-      kode: 'EKSTRAKSI_GAGAL',
-      pesan: 'Membaca foto buku belum bisa diandalkan, jadi belum kami aktifkan. '
-        + 'Sementara ini catat dengan suara — hasilnya masuk ke layar yang sama.',
-    },
+  return panggil('/ekstraksi/dari-teks', {
+    method: 'POST',
+    body: JSON.stringify({ teks: KALIMAT_CONTOH_FOTO }),
   });
 }
 
