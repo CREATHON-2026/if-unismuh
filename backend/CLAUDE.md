@@ -57,6 +57,32 @@ Saat `ekstraksi.status` jadi `dikonfirmasi`: hapus berkasnya, kosongkan `path_be
 
 `GEMINI_API_KEY` tidak pernah masuk kode, tidak pernah dikirim ke frontend. Semua panggilan Gemini terjadi di sini.
 
+## Menjalankan
+
+```bash
+npm install
+npm run dev            # tsx watch, port 3000
+node scripts/uji-alur.mjs   # uji asap: login -> onboarding -> temuan pertama
+```
+
+Tidak perlu memasang PostgreSQL dan tidak perlu Docker. Kalau `DATABASE_URL`
+kosong, backend memakai **PGlite** — PostgreSQL asli yang dikompilasi ke WASM
+dan jalan di dalam proses Node. Datanya di `backend/db/data/` (ter-gitignore).
+
+Mau pakai PostgreSQL sungguhan? Isi `DATABASE_URL` di `.env` akar repo. Tidak
+ada satu baris query pun yang berubah.
+
+### Kalau server gagal start dengan `RuntimeError: Aborted()`
+
+Direktori data PGlite rusak — biasanya karena prosesnya dimatikan paksa
+(Task Manager, `Stop-Process -Force`) saat sedang menulis. Perbaikannya:
+
+```bash
+rm -rf backend/db/data     # akan dibuat ulang beserta skemanya
+```
+
+Hentikan server dengan Ctrl+C, jangan dimatikan paksa.
+
 ## Uang sebagai integer
 
 Rupiah disimpan dan dihitung sebagai **integer**, bukan float. `20000`, bukan `20000.00`.
