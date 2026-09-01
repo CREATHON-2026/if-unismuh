@@ -168,16 +168,31 @@ Daftar transaksi beserta nama produknya. Bawaannya bulan berjalan.
 Diurutkan dari margin terendah — produk merugi muncul lebih dulu (fitur 6).
 
 ### `GET /produk/:id`
-Tambahan dari daftar: rincian bahan, riwayat penjualan, dan saran harga.
+Tambahan dari daftar: rincian bahan dan total terjual.
 
 ```json
 { "ok": true, "data": {
     "id": 1, "nama": "Kripik Pisang",
     "harga_jual": 20000, "modal_per_unit": 21200, "margin_per_unit": -1200,
-    "bahan": [ { "nama": "pisang", "biaya_per_unit": 7500 } ],
-    "saran_harga": { "harga_disarankan": 26500, "alasan": "margin 20% di atas modal" }
+    "merugi": true, "terlaris": false,
+    "hasil_per_batch": 40,
+    "total_terjual": 10,
+    "bahan": [
+      { "nama": "pisang",  "satuan": "kg",     "jumlah_pakai": 20, "biaya_per_unit": 7500 },
+      { "nama": "gas",     "satuan": "tabung", "jumlah_pakai": 1,  "biaya_per_unit": 5000 },
+      { "nama": "minyak",  "satuan": "liter",  "jumlah_pakai": 10, "biaya_per_unit": 4500 },
+      { "nama": "gula",    "satuan": "kg",     "jumlah_pakai": 10, "biaya_per_unit": 3750 },
+      { "nama": "kemasan", "satuan": "buah",   "jumlah_pakai": 40, "biaya_per_unit": 450 }
+    ],
+    "saran_harga": null
 } }
 ```
+
+**`biaya_per_unit` semua bahan dijamin berjumlah tepat sama dengan `modal_per_unit`** — di contoh ini 7.500 + 5.000 + 4.500 + 3.750 + 450 = 21.200. Itu diuji, bukan kebetulan. Rincian yang tidak menjumlah ke totalnya sendiri membuat pedagang berhenti percaya pada semua angka lain di aplikasi.
+
+`saran_harga` masih `null` — fitur 8 belum dibangun. Sembunyikan bagiannya selama masih null, jangan tampilkan angka karangan.
+
+`terlaris` dihitung sepanjang waktu, bukan per periode: sifatnya melekat pada produknya, dan angka yang berubah mengikuti rentang tanggal justru membingungkan.
 
 ## Ekstraksi
 
