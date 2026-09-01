@@ -72,18 +72,33 @@ Simpan sebagai test set. Setiap perubahan prompt harus diuji ulang terhadap set 
 
 ## Tahap 2 — Catatan suara → transaksi
 
-> **BELUM ADA JALAN, DAN JANGAN DIANGGAP SUDAH.** Rancangan awal mengandalkan
-> audio native Gemini. Setelah pindah ke Ollama kampus, **tidak ada model audio
-> sama sekali** di server itu — tahap ini tidak bisa dikerjakan sebagaimana
-> ditulis di bawah.
->
-> Dua pilihan yang tersisa, belum diputuskan:
-> 1. **Web Speech API di browser** — gratis, mendukung `id-ID`, transkripsi
->    terjadi di perangkat pengguna. Teksnya lalu masuk ke Tahap 3 seperti
->    teks ketikan biasa. Butuh Chrome
-> 2. **Fitur 2 dicoret** — ketik manual dan foto sudah menutupi kebutuhannya
->
-> Bagian di bawah ini disimpan sebagai rancangan untuk pilihan pertama.
+**Transkripsi terjadi di browser, bukan di backend.** Ollama kampus tidak punya
+model audio sama sekali, dan Ollama memang bukan runtime Whisper — diverifikasi
+langsung: endpoint `/v1/audio/transcriptions` ada, tapi `model 'whisper' not found`.
+
+Jalurnya jadi dua bagian yang terpisah bersih:
+
+```
+Browser (Chrome/Edge)                   Backend
+─────────────────────                   ───────
+ mikrofon
+   ↓ Web Speech API, lang = 'id-ID'
+ "laku 10 kripik pisang"  ──teks──▶  POST /transaksi/dari-teks
+                                          ↓ gemma4 membaca
+                                       usulan baris
+                                          ↓ pg_trgm mencocokkan nama
+                                     layar konfirmasi ──▶ POST /transaksi
+```
+
+**Backend tidak pernah menyentuh audio.** Ia hanya menerima teks, sama seperti
+ketikan bebas — makanya endpoint-nya bernama `dari-teks`, bukan `dari-suara`.
+
+Gratis, tanpa kunci API, tanpa layanan luar. Chrome/Edge/Opera penuh, Safari
+14.1+ dengan awalan, **Firefox tidak** — kolom ketik bebas jadi jalan keluarnya.
+
+**Dan hasilnya tidak pernah langsung tersimpan.** Ini ekstraksi AI, jadi aturan
+#2 berlaku: `/transaksi/dari-teks` hanya mengusulkan; yang menyimpan tetap
+`POST /transaksi` setelah manusia mengonfirmasi.
 
 ### Yang perlu diperhatikan
 - Bahasa Indonesia bercampur bahasa daerah dan istilah pasar. Sebutkan konteks ini di prompt.

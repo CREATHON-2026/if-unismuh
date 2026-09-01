@@ -155,6 +155,52 @@ Fitur 3 — ketik manual. **Banyak baris sekaligus**, bentuknya sama dengan laya
 ### `GET /transaksi?dari=&sampai=`
 Daftar transaksi beserta nama produknya. Bawaannya bulan berjalan.
 
+### `POST /transaksi/dari-teks`
+Fitur 2 — kalimat bebas jadi **usulan** transaksi. Melayani hasil transkripsi suara maupun ketikan bebas; endpoint ini tidak peduli teksnya datang dari mana.
+
+```json
+// permintaan — tanggal boleh dikosongkan
+{ "teks": "hari ini laku 10 kripik pisang sama 5 kacang telur" }
+
+// jawaban — USULAN, BELUM TERSIMPAN
+{ "ok": true, "data": {
+    "tanggal": "2026-09-01",
+    "baris": [
+      { "nama_mentah": "kripik pisang", "produk_id": 1, "nama_produk": "Kripik Pisang",
+        "jumlah": 10, "harga_satuan": null, "perlu_dicek": false, "kandidat": [] },
+      { "nama_mentah": "kacang telur", "produk_id": null, "nama_produk": null,
+        "jumlah": 5, "harga_satuan": null, "perlu_dicek": true,
+        "kandidat": [ { "id": 2, "nama": "Kacang Telor", "skor": 0.72 } ] }
+    ]
+} }
+```
+
+**★ Endpoint ini TIDAK menyimpan apa pun.** Ini hasil ekstraksi AI, jadi [aturan #2](../CLAUDE.md) berlaku: harus lewat layar konfirmasi manusia dulu. Tampilkan usulannya, tandai baris `perlu_dicek`, biarkan pengguna membetulkan, lalu kirim hasilnya ke `POST /transaksi`.
+
+Bentuk `baris` sengaja dibuat cocok dengan yang diterima `POST /transaksi`, sehingga **komponen baris yang sama bisa dipakai untuk suara, foto, dan ketik manual.**
+
+| Field | Catatan |
+|---|---|
+| `nama_mentah` | Persis seperti diucapkan, sebelum dicocokkan. Tampilkan ini, bukan hanya nama produknya |
+| `perlu_dicek` | `true` → jangan simpan tanpa pengguna memastikan. Tampilkan `kandidat` |
+| `harga_satuan` | `null` = tidak disebut → `POST /transaksi` akan memakai harga jual tersimpan |
+| `jumlah` | Boleh `null` kalau tidak disebut. Minta pengguna mengisinya |
+
+#### Sisi frontend: transkripsi suara
+
+Transkripsi terjadi **di browser** dengan Web Speech API — gratis, tanpa kunci API, tanpa endpoint backend.
+
+```js
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const r = new SR();
+r.lang = 'id-ID';        // wajib — tanpa ini bahasa Inggris yang dipakai
+r.continuous = true;      // kalimat panjang tidak terpotong
+r.interimResults = true;  // pengguna melihat kata muncul saat bicara
+r.onresult = (e) => { /* kumpulkan transcript, kirim ke /transaksi/dari-teks */ };
+```
+
+Chrome, Edge, dan Opera mendukung penuh; Safari 14.1+ dengan awalan `webkit`. **Firefox tidak** — sediakan kolom ketik bebas sebagai jalan keluar, dan itu memang sudah jadi masukan endpoint yang sama.
+
 ## Produk
 
 ### `GET /produk`

@@ -296,3 +296,39 @@ export interface Transaksi {
   tanggal: string;
   sumber: SumberTransaksi;
 }
+
+// ---------------------------------------------------------------------------
+// Kalimat bebas → usulan transaksi (fitur 2, dan ketikan bebas)
+// ---------------------------------------------------------------------------
+
+export interface DariTeksReq {
+  /** Kalimat apa adanya, mis. hasil transkripsi suara di browser */
+  teks: string;
+  /** YYYY-MM-DD. Kalau kosong, dipakai hari ini */
+  tanggal?: string;
+}
+
+export interface BarisUsulan {
+  /** Nama PERSIS seperti diucapkan/ditulis, sebelum dicocokkan */
+  nama_mentah: string;
+  /** null kalau belum cocok meyakinkan — pengguna yang memutuskan */
+  produk_id: number | null;
+  nama_produk: string | null;
+  jumlah: number | null;
+  harga_satuan: number | null;
+  /** true -> tampilkan menonjol di layar konfirmasi, minta dipastikan */
+  perlu_dicek: boolean;
+  kandidat: KandidatProduk[];
+}
+
+/**
+ * ★ USULAN, BUKAN DATA TERSIMPAN.
+ *
+ * Endpoint `/transaksi/dari-teks` tidak menyimpan apa pun — aturan #2. Setelah
+ * pengguna membetulkan baris yang ditandai, frontend mengirim hasilnya ke
+ * `POST /transaksi` yang bentuknya memang sengaja dibuat cocok.
+ */
+export interface UsulanTransaksi {
+  tanggal: string;
+  baris: BarisUsulan[];
+}
