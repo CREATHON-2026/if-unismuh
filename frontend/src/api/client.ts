@@ -20,6 +20,14 @@ import type {
   PratinjauEkstraksiRes,
   BarisKonfirmasi,
   KonfirmasiRes,
+  Beranda,
+  RingkasanProduk,
+  DetailProduk,
+  AnalisisPesanan,
+  BalasanReq,
+  BalasanRes,
+  UsulanTransaksi,
+  CatatTransaksiReq,
 } from '@shared/types';
 import { ambilToken } from './sesi';
 
@@ -67,6 +75,44 @@ export function simpanUsaha(p: SimpanUsahaReq): Promise<Jawaban<Pengguna>> {
 
 export function simpanResep(p: SimpanResepReq): Promise<Jawaban<TemuanPertama>> {
   return panggil('/onboarding/resep', { method: 'POST', body: JSON.stringify(p) });
+}
+
+// ---------------------------------------------------------------------------
+// Layar dalam aplikasi — semuanya endpoint asli, tidak ada mock di bawah sini.
+//
+// Semua angka finansial datang SUDAH JADI dari SQL. Tidak ada satu pun
+// perhitungan di berkas ini maupun di layar yang memakainya (aturan #7).
+// ---------------------------------------------------------------------------
+
+export function ambilBeranda(): Promise<Jawaban<Beranda>> {
+  return panggil('/beranda');
+}
+
+export function ambilDaftarProduk(): Promise<Jawaban<RingkasanProduk[]>> {
+  return panggil('/produk');
+}
+
+export function ambilDetailProduk(id: number): Promise<Jawaban<DetailProduk>> {
+  return panggil(`/produk/${id}`);
+}
+
+/** Fitur 9 — teks chat pembeli yang ditempel pedagang. */
+export function analisisPesanan(teks: string): Promise<Jawaban<AnalisisPesanan>> {
+  return panggil('/pesanan/analisis', { method: 'POST', body: JSON.stringify({ teks }) });
+}
+
+/** Balasan siap SALIN. Sistem tidak pernah mengirimnya — aturan #4. */
+export function buatBalasan(p: BalasanReq): Promise<Jawaban<BalasanRes>> {
+  return panggil('/pesanan/balasan', { method: 'POST', body: JSON.stringify(p) });
+}
+
+/** Fitur 2 — kalimat bebas jadi USULAN. Tidak menyimpan apa pun (aturan #2). */
+export function usulanDariTeks(teks: string): Promise<Jawaban<UsulanTransaksi>> {
+  return panggil('/transaksi/dari-teks', { method: 'POST', body: JSON.stringify({ teks }) });
+}
+
+export function catatTransaksi(p: CatatTransaksiReq): Promise<Jawaban<{ tersimpan: number }>> {
+  return panggil('/transaksi', { method: 'POST', body: JSON.stringify(p) });
 }
 
 const jeda = (ms = 400) => new Promise((r) => setTimeout(r, ms));

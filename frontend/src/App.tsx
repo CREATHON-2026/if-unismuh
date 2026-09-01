@@ -15,6 +15,10 @@ import { ResepHarga } from './screens/ResepHarga';
 import { TemuanPertama } from './screens/TemuanPertama';
 import { KonfirmasiEkstraksi } from './screens/KonfirmasiEkstraksi';
 import { Beranda } from './screens/Beranda';
+import { DaftarProduk } from './screens/DaftarProduk';
+import { DetailProduk } from './screens/DetailProduk';
+import { PesananMasuk } from './screens/PesananMasuk';
+import { CatatSuara } from './screens/CatatSuara';
 
 export default function App() {
   const nav = useNavigate();
@@ -47,6 +51,10 @@ export default function App() {
       <Route path="/temuan" element={<TemuanPertama />} />
       <Route path="/konfirmasi" element={<KonfirmasiEkstraksi />} />
       <Route path="/beranda" element={<Beranda />} />
+      <Route path="/produk" element={<DaftarProduk />} />
+      <Route path="/produk/:id" element={<DetailProduk />} />
+      <Route path="/catat" element={<CatatSuara />} />
+      <Route path="/pesanan" element={<PesananMasuk />} />
     </Routes>
   );
 }
