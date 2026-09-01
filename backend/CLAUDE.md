@@ -116,16 +116,29 @@ dan jalan di dalam proses Node. Datanya di `backend/db/data/` (ter-gitignore).
 Mau pakai PostgreSQL sungguhan? Isi `DATABASE_URL` di `.env` akar repo. Tidak
 ada satu baris query pun yang berubah.
 
+### Hentikan dengan Ctrl+C, jangan dimatikan paksa
+
+Server menutup database dengan rapi saat menerima SIGINT/SIGTERM. Ctrl+C aman.
+
+**Yang tidak aman: `Stop-Process -Force`, Task Manager, atau `kill -9`.** SIGKILL
+tidak bisa ditangkap siapa pun, jadi PGlite tidak sempat menutup berkasnya dan
+direktori datanya rusak.
+
 ### Kalau server gagal start dengan `RuntimeError: Aborted()`
 
-Direktori data PGlite rusak — biasanya karena prosesnya dimatikan paksa
-(Task Manager, `Stop-Process -Force`) saat sedang menulis. Perbaikannya:
+Itu gejalanya. Yang bisa dilakukan hanya menghapus datanya:
 
 ```bash
-rm -rf backend/db/data     # akan dibuat ulang beserta skemanya
+rm -rf backend/db/data     # dibuat ulang beserta skemanya saat start
 ```
 
-Hentikan server dengan Ctrl+C, jangan dimatikan paksa.
+Sebelum menghapus, pastikan dulu **tidak ada proses lain yang masih memegangnya** —
+PGlite satu-proses, dan dua server yang menunjuk direktori data yang sama juga
+menghasilkan galat yang sama persis:
+
+```powershell
+(Get-NetTCPConnection -LocalPort 3000 -State Listen).OwningProcess
+```
 
 ## Uang sebagai integer
 

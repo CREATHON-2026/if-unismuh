@@ -4,7 +4,7 @@ import { PORT, MODE_DB, MODE_DEMO, periksaEnv } from './config/env.ts';
 
 import express from 'express';
 import cors from 'cors';
-import { siapkanDb, satu } from './db/index.ts';
+import { siapkanDb, satu, tutupDb } from './db/index.ts';
 import { kirim, jalur } from './lib/http.ts';
 import { tangkapGalat } from './middleware/galat.ts';
 import { rutAuth } from './modules/auth/auth.routes.ts';
@@ -43,10 +43,42 @@ export function buatApp() {
 periksaEnv();
 await siapkanDb();
 
-buatApp().listen(PORT, () => {
+const server = buatApp().listen(PORT, () => {
   console.log(`lapakAi backend jalan di http://localhost:${PORT}`);
   console.log(`Database: ${MODE_DB}${MODE_DB === 'pglite' ? ' (tertanam, tanpa server)' : ''}`);
   if (MODE_DEMO) {
     console.log('MODE DEMO aktif — kode OTP selalu 123456, tidak ada SMS yang dikirim.');
   }
 });
+
+/**
+ * Penutupan rapi — bukan kemewahan, ini mencegah kerusakan data.
+ *
+ * PGlite menulis berkasnya sendiri. Proses yang berakhir tanpa menutupnya
+ * meninggalkan direktori data yang rusak: start berikutnya gagal dengan
+ * `RuntimeError: Aborted()`, dan satu-satunya pemulihan adalah menghapus
+ * SELURUH data pengguna. Selama pengembangan ini sudah terjadi dua kali
+ * sebelum penanganan ini dipasang.
+ *
+ * Tetap jangan matikan paksa lewat Task Manager — SIGKILL tidak bisa
+ * ditangkap siapa pun. Pakai Ctrl+C.
+ */
+let sedangTutup = false;
+async function berhentiRapi(sinyal: string): Promise<void> {
+  if (sedangTutup) return;      // Ctrl+C dua kali tidak boleh menutup dua kali
+  sedangTutup = true;
+  console.log(`\n${sinyal} diterima — menutup dengan rapi...`);
+  server.close();
+  try {
+    await tutupDb();
+    console.log('Database ditutup. Aman.');
+  } catch (err) {
+    console.error('Gagal menutup database:', err);
+    process.exitCode = 1;
+  }
+  process.exit(process.exitCode ?? 0);
+}
+
+for (const sinyal of ['SIGINT', 'SIGTERM'] as const) {
+  process.on(sinyal, () => void berhentiRapi(sinyal));
+}

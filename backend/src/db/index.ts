@@ -30,6 +30,21 @@ export interface Pelaksana {
 
 let db: Pelaksana;
 let jalankanTransaksi: <T>(fn: (c: Pelaksana) => Promise<T>) => Promise<T>;
+let tutup: (() => Promise<void>) | null = null;
+
+/**
+ * Tutup database dengan rapi.
+ *
+ * WAJIB dipanggil sebelum proses berakhir. PGlite menulis berkasnya sendiri,
+ * dan proses yang mati tanpa menutupnya meninggalkan direktori data yang rusak
+ * — gejalanya `RuntimeError: Aborted()` saat start berikutnya, dan satu-satunya
+ * pemulihan adalah menghapus seluruh data. Ini sudah terjadi dua kali selama
+ * pengembangan sebelum penutupan rapi dipasang.
+ */
+export async function tutupDb(): Promise<void> {
+  await tutup?.();
+  tutup = null;
+}
 
 export async function siapkanDb(): Promise<void> {
   if (MODE_DB === 'postgres') {
@@ -42,6 +57,7 @@ export async function siapkanDb(): Promise<void> {
 
     const pool = new pg.Pool({ connectionString: DATABASE_URL, max: 10 });
     db = pool;
+    tutup = () => pool.end();
     jalankanTransaksi = async (fn) => {
       const client = await pool.connect();
       try {
@@ -78,6 +94,7 @@ export async function siapkanDb(): Promise<void> {
 
   db = lite as unknown as Pelaksana;
   jalankanTransaksi = (fn) => lite.transaction((tx) => fn(tx as unknown as Pelaksana)) as any;
+  tutup = () => lite.close();
 }
 
 /** Jalankan query, kembalikan barisnya. */
