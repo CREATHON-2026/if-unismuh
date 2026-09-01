@@ -27,6 +27,7 @@ export type StatusWa = 'terputus' | 'menunggu_qr' | 'menyambung' | 'tersambung';
 let sock: any = null;
 let status: StatusWa = 'terputus';
 let qrTerakhir: string | null = null;
+let kodePairing: string | null = null;
 let pemilik: number | null = null;
 let alasanBerhenti: string | null = null;
 
@@ -80,7 +81,16 @@ async function tanganiPesan(m: any): Promise<void> {
   }
 }
 
-export async function hubungkanWhatsapp(userId: number): Promise<StatusWa> {
+/**
+ * @param nomorInternasional kalau diisi (mis. "6281244085616"), penautan pakai
+ *   PAIRING CODE: pengguna memasukkan 8 digit di HP-nya, tidak perlu memindai
+ *   QR dari terminal. Jauh lebih ramah untuk pengguna yang tidak terbiasa —
+ *   dan itu justru inti produk ini.
+ *   Kalau dikosongkan, dipakai cara QR seperti biasa.
+ */
+export async function hubungkanWhatsapp(
+  userId: number, nomorInternasional?: string,
+): Promise<StatusWa> {
   if (status === 'tersambung' && pemilik === userId) return status;
 
   const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } =
@@ -88,15 +98,36 @@ export async function hubungkanWhatsapp(userId: number): Promise<StatusWa> {
 
   pemilik = userId;
   alasanBerhenti = null;
+  kodePairing = null;
   status = 'menyambung';
 
   const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
   sock = makeWASocket({ auth: state });
+  const pakaiPairing = Boolean(nomorInternasional);
 
   sock.ev.on('creds.update', saveCreds);
 
+  // Pairing code hanya bisa diminta kalau perangkatnya belum terdaftar, dan
+  // socket butuh sesaat untuk siap sebelum permintaannya diterima.
+  if (pakaiPairing && !state.creds.registered) {
+    setTimeout(async () => {
+      try {
+        const kode = await sock.requestPairingCode(nomorInternasional!);
+        kodePairing = kode;
+        status = 'menunggu_qr';
+        console.log(`\n[wa] KODE PAIRING: ${kode}`);
+        console.log('[wa] masukkan di HP: WhatsApp > Perangkat Tertaut >');
+        console.log('[wa] Tautkan perangkat > Tautkan dengan nomor telepon\n');
+      } catch (err) {
+        alasanBerhenti = 'Gagal meminta kode pairing. Coba lagi, atau pakai cara QR.';
+        console.error('[wa] gagal meminta pairing code:',
+          err instanceof Error ? err.message : err);
+      }
+    }, 4000);
+  }
+
   sock.ev.on('connection.update', (u: any) => {
-    if (u.qr) {
+    if (u.qr && !pakaiPairing) {
       qrTerakhir = u.qr;
       status = 'menunggu_qr';
       console.log('\n[wa] pindai QR ini dari WhatsApp > Perangkat Tertaut:\n');
@@ -105,6 +136,7 @@ export async function hubungkanWhatsapp(userId: number): Promise<StatusWa> {
     if (u.connection === 'open') {
       status = 'tersambung';
       qrTerakhir = null;
+      kodePairing = null;
       console.log('[wa] tersambung — mode HANYA BACA, tidak akan pernah mengirim pesan');
     }
     if (u.connection === 'close') {
@@ -136,6 +168,8 @@ export function statusWhatsapp() {
     status,
     /** QR mentah untuk ditampilkan frontend nanti; null kalau tidak sedang menunggu */
     qr: qrTerakhir,
+    /** Kode 8 digit yang dimasukkan pengguna di HP-nya; null kalau memakai cara QR */
+    kode_pairing: kodePairing,
     hanya_baca: true as const,
     alasan: alasanBerhenti,
   };

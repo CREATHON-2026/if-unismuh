@@ -16,3 +16,14 @@ export function rapikanNomor(nomor: string): string {
 export function nomorValid(nomor: string): boolean {
   return /^0\d{8,13}$/.test(nomor);
 }
+
+/**
+ * "081244085616" -> "6281244085616"
+ *
+ * WhatsApp meminta nomor dalam format internasional tanpa tanda "+".
+ * Dipakai saat meminta pairing code.
+ */
+export function keInternasional(nomor: string): string {
+  const bersih = rapikanNomor(nomor);
+  return bersih.startsWith('0') ? '62' + bersih.slice(1) : bersih;
+}
