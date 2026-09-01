@@ -1,4 +1,4 @@
-import { mintaJson } from '../../lib/gemini.ts';
+import { mintaJson, kosongJadiNull, tanggalSah } from '../../lib/llm.ts';
 import type { JenisPesan } from '../../../../shared/types.ts';
 
 /**
@@ -74,7 +74,17 @@ ${teks}
 """`;
 }
 
-export function klasifikasiPesan(teks: string): Promise<HasilKlasifikasi> {
+export async function klasifikasiPesan(teks: string): Promise<HasilKlasifikasi> {
   const hariIni = new Date().toISOString().slice(0, 10);
-  return mintaJson<HasilKlasifikasi>(bangunPrompt(teks, hariIni), SKEMA);
+  const mentah = await mintaJson<HasilKlasifikasi>(bangunPrompt(teks, hariIni), SKEMA);
+
+  // Bersihkan bentuk keluaran SEBELUM apa pun menyentuh SQL.
+  //
+  // Model lokal mengisi field kosong dengan 0/"" dan menulis tanggal sebagai
+  // teks bebas ("hari sabtu"). Keduanya merusak: yang pertama membuat harga
+  // Rp 0 dipakai sebagai harga sungguhan, yang kedua menjatuhkan INSERT ke
+  // kolom DATE. Lihat lib/llm.ts.
+  const bersih = kosongJadiNull(mentah, ['nama_produk_mentah', 'jumlah', 'harga_diminta']);
+  bersih.tanggal_dibutuhkan = tanggalSah(bersih.tanggal_dibutuhkan);
+  return bersih;
 }

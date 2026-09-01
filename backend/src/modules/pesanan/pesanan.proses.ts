@@ -1,5 +1,5 @@
 import { rupiah } from '../../lib/rupiah.ts';
-import { geminiSiap } from '../../lib/gemini.ts';
+import { llmSiap } from '../../lib/llm.ts';
 import { GalatTampil } from '../../lib/http.ts';
 import { KODE_GALAT, type AnalisisPesanan } from '../../../../shared/types.ts';
 import { klasifikasiPesan } from './pesanan.klasifikasi.ts';
@@ -66,7 +66,7 @@ export async function prosesPesan(
   sumber: 'tempel' | 'whatsapp',
   pengirimSamar: string | null = null,
 ): Promise<AnalisisPesanan> {
-  if (!geminiSiap()) {
+  if (!llmSiap()) {
     throw new GalatTampil(
       KODE_GALAT.EKSTRAKSI_GAGAL,
       'Layanan pembaca pesan belum siap. Coba lagi sebentar lagi.', 503,
