@@ -26,6 +26,8 @@ import type {
   BalasanRes,
   UsulanTransaksi,
   CatatTransaksiReq,
+  StatusWhatsappRes,
+  HubungkanWhatsappReq,
 } from '@shared/types';
 import { ambilToken } from './sesi';
 
@@ -111,6 +113,19 @@ export function usulanDariTeks(teks: string): Promise<Jawaban<UsulanTransaksi>> 
 
 export function catatTransaksi(p: CatatTransaksiReq): Promise<Jawaban<{ tersimpan: number }>> {
   return panggil('/transaksi', { method: 'POST', body: JSON.stringify(p) });
+}
+
+/** Status sambungan WhatsApp. `hanya_baca` selalu true — aturan #4. */
+export function statusWhatsapp(): Promise<Jawaban<StatusWhatsappRes>> {
+  return panggil('/whatsapp/status');
+}
+
+/**
+ * Tautkan WhatsApp. Kosongkan nomor untuk QR, isi untuk kode pairing.
+ * Kodenya belum tentu langsung ada — frontend menjemputnya lewat statusWhatsapp().
+ */
+export function hubungkanWhatsapp(p: HubungkanWhatsappReq): Promise<Jawaban<StatusWhatsappRes>> {
+  return panggil('/whatsapp/hubungkan', { method: 'POST', body: JSON.stringify(p) });
 }
 
 /**

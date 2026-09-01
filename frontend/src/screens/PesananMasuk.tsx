@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { AnalisisPesanan, BalasanReq, BalasanRes } from '@shared/types';
 import { analisisPesanan, buatBalasan } from '../api/client';
@@ -32,6 +33,7 @@ const CONTOH =
   'bu saya mau pesan 20 bungkus kripik pisang buat hari sabtu, bisa 18rb ga bu?';
 
 export function PesananMasuk() {
+  const nav = useNavigate();
   const [teks, setTeks] = useState('');
   const [hasil, setHasil] = useState<AnalisisPesanan | null>(null);
   const [balasan, setBalasan] = useState<BalasanRes | null>(null);
@@ -84,6 +86,18 @@ export function PesananMasuk() {
       <p className="mt-1 text-[17px] leading-relaxed text-[#57534E]">
         Salin chat pembeli dari WhatsApp, tempel di sini.
       </p>
+
+      <button
+        type="button"
+        onClick={() => nav('/pesanan/whatsapp')}
+        className="mt-3 flex w-full items-center justify-between gap-3 rounded-2xl border-2 border-[#E4C7AC] bg-white px-4 py-4 text-left transition active:scale-[0.99]"
+      >
+        <span className="text-[15px] leading-relaxed text-[#44403C]">
+          Atau sambungkan WhatsApp supaya pesanan terbaca sendiri.{' '}
+          <span className="font-bold text-[#7C2D12]">Hanya membaca, tidak pernah mengirim.</span>
+        </span>
+        <span aria-hidden className="text-2xl leading-none text-[#A8500B]">→</span>
+      </button>
 
       <textarea
         value={teks}

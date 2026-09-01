@@ -463,3 +463,41 @@ export interface PratinjauEkstraksiRes {
   total_item: number;
   total_belanja: number;
 }
+
+// ---------------------------------------------------------------------------
+// WhatsApp (fitur 9, jalur opsional)
+// ---------------------------------------------------------------------------
+
+export type StatusWa = 'terputus' | 'menunggu_qr' | 'menyambung' | 'tersambung';
+
+/**
+ * ★ `hanya_baca` SELALU true, dan itu bukan pengaturan — itu kenyataan
+ * strukturnya. Modul WhatsApp di backend tidak mengekspor apa pun yang bisa
+ * mengirim; socket-nya privat. Lihat aturan #4 di CLAUDE.md.
+ *
+ * Menautkan WhatsApp sifatnya OPSIONAL. Kalau tidak pernah ditautkan, atau
+ * sesinya putus, Pesanan Masuk tetap berfungsi penuh lewat tempel manual.
+ */
+export interface StatusWhatsappRes {
+  status: StatusWa;
+  /** QR mentah; null kalau tidak sedang menunggu pemindaian */
+  qr: string | null;
+  /** Kode 8 digit yang dimasukkan pengguna di HP-nya; null kalau memakai QR */
+  kode_pairing: string | null;
+  hanya_baca: true;
+  /** Alasan sambungan berhenti, kalau ada. Siap ditampilkan ke pengguna */
+  alasan: string | null;
+}
+
+/**
+ * Kosongkan `nomor_hp` untuk memakai QR; isi untuk mendapat KODE PAIRING.
+ *
+ * Kode pairing jauh lebih ramah untuk pengguna 35–60 tahun: tidak perlu
+ * memindai apa pun, cukup mengetik 8 digit di HP sendiri.
+ *
+ * Kodenya tidak langsung ada — socket butuh beberapa detik. Panggil
+ * GET /whatsapp/status sesaat kemudian untuk mengambilnya.
+ */
+export interface HubungkanWhatsappReq {
+  nomor_hp?: string;
+}
