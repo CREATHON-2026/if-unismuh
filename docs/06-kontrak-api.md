@@ -304,7 +304,45 @@ Memulai sesi baca. **Opsional.** Kalau tidak pernah dipanggil atau sesinya putus
 } }
 ```
 
+```json
+// jawaban sesungguhnya
+{ "ok": true, "data": {
+    "teks": "Kak, terima kasih atas tawarannya. Untuk Kripik Pisang harga terbaik kami tetap Rp 20.000 per unit ya...",
+    "acuan": {
+      "nama": "Kripik Pisang", "modal_per_unit": 21200, "harga_jual": 20000,
+      "harga_diminta": 18000, "jumlah": 20,
+      "untung_pesanan": -64000, "merugi": true
+    }
+} }
+```
+
+`maksud`: `tawar_harga` · `terima` · `tolak` · `jawab_harga`
+
 LLM menyusun kalimatnya, tapi angka di dalamnya berasal dari SQL dan disodorkan sebagai fakta. Hasilnya **disalin pedagang sendiri** — sistem tidak mengirim apa pun.
+
+**`acuan` adalah angka SQL yang dipakai menyusun kalimat.** Disertakan supaya bisa dicocokkan: kalau angka di `teks` berbeda dari yang di `acuan`, berarti model mengarang — dan itu kegagalan, bukan sekadar kalimat yang kurang enak.
+
+Kalimatnya sengaja **tidak pernah menyebut modal, rugi, atau untung** kepada pembeli. Itu urusan dalam pedagang.
+
+### `GET /stok`
+```json
+{ "ok": true, "data": [
+    { "bahan_id": 1, "nama": "pisang", "satuan": "kg", "jumlah": 7, "diperbarui": "2026-09-01T..." },
+    { "bahan_id": 2, "nama": "minyak", "satuan": "liter", "jumlah": null, "diperbarui": null }
+] }
+```
+
+**`jumlah: null` berarti belum pernah dicatat — bukan habis.** Jangan tampilkan sebagai "stok 0"; itu mengaku tahu sesuatu yang tidak diketahui.
+
+### `POST /stok`
+```json
+// permintaan
+{ "baris": [ { "bahan_id": 1, "jumlah": 7 }, { "bahan_id": 2, "jumlah": 12.5 } ] }
+// jawaban
+{ "ok": true, "data": { "tersimpan": 2 } }
+```
+
+Semua baris masuk atau tidak sama sekali. Mencatat stok inilah yang menghidupkan peringatan *"Bahan hanya cukup untuk 14 dari 20 yang dipesan"* di Pesanan Masuk — sebelum ada stok, jawabannya selalu *"stok belum dicatat"*.
 
 ## Kode galat
 

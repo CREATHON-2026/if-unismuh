@@ -81,15 +81,15 @@ graphify install --project --platform claude
 
 Lalu **jangan commit perubahannya** kecuali tim sepakat — supaya tidak bolak-balik menimpa varian satu sama lain.
 
-## 5. Kunci API
+## 5. Konfigurasi lokal
 
 ```bash
 cp .env.example .env
 ```
 
-Isi `GEMINI_API_KEY` dengan kunci dari [Google AI Studio](https://aistudio.google.com/apikey).
+Tidak ada kunci API yang perlu diisi — LLM memakai Ollama kampus, dan nilai bawaannya sudah benar. Cukup isi `JWT_SECRET` dengan teks acak apa saja (minimal 16 karakter).
 
-`.env` sudah ada di `.gitignore`. **Jangan pernah commit kunci API.**
+`.env` sudah ada di `.gitignore`. Tetap jangan pernah commit berkas itu.
 
 ## Cara memakai graphify sehari-hari
 
@@ -120,7 +120,7 @@ AST saja, tanpa LLM, tanpa biaya.
 - [ ] `pip install graphifyy` selesai
 - [ ] `graphify hook install` sudah dijalankan
 - [ ] `graphify query "apa aturan commit di repo ini"` memberi jawaban
-- [ ] `.env` sudah dibuat dan `GEMINI_API_KEY` terisi
+- [ ] `.env` sudah dibuat dan `JWT_SECRET` terisi (tidak ada kunci API yang dibutuhkan)
 - [ ] Sudah membaca [CLAUDE.md](../CLAUDE.md) — terutama 8 aturan yang tidak boleh dilanggar
 
 ## Kalau ada yang tidak jalan
