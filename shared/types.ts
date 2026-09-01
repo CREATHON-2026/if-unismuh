@@ -147,6 +147,15 @@ export interface DetailProduk extends RingkasanProduk {
 export interface Beranda {
   omzet: number;
   untung_bersih: number;
+  /** false -> tampilkan ajakan mencatat, bukan angka nol */
+  ada_transaksi: boolean;
+  /**
+   * Penjualan yang untungnya belum bisa dihitung karena modal produknya tidak
+   * diketahui. Sudah masuk `omzet` (uang masuk selalu diketahui) tapi TIDAK
+   * masuk `untung_bersih`. Kalau > 0, beri tahu penggunanya.
+   */
+  baris_tanpa_modal: number;
+  /** Terisi meski belum ada transaksi — dihitung dari resep, bukan penjualan */
   jumlah_produk_merugi: number;
   produk_paling_merugi: { nama: string; margin_per_unit: number } | null;
 }
@@ -209,13 +218,25 @@ export interface AnalisisPesanan {
 
 export type SumberTransaksi = 'foto' | 'suara' | 'manual';
 
-export interface CatatTransaksiReq {
+export interface BarisTransaksi {
   produk_id: number;
   jumlah: number;
   /** Kalau tidak diisi, dipakai harga_jual produk yang tersimpan */
   harga_satuan?: number;
+}
+
+/**
+ * Banyak baris sekaligus — pedagang membuka buku di penghujung hari dan
+ * mencatat beberapa penjualan dalam satu layar. Bentuknya sama dengan layar
+ * konfirmasi foto, jadi komponen barisnya bisa dipakai untuk keduanya.
+ *
+ * Semua baris masuk dalam satu transaksi database: semua atau tidak sama
+ * sekali.
+ */
+export interface CatatTransaksiReq {
   /** YYYY-MM-DD. Kalau tidak diisi, dipakai hari ini */
   tanggal?: string;
+  baris: BarisTransaksi[];
 }
 
 export interface Transaksi {

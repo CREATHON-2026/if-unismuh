@@ -110,14 +110,50 @@ Frontend **tidak** menghitung `20000 - 21200`. Backend yang mengirim `margin_per
 ## Beranda
 
 ### `GET /beranda?dari=2026-08-01&sampai=2026-08-31`
+Tanpa parameter, bawaannya **bulan berjalan** — pemilih tanggal adalah friksi untuk pengguna 35–60 tahun.
+
 ```json
 { "ok": true, "data": {
     "omzet": 4200000,
     "untung_bersih": 380000,
+    "ada_transaksi": true,
+    "baris_tanpa_modal": 0,
     "jumlah_produk_merugi": 2,
     "produk_paling_merugi": { "nama": "Kripik Pisang", "margin_per_unit": -1200 }
 } }
 ```
+
+| Field | Catatan |
+|---|---|
+| `ada_transaksi` | `false` → tampilkan ajakan mencatat, **jangan** tampilkan angka nol sebagai hasil |
+| `jumlah_produk_merugi` · `produk_paling_merugi` | **Terisi meski `ada_transaksi` false.** Dihitung dari resep, bukan penjualan |
+| `baris_tanpa_modal` | Penjualan yang untungnya belum bisa dihitung. Sudah masuk `omzet`, **tidak** masuk `untung_bersih`. Kalau > 0, beri tahu penggunanya |
+
+**Beranda kosong tetap punya isi.** Setelah onboarding, pengguna mendarat di sini dengan nol transaksi — tapi temuan produknya sudah ada. Pimpin dengan "1 produk Anda merugi", jangan dengan Rp 0; momentum dari momen "RUGI Rp 1.200" tidak boleh putus.
+
+**Kenapa `omzet` dan `untung_bersih` bisa tidak sebanding.** Uang masuk selalu diketahui, jadi omzet menghitung semua penjualan. Untung hanya menghitung penjualan yang modal produknya diketahui. Selisihnya dilaporkan lewat `baris_tanpa_modal` — bukan disembunyikan dengan membuang barisnya dari omzet juga.
+
+### `POST /transaksi`
+Fitur 3 — ketik manual. **Banyak baris sekaligus**, bentuknya sama dengan layar konfirmasi foto supaya komponen barisnya bisa dipakai untuk keduanya.
+
+```json
+// permintaan — tanggal boleh dikosongkan (dipakai hari ini)
+{ "tanggal": "2026-09-01",
+  "baris": [
+    { "produk_id": 1, "jumlah": 10 },
+    { "produk_id": 2, "jumlah": 5, "harga_satuan": 15000 }
+  ] }
+
+// jawaban
+{ "ok": true, "data": { "tersimpan": 2 } }
+```
+
+- `harga_satuan` boleh dikosongkan → dipakai harga jual produk yang tersimpan
+- **Semua baris masuk atau tidak sama sekali.** Kalau satu baris ditolak, tidak ada yang tersimpan — setengah tercatat lebih buruk daripada gagal, karena pedagang akan mengira semuanya masuk
+- Tidak lewat layar konfirmasi: aturan #2 mengatur hasil AI, sedangkan yang diketik manusia sudah dikonfirmasi saat diketik
+
+### `GET /transaksi?dari=&sampai=`
+Daftar transaksi beserta nama produknya. Bawaannya bulan berjalan.
 
 ## Produk
 

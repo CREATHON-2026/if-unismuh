@@ -11,6 +11,8 @@ import { rutAuth } from './modules/auth/auth.routes.ts';
 import { rutOnboarding } from './modules/onboarding/onboarding.routes.ts';
 import { rutPesanan } from './modules/pesanan/pesanan.routes.ts';
 import { rutWhatsapp } from './modules/whatsapp/wa.routes.ts';
+import { rutTransaksi } from './modules/transaksi/transaksi.routes.ts';
+import { rutBeranda } from './modules/beranda/beranda.routes.ts';
 
 export function buatApp() {
   const app = express();
@@ -27,6 +29,8 @@ export function buatApp() {
   app.use('/onboarding', rutOnboarding);
   app.use('/pesanan', rutPesanan);
   app.use('/whatsapp', rutWhatsapp);
+  app.use('/transaksi', rutTransaksi);
+  app.use('/beranda', rutBeranda);
 
   // Harus paling belakang, setelah semua rute terpasang.
   app.use(tangkapGalat);
