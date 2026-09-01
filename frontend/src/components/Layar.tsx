@@ -1,5 +1,9 @@
 import type { ReactNode } from 'react';
 
+// Gradien lembut brand: oranye kanan-atas, teal kiri-bawah.
+export const LATAR_GRADIEN =
+  'bg-[#F4F6FB] [background-image:radial-gradient(55%_35%_at_88%_8%,rgba(245,131,31,0.16),transparent_65%),radial-gradient(45%_30%_at_8%_96%,rgba(56,189,248,0.14),transparent_60%)]';
+
 // Kerangka layar: header (kembali + wordmark), pertanyaan, isi, aksi bawah.
 export function Layar({
   pertanyaan,

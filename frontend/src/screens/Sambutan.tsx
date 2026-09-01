@@ -1,18 +1,14 @@
 import { useNavigate } from 'react-router-dom';
-import { Layar } from '../components/Layar';
+import { Layar, LATAR_GRADIEN } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
 import { LogoIkon } from '../components/Logo';
-
-// Gradien lembut sesuai desain: oranye kanan-atas, teal kiri-bawah.
-const LATAR_SAMBUTAN =
-  'bg-[#F4F6FB] [background-image:radial-gradient(55%_35%_at_88%_8%,rgba(245,131,31,0.16),transparent_65%),radial-gradient(45%_30%_at_8%_96%,rgba(56,189,248,0.14),transparent_60%)]';
 
 export function Sambutan() {
   const nav = useNavigate();
   return (
     <Layar
       tanpaLogo
-      latar={LATAR_SAMBUTAN}
+      latar={LATAR_GRADIEN}
       aksi={
         <>
           <Tombol onClick={() => nav('/masuk')}>
