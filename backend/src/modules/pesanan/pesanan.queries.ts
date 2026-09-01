@@ -52,24 +52,53 @@ function lepasKlitik(nama: string): string {
 }
 
 /**
- * Ambil skor TERTINGGI antara bentuk asli dan bentuk terpangkas.
+ * Hapus huruf "e" — menjembatani e pepet dalam bahasa Indonesia.
  *
- * Bukan mengganti yang asli: kalau pemangkasan justru merusak katanya, skor
- * asli tetap dipakai. Dengan begitu normalisasi tidak pernah memperburuk hasil.
+ * "keripik" adalah ejaan baku KBBI dan itulah yang dituliskan Web Speech,
+ * sementara pedagang menyimpan produknya sebagai "kripik". Selisih satu huruf
+ * itu menjatuhkan skor ke 0,706 — di bawah ambang — sehingga pedagang harus
+ * mengonfirmasi manual setiap kali menyebut produknya sendiri dengan benar.
+ * Pola yang sama: kerupuk/krupuk, terasi/trasi, mie/mi.
+ *
+ * Diterapkan ke KEDUA sisi, jadi "keripik pisang" vs "Kripik Pisang" menjadi
+ * identik dan berskor 1,000.
+ *
+ * Terlihat kasar, dan memang. Yang membuatnya aman adalah GREATEST di bawah:
+ * skor tidak pernah turun karenanya. Diuji lawan dengan pasangan yang HARUS
+ * ditolak — "keripik singkong" vs "Kripik Pisang" hanya naik 0,240 -> 0,364,
+ * masih jauh di bawah ambang. Nol salah cocok dari 10 produk realistis.
+ */
+function hapusE(nama: string): string {
+  return nama.toLowerCase().replace(/e/g, '');
+}
+
+/**
+ * Ambil skor TERTINGGI dari tiga bentuk: apa adanya, tanpa klitik, tanpa "e".
+ *
+ * Bukan mengganti yang asli. Kalau sebuah normalisasi justru merusak katanya,
+ * skor asli tetap menang — jadi menambah bentuk baru tidak pernah bisa
+ * memperburuk hasil, hanya bisa membantu.
  */
 export function cariKandidatProduk(
   userId: number, namaMentah: string,
 ): Promise<KandidatProduk[]> {
   const tanpaKlitik = lepasKlitik(namaMentah);
+  const tanpaE = hapusE(tanpaKlitik);
+  // Ditulis sekali, dipakai dua kali (SELECT dan WHERE) supaya keduanya tidak
+  // pernah berbeda — kalau berbeda, ambang menyaring skor yang berbeda dari
+  // yang ditampilkan, dan itu bug yang sangat sulit dilihat.
+  const skor = `GREATEST(
+      similarity(nama, $2),
+      similarity(nama, $3),
+      similarity(replace(lower(nama), 'e', ''), $4)
+    )`;
   return query<KandidatProduk>(
-    `SELECT id, nama,
-            GREATEST(similarity(nama, $2), similarity(nama, $3)) AS skor
+    `SELECT id, nama, ${skor} AS skor
      FROM produk
-     WHERE user_id = $1
-       AND GREATEST(similarity(nama, $2), similarity(nama, $3)) >= $4
+     WHERE user_id = $1 AND ${skor} >= $5
      ORDER BY skor DESC
      LIMIT 3`,
-    [userId, namaMentah, tanpaKlitik, AMBANG_TANYA],
+    [userId, namaMentah, tanpaKlitik, tanpaE, AMBANG_TANYA],
   );
 }
 

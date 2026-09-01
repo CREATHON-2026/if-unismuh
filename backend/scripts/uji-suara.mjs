@@ -145,6 +145,35 @@ periksaBenar('jumlah null atau angka wajar, bukan 0',
   b5 === undefined || b5.jumlah === null || b5.jumlah > 0);
 
 // ===========================================================================
+// 7. Ejaan baku "keripik" harus cocok otomatis
+// ===========================================================================
+// "keripik" adalah ejaan KBBI dan itulah yang dituliskan Web Speech, sementara
+// produk tersimpan sebagai "Kripik". Tanpa normalisasi e-pepet skornya hanya
+// 0,706 — di bawah ambang — sehingga pedagang harus mengonfirmasi manual
+// setiap kali menyebut produknya sendiri dengan benar.
+console.log('\n7. "laku 10 keripik pisang" — ejaan baku KBBI');
+const baku = await panggil('/transaksi/dari-teks', {
+  method: 'POST', body: JSON.stringify({ teks: 'laku 10 keripik pisang' }),
+}, token);
+const bBaku = baku.baris[0];
+console.log(`   "${bBaku?.nama_mentah}" -> ${bBaku?.nama_produk ?? '(belum cocok)'}` +
+  `${bBaku?.perlu_dicek ? '  [PERLU DICEK]' : '  [cocok otomatis]'}`);
+periksa('tercocokkan ke Kripik Pisang', bBaku?.nama_produk, 'Kripik Pisang');
+periksa('TIDAK lagi bertanya', bBaku?.perlu_dicek, false);
+periksa('jumlah terbaca', bBaku?.jumlah, 10);
+
+// Uji lawan: normalisasi tidak boleh membuat produk lain ikut tercocokkan
+console.log('\n8. Uji lawan: "laku 5 keripik singkong" (produk ini tidak ada)');
+const lawan = await panggil('/transaksi/dari-teks', {
+  method: 'POST', body: JSON.stringify({ teks: 'laku 5 keripik singkong' }),
+}, token);
+const bLawan = lawan.baris[0];
+console.log(`   "${bLawan?.nama_mentah}" -> ${bLawan?.nama_produk ?? '(belum cocok)'}` +
+  `${bLawan?.perlu_dicek ? '  [PERLU DICEK]' : '  [cocok otomatis]'}`);
+periksaBenar('TIDAK salah cocok ke Kripik Pisang',
+  bLawan?.nama_produk !== 'Kripik Pisang');
+
+// ===========================================================================
 // 6. Teks kosong ditolak
 // ===========================================================================
 console.log('\n6. Teks kosong');

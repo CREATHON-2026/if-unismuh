@@ -159,6 +159,37 @@ Diukur dengan `pg_trgm` di PostgreSQL 18:
 | `kacang` | Kripik Pisang | **0,167** | jangan cocok |
 | `air mineral` | Kripik Pisang | **0,000** | jangan cocok |
 
+### Normalisasi sebelum dicocokkan — dua yang wajib ada
+
+Skor mentah saja tidak cukup. Dua pola bahasa Indonesia menjatuhkan pasangan yang jelas-jelas benar ke bawah ambang:
+
+| Pola | Contoh | Skor mentah | Setelah dinormalisasi |
+|---|---|---|---|
+| **e pepet** | `keripik pisang` → Kripik Pisang | 0,706 | **1,000** |
+| **klitik `-nya`** | `kripiknya` → Kripik Pisang | 0,333 | **0,500** |
+
+`keripik` adalah ejaan **baku KBBI**, dan itulah yang dituliskan Web Speech — sementara pedagang menyimpan produknya sebagai `kripik`. Tanpa normalisasi, pedagang harus mengonfirmasi manual setiap kali menyebut produknya sendiri dengan benar. Pola yang sama: kerupuk/krupuk, terasi/trasi, mie/mi.
+
+Caranya: bandingkan **tiga bentuk** dan ambil skor tertinggi — apa adanya, tanpa klitik, dan tanpa huruf `e` di kedua sisi.
+
+```sql
+GREATEST(
+  similarity(nama, $2),                              -- apa adanya
+  similarity(nama, $3),                              -- tanpa klitik "-nya"
+  similarity(replace(lower(nama), 'e', ''), $4)      -- tanpa "e", KEDUA sisi
+)
+```
+
+**Kenapa menghapus semua `e` itu aman meski terlihat kasar:** `GREATEST` berarti skor tidak pernah turun — normalisasi hanya bisa membantu. Diuji lawan dengan pasangan yang harus ditolak, dan **nol salah cocok** dari 10 produk realistis:
+
+| Ucapan | Produk | Mentah | Sesudah | Hasil |
+|---|---|---|---|---|
+| `keripik singkong` | Kripik **Pisang** | 0,240 | 0,364 | tetap ditolak |
+| `kue` | Keju Aroma | 0,071 | 0,083 | tetap ditolak |
+| `bakso` | Bakwan | 0,300 | 0,300 | tidak berubah |
+
+Catatan kinerja: bentuk ketiga tidak memakai index `idx_produk_nama_trgm`. Untuk pedagang dengan puluhan produk itu tidak berarti apa-apa.
+
 **Ambang 0,70 yang sempat tertulis di dokumen ini keliru dan berbahaya.** Dengan angka itu, `"kripik psg"` akan diperlakukan sebagai produk baru — membuat produk duplikat, memecah datanya, dan diam-diam merusak seluruh perhitungan margin produk itu. Tidak akan ada pesan galat; angkanya cuma jadi salah.
 
 ### Skor mutlak saja tidak cukup
