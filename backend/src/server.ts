@@ -10,6 +10,7 @@ import { tangkapGalat } from './middleware/galat.ts';
 import { rutAuth } from './modules/auth/auth.routes.ts';
 import { rutOnboarding } from './modules/onboarding/onboarding.routes.ts';
 import { rutPesanan } from './modules/pesanan/pesanan.routes.ts';
+import { rutWhatsapp } from './modules/whatsapp/wa.routes.ts';
 
 export function buatApp() {
   const app = express();
@@ -25,6 +26,7 @@ export function buatApp() {
   app.use('/auth', rutAuth);
   app.use('/onboarding', rutOnboarding);
   app.use('/pesanan', rutPesanan);
+  app.use('/whatsapp', rutWhatsapp);
 
   // Harus paling belakang, setelah semua rute terpasang.
   app.use(tangkapGalat);

@@ -43,3 +43,6 @@ graphify-out/cache/last_query_stamp
 
 # PGlite: berkas database lokal, bukan sumber kebenaran
 backend/db/data/
+
+# Baileys: kredensial sesi WhatsApp pedagang — LEBIH sensitif daripada foto buku
+backend/db/baileys-auth/
