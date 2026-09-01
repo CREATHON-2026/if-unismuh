@@ -4,7 +4,8 @@ import { buatToken } from '../../lib/token.ts';
 import { rapikanNomor, nomorValid } from '../../lib/nomor.ts';
 import { jalur, kirim, GalatTampil } from '../../lib/http.ts';
 import { KODE_GALAT } from '../../../../shared/types.ts';
-import { cariPenggunaLewatNomor, buatPengguna } from './auth.queries.ts';
+import { wajibLogin, type ReqBerpengguna } from '../../middleware/auth.ts';
+import { cariPenggunaLewatNomor, buatPengguna, ambilPengguna } from './auth.queries.ts';
 
 export const rutAuth = Router();
 
@@ -57,5 +58,37 @@ rutAuth.post('/otp/verifikasi', jalur(async (req, res) => {
     // Belum punya nama usaha = belum lewat onboarding
     pengguna_baru: pengguna!.nama_usaha === null,
     pengguna,
+  });
+}));
+
+/**
+ * GET /auth/saya
+ *
+ * Dipanggil frontend setiap aplikasi dibuka, dengan token dari localStorage.
+ * Menjawab tiga hal sekaligus:
+ *   1. Tokennya masih sah atau tidak (401 kalau tidak)
+ *   2. Penggunanya siapa
+ *   3. Sudah selesai onboarding atau belum -> Beranda vs alur onboarding
+ *
+ * Sekalian MEMPERPANJANG sesi: token baru dikembalikan tiap kali endpoint ini
+ * dipanggil, jadi pedagang yang membuka aplikasi seminggu sekali tidak pernah
+ * kehabisan sesi. Ini yang dijanjikan docs/08-keamanan-data.md — sesi pendek
+ * membunuh retensi.
+ */
+rutAuth.get('/saya', wajibLogin, jalur(async (req, res) => {
+  const { userId } = req as ReqBerpengguna;
+  const pengguna = await ambilPengguna(userId);
+
+  if (!pengguna) {
+    // Tokennya sah secara kriptografis tapi penggunanya sudah tidak ada.
+    throw new GalatTampil(
+      KODE_GALAT.TIDAK_TERAUTENTIKASI, 'Sesi sudah tidak berlaku, silakan masuk lagi.', 401,
+    );
+  }
+
+  kirim(res, {
+    pengguna,
+    pengguna_baru: pengguna.nama_usaha === null,
+    token: buatToken(pengguna.id),
   });
 }));

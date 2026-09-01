@@ -57,6 +57,22 @@ Authorization: Bearer <token>
 
 `pengguna_baru` menentukan apakah frontend mengarahkan ke onboarding atau langsung ke Beranda.
 
+### `GET /auth/saya`
+**Dipanggil setiap aplikasi dibuka**, dengan token dari `localStorage`.
+
+```json
+{ "ok": true, "data": {
+    "pengguna": { "id": 1, "nomor_hp": "081234567890",
+                  "nama_usaha": "Warung Bu Sari", "jenis_usaha": "makanan" },
+    "pengguna_baru": false,
+    "token": "..."
+} }
+```
+
+Menjawab tiga hal sekaligus: tokennya masih sah atau tidak (`401` kalau tidak), penggunanya siapa, dan sudah selesai onboarding atau belum.
+
+**`token` yang dikembalikan adalah token BARU.** Simpan menimpa yang lama — sesinya diperpanjang tiap kali aplikasi dibuka, supaya pedagang yang membuka aplikasi seminggu sekali tidak pernah kehabisan sesi. Sesi pendek membunuh retensi; lihat [08-keamanan-data.md](08-keamanan-data.md).
+
 ## Onboarding
 
 ### `POST /onboarding/usaha`

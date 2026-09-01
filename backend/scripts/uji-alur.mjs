@@ -80,6 +80,19 @@ try {
 } catch { tanpaToken = true; }
 periksa('akses tanpa token ditolak', tanpaToken, true);
 
+// --- 2b. Buka aplikasi lagi dengan token tersimpan --------------------------
+console.log('\n2b. Buka aplikasi lagi (GET /auth/saya)');
+const saya = await panggil('/auth/saya', {}, token);
+periksa('pengguna dikenali', saya.pengguna.nomor_hp, NOMOR);
+periksa('masih ditandai belum onboarding', saya.pengguna_baru, true);
+periksa('dapat token perpanjangan', typeof saya.token === 'string' && saya.token.length > 20, true);
+
+let tokenPalsuDitolak = false;
+try {
+  await panggil('/auth/saya', {}, 'token.palsu.sekali');
+} catch { tokenPalsuDitolak = true; }
+periksa('token palsu ditolak', tokenPalsuDitolak, true);
+
 // --- 3. Onboarding usaha ----------------------------------------------------
 console.log('\n3. Nama & jenis usaha');
 const usaha = await panggil('/onboarding/usaha', {
@@ -87,6 +100,11 @@ const usaha = await panggil('/onboarding/usaha', {
   body: JSON.stringify({ nama_usaha: 'Warung Bu Sari', jenis_usaha: 'makanan' }),
 }, token);
 periksa('nama usaha tersimpan', usaha.nama_usaha, 'Warung Bu Sari');
+
+// Setelah onboarding, /auth/saya harus berhenti menandai pengguna baru —
+// inilah yang menentukan aplikasi membuka Beranda, bukan alur onboarding lagi.
+const sayaLagi = await panggil('/auth/saya', {}, token);
+periksa('tidak lagi ditandai pengguna baru', sayaLagi.pengguna_baru, false);
 
 // --- 4. Wawancara resep -> TEMUAN PERTAMA -----------------------------------
 console.log('\n4. Wawancara resep — kripik pisang');

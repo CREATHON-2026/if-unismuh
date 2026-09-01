@@ -55,6 +55,18 @@ export interface Pengguna {
   jenis_usaha: JenisUsaha | null;
 }
 
+/**
+ * GET /auth/saya — dipanggil tiap aplikasi dibuka, dengan token dari
+ * localStorage. `token` yang dikembalikan adalah token BARU: sesinya
+ * diperpanjang tiap kali aplikasi dibuka, supaya pedagang tidak pernah
+ * kehabisan sesi.
+ */
+export interface SayaRes {
+  pengguna: Pengguna;
+  pengguna_baru: boolean;
+  token: string;
+}
+
 export type JenisUsaha = 'makanan' | 'minuman' | 'sembako' | 'jasa' | 'lainnya';
 
 // ---------------------------------------------------------------------------

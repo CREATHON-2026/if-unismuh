@@ -16,6 +16,14 @@ export function cariPenggunaLewatNomor(nomorHp: string): Promise<Pengguna | null
   );
 }
 
+export function ambilPengguna(userId: number): Promise<Pengguna | null> {
+  return satu<Pengguna>(
+    `SELECT id, nomor_hp, nama_usaha, jenis_usaha
+     FROM pengguna WHERE id = $1`,
+    [userId],
+  );
+}
+
 export function buatPengguna(nomorHp: string): Promise<Pengguna | null> {
   return satu<Pengguna>(
     `INSERT INTO pengguna (nomor_hp) VALUES ($1)
