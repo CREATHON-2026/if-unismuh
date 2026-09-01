@@ -40,3 +40,6 @@ graphify-out/.graphify_root
 graphify-out/cost.json
 # graphify: penanda waktu query terakhir, berubah tiap kali siapa pun bertanya
 graphify-out/cache/last_query_stamp
+
+# PGlite: berkas database lokal, bukan sumber kebenaran
+backend/db/data/
