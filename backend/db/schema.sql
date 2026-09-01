@@ -233,3 +233,31 @@ CREATE TABLE pesan_masuk (
   diterima_pada      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX idx_pesan_masuk_user ON pesan_masuk (user_id, diterima_pada DESC);
+
+-- ---------------------------------------------------------------------------
+-- v_saran_harga — fitur 8, menjawab "terus saya harus jual berapa?"
+--
+-- MARKUP ATAS MODAL, bukan margin atas harga jual. Pedagang berpikir "modal
+-- segini, ambil untung sekian" — bukan "berapa persen dari omzet". Markup 20%
+-- atas modal 21.200 = 25.440.
+--
+-- Dibulatkan NAIK ke kelipatan 500, karena pedagang memberi harga dengan angka
+-- bulat. Naik, bukan ke terdekat: membulatkan turun berarti menyarankan untung
+-- di bawah target yang baru saja kita janjikan.
+--
+-- Dua angka, bukan satu. harga_impas adalah LANTAINYA — pedagang yang belum
+-- berani menaikkan harga sebanyak itu setidaknya tahu batas tidak-rugi.
+-- Menyodorkan satu angka yang melompat jauh berisiko diabaikan sama sekali.
+-- ---------------------------------------------------------------------------
+CREATE VIEW v_saran_harga AS
+SELECT
+  m.produk_id,
+  m.user_id,
+  m.modal_per_unit                              AS harga_impas,
+  (CEIL(m.modal_per_unit * 1.20 / 500) * 500)::int AS harga_disarankan,
+  ((CEIL(m.modal_per_unit * 1.20 / 500) * 500) - m.harga_jual)::int    AS kenaikan,
+  ((CEIL(m.modal_per_unit * 1.20 / 500) * 500) - m.modal_per_unit)::int AS untung_per_unit
+FROM v_margin_produk m
+WHERE m.modal_per_unit IS NOT NULL
+  -- Tidak ada yang perlu disarankan kalau harganya sudah mencapai target.
+  AND m.harga_jual < CEIL(m.modal_per_unit * 1.20 / 500) * 500;

@@ -236,7 +236,30 @@ Tambahan dari daftar: rincian bahan dan total terjual.
 
 **`biaya_per_unit` semua bahan dijamin berjumlah tepat sama dengan `modal_per_unit`** — di contoh ini 7.500 + 5.000 + 4.500 + 3.750 + 450 = 21.200. Itu diuji, bukan kebetulan. Rincian yang tidak menjumlah ke totalnya sendiri membuat pedagang berhenti percaya pada semua angka lain di aplikasi.
 
-`saran_harga` masih `null` — fitur 8 belum dibangun. Sembunyikan bagiannya selama masih null, jangan tampilkan angka karangan.
+#### `saran_harga` — fitur 8
+
+```json
+"saran_harga": {
+  "harga_impas": 21200,
+  "harga_disarankan": 25500,
+  "kenaikan": 5500,
+  "untung_per_unit": 4300,
+  "alasan": "Modal Anda Rp 21.200 per unit. Supaya untung sekitar 20%, jual Rp 25.500 — naik Rp 5.500 dari harga sekarang."
+}
+```
+
+| Field | Arti |
+|---|---|
+| `harga_impas` | Modal apa adanya. **Di bawah ini pasti rugi** — ini lantainya |
+| `harga_disarankan` | Markup 20% atas modal, dibulatkan **naik** ke kelipatan Rp 500 |
+| `kenaikan` | Selisih dari harga sekarang |
+| `untung_per_unit` | Untung kalau memakai harga yang disarankan |
+
+**`null` kalau tidak ada yang perlu disarankan** — resep belum diisi (modal tidak diketahui), atau harganya sudah mencapai target. Sembunyikan bagiannya saat null, jangan tampilkan angka karangan.
+
+**Tampilkan dua angka, bukan satu.** `harga_impas` adalah batas tidak-rugi; pedagang yang belum berani menaikkan harga sebanyak itu setidaknya tahu lantainya. Satu angka yang melompat jauh berisiko diabaikan sama sekali.
+
+Dibulatkan **naik**, bukan ke terdekat: 21.200 × 1,2 = 25.440 → **25.500**. Membulatkan turun berarti menyarankan untung di bawah target yang baru saja dijanjikan.
 
 `terlaris` dihitung sepanjang waktu, bukan per periode: sifatnya melekat pada produknya, dan angka yang berubah mengikuti rentang tanggal justru membingungkan.
 

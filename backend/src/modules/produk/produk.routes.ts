@@ -1,8 +1,21 @@
 import { Router } from 'express';
 import { wajibLogin, type ReqBerpengguna } from '../../middleware/auth.ts';
 import { jalur, kirim, GalatTampil } from '../../lib/http.ts';
-import { KODE_GALAT, type DetailProduk } from '../../../../shared/types.ts';
-import { daftarProduk, detailProduk, bahanProduk } from './produk.queries.ts';
+import { KODE_GALAT, type DetailProduk, type SaranHarga } from '../../../../shared/types.ts';
+import { rupiah } from '../../lib/rupiah.ts';
+import { daftarProduk, detailProduk, bahanProduk, saranHarga } from './produk.queries.ts';
+
+/**
+ * Rangkai kalimat saran dari ANGKA YANG SUDAH DIHITUNG SQL.
+ *
+ * Tidak memakai LLM, dan itu disengaja: kalimat ini muncul di setiap layar
+ * detail produk, jadi menggantungkannya pada server LLM berarti layar detail
+ * ikut lambat setiap kali server itu sedang sibuk.
+ */
+function alasanSaran(s: { harga_impas: number; harga_disarankan: number; kenaikan: number }): string {
+  return `Modal Anda ${rupiah(s.harga_impas)} per unit. Supaya untung sekitar 20%, `
+    + `jual ${rupiah(s.harga_disarankan)} — naik ${rupiah(s.kenaikan)} dari harga sekarang.`;
+}
 
 export const rutProduk = Router();
 rutProduk.use(wajibLogin);
@@ -35,12 +48,21 @@ rutProduk.get('/:id', jalur(async (req, res) => {
     throw new GalatTampil(KODE_GALAT.PRODUK_TIDAK_DITEMUKAN, 'Produk tidak ditemukan.', 404);
   }
 
+  const [bahan, saran] = await Promise.all([
+    bahanProduk(id, userId),
+    saranHarga(id, userId),
+  ]);
+
+  // null kalau tidak ada yang perlu disarankan — resep belum diisi, atau
+  // harganya sudah mencapai target. Frontend menyembunyikan bagiannya.
+  const saranLengkap: SaranHarga | null = saran
+    ? { ...saran, alasan: alasanSaran(saran) }
+    : null;
+
   const jawaban: DetailProduk = {
     ...dasar,
-    bahan: await bahanProduk(id, userId),
-    // Fitur 8 (saran perbaikan harga) belum dibangun. null, bukan angka
-    // karangan — frontend menyembunyikan bagiannya sampai fitur itu ada.
-    saran_harga: null,
+    bahan,
+    saran_harga: saranLengkap,
   };
 
   kirim(res, jawaban);

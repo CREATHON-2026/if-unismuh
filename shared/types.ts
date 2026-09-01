@@ -128,8 +128,23 @@ export interface RincianBahan {
   biaya_per_unit: number;
 }
 
+/**
+ * Fitur 8 — menjawab "terus saya harus jual berapa?"
+ *
+ * `null` kalau tidak ada yang perlu disarankan: resep belum diisi (modal tidak
+ * diketahui), atau harganya sudah mencapai target. Sembunyikan bagiannya saat
+ * null, jangan tampilkan angka karangan.
+ */
 export interface SaranHarga {
+  /** Modal apa adanya. Di bawah angka ini pasti rugi — ini lantainya */
+  harga_impas: number;
+  /** Markup 20% atas modal, dibulatkan naik ke kelipatan Rp 500 */
   harga_disarankan: number;
+  /** Selisih dari harga sekarang */
+  kenaikan: number;
+  /** Untung per unit kalau memakai harga yang disarankan */
+  untung_per_unit: number;
+  /** Kalimat siap tampil, dirangkai dari angka di atas */
   alasan: string;
 }
 

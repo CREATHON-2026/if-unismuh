@@ -103,3 +103,26 @@ export function bahanProduk(produkId: number, userId: number): Promise<RincianBa
     [produkId, userId],
   );
 }
+
+export interface SaranMentah {
+  harga_impas: number;
+  harga_disarankan: number;
+  kenaikan: number;
+  untung_per_unit: number;
+}
+
+/**
+ * Saran perbaikan harga — fitur 8.
+ *
+ * Semuanya dibaca dari view v_saran_harga; tidak ada aritmetika di sini.
+ * View itu sendiri sudah menyaring: kalau resepnya belum diisi atau harganya
+ * sudah mencapai target, tidak ada baris yang keluar dan hasilnya null.
+ */
+export function saranHarga(produkId: number, userId: number): Promise<SaranMentah | null> {
+  return satu<SaranMentah>(
+    `SELECT harga_impas, harga_disarankan, kenaikan, untung_per_unit
+     FROM v_saran_harga
+     WHERE produk_id = $1 AND user_id = $2`,
+    [produkId, userId],
+  );
+}
