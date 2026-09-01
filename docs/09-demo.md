@@ -13,11 +13,18 @@ OTP untuk keduanya selalu `123456`.
 
 ### Cara menyiapkan
 
+Tiga perintah, tiga terminal:
+
 ```bash
-cd backend
-npm run dev        # biarkan jalan di terminal lain
-npm run demo       # sekali saja
+cd backend  && npm run dev     # API di :3000
+cd backend  && npm run demo    # isi akun demo — sekali saja
+cd frontend && npm run dev     # aplikasi di :5173
 ```
+
+Buka **http://localhost:5173**. Pakai `localhost`, bukan alamat IP: browser
+memperlakukan `localhost` sebagai secure origin, jadi **mikrofon jalan tanpa
+sertifikat**. Kalau demo dari HP lewat jaringan, mikrofon akan diblokir dan
+langkah suara harus diketik.
 
 Skripnya menolak jalan dua kali supaya produk tidak tergandakan. Kalau perlu
 mengulang dari nol: hentikan server dengan **Ctrl+C** (jangan dimatikan paksa —
@@ -49,6 +56,8 @@ Dua angka bersebelahan. Diam sebentar, biarkan selisihnya terbaca sendiri.
 Angka itu bukan contoh — itu yang benar-benar keluar dari `GET /beranda` setelah
 `npm run demo`. Kalau berubah, yang salah adalah dokumen ini, bukan aplikasinya.
 
+> Layar: **Beranda**, langsung setelah masuk.
+
 ### 2. Catat penjualan dengan suara
 
 Tekan tombol suara, ucapkan seperti pedagang bicara:
@@ -64,10 +73,16 @@ Tekan tombol suara, ucapkan seperti pedagang bicara:
 
 > "Yang AI tidak yakin, kami tandai. Dan sampai detik ini belum ada satu pun yang masuk ke database — hasil AI selalu lewat mata manusia dulu."
 
-**Opsional, kalau waktu dan jaringan mengizinkan: foto buku.** Layar konfirmasinya
-sama persis dengan yang barusan, jadi ini menambah satu jalan masuk, bukan alur
-baru. Baca dulu batasannya di bagian tanya jawab di bawah — jangan janjikan lebih
-dari yang bisa ditunjukkan.
+Ada satu hal yang layak ditunjuk kalau juri memperhatikan: pedagang menyimpan
+produknya sebagai **"kripik"**, tapi Web Speech menuliskan ejaan baku
+**"keripik"**. Selisih satu huruf itu tetap dikenali — dan kalau tidak yakin,
+aplikasinya bertanya, bukan menebak.
+
+**Jangan tunjukkan jalur foto.** Tombolnya menolak dengan jujur, dan itu memang
+disengaja — alasannya ada di tanya jawab di bawah. Menunjukkannya di tengah alur
+hanya memecah tempo tepat sebelum bagian terkuat.
+
+> Layar: **Catat** di navigasi bawah.
 
 ### 3. Detail produk — kripik pisang
 
@@ -78,6 +93,16 @@ Jual    Rp 20.000
 ```
 
 > "Produk paling laku. Dan setiap bungkus yang terjual, rugi Rp 1.200. Sudah 8 tahun begini."
+
+Gulir sedikit: **saran harga Rp 25.500** dan rincian modal per bahan. Jangan
+berhenti di kabar buruknya — pedagang yang cuma dihakimi akan menutup aplikasi.
+
+> "Dan ini jawabannya: jual Rp 25.500, untungnya jadi Rp 4.300. Batas tidak ruginya Rp 21.200."
+
+Kalau juri mau menguji, rincian bahannya menjumlah tepat ke Rp 21.200:
+7.500 + 5.000 + 4.500 + 3.750 + 450.
+
+> Layar: **Produk** → ketuk **Kripik Pisang** (paling atas, karena paling merugi).
 
 ### 4. Pesanan Masuk — puncaknya
 
@@ -98,9 +123,23 @@ angkanya dari SQL, bukan dari LLM.
 
 > "Dan dia tahu ini **sebelum** menerima pesanannya, bukan setelahnya."
 
+Peringatannya muncul **di atas** tombol maksud, bukan di bawah. Itu disengaja.
+
+> Layar: **Pesanan** di navigasi bawah.
+
 ### 5. Tekan "Tawar harga"
 
-Balasan siap salin muncul. Tunjukkan bahwa pedagang yang menyalin dan mengirim sendiri.
+Balasan siap salin muncul, dengan angka yang bisa ditelusuri — harga Rp 20.000
+dan stok 14 unit, keduanya dari SQL. Perhatikan apa yang **tidak** ada di
+kalimat itu: modal dan kata "rugi". Itu urusan pedagang, bukan pembeli.
+
+Tunjuk baris kecil di bawah tombolnya:
+
+> "lapakAi tidak pernah mengirim pesan ke pembeli."
+
+Lalu jelaskan kenapa dalam satu kalimat:
+
+> "Reputasi pedagang ada di chat itu. Sistem yang bisa mengirim atas namanya adalah sistem yang bisa mempermalukannya. Jadi kami menyiapkan, dia yang mengirim."
 
 ### Kalimat penutup
 

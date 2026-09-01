@@ -330,63 +330,98 @@ Kalau `bahan` diisi, `hasil_per_batch` wajib dan setiap bahan wajib punya `jumla
 
 ## Ekstraksi
 
-### `POST /ekstraksi/foto`
-`multipart/form-data`, field `berkas`.
+**Status: sudah jadi**, kecuali foto. Uji: `node scripts/uji-ekstraksi.mjs`.
 
-```json
+Satu bentuk jawaban untuk semua jalan masuk, jadi layar konfirmasi yang sama
+melayani suara, ketikan bebas, dan nanti foto — tanpa komponen baru.
+
+### `POST /ekstraksi/dari-teks`
+
+Kalimat bebas (hasil transkripsi suara di browser, atau ketikan) menjadi usulan.
+
+```jsonc
+// permintaan
+{ "teks": "hari ini laku 10 kripik pisang sama 5 kacang telur" }
+
+// jawaban
 { "ok": true, "data": {
     "ekstraksi_id": 12,
     "total_item": 15,
-    "total_belanja": 200000,
+    "total_belanja": 225000,
     "baris": [
-      { "urutan": 1, "nama_mentah": "kripik psg", "produk_id": 1,
+      { "urutan": 1, "nama_mentah": "kripik pisang", "produk_id": 1,
         "nama_produk": "Kripik Pisang", "jumlah": 10, "harga_satuan": 20000,
-        "subtotal": 200000,
-        "tanggal": "2026-09-01", "keyakinan": 0.94, "perlu_dicek": false },
-      { "urutan": 2, "nama_mentah": "kacang", "produk_id": null,
-        "nama_produk": null, "jumlah": 5, "harga_satuan": null,
-        "subtotal": 0,
-        "tanggal": "2026-09-01", "keyakinan": 0.41, "perlu_dicek": true,
-        "alasan_ragu": "harga tidak terbaca" }
+        "subtotal": 200000, "tanggal": null,
+        "keyakinan": 1.0, "perlu_dicek": false },
+      { "urutan": 2, "nama_mentah": "kacang telur", "produk_id": 2,
+        "nama_produk": "Kacang Telur", "jumlah": 5, "harga_satuan": 5000,
+        "subtotal": 25000, "tanggal": null,
+        "keyakinan": 1.0, "perlu_dicek": false }
     ]
 } }
 ```
 
-`subtotal`, `total_item`, dan `total_belanja` dihitung SQL di backend — layar konfirmasi hanya menampilkan (aturan #7).
+**★ Tidak ada yang masuk ke `transaksi` pada tahap ini.** Hasilnya disimpan di
+tabel `ekstraksi` berstatus `menunggu`, dan hanya `/ekstraksi/konfirmasi` yang
+bisa memindahkannya. Aturan #2 ditegakkan struktur tabelnya, bukan kedisiplinan
+penulis kodenya.
 
-**Tidak ada yang tersimpan pada tahap ini.** Ini hanya usulan. Frontend menampilkan layar konfirmasi, baris `perlu_dicek: true` ditandai.
+| Field | Catatan untuk frontend |
+|---|---|
+| `subtotal`, `total_item`, `total_belanja` | Dihitung SQL. **Jangan pernah** dihitung ulang di browser |
+| `harga_satuan` | Kalau pedagang tidak menyebut harga, SQL mengisinya dari harga jual produk tersimpan — bukan nol |
+| `keyakinan` | Skor pencocokan nama pg_trgm yang benar-benar diukur. Nama yang tidak cocok sama sekali berskor `0` |
+| `perlu_dicek` | `true` juga saat jumlahnya tidak disebut — lihat `alasan_ragu` |
+| `jumlah` | Kalau tidak disebut, diisi `1` **dan** ditandai `perlu_dicek`. Ini dugaan, jadi tidak boleh lolos tanpa dilihat manusia |
 
-### `POST /ekstraksi/pratinjau` (usulan dari frontend, belum disepakati)
+### `POST /ekstraksi/pratinjau`
 
-Layar konfirmasi membolehkan pengguna mengubah/menghapus baris sebelum menyimpan.
-Subtotal dan total harus ikut berubah — dan frontend tidak boleh menghitungnya sendiri.
-Endpoint ini menerima baris hasil suntingan dan mengembalikan angka yang dihitung SQL.
+Dipanggil **setiap kali pengguna menyunting satu baris** di layar konfirmasi.
+Ada supaya frontend tidak pernah perlu mengalikan jumlah dengan harga sendiri.
 
-```json
+```jsonc
 // permintaan
-{ "baris": [ { "urutan": 1, "produk_id": 1, "jumlah": 10, "harga_satuan": 20000, "tanggal": "2026-09-01" } ] }
+{ "baris": [ { "urutan": 1, "produk_id": 1, "jumlah": 12, "harga_satuan": 20000, "tanggal": null } ] }
 // jawaban
 { "ok": true, "data": {
-    "baris": [ { "urutan": 1, "subtotal": 200000 } ],
-    "total_item": 10,
-    "total_belanja": 200000
+    "baris": [ { "urutan": 1, "subtotal": 240000 } ],
+    "total_item": 12,
+    "total_belanja": 240000
 } }
 ```
 
-### `POST /ekstraksi/suara`
-`multipart/form-data`, field `berkas`. Bentuk jawabannya sama persis dengan `/ekstraksi/foto`, jadi frontend bisa memakai komponen konfirmasi yang sama.
+`harga_satuan: null` berarti pengguna mengosongkannya — SQL memakai harga jual
+tersimpan, bukan menganggapnya nol. Tidak menyimpan apa pun.
 
-### `POST /ekstraksi/:id/konfirmasi`
-```json
-// permintaan — hanya baris yang disetujui, boleh sudah diperbaiki pengguna
-{ "baris": [
-    { "urutan": 1, "produk_id": 1, "jumlah": 10, "harga_satuan": 20000, "tanggal": "2026-09-01" }
-] }
+### `POST /ekstraksi/konfirmasi`
+
+Satu-satunya jalan hasil AI masuk ke `transaksi`.
+
+```jsonc
+// permintaan
+{ "ekstraksi_id": 12,
+  "baris": [ { "urutan": 1, "produk_id": 1, "jumlah": 12, "harga_satuan": 20000, "tanggal": null } ] }
 // jawaban
 { "ok": true, "data": { "tersimpan": 1, "berkas_dihapus": true } }
 ```
 
-`berkas_dihapus: true` menegaskan foto mentahnya sudah dihapus setelah konfirmasi.
+- Baris dengan `produk_id: null` **dilewati**, bukan ditolak — pengguna berhak melewatkan baris yang tidak dia kenali
+- **Konfirmasi kedua ditolak.** Statusnya diubah dengan `WHERE status = 'menunggu'` di dalam transaksi database yang sama dengan penulisan barisnya, jadi pengguna yang menekan tombol dua kali karena ragu tidak mencatat penjualannya dua kali
+- `berkas_dihapus: true` menegaskan foto mentahnya sudah dihapus
+
+### `POST /ekstraksi/foto` — **belum ada**
+
+Model vision yang tersedia untuk tim sudah diukur dan belum lolos: pada tabel
+tulisan tangan 29 baris, kolomnya bergeser dan saldonya dikarang, sementara
+setiap baris dilaporkan dengan keyakinan 1,0. Kegagalan "tidak terbaca" aman
+karena akan ditandai; kegagalan "salah tapi yakin" lolos ke database dan merusak
+semua perhitungan di atasnya. Hasil pengukurannya di
+[backend/spike/README.md](../backend/spike/README.md).
+
+Sampai ada model yang lolos, `ekstraksiFoto()` di frontend menolak dengan jujur
+dan menunjuk jalur suara. **Jangan menggantinya dengan data contoh** — baris
+palsu yang tampil meyakinkan di layar konfirmasi adalah persis kegagalan yang
+produk ini ada untuk mencegahnya.
 
 ## Pesanan Masuk
 
