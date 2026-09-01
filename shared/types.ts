@@ -126,6 +126,15 @@ export interface RincianBahan {
   jumlah_pakai: number;
   /** Kontribusi bahan ini ke modal satu unit produk */
   biaya_per_unit: number;
+  /**
+   * Bagian bahan ini dari modal satu unit, dalam persen bulat. Dihitung SQL.
+   *
+   * Pembaginya modal PENUH (bahan + tenaga), bukan total bahan saja — jadi
+   * jumlah semua `persen_modal` ditambah `persen_tenaga` yang mendekati 100,
+   * bukan `persen_modal` saja. `null` kalau modalnya belum diketahui; jangan
+   * gambar bar kosong, karena itu terbaca sebagai "nol persen".
+   */
+  persen_modal: number | null;
 }
 
 /**
@@ -153,6 +162,14 @@ export interface DetailProduk extends RingkasanProduk {
   bahan: RincianBahan[];
   total_terjual: number;
   saran_harga: SaranHarga | null;
+  /**
+   * Ongkos tenaga per unit. Bagian dari modal yang BUKAN bahan — kalau tidak
+   * ditampilkan, rincian bahan terlihat seolah sudah menjelaskan seluruh modal.
+   * `null` kalau hasil per batch belum diisi.
+   */
+  biaya_tenaga_per_unit: number | null;
+  /** Bagian tenaga dari modal satu unit, persen bulat. Dihitung SQL. */
+  persen_tenaga: number | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -291,6 +308,40 @@ export interface AnalisisPesanan {
   peringatan: string[];
 }
 
+/**
+ * Satu baris di daftar `GET /pesanan` — pesan tersimpan dari jalur tempel
+ * maupun WhatsApp. Pesan `bukan_pesanan` tidak pernah ada di sini.
+ *
+ * Semua angka finansial dihitung SQL (aturan #1 dan #7); frontend hanya
+ * menampilkan.
+ */
+export interface PesanMasukItem {
+  pesan_id: number;
+  jenis: Exclude<JenisPesan, 'bukan_pesanan'>;
+  teks: string;
+  sumber: 'tempel' | 'whatsapp';
+  /** Empat digit terakhir pengirim, mis. "…7890"; null untuk jalur tempel */
+  pengirim_samar: string | null;
+  nama_produk_mentah: string | null;
+  jumlah: number | null;
+  harga_diminta: number | null;
+  tanggal_dibutuhkan: string | null;
+  perlu_dicek: boolean;
+  /** ISO timestamp saat pesan diterima */
+  diterima_pada: string;
+
+  produk_id: number | null;
+  nama_produk: string | null;
+
+  // --- dihitung SQL ---
+  modal_per_unit: number | null;
+  nilai_pesanan: number | null;
+  untung_pesanan: number | null;
+  merugi: boolean | null;
+  /** null = stok bahannya belum dicatat, bukan berarti nol */
+  stok_cukup_untuk: number | null;
+}
+
 /** Balasan siap salin untuk pembeli — fitur 9, penutup alur Pesanan Masuk. */
 export interface BalasanReq {
   maksud: 'tawar_harga' | 'terima' | 'tolak' | 'jawab_harga';
@@ -397,6 +448,10 @@ export interface BarisUsulan {
   harga_satuan: number | null;
   /** true -> tampilkan menonjol di layar konfirmasi, minta dipastikan */
   perlu_dicek: boolean;
+  /** Terisi kalau penyaring backend menandai baris ini (jumlah tidak disebut,
+   *  harga terlihat seperti total, kalimatnya pertanyaan, dsb). Tampilkan
+   *  sebagai keterangan di samping penanda. */
+  alasan_ragu?: string;
   kandidat: KandidatProduk[];
 }
 

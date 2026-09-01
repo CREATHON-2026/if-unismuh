@@ -59,35 +59,58 @@ Saat `ekstraksi.status` jadi `dikonfirmasi`: hapus berkasnya, kosongkan `path_be
 
 ## Struktur
 
-Disusun **per fitur**, bukan per lapisan. Buka satu folder modul, lihat semua
-yang berhubungan dengan domain itu.
+Disusun **per fitur**, bukan per lapisan folder. Buka satu folder modul, lihat
+semua yang berhubungan dengan domain itu — dan DI DALAM tiap modul, berkasnya
+dipisah per tanggung jawab:
 
 ```
 src/
   config/env.ts        satu-satunya tempat yang membaca process.env
   db/index.ts          koneksi + helper query (query, satu, transaksiDb)
-  lib/                 http, token, nomor — dipakai lintas modul
+  lib/                 http, token, nomor, validasi — dipakai lintas modul
   middleware/          wajibLogin, tangkapGalat
   modules/
-    auth/              auth.routes.ts   auth.queries.ts
-    onboarding/        onboarding.routes.ts   onboarding.queries.ts
+    <nama>/
+      <nama>.routes.ts       HANYA pemetaan jalur -> controller
+      <nama>.controller.ts   baca + validasi HTTP, panggil service, kirim()
+      <nama>.service.ts      logika domain — tanpa Express, tanpa SQL
+      <nama>.queries.ts      SEMUA SQL domain itu
+      <nama>.llm.ts          prompt + skema LLM (hanya modul yang butuh)
+      <nama>.types.ts        tipe internal modul (hanya kalau ada isinya)
   server.ts            rakit app, periksa env, nyalakan
 db/schema.sql          tabel + view. Semua rumus hidup di sini
 ```
 
+Pengecualian yang disengaja: `whatsapp/wa.client.ts` adalah adapter Baileys
+(hanya-baca) yang berperan sebagai service-nya modul itu.
+
+### Siapa boleh memanggil siapa
+
+```
+routes -> controller -> service -> queries / llm / service modul lain
+```
+
+- **routes** tidak berisi logika apa pun — hanya `jalur(controller)`.
+- **controller** membaca `req`, memvalidasi bentuk, melempar `GalatTampil`,
+  memanggil service, dan `kirim()`. Tidak menyentuh queries langsung.
+- **service** berisi keputusan domain. Tidak mengimpor Express. Boleh memanggil
+  service modul lain (mis. `cocokkanNamaProduk` di pesanan.service dipakai
+  transaksi, ekstraksi, dan produk — SATU pintu pencocokan nama).
+- **queries** hanya SQL. **llm** hanya prompt + pembersih keluaran model.
+- **types** menampung bentuk internal modul; kontrak API tetap di `shared/`.
+
 ### Aturan yang membuat struktur ini ada gunanya
 
 **Semua SQL satu domain hidup di `*.queries.ts` domain itu. Tidak ada SQL di
-dalam route handler.**
+controller maupun service.**
 
 Ini bukan soal kerapian. Begitu ada modul produk, beranda, transaksi, dan
 pesanan, SQL yang tersebar akan membuat seseorang menulis rumus margin kedua di
 tempat lain — dan dua rumus yang berbeda tidak akan menghasilkan pesan galat,
 cuma angka yang salah. Satu berkas per domain membuat duplikasi itu terlihat.
 
-Route handler hanya boleh: memvalidasi masukan, memanggil query, mengirim
-jawaban. Kalau sebuah handler punya `SELECT` di dalamnya, itu tanda ada yang
-salah tempat.
+Kalau sebuah controller punya `SELECT` atau keputusan bisnis di dalamnya, itu
+tanda ada yang salah tempat.
 
 **Dan rumus finansial tidak hidup di `*.queries.ts` sekalipun** — semuanya ada
 di view SQL (`v_modal_produk`, `v_margin_produk`). Berkas query hanya membaca
@@ -96,9 +119,11 @@ view itu.
 ### Menambah modul baru
 
 1. Buat `src/modules/<nama>/<nama>.queries.ts` — semua SQL domain itu
-2. Buat `src/modules/<nama>/<nama>.routes.ts` — validasi + panggil query
-3. Daftarkan di `server.ts`
-4. Kalau butuh rumus finansial baru, tambahkan **view** di `db/schema.sql`,
+2. Buat `src/modules/<nama>/<nama>.service.ts` — logika domain, panggil queries
+3. Buat `src/modules/<nama>/<nama>.controller.ts` — validasi + panggil service
+4. Buat `src/modules/<nama>/<nama>.routes.ts` — petakan jalur ke controller
+5. Daftarkan di `server.ts`
+6. Kalau butuh rumus finansial baru, tambahkan **view** di `db/schema.sql`,
    jangan hitung di TypeScript
 
 ## Menjalankan

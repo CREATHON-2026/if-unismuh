@@ -54,3 +54,6 @@ dev-ui/
 # `graphify update` jalan di laptop mana pun -> murni churn, dijamin bentrok
 graphify-out/20*/
 graphify-out/cache/ast/
+
+# Dump crash Node dari tool lain (Copilot CLI), bukan aplikasi ini
+report.*.json

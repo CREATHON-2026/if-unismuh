@@ -1,6 +1,7 @@
 import { query, satu, transaksiDb, type Pelaksana } from '../../db/index.ts';
 import type { BarisKonfirmasi, SumberTransaksi } from '../../../../shared/types.ts';
 import { tulisBaris } from '../transaksi/transaksi.queries.ts';
+import type { HitungBaris } from './ekstraksi.types.ts';
 
 /**
  * Semua SQL domain ekstraksi ada di berkas ini.
@@ -11,14 +12,6 @@ import { tulisBaris } from '../transaksi/transaksi.queries.ts';
  * browser, aturan #7 bocor lewat pintu belakang — dan dua tempat yang
  * menghitung akan berbeda begitu aturan harganya berubah.
  */
-
-export interface HitungBaris {
-  urutan: number;
-  harga_satuan: number | null;
-  subtotal: number;
-  total_item: number;
-  total_belanja: number;
-}
 
 /**
  * Subtotal per baris dan total keseluruhan.

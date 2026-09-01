@@ -183,6 +183,7 @@ Bentuk `baris` sengaja dibuat cocok dengan yang diterima `POST /transaksi`, sehi
 |---|---|
 | `nama_mentah` | Persis seperti diucapkan, sebelum dicocokkan. Tampilkan ini, bukan hanya nama produknya |
 | `perlu_dicek` | `true` → jangan simpan tanpa pengguna memastikan. Tampilkan `kandidat` |
+| `alasan_ragu` | Terisi kalau penyaring backend menandai baris (jumlah tidak disebut, harga terlihat seperti total, kalimatnya pertanyaan, ada kata dialek tersaring). Tampilkan sebagai keterangan |
 | `harga_satuan` | `null` = tidak disebut → `POST /transaksi` akan memakai harga jual tersimpan |
 | `jumlah` | Boleh `null` kalau tidak disebut. Minta pengguna mengisinya |
 
@@ -223,18 +224,28 @@ Tambahan dari daftar: rincian bahan dan total terjual.
     "merugi": true, "terlaris": false,
     "hasil_per_batch": 40,
     "total_terjual": 10,
+    "biaya_tenaga_per_unit": 0,
+    "persen_tenaga": 0,
     "bahan": [
-      { "nama": "pisang",  "satuan": "kg",     "jumlah_pakai": 20, "biaya_per_unit": 7500 },
-      { "nama": "gas",     "satuan": "tabung", "jumlah_pakai": 1,  "biaya_per_unit": 5000 },
-      { "nama": "minyak",  "satuan": "liter",  "jumlah_pakai": 10, "biaya_per_unit": 4500 },
-      { "nama": "gula",    "satuan": "kg",     "jumlah_pakai": 10, "biaya_per_unit": 3750 },
-      { "nama": "kemasan", "satuan": "buah",   "jumlah_pakai": 40, "biaya_per_unit": 450 }
+      { "nama": "pisang",  "satuan": "kg",     "jumlah_pakai": 20, "biaya_per_unit": 7500, "persen_modal": 35 },
+      { "nama": "gas",     "satuan": "tabung", "jumlah_pakai": 1,  "biaya_per_unit": 5000, "persen_modal": 24 },
+      { "nama": "minyak",  "satuan": "liter",  "jumlah_pakai": 10, "biaya_per_unit": 4500, "persen_modal": 21 },
+      { "nama": "gula",    "satuan": "kg",     "jumlah_pakai": 10, "biaya_per_unit": 3750, "persen_modal": 18 },
+      { "nama": "kemasan", "satuan": "buah",   "jumlah_pakai": 40, "biaya_per_unit": 450,  "persen_modal": 2 }
     ],
     "saran_harga": null
 } }
 ```
 
 **`biaya_per_unit` semua bahan dijamin berjumlah tepat sama dengan `modal_per_unit`** — di contoh ini 7.500 + 5.000 + 4.500 + 3.750 + 450 = 21.200. Itu diuji, bukan kebetulan. Rincian yang tidak menjumlah ke totalnya sendiri membuat pedagang berhenti percaya pada semua angka lain di aplikasi.
+
+#### `persen_modal`, `biaya_tenaga_per_unit`, `persen_tenaga`
+
+Dipakai layar detail untuk menggambar bar "modal datang dari sini". **Dihitung SQL, bukan frontend** — aturan #7 melarang React membagi rupiah untuk mendapat persen.
+
+Pembagi `persen_modal` adalah **modal penuh**, yaitu bahan **ditambah** ongkos tenaga — bukan total bahan saja. Kalau pembaginya total bahan, bar akan berjumlah 100% padahal ongkos tenaga hilang dari gambar, dan pedagang menyimpulkan modalnya cuma bahan. Karena itu tenaga punya barisnya sendiri lewat `biaya_tenaga_per_unit` + `persen_tenaga`, dan jumlah seluruhnya mendekati 100 (selisih kecil wajar karena tiap persen dibulatkan).
+
+`null` berarti modalnya belum diketahui — resep belum diisi. Jangan gambar bar kosong: bar kosong terbaca sebagai "nol persen", padahal artinya "belum tahu".
 
 #### `saran_harga` — fitur 8
 
@@ -472,14 +483,29 @@ Semua angka di sini dihitung SQL. `peringatan` sudah berupa kalimat siap tampil.
 Kalau pesannya `bukan_pesanan`, semua field lain `null` dan `peringatan` kosong.
 
 ### `GET /pesanan`
-Daftar pesanan masuk terbaru, lengkap dengan angka yang sudah dihitung SQL. Pesan yang bukan pesanan tidak pernah muncul di sini.
+Daftar pesanan masuk terbaru (maks 30), dari jalur tempel maupun WhatsApp, lengkap dengan angka yang sudah dihitung SQL. Pesan yang bukan pesanan tidak pernah muncul di sini.
+
+```json
+{ "ok": true, "data": [ {
+  "pesan_id": 7, "jenis": "menawar", "teks": "bu saya mau pesan 20 bungkus…",
+  "sumber": "whatsapp", "pengirim_samar": "…5616",
+  "nama_produk_mentah": "kripik pisang", "jumlah": 20, "harga_diminta": 18000,
+  "tanggal_dibutuhkan": null, "perlu_dicek": false,
+  "diterima_pada": "2026-09-02T03:05:00.000Z",
+  "produk_id": 3, "nama_produk": "Kripik Pisang", "modal_per_unit": 21200,
+  "nilai_pesanan": 360000, "untung_pesanan": -64000, "merugi": true,
+  "stok_cukup_untuk": 14
+} ] }
+```
+
+Tipe: `PesanMasukItem[]` di `shared/types.ts`. `sumber` `whatsapp` berarti terbaca otomatis dari sambungan baca-saja; `pengirim_samar` hanya empat digit terakhir (privasi pembeli).
 
 ### `GET /whatsapp/status`
 ```json
-{ "ok": true, "data": { "status": "terputus", "qr": null, "hanya_baca": true, "alasan": null } }
+{ "ok": true, "data": { "status": "terputus", "qr": null, "kode_pairing": null, "hanya_baca": true, "alasan": null } }
 ```
 
-`status`: `terputus` · `menunggu_qr` · `menyambung` · `tersambung`. Saat `menunggu_qr`, field `qr` berisi string QR untuk ditampilkan.
+`status`: `terputus` · `menunggu_qr` · `menyambung` · `tersambung`. Saat `menunggu_qr`, `qr` berisi string mentah untuk dirender frontend sebagai kode QR (cara utama), atau `kode_pairing` berisi kode 8 digit kalau penautan diminta lewat nomor HP.
 
 `hanya_baca` selalu `true` — sistem tidak punya jalur mengirim sama sekali.
 

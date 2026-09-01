@@ -1,7 +1,8 @@
 import { mintaJson, kosongJadiNull } from '../../lib/llm.ts';
+import type { BahanMentah, ProdukMentah } from './produk.types.ts';
 
 /**
- * Mengubah kalimat bebas jadi usulan produk baru — fitur 10.
+ * Lapisan LLM modul produk: kalimat bebas -> usulan produk baru — fitur 10.
  *
  * Dipakai untuk "tambah produk tanpa form": pedagang cukup mengucapkan apa yang
  * dia jual dan dari bahan apa, tidak perlu mengisi delapan kolom.
@@ -12,21 +13,6 @@ import { mintaJson, kosongJadiNull } from '../../lib/llm.ts';
  *
  * ★ DUA PANGGILAN, BUKAN SATU. Lihat alasannya di bawah.
  */
-
-export interface BahanMentah {
-  nama: string | null;
-  satuan: string | null;
-  jumlah: number | null;
-  harga_beli: number | null;
-  jumlah_beli: number | null;
-}
-
-export interface ProdukMentah {
-  nama_produk: string | null;
-  hasil_per_batch: number | null;
-  harga_jual: number | null;
-  bahan: BahanMentah[];
-}
 
 // ---------------------------------------------------------------------------
 // Kenapa dipecah dua
