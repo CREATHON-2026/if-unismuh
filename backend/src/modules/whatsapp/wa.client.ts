@@ -69,17 +69,31 @@ function ambilTeks(m: any): string | null {
  * yang bukan pembeli. Penyaringan di sini yang menjaga supaya aplikasi tidak
  * memproses hal yang bukan urusannya.
  */
-function layakDiproses(m: any): boolean {
+function alasanDilewati(m: any): string | null {
   const jid: string = m.key?.remoteJid ?? '';
-  if (m.key?.fromMe) return false;              // pesan pedagang sendiri
-  if (jid.endsWith('@g.us')) return false;      // grup, bukan pesanan pribadi
-  if (jid === 'status@broadcast') return false; // status/story
-  if (jid.endsWith('@newsletter')) return false;
-  return Boolean(ambilTeks(m));                 // teks saja, media diabaikan
+  if (m.key?.fromMe) return 'dikirim oleh pedagang sendiri (fromMe)';
+  if (jid.endsWith('@g.us')) return 'pesan grup';
+  if (jid === 'status@broadcast') return 'status/story';
+  if (jid.endsWith('@newsletter')) return 'channel/newsletter';
+  if (!ambilTeks(m)) {
+    return `bukan teks (bentuknya: ${Object.keys(m.message ?? {}).join(', ') || 'kosong'})`;
+  }
+  return null;
 }
 
 async function tanganiPesan(m: any): Promise<void> {
-  if (pemilik === null || !layakDiproses(m)) return;
+  if (pemilik === null) {
+    console.log('[wa] pesan diabaikan: belum ada pemilik sesi');
+    return;
+  }
+  // Kenapa sebuah pesan tidak diproses harus TERLIHAT. Diam-diam membuang
+  // pesan adalah kegagalan yang paling sulit ditelusuri: tidak ada galat,
+  // tidak ada keluaran, dan mustahil dibedakan dari "tidak ada pesan masuk".
+  const dilewati = alasanDilewati(m);
+  if (dilewati) {
+    console.log(`[wa] dilewati (${dilewati}) dari ${samarkan(m.key?.remoteJid ?? '')}`);
+    return;
+  }
   const teks = ambilTeks(m)!;
   try {
     const hasil = await prosesPesan(pemilik, teks, 'whatsapp', samarkan(m.key.remoteJid));
@@ -185,7 +199,13 @@ export async function hubungkanWhatsapp(
   });
 
   s.ev.on('messages.upsert', async ({ messages, type }: any) => {
-    if (type !== 'notify') return;   // abaikan sinkronisasi riwayat lama
+    // Dicatat SEBELUM disaring. Kalau tidak ada baris ini sama sekali saat
+    // chat masuk, berarti masalahnya di koneksi — bukan di penyaringan.
+    console.log(`[wa] messages.upsert: type=${type}, ${messages?.length ?? 0} pesan`);
+    if (type !== 'notify') {
+      console.log(`[wa] dilewati semua (type "${type}", bukan pesan baru)`);
+      return;
+    }
     for (const m of messages) await tanganiPesan(m);
   });
 
