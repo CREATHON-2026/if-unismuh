@@ -70,8 +70,8 @@
     "semantic_hash": "930fe47eeb71acda303705152a75a342"
   },
   "docs/06-kontrak-api.md": {
-    "mtime": 1788273224.8650267,
-    "ast_hash": "7e61e689e51471f93a355c129501e31a",
+    "mtime": 1788279109.467624,
+    "ast_hash": "0aa42ec4cb3004b0b6947030917758ae",
     "semantic_hash": ""
   },
   "docs/07-alur-pengguna.md": {
@@ -95,8 +95,8 @@
     "semantic_hash": "5b009fd996686b68e4aebdeecf522835"
   },
   "docs/11-setup-tim.md": {
-    "mtime": 1788268362.611149,
-    "ast_hash": "8c808337daa5fd8c5463c1729841ee31",
+    "mtime": 1788278205.3166444,
+    "ast_hash": "db91279aec8717d187c9000e132fa149",
     "semantic_hash": ""
   },
   "frontend/CLAUDE.md": {
@@ -160,13 +160,13 @@
     "semantic_hash": ""
   },
   "backend/src/config/env.ts": {
-    "mtime": 1788267641.5941844,
-    "ast_hash": "bde865fc1f19a04b470029d21371969d",
+    "mtime": 1788278892.885995,
+    "ast_hash": "1a39706d08d5a6910c4ea386db4dca96",
     "semantic_hash": ""
   },
   "backend/src/db/index.ts": {
-    "mtime": 1788261715.826107,
-    "ast_hash": "ae770f27543603254352d75df586c836",
+    "mtime": 1788278904.4733293,
+    "ast_hash": "85cbf7ff4adf7b81ed3073af4004e946",
     "semantic_hash": ""
   },
   "backend/src/lib/http.ts": {
@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "backend/src/modules/onboarding/onboarding.queries.ts": {
-    "mtime": 1788254879.4792252,
-    "ast_hash": "cc024d3625519708b5d95ba4224c82a5",
+    "mtime": 1788278787.1382632,
+    "ast_hash": "97bc1e26f659a88fe49f9e40950f6fdc",
     "semantic_hash": ""
   },
   "backend/src/modules/onboarding/onboarding.routes.ts": {
@@ -265,8 +265,8 @@
     "semantic_hash": ""
   },
   "backend/src/modules/produk/produk.routes.ts": {
-    "mtime": 1788272980.7139132,
-    "ast_hash": "e646021e1ffc22c86c6b67cbc89ecb92",
+    "mtime": 1788278830.6825955,
+    "ast_hash": "108e2d630752e32501f9fd3df3e66f9f",
     "semantic_hash": ""
   },
   "backend/src/modules/stok/stok.queries.ts": {
@@ -315,8 +315,8 @@
     "semantic_hash": ""
   },
   "shared/types.ts": {
-    "mtime": 1788272942.3855486,
-    "ast_hash": "8887419000cec5c37f65d9dd071b9a71",
+    "mtime": 1788278779.5522149,
+    "ast_hash": "16a2185b0c610fa0adbd453c8f3d322e",
     "semantic_hash": ""
   },
   "backend/spike/README.md": {
@@ -337,6 +337,16 @@
   "backend/spike/Screenshot 2026-09-01 164114.png": {
     "mtime": 1788252105.4657938,
     "ast_hash": "e6ad8866f761bf68f476c9d9d9e142ab",
+    "semantic_hash": ""
+  },
+  "backend/scripts/uji-produk-baru.mjs": {
+    "mtime": 1788279481.423776,
+    "ast_hash": "c363107c9233c7ec2847b24e674339b1",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/produk/produk.ekstraksi.ts": {
+    "mtime": 1788279441.551136,
+    "ast_hash": "f6009a8a83ba462be17fc62039d9d7e6",
     "semantic_hash": ""
   }
 }

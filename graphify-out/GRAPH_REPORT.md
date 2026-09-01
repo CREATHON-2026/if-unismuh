@@ -1,16 +1,16 @@
-# Graph Report - if-unismuh  (2026-09-01)
+# Graph Report - if-unismuh  (2026-09-02)
 
 ## Corpus Check
-- 66 files · ~75,656 words
+- 68 files · ~79,417 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 538 nodes · 922 edges · 37 communities (33 shown, 4 thin omitted)
-- Extraction: 88% EXTRACTED · 11% INFERRED · 1% AMBIGUOUS · INFERRED: 105 edges (avg confidence: 0.9)
+- 557 nodes · 957 edges · 38 communities (34 shown, 4 thin omitted)
+- Extraction: 88% EXTRACTED · 11% INFERRED · 1% AMBIGUOUS · INFERRED: 106 edges (avg confidence: 0.89)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `030d2743`
+- Built from commit: `d40c9bad`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -21,23 +21,23 @@
 - Rumus SQL: Modal per Produk
 - server.ts
 - LLM Tidak Pernah Menghitung
-- index.ts
+- stok.queries.ts
 - Daftar Periksa Setup Laptop
 - Kontrak API sebagai sumber kebenaran backend
-- auth.routes.ts
+- wa.client.ts
 - types.ts
 - Aturan 4 — Sistem tidak pernah mengirim pesan ke nomor pembeli
 - Kepemilikan Folder (frontend/, backend/, shared/, docs/)
 - Aturan 5 — Harga di katalog = harga di aplikasi
-- llm.ts
+- pesanan.proses.ts
 - devDependencies
 - dependencies
 - compilerOptions
-- pesanan.proses.ts
+- produk.routes.ts
 - siapkan-demo.mjs
 - schema.sql
-- satu
-- onboarding.routes.ts
+- index.ts
+- onboarding.queries.ts
 - Kriteria Foto Buku Catatan
 - ekstraksi-foto.mjs
 - uji-beranda.mjs
@@ -87,7 +87,7 @@
 - **Alur Temuan Pertama: Wawancara Resep ke Modal per Unit ke Layar Rugi** — docs_07_alur_pengguna_wawancara_resep_satu_produk, docs_06_kontrak_api_post_onboarding_resep, docs_05_model_data_rumus_modal_per_produk, docs_07_alur_pengguna_temuan_pertama, docs_01_produk_thesis_produk, docs_05_model_data_tabel_resep [EXTRACTED 1.00]
 - **Alur Pesanan Masuk: Klasifikasi, Cek Margin, Cek Stok, Balasan Siap Salin** — docs_04_pipeline_ai_klasifikasi_pesanan_masuk, docs_06_kontrak_api_post_pesanan_analisis, docs_05_model_data_rumus_cek_margin_pesanan, docs_05_model_data_rumus_cek_kecukupan_bahan, docs_04_pipeline_ai_tahap_5_menyusun_balasan, docs_06_kontrak_api_post_pesanan_balasan, docs_03_arsitektur_whatsapp_tempel_teks_manual [EXTRACTED 1.00]
 
-## Communities (37 total, 4 thin omitted)
+## Communities (38 total, 4 thin omitted)
 
 ### Community 0 - "Fitur 1 — Foto Buku Catatan ke Transaksi Terstruktur"
 Cohesion: 0.07
@@ -103,19 +103,19 @@ Nodes (13): Checklist aturan yang perlu dicek reviewer, Foto mentah dihapus sete
 
 ### Community 3 - "Rumus SQL: Modal per Produk"
 Cohesion: 0.07
-Nodes (43): Jalur Baca per Peran (frontend, AI/backend, presenter, AI assistant), Kalau Dokumen dan Kode Berbeda, Perbaiki Dokumennya, Peta Baca Dokumentasi lapakAi, Kata Kunci 'Sebelum': Cegat Kerugian Sebelum Terjadi, Nomor HP Jadi Identitas, Profil Pengguna: Pedagang Mikro Usia 35-60, Thesis Produk: Berguna di Menit Kedua, Fitur 11 — Hitung Tenaga Sendiri sebagai Biaya (+35 more)
+Nodes (42): Jalur Baca per Peran (frontend, AI/backend, presenter, AI assistant), Kalau Dokumen dan Kode Berbeda, Perbaiki Dokumennya, Peta Baca Dokumentasi lapakAi, Kata Kunci 'Sebelum': Cegat Kerugian Sebelum Terjadi, Nomor HP Jadi Identitas, Profil Pengguna: Pedagang Mikro Usia 35-60, Thesis Produk: Berguna di Menit Kedua, Fitur 11 — Hitung Tenaga Sendiri sebagai Biaya (+34 more)
 
 ### Community 4 - "server.ts"
-Cohesion: 0.19
-Nodes (15): AKAR_REPO, periksaEnv(), PORT, tutupDb(), GalatTampil, jalur(), kirim(), kirimGalat() (+7 more)
+Cohesion: 0.14
+Nodes (30): AKAR_REPO, periksaEnv(), PORT, tutupDb(), GalatTampil, jalur(), kirim(), kirimGalat() (+22 more)
 
 ### Community 5 - "LLM Tidak Pernah Menghitung"
 Cohesion: 0.06
-Nodes (47): Masalah: Omzet Disamakan dengan Untung, Produk Paling Laku Justru Paling Merugikan, Riset Pedagang (5 pedagang, 90 menit), Fitur 10 — Tambah Produk Tanpa Form, Fitur 19 — Katalog Digital + Tombol wa.me, Fitur 23 — Koneksi WhatsApp Otomatis (disarankan tidak dikerjakan), Fitur 3 — Ketik Manual, Fitur 6 — Deteksi Produk Merugi (+39 more)
+Nodes (48): Masalah: Omzet Disamakan dengan Untung, Produk Paling Laku Justru Paling Merugikan, Riset Pedagang (5 pedagang, 90 menit), Fitur 10 — Tambah Produk Tanpa Form, Fitur 19 — Katalog Digital + Tombol wa.me, Fitur 23 — Koneksi WhatsApp Otomatis (disarankan tidak dikerjakan), Fitur 3 — Ketik Manual, Fitur 6 — Deteksi Produk Merugi (+40 more)
 
-### Community 6 - "index.ts"
-Cohesion: 0.15
-Nodes (14): DATA_DIR, DB_DIR, DIR, Pelaksana, SCHEMA, siapkanDb(), transaksiDb(), simpanResep() (+6 more)
+### Community 6 - "stok.queries.ts"
+Cohesion: 0.16
+Nodes (12): Pelaksana, transaksiDb(), simpanResep(), BahanTidakSah, daftarStok(), simpanStok(), daftarTransaksi(), ProdukTidakSah (+4 more)
 
 ### Community 7 - "Daftar Periksa Setup Laptop"
 Cohesion: 0.22
@@ -125,13 +125,13 @@ Nodes (11): Tanya Knowledge Graph Sebelum Menjelajah Kode, GEMINI_API_KEY Hanya 
 Cohesion: 0.20
 Nodes (10): Kontrak API sebagai sumber kebenaran backend, Setiap query menyertakan user_id di WHERE, Aturan 3 — Jangan pernah minta email atau password, Aturan 6 — Web mobile-first, bukan aplikasi native, Aturan UI untuk pengguna 35-60 tahun, Mulai dengan data tiruan sesuai kontrak API, Frontend memakai tipe dari shared/, Platform web app mobile-first (+2 more)
 
-### Community 9 - "auth.routes.ts"
-Cohesion: 0.31
-Nodes (9): keInternasional(), nomorValid(), rapikanNomor(), bacaToken(), buatToken(), ReqBerpengguna, wajibLogin(), rutAuth (+1 more)
+### Community 9 - "wa.client.ts"
+Cohesion: 0.29
+Nodes (10): alasanDilewati(), ambilTeks(), AUTH_DIR, DIR, hubungkanWhatsapp(), samarkan(), statusKini(), StatusWa (+2 more)
 
 ### Community 10 - "types.ts"
-Cohesion: 0.10
-Nodes (22): daftarTransaksi(), ProdukTidakSah, rutTransaksi, AnalisisPesanan, AnalisisPesananReq, BalasanRes, BarisTransaksi, BarisUsulan (+14 more)
+Cohesion: 0.09
+Nodes (21): AnalisisPesanan, AnalisisPesananReq, BalasanRes, BarisUsulan, Beranda, CatatTransaksiReq, DariTeksProdukReq, DariTeksReq (+13 more)
 
 ### Community 11 - "Aturan 4 — Sistem tidak pernah mengirim pesan ke nomor pembeli"
 Cohesion: 0.67
@@ -141,9 +141,9 @@ Nodes (3): Aturan 4 — Sistem tidak pernah mengirim pesan ke nomor pembeli, Lay
 Cohesion: 0.67
 Nodes (3): Tipe TypeScript Hidup di shared/, Kepemilikan Folder (frontend/, backend/, shared/, docs/), Pembagian Peran Tim (2 frontend, 1 AI/backend)
 
-### Community 14 - "llm.ts"
-Cohesion: 0.14
-Nodes (22): coba(), FRASA_KOSONG, galatSementara(), isiPalsu(), JawabanOllama, kosongJadiNull(), mintaJson(), mintaTeks() (+14 more)
+### Community 14 - "pesanan.proses.ts"
+Cohesion: 0.07
+Nodes (49): coba(), FRASA_KOSONG, galatSementara(), isiPalsu(), JawabanOllama, kosongJadiNull(), llmSiap(), mintaJson() (+41 more)
 
 ### Community 15 - "devDependencies"
 Cohesion: 0.07
@@ -157,9 +157,9 @@ Nodes (19): dependencies, cors, dotenv, @electric-sql/pglite, express, @google/g
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+10 more)
 
-### Community 18 - "pesanan.proses.ts"
-Cohesion: 0.08
-Nodes (42): query(), llmSiap(), rupiah(), bangunPrompt(), susunBalasan(), BUKAN_PESANAN, prosesPesan(), susunPeringatan() (+34 more)
+### Community 18 - "produk.routes.ts"
+Cohesion: 0.17
+Nodes (15): query(), siapkanDb(), daftarPesan(), bahanProduk(), daftarProduk(), DetailDasar, detailProduk(), SaranMentah (+7 more)
 
 ### Community 19 - "siapkan-demo.mjs"
 Cohesion: 0.14
@@ -169,13 +169,13 @@ Nodes (13): barisStok, hariIni, idProduk, JUAL_BULAN_INI, JUAL_BULAN_LALU, kelom
 Cohesion: 0.41
 Nodes (12): bahan, ekstraksi, pengguna, pesan_masuk, produk, resep, stok, transaksi (+4 more)
 
-### Community 21 - "satu"
-Cohesion: 0.27
-Nodes (9): satu(), ambilPengguna(), buatPengguna(), cariPenggunaLewatNomor(), ringkasanPenjualan, temuanProduk, rutBeranda, Beranda (+1 more)
+### Community 21 - "index.ts"
+Cohesion: 0.22
+Nodes (11): DB_DIR, DIR, satu(), SCHEMA, ambilPengguna(), buatPengguna(), cariPenggunaLewatNomor(), ringkasanPenjualan (+3 more)
 
-### Community 22 - "onboarding.routes.ts"
+### Community 22 - "onboarding.queries.ts"
 Cohesion: 0.33
-Nodes (7): ambilTemuanPertama(), simpanUsaha(), JENIS_SAH, rutOnboarding, BahanMasukan, JenisUsaha, TemuanPertama
+Nodes (5): ambilTemuanPertama(), simpanUsaha(), BahanMasukan, JenisUsaha, TemuanPertama
 
 ### Community 23 - "Kriteria Foto Buku Catatan"
 Cohesion: 0.20
@@ -232,7 +232,7 @@ Nodes (3): panggil(), rupiah(), uji()
   docs/03-arsitektur.md · relation: shares_data_with
 
 ## Knowledge Gaps
-- **126 isolated node(s):** `name`, `version`, `private`, `type`, `spike` (+121 more)
+- **133 isolated node(s):** `name`, `version`, `private`, `type`, `spike` (+128 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -252,4 +252,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **What is the exact relationship between `Fitur 19 — Katalog Digital + Tombol wa.me` and `GET /produk`?**
   _Edge tagged AMBIGUOUS (relation: shares_data_with) - confidence is low._
 - **Why does `Rumus SQL: Modal per Produk` connect `Rumus SQL: Modal per Produk` to `Fitur 1 — Foto Buku Catatan ke Transaksi Terstruktur`, `LLM Tidak Pernah Menghitung`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
