@@ -5,13 +5,11 @@ import type { BahanMasukan } from '@shared/types';
 import { formatRupiah } from '@shared/format/rupiah';
 import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
+import { KELAS_INPUT } from '../components/InputTeks';
 import { KepalaResep } from '../components/KepalaResep';
 import { tulisOnboarding } from '../state/onboarding';
 
 const FORM_KOSONG = { nama: '', jumlah: '', satuan: '', harga_beli: '', jumlah_beli: '' };
-
-const KELAS_INPUT =
-  'h-14 w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-utama text-tinta outline-none transition placeholder:text-redup focus:border-hero';
 
 // Label di ATAS kolom, bukan di dalam placeholder. Di lebar setengah layar
 // placeholder panjang terpotong di tengah kata dan pertanyaannya jadi hilang.

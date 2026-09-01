@@ -58,7 +58,7 @@ export function NomorHp() {
       </h1>
       <p className="text-utama leading-relaxed text-sedang">
         Kami akan mengirimkan kode verifikasi via WhatsApp atau SMS untuk memastikan ini benar
-        kamu.
+        Anda.
       </p>
 
       <label className="pt-4 text-lg font-bold text-tinta" htmlFor="nomor-hp">

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
+import { InputTeks } from '../components/InputTeks';
 import { KepalaResep } from '../components/KepalaResep';
 import { tulisOnboarding } from '../state/onboarding';
 
@@ -29,7 +30,7 @@ export function ResepHasil() {
           Hasil sekali produksi dari resep ini.
         </p>
 
-        <input
+        <InputTeks
           type="tel"
           inputMode="numeric"
           autoFocus

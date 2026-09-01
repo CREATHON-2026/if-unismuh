@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Info, Store } from 'lucide-react';
-import { Layar, LATAR_GRADIEN } from '../components/Layar';
+import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
 import { tulisOnboarding } from '../state/onboarding';
 
@@ -13,22 +13,17 @@ export function NamaUsaha() {
     <Layar
       tanpaLogo
       atas
-      latar={LATAR_GRADIEN}
       aksi={
         <Tombol
           varian="gelap"
+          panah
           disabled={!nama.trim()}
           onClick={() => {
             tulisOnboarding({ nama_usaha: nama.trim() });
             nav('/onboarding/jenis');
           }}
         >
-          <span className="flex items-center justify-center gap-3">
-            Lanjut
-            <span aria-hidden className="text-2xl leading-none">
-              →
-            </span>
-          </span>
+          Lanjut
         </Tombol>
       }
     >

@@ -13,6 +13,8 @@ export default defineConfig({
   // Browser memanggil /api relatif; dev server meneruskan ke backend lokal.
   // Wajib di Codespaces: localhost:3000 codespace tidak terlihat dari browser.
   server: {
+    host: true, // bind 0.0.0.0 supaya port forwarding Codespaces bekerja
+    allowedHosts: ['.app.github.dev'],
     proxy: {
       '/api': {
         target: 'http://localhost:3000',

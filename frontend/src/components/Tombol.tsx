@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 /**
  * Tombol target-sentuh besar.
@@ -13,9 +13,15 @@ import type { ButtonHTMLAttributes } from 'react';
  */
 export function Tombol({
   varian = 'utama',
+  panah = false,
   className = '',
+  children,
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { varian?: 'utama' | 'gelap' | 'garis' }) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+  varian?: 'utama' | 'gelap' | 'garis';
+  panah?: boolean;
+  children?: ReactNode;
+}) {
   const dasar =
     'min-h-16 w-full rounded-2xl px-4 text-utama font-semibold transition active:scale-[0.98] disabled:opacity-35';
   // `utama` dan `gelap` sengaja sama: keduanya sudah tersebar di layar yang

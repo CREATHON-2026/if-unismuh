@@ -1,24 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Info, Package, Store } from 'lucide-react';
-import { Layar } from '../components/Layar';
+import { Layar, TombolKembali } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
+import { TitikLangkah } from '../components/TitikLangkah';
 import { tulisOnboarding } from '../state/onboarding';
 
 const SARAN = ['Beras 5kg', 'Gula Pasir', 'Minyak Goreng'];
-
-// Bar progres bergaya segmen. Warna kuning tidak dipakai di sini: dalam bahasa
-// rupa aplikasi ini kuning berarti "perlu diperhatikan", bukan "sudah lewat".
-function BarLangkah() {
-  return (
-    <div className="flex items-center justify-center gap-3" aria-hidden="true">
-      <span className="h-2 w-16 rounded-full bg-redup" />
-      <span className="h-2 w-16 rounded-full bg-redup" />
-      <span className="h-2.5 w-20 rounded-full bg-hero" />
-      <span className="h-2 w-16 rounded-full bg-garis" />
-    </div>
-  );
-}
 
 export function ProdukTerlaris() {
   const nav = useNavigate();
@@ -32,7 +20,10 @@ export function ProdukTerlaris() {
 
   return (
     <Layar tanpaLogo atas>
-      <BarLangkah />
+      <div className="flex items-center justify-between">
+        <TombolKembali onClick={() => nav(-1)} />
+        <TitikLangkah aktif={2} />
+      </div>
 
       <div className="kartu mt-14 p-6">
         <div className="flex flex-col items-center gap-4 text-center">
@@ -67,13 +58,8 @@ export function ProdukTerlaris() {
         </p>
 
         <div className="mt-6">
-          <Tombol varian="gelap" disabled={!produk.trim()} onClick={lanjut}>
-            <span className="flex items-center justify-center gap-3">
-              Lanjut
-              <span aria-hidden className="text-2xl leading-none">
-                →
-              </span>
-            </span>
+          <Tombol varian="gelap" panah disabled={!produk.trim()} onClick={lanjut}>
+            Lanjut
           </Tombol>
         </div>
 

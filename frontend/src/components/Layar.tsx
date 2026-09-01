@@ -7,6 +7,20 @@ import { ArrowLeft } from 'lucide-react';
 // padahal justru dua warna itulah yang harus paling dulu tertangkap mata.
 export const LATAR_GRADIEN = 'bg-kanvas';
 
+// Tombol kembali standar — bentuknya sama di semua layar.
+export function TombolKembali({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label="Kembali"
+      onClick={onClick}
+      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-2xl leading-none text-tinta shadow-sm ring-1 ring-garis active:scale-95"
+    >
+      ←
+    </button>
+  );
+}
+
 // Kerangka layar: header (kembali + wordmark), pertanyaan, isi, aksi bawah.
 export function Layar({
   pertanyaan,
@@ -29,7 +43,7 @@ export function Layar({
     <div className={`min-h-dvh ${latar ?? 'bg-kanvas'}`}>
       <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 py-6">
         {!tanpaLogo && (
-          <div className="relative flex items-center justify-center pb-8">
+          <div className="relative flex items-center justify-center pb-6 sm:pb-8">
             {kembali && (
               <button
                 type="button"
