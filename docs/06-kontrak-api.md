@@ -513,7 +513,9 @@ Semua angka di sini dihitung SQL. `peringatan` sudah berupa kalimat siap tampil.
 
 | Field | Catatan |
 |---|---|
-| `jenis` | `pesanan` · `tanya_harga` · `menawar` · `bukan_pesanan`. Dikoreksi kode setelah LLM: kalau angka yang disebut pembeli **di bawah** harga jual tersimpan, `pesanan` dinaikkan jadi `menawar`; kata tawar-menawar di kalimatnya punya hak veto atas angka |
+| `jenis` | `pesanan` · `tanya_harga` · `menawar` · `bukan_pesanan`. Dikoreksi kode setelah LLM, dan koreksinya **dua arah**: angka di bawah harga jual tersimpan menaikkan `pesanan` jadi `menawar`, sedangkan `menawar` tanpa bukti apa pun — tanpa angka harga dan tanpa kata tawar-menawar — diturunkan kembali jadi `pesanan`. Kata tawar-menawar di kalimatnya punya hak veto atas angka. Kata "pesan"/"order" tanpa kata tanya menaikkan `tanya_harga` jadi `pesanan` |
+| `jumlah` | **`null` kalau bilangannya tidak benar-benar tertulis** di pesan. Angka harga tidak dihitung sebagai bukti jumlah: di "pesan kripik pisang, bisa 18rb ga?" pembeli tidak pernah menyebut mau berapa bungkus, jadi `jumlah` dikosongkan dan `perlu_dicek` menyala |
+| `nama_produk_mentah` | Disalin apa adanya dari pesan, termasuk kalau salah eja. Kata satuan (bungkus, biji, ikat) tidak ikut. Berbeda dari angka, nama **tidak** dikosongkan saat ragu — nama salah tulis masih bisa dicocokkan pedagang lewat `kandidat`, sedangkan nama kosong membuat pesanannya tidak terbaca sama sekali |
 | `pesan_id` | **`null` kalau `bukan_pesanan`** — pesannya sengaja tidak disimpan |
 | `perlu_dicek` | `true` karena **dua sebab berbeda**: pencocokan nama produk tidak meyakinkan (tampilkan `kandidat`), **atau** ada angka yang tidak bisa dipertanggungjawabkan. Sebabnya selalu dijelaskan di `peringatan[0]` |
 | `harga_diminta` | **`null` kalau angkanya ternyata harga total, bukan per satuan.** Angkanya dibuang, bukan dibagi — membagi berarti menebak (aturan #8). Perhitungan kembali memakai harga jual tersimpan, dan `peringatan[0]` memberi tahu pedagang untuk memastikan sendiri |

@@ -62,6 +62,14 @@ Lalu keluarkan apa yang TERTULIS di pesan itu.
 Aturan yang wajib dipatuhi:
 1. Nama barang disalin PERSIS seperti ditulis pembeli. Jangan perbaiki ejaan,
    jangan panjangkan singkatan. "kripik psg" tetap "kripik psg".
+   Kata satuan (bungkus, biji, pcs, buah, kg, ons, ikat, botol, porsi, dus,
+   pack, renteng, lusin, kotak, plastik, mika) BUKAN bagian dari nama barang.
+   Nama barang adalah kata-kata SESUDAH satuan itu, dan boleh lebih dari satu
+   kata. Selama pembeli menyebut sesuatu yang bisa dibeli, nama_produk_mentah
+   TIDAK BOLEH null:
+   - "pesan 20 bungkus kripik pisang" -> nama_produk_mentah "kripik pisang"
+   - "minta 3 ikat kangkung cabut"    -> nama_produk_mentah "kangkung cabut"
+   - "5 pcs donat"                    -> nama_produk_mentah "donat"
 2. JANGAN menghitung apa pun. Jangan mengalikan jumlah dengan harga, jangan
    MEMBAGI harga total dengan jumlah, jangan menilai untung atau rugi, jangan
    menebak stok. Kamu hanya membaca.
@@ -77,6 +85,10 @@ Aturan yang wajib dipatuhi:
    Khususnya jumlah: kalau pembeli tidak menyebut bilangan apa pun, jumlah
    HARUS null. Jangan pernah menulis 1 karena merasa harus mengisi.
    - "kripik pisang berapa harganya?" -> jumlah null, BUKAN 1
+   Aturan "kalau ragu isi null" ini berlaku untuk ANGKA — jumlah, harga, dan
+   tanggal. TIDAK berlaku untuk nama barang: menyalin nama yang tertulis
+   bukan menebak, dan nama yang salah tulis masih bisa dicocokkan pedagang,
+   sedangkan nama yang kosong membuat pesanannya tidak bisa dibaca sama sekali.
 6. Kata tanya ("berapa", "berapaan", "masih ada", "?") menandakan pembeli
    sedang bertanya, bukan memesan.
 7. Pesan yang cuma sapaan, ucapan terima kasih, konfirmasi transfer, tanya
@@ -127,13 +139,20 @@ export async function klasifikasiPesan(teks: string): Promise<HasilKlasifikasi> 
 // perhitungan finansial — hasilnya tidak pernah tampil sebagai angka di layar.
 // ---------------------------------------------------------------------------
 
-/** Ada bilangan di teks? Digit atau kata bilangan yang lazim di pesan pembeli. */
-const ADA_BILANGAN = new RegExp(
-  '\\d|\\b(satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas'
-  + '|seratus|seribu|sejuta|selusin|belas|puluh|ratus|ribu|juta|lusin|kodi)\\b'
-  + '|\\bse(bungkus|biji|buah|butir|pasang|lusin|piring|gelas|porsi|ikat|iket)\\b'
-  + '|\\bsi(biji|bungkus)\\b'
-  + '|\\b(goceng|ceban|goban|gopek|seceng|cepek)\\b', 'i',
+/**
+ * Kata bilangan yang menyebut BANYAKNYA barang, bukan banyaknya uang.
+ *
+ * "ribu", "juta", "goceng" sengaja TIDAK ada di sini: itu satuan uang. Kalau
+ * ikut dihitung sebagai bukti jumlah, kalimat "pesan kripik pisang, bisa 18rb
+ * ga?" akan dianggap menyebutkan jumlah — padahal satu-satunya angka di situ
+ * adalah harga, dan pembeli tidak pernah bilang mau berapa bungkus.
+ */
+const KATA_BILANGAN = new RegExp(
+  '\\b(satu|dua|tiga|empat|lima|enam|tujuh|delapan|sembilan|sepuluh|sebelas'
+  + '|belas|puluh|lusin|kodi|selusin|setengah|separuh|seperempat|beberapa)\\b'
+  + '|\\bse(bungkus|biji|buah|butir|pasang|piring|gelas|porsi|ikat|iket|kilo|kg'
+  + '|ons|ekor|papan|renteng|dus|kotak|toples|mika|plastik)\\b'
+  + '|\\bsi(biji|bungkus)\\b', 'i',
 );
 
 /** Slang uang bernilai pasti — kamus baca, bukan perhitungan. */
@@ -208,14 +227,50 @@ export function saringPesan(teks: string, masuk: HasilKlasifikasi): HasilKlasifi
   // 1. Jumlah yang tidak bisa dibuktikan dari teks dikosongkan. Model mengisi
   //    1 karena merasa harus mengisi sesuatu; akibatnya pertanyaan harga masuk
   //    daftar sebagai pesanan satu bungkus yang tidak pernah dipesan siapa pun.
-  if (h.jumlah !== null && !ADA_BILANGAN.test(teks)) {
+  //
+  //    Bukti yang diterima sempit dan sengaja: angka itu HARUS tertulis di
+  //    pesan, atau ada kata bilangan yang menyebut banyaknya barang. Menanyakan
+  //    "apakah ada angka di teks" saja tidak cukup — di "pesan kripik pisang,
+  //    bisa 18rb ga?" angkanya adalah harga, dan jumlah 1 tetap lolos.
+  if (h.jumlah !== null && !angka.has(h.jumlah) && !KATA_BILANGAN.test(teks)) {
     h.jumlah = null;
+    if (h.jenis === 'pesanan' || h.jenis === 'menawar') {
+      tandai('Pembeli belum menyebut mau berapa banyak — jumlahnya perlu ditanyakan dulu.');
+    }
   }
 
   // 2. Tawaran yang menyamar jadi pesanan biasa. Kata-kata tawar-menawar
   //    deterministik; kalau ada, pedagang berhak melihatnya sebagai tawaran.
   if (h.jenis === 'pesanan' && PENANDA_TAWAR.test(teks)) {
     h.jenis = 'menawar';
+  }
+
+  // 2b. Dan sebaliknya: "menawar" harus bisa dibuktikan. Menawar berarti
+  //     pembeli minta harga lain, dan buktinya cuma dua — kata tawar-menawar,
+  //     atau angka harga yang ia sebut sendiri. Tanpa keduanya, klaim itu tidak
+  //     berdasar: model membaca partikel merengek seperti "dong bu" sebagai
+  //     permintaan potongan, lalu pedagang disuruh menyiapkan jawaban tawar
+  //     untuk pesanan yang sebenarnya menerima harga apa adanya.
+  //
+  //     Kalimat bertanda tanya sengaja dibiarkan apa adanya: menurunkannya ke
+  //     "pesanan" berisiko menyimpan pertanyaan sebagai pesanan sungguhan, dan
+  //     itu kekeliruan yang lebih mahal daripada label tawar yang keliru.
+  if (h.jenis === 'menawar' && h.harga_diminta === null
+      && !PENANDA_TAWAR.test(teks) && !TANYA_HARGA.test(teks)) {
+    h.jenis = 'pesanan';
+  }
+
+  // 2c. "pesan" dan "order" adalah niat membeli yang diucapkan terang-terangan.
+  //     Pesanan yang belum lengkap — barangnya belum disebut, atau jumlahnya
+  //     menyusul — tetap pesanan; yang kurang itu dikosongkan dan ditandai,
+  //     bukan dijadikan alasan menurunkannya jadi sekadar pertanyaan.
+  //
+  //     Syaratnya sengaja sempit: tidak boleh ada kata tanya dan tidak boleh
+  //     ada tanda tanya, supaya "berapa harganya kalau pesan 20?" tetap dibaca
+  //     sebagai pertanyaan dan tidak pernah masuk daftar sebagai pesanan.
+  if (h.jenis === 'tanya_harga' && /\b(pesan|pesen|order|orderan)\b/i.test(teks)
+      && !TANYA_HARGA.test(teks) && !teks.includes('?')) {
+    h.jenis = 'pesanan';
   }
 
   // 3. Pertanyaan harga tidak membawa tawaran. Angka di kalimat seperti
