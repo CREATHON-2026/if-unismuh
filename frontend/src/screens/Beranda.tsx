@@ -118,12 +118,27 @@ export function Beranda() {
               : 'Ini yang benar-benar tinggal, bukan yang lewat.'
           }
           bawah={
+            /*
+             * Uang masuk sengaja ditulis hampir sebesar untung, bukan sebagai
+             * catatan kaki.
+             *
+             * Untung 40px lawan uang masuk 19px membuat hierarkinya MEMBALIK
+             * besaran: Rp 268.000 tampil paling besar, Rp 4.200.000 paling
+             * kecil, dan mata yang melirik sekilas menyimpulkan untungnya lebih
+             * banyak — kebalikan persis dari yang ingin dikatakan layar ini.
+             *
+             * Pada 22px putih penuh, angka besarnya kembali terbaca besar,
+             * sementara untung tetap menang lewat ukuran dan warna hijaunya.
+             * Keduanya jadi bisa dibandingkan, yang memang seluruh gunanya.
+             */
             <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-isi font-medium text-white/60">Uang masuk</p>
-                <p className="mt-0.5 text-label text-white/40">Belum dikurangi modal</p>
+              <div className="min-w-0">
+                <p className="text-isi font-medium text-white/75">Uang masuk</p>
+                {/* /50, bukan /45: pada 12,5px di atas kartu gelap, /45 hanya 4,26:1 —
+                    gagal WCAG AA. /50 memberi 4,92:1. Diukur, bukan dikira. */}
+                <p className="mt-0.5 text-label text-white/50">Belum dikurangi modal</p>
               </div>
-              <span className="angka shrink-0 text-sub font-bold text-white">
+              <span className="angka shrink-0 text-judul-kecil font-bold text-white">
                 {formatRupiah(data.omzet)}
               </span>
             </div>

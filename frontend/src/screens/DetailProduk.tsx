@@ -125,7 +125,10 @@ export function DetailProduk() {
           tampilkan angka karangan. */}
       {d.saran_harga && (
         <div className="mt-3 rounded-kartu bg-untung p-6 text-white">
-          <p className="label-bagian !text-white/70">SARAN HARGA</p>
+          {/* /85, bukan /70: hijau #1E6F4C jauh lebih terang daripada kartu navy,
+              jadi alpha yang aman di sana gagal di sini. /70 hanya 3,90:1;
+              /85 memberi 4,91:1 dan sama dengan teks penjelas di bawahnya. */}
+          <p className="label-bagian !text-white/85">SARAN HARGA</p>
           <p className="angka mt-2 text-nomor font-extrabold leading-none">
             {formatRupiah(d.saran_harga.harga_disarankan)}
           </p>
