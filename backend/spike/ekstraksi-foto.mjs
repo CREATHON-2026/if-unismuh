@@ -20,7 +20,11 @@ import { GoogleGenAI } from '@google/genai';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-const MODEL = 'gemini-3.7-flash';
+/**
+ * Dicoba berurutan. Model teratas sering kelebihan beban di jam sibuk, dan
+ * di lomba 24 jam kamu tidak boleh berhenti hanya karena satu model penuh.
+ */
+const MODEL_URUT = ['gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
 const AMBANG_RAGU = 0.7; // di bawah ini -> ditandai untuk dicek manusia
 
 const MIME = {
@@ -109,27 +113,39 @@ async function bacaSatuFoto(client, berkas) {
   if (!mime) throw new Error(`format tidak didukung: ${ext}`);
 
   const base64 = fs.readFileSync(berkas, { encoding: 'base64' });
-  const mulai = Date.now();
 
-  const interaction = await client.interactions.create({
-    model: MODEL,
-    input: [
-      { type: 'text', text: PROMPT },
-      { type: 'image', data: base64, mime_type: mime },
-    ],
-    response_format: { type: 'text', mime_type: 'application/json', schema: SKEMA },
-  });
-
-  const detik = ((Date.now() - mulai) / 1000).toFixed(1);
-  return { hasil: JSON.parse(interaction.output_text), detik };
+  let galatTerakhir;
+  for (const model of MODEL_URUT) {
+    const mulai = Date.now();
+    try {
+      const interaction = await client.interactions.create({
+        model,
+        input: [
+          { type: 'text', text: PROMPT },
+          { type: 'image', data: base64, mime_type: mime },
+        ],
+        response_format: { type: 'text', mime_type: 'application/json', schema: SKEMA },
+      });
+      const detik = ((Date.now() - mulai) / 1000).toFixed(1);
+      return { hasil: JSON.parse(interaction.output_text), detik, model };
+    } catch (err) {
+      galatTerakhir = err;
+      // 429/500/503 = sibuk atau gangguan sementara -> coba model berikutnya.
+      // Selain itu (400 skema salah, 401 kunci salah) percuma diulang.
+      const sementara = /\b(429|500|503)\b|high demand|overload|unavailable/i.test(err.message);
+      if (!sementara) throw err;
+      console.log(`   ${model} sedang penuh, coba model berikutnya...`);
+    }
+  }
+  throw galatTerakhir;
 }
 
-function laporkan(berkas, hasil, detik) {
+function laporkan(berkas, hasil, detik, model) {
   const baris = hasil.baris ?? [];
   const ragu = baris.filter((b) => b.keyakinan < AMBANG_RAGU);
 
   console.log(`\n${'='.repeat(64)}`);
-  console.log(`${path.basename(berkas)}   ${detik} detik`);
+  console.log(`${path.basename(berkas)}   ${detik} detik   ${model}`);
   console.log('='.repeat(64));
 
   if (baris.length === 0) {
@@ -168,16 +184,16 @@ async function main() {
 
   const client = new GoogleGenAI({});
   const fotos = daftarFoto(target);
-  console.log(`Menguji ${fotos.length} foto dengan ${MODEL}\n`);
+  console.log(`Menguji ${fotos.length} foto  (urutan model: ${MODEL_URUT.join(' -> ')})\n`);
 
   const rekap = [];
   const mentah = {};
 
   for (const berkas of fotos) {
     try {
-      const { hasil, detik } = await bacaSatuFoto(client, berkas);
+      const { hasil, detik, model } = await bacaSatuFoto(client, berkas);
       mentah[path.basename(berkas)] = hasil;
-      rekap.push({ berkas, gagal: false, ...laporkan(berkas, hasil, detik) });
+      rekap.push({ berkas, gagal: false, ...laporkan(berkas, hasil, detik, model) });
     } catch (err) {
       console.log(`\n${path.basename(berkas)}  GAGAL: ${err.message}`);
       rekap.push({ berkas, gagal: true, jumlahBaris: 0, jumlahRagu: 0 });
