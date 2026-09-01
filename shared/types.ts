@@ -152,6 +152,58 @@ export interface Beranda {
 }
 
 // ---------------------------------------------------------------------------
+// Pesanan Masuk (fitur 9)
+// ---------------------------------------------------------------------------
+
+export type JenisPesan = 'pesanan' | 'tanya_harga' | 'menawar' | 'bukan_pesanan';
+
+export interface AnalisisPesananReq {
+  teks: string;
+}
+
+/** Kandidat produk saat nama dari chat tidak cocok meyakinkan. */
+export interface KandidatProduk {
+  id: number;
+  nama: string;
+  skor: number;
+}
+
+/**
+ * ★ Semua angka finansial di sini dihitung SQL, bukan LLM.
+ *
+ * LLM hanya mengeluarkan `jenis`, `nama_produk_mentah`, `jumlah`,
+ * `harga_diminta`, dan `tanggal_dibutuhkan` — yaitu apa yang TERTULIS di chat.
+ * `nilai_pesanan`, `untung_pesanan`, `merugi`, dan `stok_cukup_untuk` datang
+ * dari query. Lihat aturan #1 di CLAUDE.md.
+ */
+export interface AnalisisPesanan {
+  /** null kalau pesannya bukan pesanan — teksnya sengaja tidak disimpan */
+  pesan_id: number | null;
+  jenis: JenisPesan;
+
+  produk: { id: number; nama: string } | null;
+  nama_produk_mentah: string | null;
+  jumlah: number | null;
+  harga_diminta: number | null;
+  tanggal_dibutuhkan: string | null;
+
+  /** Diisi kalau pencocokan nama produk tidak meyakinkan — tanya penggunanya */
+  perlu_dicek: boolean;
+  kandidat: KandidatProduk[];
+
+  // --- dihitung SQL ---
+  nilai_pesanan: number | null;
+  untung_pesanan: number | null;
+  merugi: boolean | null;
+  /** null = stok bahannya belum dicatat, bukan berarti nol */
+  stok_cukup_untuk: number | null;
+  stok_kurang: boolean | null;
+
+  /** Kalimat siap tampil, sudah berisi angka hasil hitungan SQL */
+  peringatan: string[];
+}
+
+// ---------------------------------------------------------------------------
 // Transaksi
 // ---------------------------------------------------------------------------
 

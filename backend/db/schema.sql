@@ -180,3 +180,56 @@ SELECT
        ELSE (m.harga_jual - m.modal_per_unit) < 0
   END                             AS merugi
 FROM v_modal_produk m;
+
+-- ---------------------------------------------------------------------------
+-- v_kapasitas_produk — bahan yang ada cukup untuk berapa unit produk?
+-- Menjawab peringatan "bahan cuma cukup 14" di layar Pesanan Masuk (fitur 9).
+--
+-- LEFT JOIN ke stok, dan maks_unit NULL kalau ADA bahan yang stoknya belum
+-- dicatat. Ini disengaja: mengatakan "cukup 0" untuk pedagang yang belum
+-- mengisi stok adalah berbohong. Yang tidak diketahui harus tampil sebagai
+-- tidak diketahui, bukan sebagai nol.
+-- ---------------------------------------------------------------------------
+CREATE VIEW v_kapasitas_produk AS
+SELECT
+  p.id      AS produk_id,
+  p.user_id,
+  CASE WHEN COUNT(r.id) = 0 THEN NULL
+       WHEN COUNT(*) FILTER (WHERE s.jumlah IS NULL) > 0 THEN NULL
+       ELSE FLOOR(MIN(s.jumlah / NULLIF(r.jumlah_pakai / p.hasil_per_batch, 0)))::int
+  END       AS maks_unit
+FROM produk p
+LEFT JOIN resep r ON r.produk_id = p.id
+LEFT JOIN stok  s ON s.bahan_id = r.bahan_id AND s.user_id = p.user_id
+GROUP BY p.id, p.user_id;
+
+-- ---------------------------------------------------------------------------
+-- pesan_masuk — pesan pembeli yang ditempel pedagang, atau dibaca dari WhatsApp
+--
+-- Catatan privasi: pembeli tidak pernah setuju datanya diproses aplikasi ini.
+-- Karena itu nomor pengirim disimpan TERSAMAR, bukan lengkap — kita cuma perlu
+-- membedakan percakapan, tidak perlu identitas orangnya. Dan pesan yang
+-- ternyata bukan pesanan dibuang, teksnya tidak disimpan.
+-- Lihat docs/08-keamanan-data.md.
+-- ---------------------------------------------------------------------------
+CREATE TABLE pesan_masuk (
+  id                 BIGSERIAL PRIMARY KEY,
+  user_id            BIGINT NOT NULL REFERENCES pengguna(id) ON DELETE CASCADE,
+  teks               TEXT NOT NULL,
+  sumber             TEXT NOT NULL CHECK (sumber IN ('tempel','whatsapp')),
+  pengirim_samar     TEXT,
+
+  -- hasil klasifikasi AI; keputusan untung-rugi TIDAK ada di sini, itu SQL
+  jenis              TEXT CHECK (jenis IN ('pesanan','tanya_harga','menawar','bukan_pesanan')),
+  nama_produk_mentah TEXT,
+  produk_id          BIGINT REFERENCES produk(id) ON DELETE SET NULL,
+  jumlah             NUMERIC,
+  harga_diminta      INTEGER,
+  tanggal_dibutuhkan DATE,
+  keyakinan_cocok    NUMERIC,   -- skor pg_trgm saat mencocokkan nama produk
+  perlu_dicek        BOOLEAN NOT NULL DEFAULT false,
+
+  hasil_mentah       JSONB,
+  diterima_pada      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_pesan_masuk_user ON pesan_masuk (user_id, diterima_pada DESC);
