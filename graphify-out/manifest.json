@@ -365,18 +365,18 @@
     "semantic_hash": ""
   },
   "frontend/src/components/KepalaAplikasi.tsx": {
-    "mtime": 1788290880.305235,
-    "ast_hash": "2f40b3305e7b29a06085a7deee6ea1da",
+    "mtime": 1788296441.4774773,
+    "ast_hash": "ca4ea9a5aca8613f556ffa399de6af03",
     "semantic_hash": ""
   },
   "frontend/src/components/KepalaResep.tsx": {
-    "mtime": 1788286054.444082,
-    "ast_hash": "40cbe0c2dd31c6addcc112d663b5e63d",
+    "mtime": 1788296441.4774773,
+    "ast_hash": "bf0bb6f0c8e4b434e4ea7205a186fab1",
     "semantic_hash": ""
   },
   "frontend/src/components/Layar.tsx": {
-    "mtime": 1788285985.1989727,
-    "ast_hash": "80366735293419999ded480d5dfdde61",
+    "mtime": 1788296441.4789865,
+    "ast_hash": "fac93de222680189c796858c4ba253b6",
     "semantic_hash": ""
   },
   "frontend/src/components/Logo.tsx": {
@@ -385,8 +385,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/NavBawah.tsx": {
-    "mtime": 1788295792.2803628,
-    "ast_hash": "832844fa7fa72a496bdeec562ba45a76",
+    "mtime": 1788296441.4789865,
+    "ast_hash": "c485a6eeef54f9475e64c15483a0d59d",
     "semantic_hash": ""
   },
   "frontend/src/components/TitikLangkah.tsx": {
@@ -395,8 +395,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Tombol.tsx": {
-    "mtime": 1788286054.436058,
-    "ast_hash": "7a2bdaae095e3faa7cee47e6389eb21b",
+    "mtime": 1788296441.4813726,
+    "ast_hash": "b1516072d63988fcebb0e071c2261ac0",
     "semantic_hash": ""
   },
   "frontend/src/main.tsx": {
@@ -405,88 +405,88 @@
     "semantic_hash": ""
   },
   "frontend/src/screens/Beranda.tsx": {
-    "mtime": 1788295850.8934584,
-    "ast_hash": "8aaf9e0abfe73ff2a94d7a3b63027545",
+    "mtime": 1788296486.205831,
+    "ast_hash": "00610289d242b152ee6135236378baa6",
     "semantic_hash": ""
   },
   "frontend/src/screens/CatatSuara.tsx": {
-    "mtime": 1788291088.519487,
-    "ast_hash": "141351139add51511841796f388eef18",
+    "mtime": 1788296486.205831,
+    "ast_hash": "83741436453c1b8d7eae5580dee2f2a2",
     "semantic_hash": ""
   },
   "frontend/src/screens/DaftarProduk.tsx": {
-    "mtime": 1788295874.7321854,
-    "ast_hash": "bb4ede4f8f36b2461d17f33d467cfeff",
+    "mtime": 1788296441.4833572,
+    "ast_hash": "e4a1440e08c84a563ecb7dbc54abbc02",
     "semantic_hash": ""
   },
   "frontend/src/screens/DetailProduk.tsx": {
-    "mtime": 1788295874.7321854,
-    "ast_hash": "0ab7ff437cd6db2eeff35434b51773f6",
+    "mtime": 1788296486.2068324,
+    "ast_hash": "e79ce981b21c3c41c345bc158125a238",
     "semantic_hash": ""
   },
   "frontend/src/screens/InfoWhatsApp.tsx": {
-    "mtime": 1788289290.6848483,
-    "ast_hash": "324d2b59ed602314a20e6073e92d1627",
+    "mtime": 1788296441.4843569,
+    "ast_hash": "afe8ac16f4571e9174a3b0e08106a10a",
     "semantic_hash": ""
   },
   "frontend/src/screens/JenisUsaha.tsx": {
-    "mtime": 1788288632.2518113,
-    "ast_hash": "9dd368102882649ccece73e3a1cf2257",
+    "mtime": 1788296441.4853532,
+    "ast_hash": "d629faa0d0197e3d0999c4bebafdc9c7",
     "semantic_hash": ""
   },
   "frontend/src/screens/KodeOtp.tsx": {
-    "mtime": 1788288715.1926308,
-    "ast_hash": "a0d55785f458959d187479996e490549",
+    "mtime": 1788296441.4853532,
+    "ast_hash": "5a11bc3dbc4919cd5474902d07c3244b",
     "semantic_hash": ""
   },
   "frontend/src/screens/KonfirmasiEkstraksi.tsx": {
-    "mtime": 1788289290.6848483,
-    "ast_hash": "9f556db01da002ce56af0aacad360c4d",
+    "mtime": 1788296486.2078328,
+    "ast_hash": "7775ee9da9782417ae8944a741b77c0c",
     "semantic_hash": ""
   },
   "frontend/src/screens/NamaUsaha.tsx": {
-    "mtime": 1788288632.2551956,
-    "ast_hash": "33ab3ebda52accc30e80c4acdaca2743",
+    "mtime": 1788296441.4863534,
+    "ast_hash": "5ff8e0e5b98f9b6996de08ef69248870",
     "semantic_hash": ""
   },
   "frontend/src/screens/NomorHp.tsx": {
-    "mtime": 1788288574.1231794,
-    "ast_hash": "7baf66ec47355c545a47a59f22dddda9",
+    "mtime": 1788296486.2078328,
+    "ast_hash": "fca516a54899754c338a1529efa3e773",
     "semantic_hash": ""
   },
   "frontend/src/screens/PesananMasuk.tsx": {
-    "mtime": 1788291093.0559711,
-    "ast_hash": "330f72199f3afda0a7fe7afa6ecbf883",
+    "mtime": 1788296486.2088342,
+    "ast_hash": "2b5509bce06bd0cafa5597a1298b3b9d",
     "semantic_hash": ""
   },
   "frontend/src/screens/ProdukTerlaris.tsx": {
-    "mtime": 1788288895.333353,
-    "ast_hash": "98f45d77c5ec7484804fb50eb829c8f1",
+    "mtime": 1788296441.4883544,
+    "ast_hash": "5bc99859e23266a8e7c8e44fdd9f574a",
     "semantic_hash": ""
   },
   "frontend/src/screens/ResepBahan.tsx": {
-    "mtime": 1788289737.1987977,
-    "ast_hash": "43b4033c1a1ead129257117f497a59a4",
+    "mtime": 1788296486.2098365,
+    "ast_hash": "e40e8113e3afa5570afb87c084e020bc",
     "semantic_hash": ""
   },
   "frontend/src/screens/ResepHarga.tsx": {
-    "mtime": 1788289576.823762,
-    "ast_hash": "128641771988eb7b00faedebbf6e05ed",
+    "mtime": 1788296486.2098365,
+    "ast_hash": "856a10eb809104ecf5121c64d9c9f45e",
     "semantic_hash": ""
   },
   "frontend/src/screens/ResepHasil.tsx": {
-    "mtime": 1788289546.17504,
-    "ast_hash": "5a838f1767d3b23f4f18f9163f436a40",
+    "mtime": 1788296486.2098365,
+    "ast_hash": "c857fc0c09006e080a2106ee7975429a",
     "semantic_hash": ""
   },
   "frontend/src/screens/Sambutan.tsx": {
-    "mtime": 1788288596.547148,
-    "ast_hash": "28a79ed758d04ef9cbffdccb489dc6c7",
+    "mtime": 1788296486.2108343,
+    "ast_hash": "5dd390d8349b1148c2ecbb0f404abc5c",
     "semantic_hash": ""
   },
   "frontend/src/screens/TemuanPertama.tsx": {
-    "mtime": 1788290043.7301168,
-    "ast_hash": "bfb30584ebafc9fe2ff14fb3b8407d7f",
+    "mtime": 1788296486.2108343,
+    "ast_hash": "5ab8fd5c821d0561d31eaa2f2528c072",
     "semantic_hash": ""
   },
   "frontend/src/state/ekstraksi.ts": {
@@ -570,38 +570,38 @@
     "semantic_hash": ""
   },
   "frontend/src/components/BarProgres.tsx": {
-    "mtime": 1788285959.0379655,
-    "ast_hash": "8d2fd502b96b74317b720511bc5d902b",
+    "mtime": 1788296441.4764721,
+    "ast_hash": "84fe8fd4af9ac8a66d7015356424362b",
     "semantic_hash": ""
   },
   "frontend/src/components/BarisDaftar.tsx": {
-    "mtime": 1788286143.76427,
-    "ast_hash": "84205beac245ed83b2bae3af16e03abe",
+    "mtime": 1788296441.4764721,
+    "ast_hash": "f6b5e8ace3609894d5df0b9369fdec1c",
     "semantic_hash": ""
   },
   "frontend/src/components/KartuHero.tsx": {
-    "mtime": 1788285922.1208904,
-    "ast_hash": "a527ae3b9c31bfdc01b6ba4c6f1e0aa2",
+    "mtime": 1788296486.2018313,
+    "ast_hash": "0b50f513bbba09c94e866b3bc1428f6c",
     "semantic_hash": ""
   },
   "frontend/src/components/KartuMetrik.tsx": {
-    "mtime": 1788290157.5401864,
-    "ast_hash": "af4ba2cfdf2c0574084bb1ba1504d50e",
+    "mtime": 1788296486.202834,
+    "ast_hash": "2bf9474e25431a40aad7d7a1cd7712e9",
     "semantic_hash": ""
   },
   "frontend/src/components/Lencana.tsx": {
-    "mtime": 1788285922.1183672,
-    "ast_hash": "379181ae7e567c761b3cbd0ff82c8d1c",
+    "mtime": 1788296441.4789865,
+    "ast_hash": "b1ad13d9bdb666fe55aeb0ff10e422f3",
     "semantic_hash": ""
   },
   "frontend/src/components/Segmented.tsx": {
-    "mtime": 1788285959.0379655,
-    "ast_hash": "95f638b40f73230f3ac3fafbef79a51c",
+    "mtime": 1788296441.4803445,
+    "ast_hash": "830e1c63b41d4c2cac3cee9a8d82ddd2",
     "semantic_hash": ""
   },
   "frontend/src/screens/SambungWhatsApp.tsx": {
-    "mtime": 1788291088.519487,
-    "ast_hash": "1d3df6a976a0e5bea9ca0e4e2d2fed35",
+    "mtime": 1788296486.2098365,
+    "ast_hash": "e9f89ce4153fdfbf3c3de5fd724e67b0",
     "semantic_hash": ""
   },
   "backend/src/lib/validasi.ts": {
@@ -740,13 +740,18 @@
     "semantic_hash": ""
   },
   "frontend/src/components/KeadaanGalat.tsx": {
-    "mtime": 1788295811.035606,
-    "ast_hash": "b0492ea6680a72e687768911d7508b73",
+    "mtime": 1788296486.202834,
+    "ast_hash": "c990d9327cee80d9c72a50993820a477",
     "semantic_hash": ""
   },
   "frontend/src/components/Rangka.tsx": {
     "mtime": 1788295825.819793,
     "ast_hash": "517d731abba92145c2793c1a05e74b5f",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/KeadaanKosong.tsx": {
+    "mtime": 1788296441.4774773,
+    "ast_hash": "71562fd30ea6d9da52e7d9245866b440",
     "semantic_hash": ""
   }
 }

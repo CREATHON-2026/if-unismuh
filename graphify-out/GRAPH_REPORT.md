@@ -1,16 +1,16 @@
 # Graph Report - if-unismuh  (2026-09-02)
 
 ## Corpus Check
-- 146 files · ~113,235 words
+- 147 files · ~113,555 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 913 nodes · 1895 edges · 62 communities (55 shown, 7 thin omitted)
+- 915 nodes · 1902 edges · 59 communities (52 shown, 7 thin omitted)
 - Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 130 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7572da92`
+- Built from commit: `e8b47b46`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,13 +19,12 @@
 - lapakAi (produk)
 - Aturan 1 — LLM tidak pernah menghitung
 - Rumus SQL: Modal per Produk
-- SambungWhatsApp.tsx
-- Tabel produk
+- beranda.queries.ts
+- LLM Tidak Pernah Menghitung
 - devDependencies
 - Daftar Periksa Setup Laptop
 - Aturan UI untuk pengguna 35-60 tahun
 - What You Must Do When Invoked
-- JenisUsaha.tsx
 - Aturan 4 — Sistem tidak pernah mengirim pesan ke nomor pembeli
 - Kepemilikan Folder (frontend/, backend/, shared/, docs/)
 - Aturan 5 — Harga di katalog = harga di aplikasi
@@ -33,7 +32,7 @@
 - dependencies
 - compilerOptions
 - compilerOptions
-- Peta Baca Dokumentasi lapakAi
+- Tabel pengguna
 - siapkan-demo.mjs
 - schema.sql
 - Rumus SQL: Produk Merugi Diurutkan dari Margin Terendah
@@ -44,13 +43,13 @@
 - uji-produk.mjs
 - uji-stok-balasan.mjs
 - Spike: ekstraksi foto buku catatan
-- LLM Tidak Pernah Menghitung
+- Latihan Tanya Jawab (Pemahaman Teknis)
 - Cara kerja tim + AI (branch, PR, review manusia)
 - uji-suara.mjs
 - uji-ekstraksi.mjs
 - Aturan pengorbanan — korbankan dari bawah
 - Template Pull Request
-- Tulang Punggung Demo (fitur 1, 4, 7, 9)
+- Rumus SQL: Omzet vs Untung Bersih
 - uji-pesanan.mjs
 - graphify reference: extra exports and benchmark
 - Aturan Pengorbanan: Korbankan dari Bawah
@@ -63,16 +62,14 @@
 - graphify reference: GitHub clone and cross-repo merge
 - graphify reference: transcribe video and audio
 - extraction-spec.md
-- types.ts
+- client.ts
 - CatatSuara.tsx
 - Beranda.tsx
-- panggil
-- Isolasi di Level Query, Bukan Level Tampilan
-- index.ts
-- kirim
 - App.tsx
+- types.ts
+- kirim
+- Layar.tsx
 - wa.client.ts
-- transaksi.llm.ts
 - PesananMasuk.tsx
 
 ## God Nodes (most connected - your core abstractions)
@@ -83,7 +80,7 @@
 5. `Layar()` - 19 edges
 6. `KODE_GALAT` - 18 edges
 7. `formatRupiah()` - 17 edges
-8. `Tombol()` - 15 edges
+8. `Tombol()` - 16 edges
 9. `compilerOptions` - 15 edges
 10. `query()` - 14 edges
 
@@ -110,11 +107,11 @@
 - **Alur Temuan Pertama: Wawancara Resep ke Modal per Unit ke Layar Rugi** — docs_07_alur_pengguna_wawancara_resep_satu_produk, docs_06_kontrak_api_post_onboarding_resep, docs_05_model_data_rumus_modal_per_produk, docs_07_alur_pengguna_temuan_pertama, docs_01_produk_thesis_produk, docs_05_model_data_tabel_resep [EXTRACTED 1.00]
 - **Alur Pesanan Masuk: Klasifikasi, Cek Margin, Cek Stok, Balasan Siap Salin** — docs_04_pipeline_ai_klasifikasi_pesanan_masuk, docs_06_kontrak_api_post_pesanan_analisis, docs_05_model_data_rumus_cek_margin_pesanan, docs_05_model_data_rumus_cek_kecukupan_bahan, docs_04_pipeline_ai_tahap_5_menyusun_balasan, docs_06_kontrak_api_post_pesanan_balasan, docs_03_arsitektur_whatsapp_tempel_teks_manual [EXTRACTED 1.00]
 
-## Communities (62 total, 7 thin omitted)
+## Communities (59 total, 7 thin omitted)
 
 ### Community 0 - "Fitur 1 — Foto Buku Catatan ke Transaksi Terstruktur"
-Cohesion: 0.14
-Nodes (18): Kenapa Aplikasi Pembukuan Lain Gagal, Solusi: Potret Buku Tulis, Jangan Suruh Pindah, Ekstraksi Foto: Titik Paling Rawan, Fitur 1 — Foto Buku Catatan ke Transaksi Terstruktur, Fitur 2 — Voice Note ke Transaksi, Fitur 4 — Layar Konfirmasi, Prinsip: Gambar Mentah Dihapus Setelah Dikonfirmasi, Skema Baris Ekstraksi (nama_mentah, jumlah, harga_satuan, keyakinan, alasan_ragu) (+10 more)
+Cohesion: 0.15
+Nodes (18): Kenapa Aplikasi Pembukuan Lain Gagal, Solusi: Potret Buku Tulis, Jangan Suruh Pindah, Ekstraksi Foto: Titik Paling Rawan, Fitur 1 — Foto Buku Catatan ke Transaksi Terstruktur, Fitur 4 — Layar Konfirmasi, Tulang Punggung Demo (fitur 1, 4, 7, 9), Alur Data: Gemini ke Konfirmasi ke PostgreSQL ke API Express, Tidak Ada Panah dari Gemini Langsung ke Database (+10 more)
 
 ### Community 1 - "lapakAi (produk)"
 Cohesion: 0.18
@@ -125,16 +122,16 @@ Cohesion: 0.19
 Nodes (15): Checklist aturan yang perlu dicek reviewer, Foto mentah dihapus setelah dikonfirmasi, Skor keyakinan per baris (perlu_dicek, alasan_ragu), Rumus hanya di SQL — satu sumber kebenaran, Tabel ekstraksi status menunggu sebelum transaksi, Aturan 1 — LLM tidak pernah menghitung, Aturan 2 — Tidak ada yang tersimpan diam-diam, Aturan 7 — Frontend tidak pernah menghitung untung atau margin (+7 more)
 
 ### Community 3 - "Rumus SQL: Modal per Produk"
-Cohesion: 0.18
-Nodes (16): Thesis Produk: Berguna di Menit Kedua, Fitur 11 — Hitung Tenaga Sendiri sebagai Biaya, Fitur 5 — Hitung Modal per Produk dari Bahan, Biaya Tenaga Sendiri Masuk Rumus Modal, Rumus SQL: Modal per Produk, Tabel bahan, Tabel resep, POST /onboarding/resep (+8 more)
+Cohesion: 0.16
+Nodes (18): Jalur Baca per Peran (frontend, AI/backend, presenter, AI assistant), Kalau Dokumen dan Kode Berbeda, Perbaiki Dokumennya, Peta Baca Dokumentasi lapakAi, Thesis Produk: Berguna di Menit Kedua, Fitur 11 — Hitung Tenaga Sendiri sebagai Biaya, Fitur 5 — Hitung Modal per Produk dari Bahan, Biaya Tenaga Sendiri Masuk Rumus Modal, Rumus SQL: Modal per Produk (+10 more)
 
-### Community 4 - "SambungWhatsApp.tsx"
-Cohesion: 0.33
-Nodes (5): hubungkanWhatsapp(), statusWhatsapp(), InputTeks(), LABEL, SambungWhatsApp()
+### Community 4 - "beranda.queries.ts"
+Cohesion: 0.39
+Nodes (6): ringkasanPenjualan(), temuanProduk(), ringkasBeranda(), RingkasanPenjualan, TemuanProduk, Beranda
 
-### Community 5 - "Tabel produk"
-Cohesion: 0.32
-Nodes (8): Fitur 10 — Tambah Produk Tanpa Form, Keterlacakan Angka sampai Baris Sumber, Cadangan Pencocokan Tanpa Embedding (pg_trgm similarity), Tahap 4 — Pencocokan Nama Produk (Gemini Embedding), Prinsip: Setiap Baris Menyimpan Asal-usulnya, Index idx_produk_nama_trgm (gin_trgm_ops), nama_mentah Disimpan untuk Penelusuran Pencocokan Salah, Tabel produk
+### Community 5 - "LLM Tidak Pernah Menghitung"
+Cohesion: 0.16
+Nodes (18): Fitur 10 — Tambah Produk Tanpa Form, Fitur 2 — Voice Note ke Transaksi, Keterlacakan Angka sampai Baris Sumber, LLM Tidak Pernah Menghitung, Pembagian Model per Tahap, Ambang Kemiripan 0,90 / 0,70, Cadangan Pencocokan Tanpa Embedding (pg_trgm similarity), Prinsip: Di Bawah Ambang Ditandai, Tidak Dibuang, Tidak Disimpan Diam-diam (+10 more)
 
 ### Community 6 - "devDependencies"
 Cohesion: 0.06
@@ -152,10 +149,6 @@ Nodes (6): Setiap query menyertakan user_id di WHERE, Aturan 3 — Jangan pernah
 Cohesion: 0.08
 Nodes (24): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+16 more)
 
-### Community 10 - "JenisUsaha.tsx"
-Cohesion: 0.40
-Nodes (4): simpanUsaha(), TitikLangkah(), JenisUsaha(), PILIHAN
-
 ### Community 11 - "Aturan 4 — Sistem tidak pernah mengirim pesan ke nomor pembeli"
 Cohesion: 0.67
 Nodes (3): Aturan 4 — Sistem tidak pernah mengirim pesan ke nomor pembeli, Layar Pesanan Masuk, WhatsApp tempel teks manual
@@ -166,7 +159,7 @@ Nodes (3): Tipe TypeScript Hidup di shared/, Kepemilikan Folder (frontend/, back
 
 ### Community 14 - "pesanan.service.ts"
 Cohesion: 0.06
-Nodes (62): query(), coba(), FRASA_KOSONG, galatSementara(), isiPalsu(), JawabanOllama, kosongJadiNull(), llmSiap() (+54 more)
+Nodes (62): coba(), FRASA_KOSONG, galatSementara(), isiPalsu(), JawabanOllama, kosongJadiNull(), llmSiap(), mintaJson() (+54 more)
 
 ### Community 15 - "dependencies"
 Cohesion: 0.04
@@ -180,9 +173,9 @@ Nodes (23): compilerOptions, baseUrl, isolatedModules, jsx, lib, module, moduleR
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowImportingTsExtensions, esModuleInterop, forceConsistentCasingInFileNames, lib, module, moduleResolution, noEmit (+10 more)
 
-### Community 18 - "Peta Baca Dokumentasi lapakAi"
-Cohesion: 0.16
-Nodes (14): Jalur Baca per Peran (frontend, AI/backend, presenter, AI assistant), Kalau Dokumen dan Kode Berbeda, Perbaiki Dokumennya, Peta Baca Dokumentasi lapakAi, Nomor HP Jadi Identitas, Profil Pengguna: Pedagang Mikro Usia 35-60, Platform: Web App Mobile-First, Prinsip: Uang Disimpan sebagai Integer Rupiah, Bentuk Jawaban Baku (ok/data, ok/error) (+6 more)
+### Community 18 - "Tabel pengguna"
+Cohesion: 0.19
+Nodes (13): Nomor HP Jadi Identitas, Profil Pengguna: Pedagang Mikro Usia 35-60, Tabel pengguna, Prinsip: Uang Disimpan sebagai Integer Rupiah, Bentuk Jawaban Baku (ok/data, ok/error), POST /auth/otp/verifikasi, POST /onboarding/usaha, Autentikasi Nomor HP + OTP (alur layar) (+5 more)
 
 ### Community 19 - "siapkan-demo.mjs"
 Cohesion: 0.14
@@ -216,9 +209,9 @@ Nodes (4): KACANG, KRIPIK, panggil(), pedagangBaru()
 Cohesion: 0.29
 Nodes (6): Cara menilai hasilnya, Jalankan, Kalau belum punya foto pedagang asli, Kalau hasilnya jelek, Spike: ekstraksi foto buku catatan, Yang sengaja TIDAK dilakukan skrip ini
 
-### Community 30 - "LLM Tidak Pernah Menghitung"
-Cohesion: 0.17
-Nodes (17): Riset Pedagang (5 pedagang, 90 menit), Fitur 23 — Koneksi WhatsApp Otomatis (disarankan tidak dikerjakan), Tiga Hal yang Menentukan Menang, Kenapa Bukan OCR Biasa, LLM Tidak Pernah Menghitung, Pembagian Model per Tahap, WhatsApp: Tempel Teks Manual, Sistem Tidak Pernah Mengirim, Ambang Kemiripan 0,90 / 0,70 (+9 more)
+### Community 30 - "Latihan Tanya Jawab (Pemahaman Teknis)"
+Cohesion: 0.22
+Nodes (11): Fitur 23 — Koneksi WhatsApp Otomatis (disarankan tidak dikerjakan), Isolasi Data di Level Query, Kenapa Bukan OCR Biasa, Platform: Web App Mobile-First, WhatsApp: Tempel Teks Manual, Sistem Tidak Pernah Mengirim, Tahap 5 — Menyusun Balasan (LLM sebagai penyusun bahasa), Prinsip: Setiap Tabel Milik Pengguna Punya user_id, POST /pesanan/balasan (+3 more)
 
 ### Community 31 - "Cara kerja tim + AI (branch, PR, review manusia)"
 Cohesion: 0.18
@@ -236,9 +229,9 @@ Nodes (5): Template Laporan bug, Template Usulan fitur, Aturan pengorbanan — k
 Cohesion: 0.29
 Nodes (7): Template Pull Request, graphify — knowledge graph repo, Kepemilikan folder (frontend/backend/shared/docs), graphify update . setelah mengubah kode, Alur Pull Request (min 1 review, squash merge), Pembagian kerja per layar, bukan per lapisan, Perubahan di shared/ wajib dikabarkan
 
-### Community 36 - "Tulang Punggung Demo (fitur 1, 4, 7, 9)"
-Cohesion: 0.20
-Nodes (12): Fitur 7 — Beranda: Omzet vs Untung Bersih, Tulang Punggung Demo (fitur 1, 4, 7, 9), Alur Data: Gemini ke Konfirmasi ke PostgreSQL ke API Express, Tidak Ada Panah dari Gemini Langsung ke Database, Prinsip: Di Bawah Ambang Ditandai, Tidak Dibuang, Tidak Disimpan Diam-diam, Rumus SQL: Omzet vs Untung Bersih, GET /beranda, Layar Beranda (omzet dan untung bersih bersebelahan) (+4 more)
+### Community 36 - "Rumus SQL: Omzet vs Untung Bersih"
+Cohesion: 0.24
+Nodes (10): Riset Pedagang (5 pedagang, 90 menit), Fitur 7 — Beranda: Omzet vs Untung Bersih, Tiga Hal yang Menentukan Menang, Test Set Foto Asli (miring, remang, tercoret), Rumus SQL: Omzet vs Untung Bersih, GET /beranda, Layar Beranda (omzet dan untung bersih bersebelahan), Baris yang Ditandai Bukan Kelemahan, Itu Fiturnya (+2 more)
 
 ### Community 37 - "uji-pesanan.mjs"
 Cohesion: 0.60
@@ -276,49 +269,41 @@ Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify refer
 Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
-### Community 50 - "types.ts"
+### Community 50 - "client.ts"
 Cohesion: 0.09
-Nodes (36): konfirmasiEkstraksi(), pratinjauEkstraksi(), KonfirmasiEkstraksi(), bacaEkstraksi(), hapusEkstraksi(), tulisEkstraksi(), AnalisisPesanan, AnalisisPesananReq (+28 more)
+Nodes (29): ambilBeranda(), ambilDaftarProduk(), ambilDetailProduk(), buatBalasan(), daftarPesanan(), ekstraksiFoto(), hubungkanWhatsapp(), konfirmasiEkstraksi() (+21 more)
 
 ### Community 52 - "CatatSuara.tsx"
-Cohesion: 0.18
-Nodes (14): ekstraksiFoto(), usulanDariTeks(), KartuHero(), KepalaAplikasi(), buatPengenal(), CatatSuara(), PengenalSuara, DaftarProduk() (+6 more)
+Cohesion: 0.24
+Nodes (8): catatTransaksi(), usulanDariTeks(), buatPengenal(), CatatSuara(), PengenalSuara, FORM_KOSONG, ResepBahan(), formatRupiah()
 
 ### Community 53 - "Beranda.tsx"
-Cohesion: 0.15
-Nodes (15): ambilDaftarProduk(), ambilDetailProduk(), BarisDaftar(), KartuDaftar(), BarProgres(), GridMetrik(), KartuMetrik(), KeadaanGalat() (+7 more)
+Cohesion: 0.12
+Nodes (19): BarisDaftar(), KartuDaftar(), BarProgres(), GridMetrik(), KartuMetrik(), KeadaanGalat(), KeadaanKosong(), GAYA (+11 more)
 
-### Community 54 - "panggil"
+### Community 54 - "App.tsx"
 Cohesion: 0.18
-Nodes (13): ambilBeranda(), ambilSaya(), catatTransaksi(), daftarPesanan(), kirimOtp(), panggil(), simpanResep(), verifikasiOtp() (+5 more)
+Nodes (15): ambilSaya(), kirimOtp(), simpanUsaha(), verifikasiOtp(), ambilToken(), simpanToken(), App(), TitikLangkah() (+7 more)
 
-### Community 55 - "Isolasi di Level Query, Bukan Level Tampilan"
-Cohesion: 1.00
-Nodes (3): Isolasi Data di Level Query, Prinsip: Setiap Tabel Milik Pengguna Punya user_id, Isolasi di Level Query, Bukan Level Tampilan
-
-### Community 57 - "index.ts"
-Cohesion: 0.08
-Nodes (42): DB_DIR, DIR, Pelaksana, satu(), SCHEMA, siapkanDb(), transaksiDb(), buatToken() (+34 more)
+### Community 57 - "types.ts"
+Cohesion: 0.06
+Nodes (69): DB_DIR, DIR, Pelaksana, query(), satu(), SCHEMA, siapkanDb(), transaksiDb() (+61 more)
 
 ### Community 59 - "kirim"
-Cohesion: 0.06
-Nodes (74): AKAR_REPO, periksaEnv(), PORT, tutupDb(), GalatTampil, jalur(), kirim(), kirimGalat() (+66 more)
+Cohesion: 0.07
+Nodes (70): AKAR_REPO, periksaEnv(), PORT, tutupDb(), GalatTampil, jalur(), kirim(), kirimGalat() (+62 more)
 
-### Community 61 - "App.tsx"
-Cohesion: 0.19
-Nodes (14): KepalaResep(), Layar(), LogoIkon(), Tombol(), InfoWhatsApp(), NamaUsaha(), NomorHp(), ProdukTerlaris() (+6 more)
+### Community 61 - "Layar.tsx"
+Cohesion: 0.17
+Nodes (11): simpanResep(), KepalaResep(), Layar(), LogoIkon(), Tombol(), InfoWhatsApp(), ProdukTerlaris(), SARAN (+3 more)
 
 ### Community 65 - "wa.client.ts"
 Cohesion: 0.27
 Nodes (11): alasanDilewati(), ambilTeks(), DIR, hubungkanWhatsapp(), PEMILIK_PATH, pulihkanWhatsapp(), samarkan(), statusKini() (+3 more)
 
-### Community 66 - "transaksi.llm.ts"
-Cohesion: 0.23
-Nodes (11): ADA_BILANGAN, angkaDiTeks(), bangunPrompt(), BarisModel, BUKAN_BARANG, ekstrakBarisPenjualan(), HasilEkstraksi, saringBaris() (+3 more)
-
 ### Community 67 - "PesananMasuk.tsx"
 Cohesion: 0.24
-Nodes (8): analisisPesanan(), buatBalasan(), GAYA, Lencana(), NadaLencana, MAKSUD, PesananMasuk(), waktuSingkat()
+Nodes (10): analisisPesanan(), KartuHero(), KepalaAplikasi(), MAKSUD, PesananMasuk(), waktuSingkat(), TemuanPertama(), bacaOnboarding() (+2 more)
 
 ## Ambiguous Edges - Review These
 - `Aturan 3 — Jangan pernah minta email atau password` → `Setiap query menyertakan user_id di WHERE`  [AMBIGUOUS]
@@ -354,5 +339,5 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `Fitur 19 — Katalog Digital + Tombol wa.me` and `GET /produk`?**
   _Edge tagged AMBIGUOUS (relation: shares_data_with) - confidence is low._
-- **Why does `Rumus SQL: Modal per Produk` connect `Rumus SQL: Modal per Produk` to `Tulang Punggung Demo (fitur 1, 4, 7, 9)`, `Tabel produk`, `Peta Baca Dokumentasi lapakAi`, `Rumus SQL: Produk Merugi Diurutkan dari Margin Terendah`, `Fitur 9 — Pesanan Masuk`, `LLM Tidak Pernah Menghitung`?**
+- **Why does `Rumus SQL: Modal per Produk` connect `Rumus SQL: Modal per Produk` to `Rumus SQL: Produk Merugi Diurutkan dari Margin Terendah`, `Rumus SQL: Omzet vs Untung Bersih`, `LLM Tidak Pernah Menghitung`, `Fitur 9 — Pesanan Masuk`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
