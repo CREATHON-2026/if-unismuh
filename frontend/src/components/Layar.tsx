@@ -1,17 +1,25 @@
 import type { ReactNode } from 'react';
+import { Logo } from './Logo';
 
-// Kerangka "satu layar satu pertanyaan": pertanyaan di atas, isi di tengah, aksi di bawah.
+// Kerangka "satu layar satu pertanyaan": logo di atas, pertanyaan, isi, aksi di bawah.
 export function Layar({
   pertanyaan,
   children,
   aksi,
+  tanpaLogo = false,
 }: {
   pertanyaan?: string;
   children?: ReactNode;
   aksi?: ReactNode;
+  tanpaLogo?: boolean;
 }) {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-6 py-10">
+    <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-6 py-8">
+      {!tanpaLogo && (
+        <div className="pb-6">
+          <Logo ukuranIkon={26} kelasTeks="text-lg" />
+        </div>
+      )}
       {pertanyaan && (
         <h1 className="text-2xl font-bold leading-snug text-slate-900">{pertanyaan}</h1>
       )}
