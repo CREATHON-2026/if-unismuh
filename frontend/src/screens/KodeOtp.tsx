@@ -56,7 +56,7 @@ export function KodeOtp() {
     verifikasiOtp(bacaOnboarding().nomor_hp ?? '', kode).then((jawaban) => {
       if (jawaban.ok) {
         simpanToken(jawaban.data.token);
-        nav(jawaban.data.pengguna_baru ? '/onboarding/usaha' : '/beranda');
+        nav(jawaban.data.pengguna_baru ? '/wa-info' : '/beranda');
         return;
       }
       setGalat(jawaban.error.pesan);

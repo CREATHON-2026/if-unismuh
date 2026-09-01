@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Sambutan } from './screens/Sambutan';
 import { NomorHp } from './screens/NomorHp';
 import { KodeOtp } from './screens/KodeOtp';
+import { InfoWhatsApp } from './screens/InfoWhatsApp';
 import { NamaUsaha } from './screens/NamaUsaha';
 import { JenisUsaha } from './screens/JenisUsaha';
 import { ProdukTerlaris } from './screens/ProdukTerlaris';
@@ -18,6 +19,7 @@ export default function App() {
       <Route path="/" element={<Sambutan />} />
       <Route path="/masuk" element={<NomorHp />} />
       <Route path="/masuk/otp" element={<KodeOtp />} />
+      <Route path="/wa-info" element={<InfoWhatsApp />} />
       <Route path="/onboarding/usaha" element={<NamaUsaha />} />
       <Route path="/onboarding/jenis" element={<JenisUsaha />} />
       <Route path="/onboarding/produk" element={<ProdukTerlaris />} />
