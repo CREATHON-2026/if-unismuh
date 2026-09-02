@@ -235,6 +235,17 @@ body {
  * Tombol utama. Gradien menurun, bukan mendatar: diukur dari rujukannya, dan
  * arah menurun membuat tepi bawah tombol terbaca sebagai tepi yang "berat"
  * sehingga tombolnya duduk, bukan mengambang.
+ *
+ * JEBAKAN LAPISAN — berlaku juga untuk `.hero-gradien` dan `.lembar` di atas
+ * dan di bawah. Kelas-kelas ini ditulis polos di sini, di luar `@layer`.
+ * Utilitas Tailwind semuanya hidup di dalam `@layer utilities`, dan CSS selalu
+ * memenangkan aturan TAK berlapis di atas aturan berlapis — berapa pun
+ * specificity-nya. Artinya `bg-none`, `bg-putih`, atau `hover:bg-…` dari
+ * Tailwind TIDAK akan mematikan gradien ini; mereka kalah tanpa suara, dan
+ * hasilnya hanya terlihat kalau layarnya benar-benar dibuka.
+ *
+ * Kalau sebuah keadaan perlu tanpa gradien, jangan menimpanya dari luar —
+ * jangan pasang kelasnya sejak awal. Lihat `Tombol.tsx` untuk contohnya.
  */
 .tombol-gradien {
   background-image: linear-gradient(to bottom, var(--color-merek-terang), var(--color-merek));

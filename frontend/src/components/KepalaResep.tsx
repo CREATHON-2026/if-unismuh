@@ -14,7 +14,7 @@ export function KepalaResep({ langkah, label }: { langkah: number; label: string
         {[1, 2, 3].map((i) => (
           <span
             key={i}
-            className={`h-2.5 flex-1 rounded-full ${i <= langkah ? 'bg-hero' : 'bg-garis'}`}
+            className={`h-2.5 flex-1 rounded-full ${i <= langkah ? 'bg-merek' : 'bg-garis'}`}
           />
         ))}
       </div>

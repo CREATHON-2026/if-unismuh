@@ -14,7 +14,7 @@ function BarLangkah() {
     <div className="flex items-center justify-center gap-3" aria-hidden="true">
       <span className="h-2 w-16 rounded-full bg-redup" />
       <span className="h-2 w-16 rounded-full bg-redup" />
-      <span className="h-2.5 w-20 rounded-full bg-hero" />
+      <span className="h-2.5 w-20 rounded-full bg-merek" />
       <span className="h-2 w-16 rounded-full bg-garis" />
     </div>
   );
@@ -67,7 +67,7 @@ export function ProdukTerlaris() {
         </p>
 
         <div className="mt-6">
-          <Tombol varian="gelap" disabled={!produk.trim()} onClick={lanjut}>
+          <Tombol varian="utama" disabled={!produk.trim()} onClick={lanjut}>
             <span className="flex items-center justify-center gap-3">
               Lanjut
               <span aria-hidden className="text-2xl leading-none">

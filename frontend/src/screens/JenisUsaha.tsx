@@ -6,6 +6,7 @@ import type { JenisUsaha as JenisUsahaTipe } from '@shared/types';
 import { simpanUsaha } from '../api/client';
 import { Layar } from '../components/Layar';
 import { TitikLangkah } from '../components/TitikLangkah';
+import { TombolIkon } from '../components/TombolIkon';
 import { bacaOnboarding, tulisOnboarding } from '../state/onboarding';
 
 const PILIHAN: readonly { id: JenisUsahaTipe; judul: string; deskripsi: string; ikon: LucideIcon }[] =
@@ -69,11 +70,13 @@ export function JenisUsaha() {
           type="button"
           disabled={!pilihan || sibuk}
           onClick={lanjut}
-          className={`h-16 w-full rounded-full text-lg font-bold transition ${
+          className={`h-16 w-full rounded-kontrol text-lg font-bold transition ${
             pilihan && !sibuk
-              ? 'bg-hero text-white active:scale-[0.98]'
+              ? 'tombol-gradien text-white shadow-fab active:scale-[0.98]'
               : 'bg-garis text-sedang'
           }`}
+          /* Nonaktifnya abu pejal, bukan gradien yang diredupkan — lihat
+             alasan terukur di Tombol.tsx. */
         >
           <span className="flex items-center justify-center gap-3">
             Lanjutkan
@@ -85,14 +88,7 @@ export function JenisUsaha() {
       }
     >
       <div className="flex items-center justify-between">
-        <button
-          type="button"
-          aria-label="Kembali"
-          onClick={() => nav(-1)}
-          className="flex h-12 w-12 items-center justify-center rounded-full bg-garis text-tinta active:scale-95"
-        >
-          <ArrowLeft size={22} strokeWidth={2} aria-hidden="true" />
-        </button>
+        <TombolIkon ikon={ArrowLeft} label="Kembali" nada="terang" onClick={() => nav(-1)} />
         <TitikLangkah aktif={1} />
       </div>
 
@@ -112,12 +108,12 @@ export function JenisUsaha() {
               type="button"
               onClick={() => setPilihan(p.id)}
               className={`flex items-center gap-4 rounded-kartu border p-4 text-left transition active:scale-[0.99] ${
-                dipilih ? 'border-hero bg-kartu ring-1 ring-hero' : 'border-garis bg-kartu'
+                dipilih ? 'border-merek bg-merek-muda ring-1 ring-merek' : 'border-garis bg-kartu'
               }`}
             >
               <span
                 className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-kontrol ${
-                  dipilih ? 'bg-hero text-white' : 'bg-kanvas text-sedang'
+                  dipilih ? 'bg-merek text-white' : 'bg-kanvas text-sedang'
                 }`}
               >
                 <Ikon size={26} strokeWidth={1.8} aria-hidden="true" />

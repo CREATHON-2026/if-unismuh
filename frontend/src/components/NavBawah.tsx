@@ -91,14 +91,20 @@ export function NavBawah() {
             supaya bagian atasnya keluar dari bar — itu yang membuatnya terbaca
             sebagai satu-satunya tujuan yang membuat data. Labelnya tetap ada:
             tombol bulat tanpa tulisan menuntut pengguna menebak, dan pengguna
-            kita adalah orang yang paling tidak punya alasan untuk menebak. */}
+            kita adalah orang yang paling tidak punya alasan untuk menebak.
+
+            Keadaan aktifnya ditandai cincin, bukan warna yang lebih gelap.
+            Empat slot lain menjadi LEBIH terang saat aktif; kalau yang tengah
+            justru meredup, arah isyaratnya berlawanan di satu bar yang sama.
+            Cincinnya ungu tembus 30%, bukan `merek-muda`: di atas bar putih
+            `merek-muda` hanya 1,16:1 — ada di CSS tapi tidak ada di mata. */}
         <div className="flex min-h-16 flex-1 flex-col items-center justify-end pb-1.5">
           <button
             type="button"
             onClick={() => nav(PUSAT.ke)}
             aria-current={pusatAktif ? 'page' : undefined}
-            className={`absolute -top-7 flex h-14 w-14 items-center justify-center rounded-full text-white shadow-fab transition active:scale-95 ${
-              pusatAktif ? 'bg-hero' : 'tombol-gradien'
+            className={`absolute -top-7 flex h-14 w-14 items-center justify-center rounded-full tombol-gradien text-white shadow-fab transition active:scale-95 ${
+              pusatAktif ? 'ring-4 ring-merek/30' : ''
             }`}
           >
             <IkonPusat size={24} strokeWidth={2.1} aria-hidden="true" />

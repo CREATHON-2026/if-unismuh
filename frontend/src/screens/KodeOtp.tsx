@@ -71,7 +71,7 @@ export function KodeOtp() {
     <Layar tanpaLogo>
       <div className="kartu p-8">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="flex h-28 w-28 items-center justify-center rounded-full bg-hero text-white">
+          <div className="hero-gradien flex h-28 w-28 items-center justify-center rounded-full text-white">
             <Lock size={44} strokeWidth={2} aria-hidden="true" />
           </div>
           <h1 className="tracking-[-0.02em] text-judul font-bold text-tinta">Verifikasi Kode OTP</h1>
@@ -93,7 +93,7 @@ export function KodeOtp() {
                 maxLength={2}
                 autoFocus={i === 0}
                 disabled={sibuk}
-                className="h-[72px] w-12 rounded-2xl border-2 border-garis bg-kanvas text-center text-2xl font-bold text-tinta outline-none focus:border-hero disabled:opacity-40"
+                className="h-[72px] w-12 rounded-2xl border-2 border-garis bg-kanvas text-center text-2xl font-bold text-tinta outline-none focus:border-merek disabled:opacity-40"
               />
             ))}
           </div>
@@ -104,7 +104,7 @@ export function KodeOtp() {
             type="button"
             onClick={kirimUlang}
             disabled={detik > 0 || sibuk}
-            className="min-h-12 text-lg font-bold text-tinta disabled:text-redup"
+            className="min-h-12 text-lg font-bold text-merek disabled:text-redup"
           >
             Kirim Ulang{detik > 0 ? ` (00:${String(detik).padStart(2, '0')})` : ''}
           </button>

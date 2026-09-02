@@ -96,13 +96,13 @@ export function KartuTenaga({
         value={jam}
         onChange={(e) => setJam(e.target.value.replace(/[^0-9]/g, ''))}
         placeholder="3"
-        className="mt-2 h-14 w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-utama text-tinta outline-none transition placeholder:text-redup focus:border-hero"
+        className="mt-2 h-14 w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-utama text-tinta outline-none transition placeholder:text-redup focus:border-merek"
       />
 
       <label className="mt-4 block text-utama font-semibold text-tinta" htmlFor="upah-jam">
         Kalau kerja di tempat orang, sejam dibayar berapa?
       </label>
-      <div className="mt-2 flex h-14 items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 transition focus-within:border-hero">
+      <div className="mt-2 flex h-14 items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 transition focus-within:border-merek">
         <span className="text-utama font-semibold text-sedang">Rp</span>
         <span className="mx-3 h-7 w-px bg-garis" aria-hidden="true" />
         <input

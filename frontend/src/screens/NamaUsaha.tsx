@@ -16,7 +16,7 @@ export function NamaUsaha() {
       latar={LATAR_GRADIEN}
       aksi={
         <Tombol
-          varian="gelap"
+          varian="utama"
           disabled={!nama.trim()}
           onClick={() => {
             tulisOnboarding({ nama_usaha: nama.trim() });

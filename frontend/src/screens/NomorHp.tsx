@@ -33,7 +33,7 @@ export function NomorHp() {
       kembali={() => nav('/')}
       aksi={
         <>
-          <Tombol varian="gelap" disabled={!valid || sibuk} onClick={kirim}>
+          <Tombol varian="utama" disabled={!valid || sibuk} onClick={kirim}>
             <span className="flex items-center justify-center gap-2.5">
               {sibuk ? 'Mengirim…' : 'Kirim Kode'}
               {!sibuk && <ArrowRight size={21} strokeWidth={2} aria-hidden="true" />}
@@ -49,7 +49,7 @@ export function NomorHp() {
         </>
       }
     >
-      <div className="flex h-[72px] w-[72px] items-center justify-center rounded-[22px] bg-hero text-white">
+      <div className="hero-gradien flex h-[72px] w-[72px] items-center justify-center rounded-[22px] text-white">
         <Smartphone size={34} strokeWidth={1.9} aria-hidden="true" />
       </div>
 

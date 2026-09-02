@@ -224,7 +224,7 @@ export function SheetPesanan({
                   inputMode="numeric"
                   value={jumlah}
                   onChange={(e) => setJumlah(Math.max(1, Number(e.target.value.replace(/\D/g, '')) || 1))}
-                  className="angka h-14 w-full min-w-0 rounded-kontrol border-[1.5px] border-garis-tua bg-kartu text-center text-sub font-bold text-tinta outline-none focus:border-hero"
+                  className="angka h-14 w-full min-w-0 rounded-kontrol border-[1.5px] border-garis-tua bg-kartu text-center text-sub font-bold text-tinta outline-none focus:border-merek"
                 />
                 <BtnAngka label="Tambah" onClick={() => setJumlah((n) => n + 1)}>
                   +
@@ -234,7 +234,7 @@ export function SheetPesanan({
 
             <div className="min-w-0 flex-1">
               <p className="label-bagian">HARGA SATUAN</p>
-              <div className="mt-2 flex h-14 items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-3 focus-within:border-hero">
+              <div className="mt-2 flex h-14 items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-3 focus-within:border-merek">
                 <span className="text-utama text-redup">Rp</span>
                 <input
                   inputMode="numeric"
@@ -277,12 +277,12 @@ function BarisProduk({
       onClick={onPilih}
       aria-pressed={terpilih}
       className={`flex min-h-16 w-full items-center gap-3 rounded-kontrol border-[1.5px] px-4 text-left transition active:scale-[0.98] ${
-        terpilih ? 'border-hero bg-kanvas' : 'border-garis-tua bg-kartu'
+        terpilih ? 'border-merek bg-kanvas' : 'border-garis-tua bg-kartu'
       }`}
     >
       <span
         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-[1.5px] ${
-          terpilih ? 'border-hero bg-hero text-white' : 'border-garis-tua'
+          terpilih ? 'border-merek bg-merek text-white' : 'border-garis-tua'
         }`}
         aria-hidden="true"
       >

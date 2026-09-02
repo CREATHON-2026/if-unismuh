@@ -11,7 +11,7 @@ import { tulisOnboarding } from '../state/onboarding';
 const FORM_KOSONG = { nama: '', jumlah: '', satuan: '', harga_beli: '', jumlah_beli: '' };
 
 const KELAS_INPUT =
-  'h-14 w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-utama text-tinta outline-none transition placeholder:text-redup focus:border-hero';
+  'h-14 w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-utama text-tinta outline-none transition placeholder:text-redup focus:border-merek';
 
 // Label di ATAS kolom, bukan di dalam placeholder. Di lebar setengah layar
 // placeholder panjang terpotong di tengah kata dan pertanyaannya jadi hilang.
@@ -74,7 +74,7 @@ export function ResepBahan() {
             type="button"
             aria-label="Rekam suara"
             onClick={() => setCatatan('Fitur suara segera aktif — sementara ketik dulu ya')}
-            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-hero text-white transition active:scale-95"
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-merek text-white transition active:scale-95"
           >
             <Mic size={24} strokeWidth={1.8} aria-hidden="true" />
           </button>
@@ -192,7 +192,7 @@ export function ResepBahan() {
       </div>
 
       <div className="mt-8">
-        <Tombol varian="gelap" disabled={daftar.length === 0} onClick={lanjut}>
+        <Tombol varian="utama" disabled={daftar.length === 0} onClick={lanjut}>
           <span className="flex items-center justify-center gap-2.5">
             Selanjutnya
             <ArrowRight size={20} strokeWidth={2.2} aria-hidden="true" />

@@ -20,7 +20,7 @@ export function KepalaAplikasi({ nama }: { nama?: string | null }) {
   const inisial = ((nama ?? bacaOnboarding().nama_usaha ?? 'W').trim().charAt(0) || 'W').toUpperCase();
   return (
     <div className="flex items-center gap-3">
-      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-hero text-lg font-bold text-white">
+      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-merek text-lg font-bold text-white">
         {inisial}
       </span>
       <span className="text-sub font-extrabold tracking-[-0.02em] text-tinta">lapakAi</span>

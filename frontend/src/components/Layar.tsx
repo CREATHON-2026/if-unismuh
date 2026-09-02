@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { TombolIkon } from './TombolIkon';
 
 // Latar layar. Namanya masih "gradien" karena dipakai di banyak berkas; isinya
 // sudah lama bukan gradien, dan sekarang jadi kanvas abu netral. Gradien
@@ -53,14 +54,9 @@ export function Layar({
         {!tanpaLogo && (
           <div className="relative flex items-center justify-center pb-8">
             {kembali && (
-              <button
-                type="button"
-                aria-label="Kembali"
-                onClick={kembali}
-                className="absolute left-0 flex h-11 w-11 items-center justify-center rounded-full text-tinta transition active:scale-95"
-              >
-                <ArrowLeft size={24} strokeWidth={2} aria-hidden="true" />
-              </button>
+              <span className="absolute left-0">
+                <TombolIkon ikon={ArrowLeft} label="Kembali" nada="terang" onClick={kembali} />
+              </span>
             )}
             <span className="text-sub font-extrabold tracking-[-0.02em] text-tinta">lapakAi</span>
           </div>

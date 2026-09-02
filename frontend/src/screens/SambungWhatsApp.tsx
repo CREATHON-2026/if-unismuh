@@ -118,7 +118,7 @@ export function SambungWhatsApp() {
           <span className="text-utama text-sedang">Status</span>
           <span
             className={`rounded-full px-3.5 py-1.5 text-isi font-semibold ${
-              tersambung ? 'bg-hero text-white' : 'bg-kanvas text-sedang'
+              tersambung ? 'bg-merek text-white' : 'bg-kanvas text-sedang'
             }`}
           >
             {data ? LABEL[data.status] : 'Memuat…'}
@@ -188,7 +188,7 @@ export function SambungWhatsApp() {
               <>
                 <div className="mt-5">
                   <Tombol
-                    varian="gelap"
+                    varian="utama"
                     disabled={menyiapkan}
                     onClick={() => void sambungkan(false)}
                   >

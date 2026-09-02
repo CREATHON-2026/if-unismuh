@@ -329,7 +329,7 @@ export function PesananMasuk() {
           onChange={(e) => setTeks(e.target.value)}
           placeholder={CONTOH}
           rows={3}
-          className="mt-3 w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu p-4 text-utama leading-relaxed text-tinta outline-none transition placeholder:text-redup focus:border-hero"
+          className="mt-3 w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu p-4 text-utama leading-relaxed text-tinta outline-none transition placeholder:text-redup focus:border-merek"
         />
         <div className="mt-3">
           <Tombol varian="garis" disabled={!teks.trim() || sibuk} onClick={() => void tempel()}>

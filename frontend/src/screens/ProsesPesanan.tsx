@@ -437,7 +437,7 @@ export function ProsesPesanan() {
                 type="button"
                 onClick={() => setAlasan(a)}
                 className={`min-h-14 rounded-kontrol border-[1.5px] px-4 text-left text-utama font-semibold transition active:scale-[0.98] ${
-                  alasan === a ? 'border-hero bg-kanvas text-tinta' : 'border-garis-tua text-sedang'
+                  alasan === a ? 'border-merek bg-kanvas text-tinta' : 'border-garis-tua text-sedang'
                 }`}
               >
                 {a}
@@ -448,7 +448,7 @@ export function ProsesPesanan() {
             value={alasan}
             onChange={(e) => setAlasan(e.target.value)}
             placeholder="Atau tulis sendiri"
-            className="mt-1 min-h-14 rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-utama text-tinta outline-none placeholder:text-redup focus:border-hero"
+            className="mt-1 min-h-14 rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-utama text-tinta outline-none placeholder:text-redup focus:border-merek"
           />
         </div>
       </BottomSheet>

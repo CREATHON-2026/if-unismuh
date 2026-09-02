@@ -95,7 +95,7 @@ export function TemuanPertama() {
       </p>
 
       <div className="mt-4">
-        <Tombol varian="gelap" disabled={sibuk} onClick={() => inputFoto.current?.click()}>
+        <Tombol varian="utama" disabled={sibuk} onClick={() => inputFoto.current?.click()}>
           <span className="flex items-center justify-center gap-2.5">
             <Camera size={21} strokeWidth={1.9} aria-hidden="true" />
             {sibuk ? 'Membaca foto…' : 'Foto buku catatan'}

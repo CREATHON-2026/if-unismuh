@@ -37,12 +37,12 @@ export function ResepHasil() {
           placeholder="Contoh: 40"
           value={jumlah}
           onChange={(e) => setJumlah(e.target.value.replace(/\D/g, ''))}
-          className="angka mt-5 h-[72px] w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-judul font-bold text-tinta outline-none transition placeholder:text-sub placeholder:font-normal placeholder:text-redup focus:border-hero"
+          className="angka mt-5 h-[72px] w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-judul font-bold text-tinta outline-none transition placeholder:text-sub placeholder:font-normal placeholder:text-redup focus:border-merek"
         />
       </div>
 
       <div className="mt-8">
-        <Tombol varian="gelap" disabled={!valid} onClick={lanjut}>
+        <Tombol varian="utama" disabled={!valid} onClick={lanjut}>
           <span className="flex items-center justify-center gap-2.5">
             Selanjutnya
             <ArrowRight size={20} strokeWidth={2.2} aria-hidden="true" />
