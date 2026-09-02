@@ -1,39 +1,49 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CircleAlert, Mic, TrendingDown } from 'lucide-react';
+import { Camera, ChevronRight, Keyboard, MessageCircle, Mic, PiggyBank, TriangleAlert, Wallet } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
-import type { Beranda as DataBeranda } from '@shared/types';
-import { ambilBeranda, ambilSaya } from '../api/client';
+import type { Beranda as DataBeranda, PesanMasukItem, Rekap } from '@shared/types';
+import { ambilBeranda, ambilRekap, ambilSaya, daftarPesanan, ekstraksiFoto } from '../api/client';
 import { Layar } from '../components/Layar';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
-import { KartuHero } from '../components/KartuHero';
-import { GridMetrik, KartuMetrik } from '../components/KartuMetrik';
+import { GrafikTren } from '../components/GrafikTren';
 import { BarisDaftar, KartuDaftar } from '../components/BarisDaftar';
 import { NavBawah } from '../components/NavBawah';
 import { KeadaanGalat } from '../components/KeadaanGalat';
 import { KeadaanKosong } from '../components/KeadaanKosong';
-import { RangkaHero, RangkaKartu } from '../components/Rangka';
-import { Tombol } from '../components/Tombol';
+import { RangkaKartu } from '../components/Rangka';
 import { bacaOnboarding } from '../state/onboarding';
+import { tulisEkstraksi } from '../state/ekstraksi';
 
 /**
- * Beranda — fitur 7, dan tamparan pertama demo.
+ * Beranda — fitur 7, dan tamparan pertama demo. Rupa mengikuti rancangan tim:
+ * omzet dan untung BERSEBELAHAN sebagai dua kartu (persis kalimat fitur 7),
+ * untung menang lewat warna dan ukuran — yang satu uang lewat, yang satu uang
+ * tinggal. Di bawahnya peringatan produk merugi, lalu kartu catat dengan tiga
+ * jalan masuk sejajar: foto, suara, ketik (fitur 1–3, suara tidak disembunyikan).
  *
- * Untung jadi angka utama di kartu gelap; uang masuk turun jadi salah satu
- * kotak metrik di bawahnya. Ini inti seluruh layar: pedagang datang mengira
- * omzet adalah untung. Menaruh keduanya sama besar justru membuatnya terasa
- * setara — padahal yang satu uang lewat, yang satu uang tinggal. Kartu gelap
- * dipakai sekali saja di layar ini, supaya "paling penting" tetap berarti.
+ * Warna mockup diadaptasi ke sistem: mint → hijau untung, cokelat → navy merek.
+ * Lonceng notifikasi di mockup sengaja TIDAK dibawa — tidak ada sistem
+ * notifikasi; afordansi yang berbohong lebih buruk daripada ruang kosong
+ * (lihat KepalaAplikasi).
  *
  * Tidak ada satu pun angka di berkas ini yang dihitung. Semuanya datang jadi
  * dari GET /beranda — aturan #7. Perbandingan yang ada di sini cuma memilih
  * warna dan kalimat; tidak ada angka baru yang lahir dari sini.
- *
- * Sengaja tidak ada lencana delta ("+12%") seperti di rujukan rupanya:
- * GET /beranda tidak mengirim pembanding periode sebelumnya. Mengarangnya
- * supaya mirip dashboard di internet adalah persis kebohongan yang aplikasi ini
- * ada untuk menghapusnya.
  */
+const JENIS_LABEL: Record<PesanMasukItem['jenis'], string> = {
+  pesanan: 'Pesanan',
+  tanya_harga: 'Tanya harga',
+  menawar: 'Menawar',
+};
+
+/** Format tampilan waktu, mis. "2 Sep 03.05". Murni tampilan, bukan hitungan. */
+function waktuSingkat(iso: string): string {
+  return new Date(iso).toLocaleString('id-ID', {
+    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+  });
+}
+
 export function Beranda() {
   const nav = useNavigate();
   const [data, setData] = useState<DataBeranda | null>(null);
@@ -48,6 +58,27 @@ export function Beranda() {
   // yang bisa berbeda diam-diam.
   const [memuat, setMemuat] = useState(true);
 
+  const inputFoto = useRef<HTMLInputElement>(null);
+  const [sibukFoto, setSibukFoto] = useState(false);
+  const [galatFoto, setGalatFoto] = useState('');
+  const [tren, setTren] = useState<Rekap | null>(null);
+  const [pesanan, setPesanan] = useState<PesanMasukItem[]>([]);
+
+  // Alur yang sama dengan TemuanPertama: hasil baca foto hanya usulan, wajib
+  // lewat layar konfirmasi sebelum tersimpan (aturan #2).
+  async function pilihFoto(berkas: File) {
+    setSibukFoto(true);
+    setGalatFoto('');
+    const j = await ekstraksiFoto(berkas);
+    if (j.ok) {
+      tulisEkstraksi(j.data);
+      nav('/konfirmasi', { state: { fotoUrl: URL.createObjectURL(berkas) } });
+      return;
+    }
+    setGalatFoto(j.error.pesan);
+    setSibukFoto(false);
+  }
+
   async function muat() {
     setMemuat(true);
     setGalat('');
@@ -59,6 +90,14 @@ export function Beranda() {
 
   useEffect(() => {
     void muat();
+    // Dua seksi bawah: tren mingguan dan pesanan terbaru. Gagal diam-diam
+    // tidak apa-apa — seksinya disembunyikan, bukan menggagalkan seluruh layar.
+    void ambilRekap().then((j) => {
+      if (j.ok) setTren(j.data);
+    });
+    void daftarPesanan().then((j) => {
+      if (j.ok) setPesanan(j.data);
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -79,15 +118,18 @@ export function Beranda() {
     );
   }
 
-  // Rangkanya meniru susunan aslinya — kartu gelap lalu dua kotak metrik —
+  // Rangkanya meniru susunan barunya — dua kartu bersebelahan lalu kartu catat —
   // supaya layar tidak melompat saat angkanya tiba.
   if (!data) {
     return (
       <Layar tanpaLogo atas>
         <KepalaAplikasi nama={namaUsaha} />
         <div className="mt-6 flex flex-col gap-4">
-          <RangkaHero />
-          <RangkaKartu tinggi="h-24" />
+          <div className="grid grid-cols-2 gap-3">
+            <RangkaKartu tinggi="h-36" />
+            <RangkaKartu tinggi="h-36" />
+          </div>
+          <RangkaKartu tinggi="h-52" />
         </div>
         <NavBawah />
       </Layar>
@@ -101,70 +143,87 @@ export function Beranda() {
       <KepalaAplikasi nama={namaUsaha} />
 
       <div className="mt-6">
-        <p className="text-isi text-redup">Bulan ini</p>
         <p className="text-judul-kecil font-bold tracking-[-0.02em] text-tinta">
-          {namaUsaha ?? 'Warung Anda'}
+          Halo{namaUsaha ? `, ${namaUsaha}` : ''}! 👋
+        </p>
+        <p className="mt-1 text-utama leading-relaxed text-sedang">
+          Ini ringkasan jualan bulan ini.
         </p>
       </div>
 
-      <div className="mt-4">
-        <KartuHero
-          label="Untung bersih"
-          nilai={formatRupiah(data.untung_bersih)}
-          nada={rugi ? 'rugi' : 'untung'}
-          catatan={
-            rugi
-              ? 'Bulan ini uang yang keluar lebih besar daripada yang masuk.'
-              : 'Ini yang benar-benar tinggal, bukan yang lewat.'
-          }
-          bawah={
-            /*
-             * Uang masuk sengaja ditulis hampir sebesar untung, bukan sebagai
-             * catatan kaki.
-             *
-             * Untung 40px lawan uang masuk 19px membuat hierarkinya MEMBALIK
-             * besaran: Rp 268.000 tampil paling besar, Rp 4.200.000 paling
-             * kecil, dan mata yang melirik sekilas menyimpulkan untungnya lebih
-             * banyak — kebalikan persis dari yang ingin dikatakan layar ini.
-             *
-             * Pada 22px putih penuh, angka besarnya kembali terbaca besar,
-             * sementara untung tetap menang lewat ukuran dan warna hijaunya.
-             * Keduanya jadi bisa dibandingkan, yang memang seluruh gunanya.
-             */
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-isi font-medium text-white/75">Uang masuk</p>
-                {/* /50, bukan /45: pada 12,5px di atas kartu gelap, /45 hanya 4,26:1 —
-                    gagal WCAG AA. /50 memberi 4,92:1. Diukur, bukan dikira. */}
-                <p className="mt-0.5 text-label text-white/50">Belum dikurangi modal</p>
-              </div>
-              <span className="angka shrink-0 text-judul-kecil font-bold text-white">
-                {formatRupiah(data.omzet)}
-              </span>
-            </div>
-          }
-        />
-      </div>
+      {/* Fitur 7 apa adanya: omzet dan untung BERSEBELAHAN. Untung menang
+          lewat ukuran dan warna, tapi uang masuk tetap terbaca jelas —
+          membandingkan keduanya adalah seluruh guna layar ini. Saat belum ada
+          transaksi, dua angka nol bukan hasil; tampilkan ajakan (docs/06). */}
+      {data.ada_transaksi ? (
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <div className="kartu flex flex-col p-4">
+            <span className="flex items-center gap-2 text-isi font-medium text-sedang">
+              <Wallet size={17} strokeWidth={1.8} aria-hidden="true" />
+              Uang masuk
+            </span>
+            <span className="angka mt-3 text-judul-kecil font-bold leading-tight text-tinta">
+              {formatRupiah(data.omzet)}
+            </span>
+            <span className="mt-1.5 text-label text-redup">Belum dikurangi modal</span>
+          </div>
 
-      <div className="mt-3">
-        <GridMetrik>
-          <KartuMetrik
-            ikon={TrendingDown}
-            label="Produk merugi"
-            nilai={String(data.jumlah_produk_merugi)}
-            sub={data.jumlah_produk_merugi > 0 ? 'Dijual di bawah modal' : 'Tidak ada, aman'}
-            nada={data.jumlah_produk_merugi > 0 ? 'rugi' : 'untung'}
-            onClick={() => nav('/produk')}
-          />
-          <KartuMetrik
-            ikon={CircleAlert}
-            label="Belum dihitung"
-            nilai={String(data.baris_tanpa_modal)}
-            sub={data.baris_tanpa_modal > 0 ? 'Modal belum lengkap' : 'Semua sudah terhitung'}
-            nada={data.baris_tanpa_modal > 0 ? 'tanda' : 'netral'}
-          />
-        </GridMetrik>
-      </div>
+          <div
+            className={`flex flex-col rounded-kartu p-4 ${rugi ? 'bg-rugi-muda' : 'bg-untung-muda'}`}
+          >
+            <span
+              className={`flex items-center gap-2 text-isi font-semibold ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}
+            >
+              <PiggyBank size={17} strokeWidth={1.8} aria-hidden="true" />
+              Untung bersih
+            </span>
+            <span
+              className={`angka mt-3 text-judul font-extrabold leading-tight ${rugi ? 'text-rugi' : 'text-untung'}`}
+            >
+              {formatRupiah(data.untung_bersih)}
+            </span>
+            <span className={`mt-1.5 text-label ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}>
+              {rugi ? 'Uang keluar lebih besar' : 'Yang benar-benar tinggal'}
+            </span>
+          </div>
+        </div>
+      ) : (
+        <KeadaanKosong
+          ikon={Mic}
+          judul="Belum ada penjualan bulan ini"
+          pesan="Catat yang hari ini dulu lewat tombol di bawah — cukup diucapkan."
+        />
+      )}
+
+      {/* Terisi meski belum ada transaksi — dihitung dari resep, bukan
+          penjualan. Math.abs hanya untuk tampilan; angkanya datang jadi. */}
+      {data.jumlah_produk_merugi > 0 && (
+        <button
+          type="button"
+          onClick={() => nav('/produk')}
+          className="mt-3 flex w-full items-center gap-3.5 rounded-kartu bg-rugi-muda p-4 text-left transition active:scale-[0.99]"
+        >
+          <span
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-rugi text-white"
+            aria-hidden="true"
+          >
+            <TriangleAlert size={20} strokeWidth={2} />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-utama font-bold text-rugi">
+              {data.jumlah_produk_merugi} produk merugi
+            </span>
+            <span className="mt-0.5 block text-kecil leading-relaxed text-rugi-tua">
+              {data.produk_paling_merugi
+                ? `Paling parah ${data.produk_paling_merugi.nama}, rugi ${formatRupiah(
+                    Math.abs(data.produk_paling_merugi.margin_per_unit),
+                  )} tiap terjual`
+                : 'Cek modal dan harga jualnya'}
+            </span>
+          </span>
+          <ChevronRight size={20} className="shrink-0 text-rugi" aria-hidden="true" />
+        </button>
+      )}
 
       {/* Angka yang tidak lengkap harus mengaku tidak lengkap. */}
       {data.baris_tanpa_modal > 0 && (
@@ -174,47 +233,123 @@ export function Beranda() {
         </p>
       )}
 
-      {!data.ada_transaksi && (
-        <KeadaanKosong
-          ikon={Mic}
-          judul="Belum ada penjualan bulan ini"
-          pesan="Catat yang hari ini dulu — cukup diucapkan, tidak perlu diketik satu per satu."
-          labelAksi="Catat penjualan"
-          onAksi={() => nav('/catat')}
+      {/* Tiga jalan masuk pencatatan, sejajar dan sama terhormat (fitur 1–3).
+          Suara paling besar di tengah — bukan disembunyikan di menu. */}
+      <div className="kartu mt-5 px-4 py-5">
+        <p className="text-center text-utama font-bold text-tinta">Catat penjualan</p>
+
+        <div className="mt-5 flex items-start justify-center gap-8">
+          <button
+            type="button"
+            disabled={sibukFoto}
+            onClick={() => inputFoto.current?.click()}
+            className="flex w-16 flex-col items-center gap-2 transition active:scale-95 disabled:opacity-40"
+          >
+            <span
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-kanvas text-tinta ring-1 ring-garis-tua"
+              aria-hidden="true"
+            >
+              <Camera size={22} strokeWidth={1.8} />
+            </span>
+            <span className="text-kecil font-medium text-sedang">
+              {sibukFoto ? 'Membaca…' : 'Foto buku'}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => nav('/catat')}
+            className="-mt-2 flex w-20 flex-col items-center gap-2 transition active:scale-95"
+          >
+            <span
+              className="flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-full bg-hero text-white shadow-sm"
+              aria-hidden="true"
+            >
+              <Mic size={30} strokeWidth={1.9} />
+            </span>
+            <span className="text-kecil font-bold text-tinta">Suara</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => nav('/catat')}
+            className="flex w-16 flex-col items-center gap-2 transition active:scale-95"
+          >
+            <span
+              className="flex h-14 w-14 items-center justify-center rounded-full bg-kanvas text-tinta ring-1 ring-garis-tua"
+              aria-hidden="true"
+            >
+              <Keyboard size={22} strokeWidth={1.8} />
+            </span>
+            <span className="text-kecil font-medium text-sedang">Ketik</span>
+          </button>
+        </div>
+
+        <p className="mt-4 text-center text-kecil leading-relaxed text-redup">
+          Cukup ucapkan “kripik pisang 5 bungkus 100 ribu”.
+        </p>
+
+        {galatFoto && (
+          <p className="mt-3 text-center text-isi font-semibold text-rugi">{galatFoto}</p>
+        )}
+
+        <input
+          ref={inputFoto}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const berkas = e.target.files?.[0];
+            if (berkas) void pilihFoto(berkas);
+            e.target.value = '';
+          }}
         />
+      </div>
+
+      {/* Cuplikan tren dari GET /rekap — titik dan totalnya dihitung SQL;
+          di sini hanya digambar. Ketuk di mana pun menuju rekap penuh. */}
+      {tren && tren.ada_transaksi && tren.hari.length > 1 && (
+        <>
+          <p className="label-bagian mt-7">ARAH USAHA</p>
+          <button
+            type="button"
+            onClick={() => nav('/rekap')}
+            className="kartu mt-2 w-full px-4 pb-4 pt-5 text-left transition active:scale-[0.99]"
+          >
+            <GrafikTren titik={tren.hari} />
+            <span className="mt-3 flex items-center justify-between text-isi font-semibold text-tinta">
+              Lihat rekap lengkap
+              <ChevronRight size={18} className="text-redup" aria-hidden="true" />
+            </span>
+          </button>
+        </>
       )}
 
-      {/* Terisi meski belum ada transaksi — dihitung dari resep, bukan penjualan. */}
-      {data.produk_paling_merugi && (
+      {/* Pesanan tersimpan terbaru — pintu cepat ke fitur 9. */}
+      {pesanan.length > 0 && (
         <>
-          <p className="label-bagian mt-7">PALING MERUGI</p>
+          <p className="label-bagian mt-7">PESANAN TERBARU</p>
           <div className="mt-2">
             <KartuDaftar>
-              <BarisDaftar
-                ikon={TrendingDown}
-                nadaIkon="rugi"
-                judul={data.produk_paling_merugi.nama}
-                meta="Rugi sebanyak itu setiap kali terjual"
-                nilai={`\u2212 ${formatRupiah(Math.abs(data.produk_paling_merugi.margin_per_unit))}`}
-                nadaNilai="rugi"
-                onClick={() => nav('/produk')}
-              />
+              {pesanan.slice(0, 2).map((p) => (
+                <BarisDaftar
+                  key={p.pesan_id}
+                  ikon={MessageCircle}
+                  nadaIkon={p.merugi === true ? 'rugi' : p.perlu_dicek ? 'tanda' : 'netral'}
+                  judul={p.nama_produk ?? p.nama_produk_mentah ?? 'Pesanan masuk'}
+                  meta={`${JENIS_LABEL[p.jenis]} · ${waktuSingkat(p.diterima_pada)}`}
+                  nilai={p.nilai_pesanan != null ? formatRupiah(p.nilai_pesanan) : '—'}
+                  nadaNilai={p.merugi === true ? 'rugi' : 'netral'}
+                  onClick={() => nav('/pesanan')}
+                />
+              ))}
             </KartuDaftar>
             <p className="mt-2 px-1 text-kecil leading-relaxed text-redup">
-              Ketuk untuk melihat harga yang sebaiknya dipakai.
+              Ketuk untuk membuka dan menyiapkan balasannya.
             </p>
           </div>
         </>
       )}
-
-      <div className="mt-5 flex gap-2.5">
-        <Tombol className="flex-1" onClick={() => nav('/catat')}>
-          Catat penjualan
-        </Tombol>
-        <Tombol varian="garis" className="flex-1" onClick={() => nav('/pesanan')}>
-          Pesanan
-        </Tombol>
-      </div>
 
       <NavBawah />
     </Layar>

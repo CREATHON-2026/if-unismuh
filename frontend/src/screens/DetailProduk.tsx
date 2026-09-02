@@ -106,13 +106,13 @@ export function DetailProduk() {
           bawah={
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center justify-between text-isi">
-                <span className="text-white/55">Modal per unit</span>
+                <span className="text-white/70">Modal per unit</span>
                 <span className="angka font-semibold text-white">
                   {d.modal_per_unit == null ? 'belum diisi' : formatRupiah(d.modal_per_unit)}
                 </span>
               </div>
               <div className="flex items-center justify-between text-isi">
-                <span className="text-white/55">Harga jual</span>
+                <span className="text-white/70">Harga jual</span>
                 <span className="angka font-semibold text-white">
                   {formatRupiah(d.harga_jual)}
                 </span>

@@ -105,7 +105,7 @@ export function KonfirmasiEkstraksi() {
 
   return (
     <Layar tanpaLogo atas>
-      <div className="-mx-5 flex items-center gap-3 border-b border-garis px-5 pb-4">
+      <div className="-mx-5 flex items-center gap-3 border-b border-garis px-5 pb-4 md:-mx-8 md:px-8">
         <button
           type="button"
           aria-label="Kembali"
@@ -266,7 +266,7 @@ export function KonfirmasiEkstraksi() {
           nada="netral"
           bawah={
             <div className="flex items-center justify-between text-isi">
-              <span className="text-white/55">Total item</span>
+              <span className="text-white/70">Total item</span>
               <span className="angka font-semibold text-white">{total.item}</span>
             </div>
           }

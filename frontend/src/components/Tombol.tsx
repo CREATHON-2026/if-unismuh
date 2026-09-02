@@ -31,5 +31,11 @@ export function Tombol({
     varian === 'garis'
       ? 'border-[1.5px] border-garis-tua bg-transparent text-tinta'
       : 'bg-hero text-white';
-  return <button className={`${dasar} ${gaya} ${className}`} {...props} />;
+  // children WAJIB dirender eksplisit: ia sudah dikeluarkan dari `...props`
+  // oleh destructuring di atas, jadi spread saja menghasilkan tombol kosong.
+  return (
+    <button className={`${dasar} ${gaya} ${className}`} {...props}>
+      {children}
+    </button>
+  );
 }

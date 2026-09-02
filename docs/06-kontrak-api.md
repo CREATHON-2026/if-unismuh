@@ -133,6 +133,32 @@ Tanpa parameter, bawaannya **bulan berjalan** — pemilih tanggal adalah friksi 
 
 **Kenapa `omzet` dan `untung_bersih` bisa tidak sebanding.** Uang masuk selalu diketahui, jadi omzet menghitung semua penjualan. Untung hanya menghitung penjualan yang modal produknya diketahui. Selisihnya dilaporkan lewat `baris_tanpa_modal` — bukan disembunyikan dengan membuang barisnya dari omzet juga.
 
+### `GET /rekap?hari=7` — **belum ada di backend**
+Fitur 14 — grafik tren omzet vs untung, harian. Tanpa parameter, bawaannya **7 hari terakhir** termasuk hari berjalan. Frontend sementara memakai data tiruan persis bentuk ini (`ambilRekap` di `frontend/src/api/client.ts`) sampai endpoint-nya jadi.
+
+```json
+{ "ok": true, "data": {
+    "hari": [
+      { "label": "Sen", "omzet": 620000, "untung_bersih": 54000 },
+      { "label": "Sel", "omzet": 480000, "untung_bersih": 41000 }
+    ],
+    "omzet": 5400000,
+    "untung_bersih": 514000,
+    "ada_transaksi": true,
+    "produk_terlaris": { "id": 1, "nama": "Kripik Pisang", "jumlah_terjual": 124 }
+} }
+```
+
+| Field | Catatan |
+|---|---|
+| `hari[]` | Urut dari paling lama ke hari ini. `label` **siap tampil** ("Sen"…"Min") — frontend tidak merangkai tanggal |
+| `hari[].untung_bersih` | Boleh negatif. Aturannya sama dengan Beranda: hanya penjualan yang modal produknya diketahui |
+| `omzet` · `untung_bersih` | Total sepanjang periode, **dijumlahkan SQL** — frontend tidak menjumlah titik-titik grafik |
+| `ada_transaksi` | `false` → tampilkan ajakan mencatat, jangan grafik datar nol |
+| `produk_terlaris` | Terbanyak terjual sepanjang periode. `null` kalau belum ada penjualan |
+
+Tidak ada field pembanding periode ("+12% dari minggu lalu") dan persen margin — kalau nanti dibutuhkan, tambahkan di sini dulu dan hitung di SQL, jangan di frontend.
+
 ### `POST /transaksi`
 Fitur 3 — ketik manual. **Banyak baris sekaligus**, bentuknya sama dengan layar konfirmasi foto supaya komponen barisnya bisa dipakai untuk keduanya.
 

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Layar, LATAR_GRADIEN } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
-import { LogoIkon } from '../components/Logo';
+import { LogoIkon, LogoTeks } from '../components/Logo';
 
 export function Sambutan() {
   const nav = useNavigate();
@@ -27,7 +27,7 @@ export function Sambutan() {
       <div className="flex flex-col items-center gap-6 text-center">
         <div className="kartu flex items-center gap-3 px-8 py-6">
           <LogoIkon ukuran={64} />
-          <span className="text-4xl font-extrabold tracking-[-0.03em] text-tinta">lapakAi</span>
+          <LogoTeks className="text-4xl" />
         </div>
         <p className="text-judul-kecil leading-relaxed text-sedang">
           Tahu untung sebenarnya,

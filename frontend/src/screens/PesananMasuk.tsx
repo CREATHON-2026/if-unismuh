@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, MessageCircle } from 'lucide-react';
+import { ChevronRight, CircleCheck, Clipboard, MessageCircle } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
-import type { AnalisisPesanan, BalasanReq, BalasanRes, PesanMasukItem } from '@shared/types';
+import type { AnalisisPesanan, BalasanReq, BalasanRes, JenisPesan, PesanMasukItem } from '@shared/types';
 import { analisisPesanan, buatBalasan, daftarPesanan } from '../api/client';
 import { Layar } from '../components/Layar';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
@@ -34,6 +34,14 @@ const MAKSUD: { nilai: BalasanReq['maksud']; label: string }[] = [
 
 const CONTOH =
   'bu saya mau pesan 20 bungkus kripik pisang buat hari sabtu, bisa 18rb ga bu?';
+
+/* Badge jenis pesan. Mint di mockup jadi netral/kuning: hijau khusus untung,
+   dan MENAWAR memang perlu dilihat manusia sebelum dijawab. */
+const JENIS_HASIL: Record<Exclude<JenisPesan, 'bukan_pesanan'>, { label: string; nada: 'netral' | 'tanda' }> = {
+  pesanan: { label: 'PESANAN BARU', nada: 'netral' },
+  tanya_harga: { label: 'TANYA HARGA', nada: 'netral' },
+  menawar: { label: 'MENAWAR', nada: 'tanda' },
+};
 
 /** Format tampilan waktu, mis. "2 Sep 03.05". Murni tampilan, bukan hitungan. */
 function waktuSingkat(iso: string): string {
@@ -117,18 +125,59 @@ export function PesananMasuk() {
     }
   }
 
+  /** Kebalikan salin: baca papan klip supaya tidak perlu tekan-lama. */
+  async function tempelDariPapanKlip() {
+    try {
+      const t = await navigator.clipboard.readText();
+      if (t.trim()) {
+        setTeks(t.trim());
+        setGalat('');
+      } else {
+        setGalat('Papan klipnya kosong. Salin dulu chat pembelinya.');
+      }
+    } catch {
+      setGalat('Belum bisa menempel otomatis. Tekan lama kolomnya lalu pilih Tempel.');
+    }
+  }
+
   return (
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
       <h1 className="mt-7 text-judul font-bold tracking-[-0.02em] text-tinta">Pesanan Masuk</h1>
       <p className="mt-1 text-utama leading-relaxed text-sedang">
-        Salin chat pembeli dari WhatsApp, tempel di sini.
+        Tempel pesan dari pembeli, biar lapakAi bantu catat.
       </p>
+
+      <div className="kartu mt-4 p-4">
+        <p className="text-utama font-bold text-tinta">Pesan pembeli</p>
+        <div className="relative mt-3">
+          <textarea
+            value={teks}
+            onChange={(e) => setTeks(e.target.value)}
+            placeholder={`Contoh: ${CONTOH}`}
+            rows={4}
+            className="w-full rounded-kontrol border-[1.5px] border-garis bg-kanvas p-4 pb-12 text-utama leading-relaxed text-tinta outline-none transition placeholder:text-redup focus:border-hero"
+          />
+          <button
+            type="button"
+            aria-label="Tempel dari papan klip"
+            onClick={() => void tempelDariPapanKlip()}
+            className="absolute bottom-3.5 right-2.5 flex h-10 w-10 items-center justify-center rounded-xl text-aksen-tua transition active:scale-95"
+          >
+            <Clipboard size={20} strokeWidth={1.9} aria-hidden="true" />
+          </button>
+        </div>
+        <div className="mt-3">
+          <Tombol varian="gelap" disabled={!teks.trim() || sibuk} onClick={periksa}>
+            {sibuk ? 'Menganalisis…' : 'Analisis pesanan'}
+          </Tombol>
+        </div>
+      </div>
 
       <button
         type="button"
         onClick={() => nav('/pesanan/whatsapp')}
-        className="kartu mt-4 flex w-full items-center gap-3.5 px-4 py-4 text-left transition active:scale-[0.99]"
+        className="kartu mt-3 flex w-full items-center gap-3.5 px-4 py-4 text-left transition active:scale-[0.99]"
       >
         <span
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-kanvas text-tinta"
@@ -143,19 +192,6 @@ export function PesananMasuk() {
         <ChevronRight size={20} className="shrink-0 text-redup" aria-hidden="true" />
       </button>
 
-      <textarea
-        value={teks}
-        onChange={(e) => setTeks(e.target.value)}
-        placeholder={CONTOH}
-        rows={4}
-        className="mt-3 w-full rounded-kartu border-[1.5px] border-garis-tua bg-kartu p-4 text-utama leading-relaxed text-tinta outline-none transition placeholder:text-redup focus:border-hero"
-      />
-      <div className="mt-3">
-        <Tombol varian="gelap" disabled={!teks.trim() || sibuk} onClick={periksa}>
-          {sibuk ? 'Memeriksa…' : 'Periksa pesanan ini'}
-        </Tombol>
-      </div>
-
       {galat && (
         <p className="mt-3 rounded-kartu bg-rugi-muda p-4 text-utama text-rugi-tua">{galat}</p>
       )}
@@ -168,15 +204,32 @@ export function PesananMasuk() {
 
       {hasil && hasil.jenis !== 'bukan_pesanan' && (
         <div className="mt-4 flex flex-col gap-3">
-          <div className="kartu px-5 py-4">
+          <div className="kartu px-5 py-5">
             <div className="flex items-center justify-between gap-3">
-              <p className="min-w-0 text-sub font-bold text-tinta">
+              <p className="flex min-w-0 items-center gap-2.5 text-sub font-bold text-tinta">
+                <CircleCheck size={22} strokeWidth={2} className="shrink-0" aria-hidden="true" />
+                Hasil analisis
+              </p>
+              <Lencana nada={JENIS_HASIL[hasil.jenis].nada}>
+                {JENIS_HASIL[hasil.jenis].label}
+              </Lencana>
+            </div>
+
+            {/* Satu pesan = satu produk di kontrak /pesanan/analisis — bukan
+                daftar belanjaan seperti di rancangan. Tidak mengarang baris. */}
+            <p className="label-bagian mt-4">DAFTAR BARANG</p>
+            <div className="mt-2 rounded-kontrol bg-kanvas px-4 py-3.5">
+              <p className="truncate text-utama font-bold text-tinta">
                 {hasil.produk?.nama ?? hasil.nama_produk_mentah ?? 'Produk belum dikenali'}
               </p>
-              {hasil.jumlah != null && (
-                <span className="angka shrink-0 text-utama font-semibold text-sedang">
-                  {hasil.jumlah} pcs
-                </span>
+              {(hasil.jumlah != null || hasil.harga_diminta != null) && (
+                <p className="angka mt-0.5 text-isi text-redup">
+                  {hasil.jumlah != null ? `${hasil.jumlah} pcs` : ''}
+                  {hasil.jumlah != null && hasil.harga_diminta != null ? ' · ' : ''}
+                  {hasil.harga_diminta != null
+                    ? `pembeli minta ${formatRupiah(hasil.harga_diminta)}`
+                    : ''}
+                </p>
               )}
             </div>
 
@@ -188,6 +241,31 @@ export function PesananMasuk() {
                 <p className="mt-2 text-isi leading-relaxed text-tanda-tinta">
                   Maksudnya produk yang mana? {hasil.kandidat.map((k) => k.nama).join(', ')}
                 </p>
+              </div>
+            )}
+
+            {/* "Stok cukup" netral, bukan hijau: hijau khusus untung. */}
+            <div className="mt-3 flex flex-wrap gap-2">
+              {hasil.stok_kurang === true ? (
+                <Lencana nada="rugi">STOK KURANG</Lencana>
+              ) : hasil.stok_kurang === false ? (
+                <Lencana nada="netral">STOK CUKUP</Lencana>
+              ) : (
+                <Lencana nada="netral">STOK BELUM DICATAT</Lencana>
+              )}
+              {hasil.merugi != null && (
+                <Lencana nada={hasil.merugi ? 'rugi' : 'untung'}>
+                  {hasil.merugi ? 'STATUS: MERUGI' : 'STATUS: UNTUNG'}
+                </Lencana>
+              )}
+            </div>
+
+            {hasil.nilai_pesanan != null && (
+              <div className="mt-4 flex items-center justify-between gap-3 border-t border-garis pt-4">
+                <span className="text-utama font-semibold text-sedang">Total estimasi</span>
+                <span className="angka text-judul-kecil font-extrabold text-tinta">
+                  {formatRupiah(hasil.nilai_pesanan)}
+                </span>
               </div>
             )}
           </div>
@@ -204,7 +282,7 @@ export function PesananMasuk() {
               bawah={
                 hasil.nilai_pesanan != null ? (
                   <div className="flex items-center justify-between text-isi">
-                    <span className="text-white/55">Nilai pesanan</span>
+                    <span className="text-white/70">Nilai pesanan</span>
                     <span className="angka font-semibold text-white">
                       {formatRupiah(hasil.nilai_pesanan)}
                     </span>
