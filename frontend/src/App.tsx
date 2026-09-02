@@ -16,7 +16,9 @@ import { ResepHarga } from './screens/ResepHarga';
 import { TemuanPertama } from './screens/TemuanPertama';
 import { KonfirmasiEkstraksi } from './screens/KonfirmasiEkstraksi';
 import { Beranda } from './screens/Beranda';
+import { Rekap } from './screens/Rekap';
 import { DaftarProduk } from './screens/DaftarProduk';
+import { TambahProduk } from './screens/TambahProduk';
 import { DetailProduk } from './screens/DetailProduk';
 import { PesananMasuk } from './screens/PesananMasuk';
 import { ProsesPesanan } from './screens/ProsesPesanan';
@@ -70,7 +72,10 @@ export default function App() {
       <Route path="/temuan" element={<TemuanPertama />} />
       <Route path="/konfirmasi" element={<KonfirmasiEkstraksi />} />
       <Route path="/beranda" element={<Beranda />} />
+      <Route path="/rekap" element={<Rekap />} />
       <Route path="/produk" element={<DaftarProduk />} />
+      {/* Harus SEBELUM "/produk/:id", kalau tidak "tambah" tertangkap sebagai id. */}
+      <Route path="/produk/tambah" element={<TambahProduk />} />
       <Route path="/produk/:id" element={<DetailProduk />} />
       <Route path="/catat" element={<CatatSuara />} />
       <Route path="/tanya" element={<Tanya />} />
