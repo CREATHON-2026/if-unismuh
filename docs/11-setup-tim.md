@@ -25,6 +25,10 @@ Repo ini sudah membawa konfigurasi bersama di `.claude/settings.json` — kamu t
 
 **Ini tidak otomatis.** Meskipun `.claude/settings.json` di repo sudah mengaktifkannya, pengaturan itu hanya **saklar, bukan pemasang** — plugin-nya tetap harus diunduh sekali di tiap laptop.
 
+Pemasangannya berbeda per alat. **Kalau kamu memakai dua-duanya, pasang di dua-duanya** — plugin ini tidak dibagi antar alat.
+
+### Kalau kamu pakai Claude Code
+
 Di dalam Claude Code, ketik:
 
 ```
@@ -35,11 +39,32 @@ Lalu **restart Claude Code**.
 
 Tidak perlu menambahkan marketplace-nya — `claude-plugins-official` sudah terdaftar otomatis di setiap mesin.
 
+Memastikan: ketik `/`. Kalau muncul perintah seperti `/brainstorm`, `/write-plan`, atau `/execute-plan`, berarti sudah aktif.
+
+### Kalau kamu pakai GitHub Copilot CLI
+
+Dua perintah, dari terminal biasa (bukan dari dalam sesi Copilot):
+
+```bash
+copilot plugin marketplace add obra/superpowers-marketplace
+copilot plugin install superpowers@superpowers-marketplace
+```
+
+Lalu **mulai sesi baru** — plugin dimuat saat sesi dimulai, jadi sesi yang sudah berjalan tidak akan melihatnya.
+
+Memastikan:
+
+```bash
+copilot plugin list
+```
+
+Harus muncul `superpowers@superpowers-marketplace` beserta versinya.
+
 Catatan: superpowers adalah plugin pihak ketiga ([github.com/obra/superpowers](https://github.com/obra/superpowers)). Akan ada konfirmasi kepercayaan saat memasang — itu memang disengaja.
 
-### Memastikan sudah terpasang
+### Sebelum memakainya, baca dulu
 
-Ketik `/` di Claude Code. Kalau muncul perintah seperti `/brainstorm`, `/write-plan`, atau `/execute-plan`, berarti sudah aktif.
+**[13-superpowers.md](13-superpowers.md).** Dua skill bawaannya — worktree dan TDD — akan merusak proyek ini kalau dijalankan apa adanya: yang pertama bisa merusak database PGlite, yang kedua bisa membuat agent memasang framework pengujian baru di tengah lomba. Dokumen itu menjelaskan penyesuaiannya.
 
 ## 4. graphify
 
@@ -120,9 +145,10 @@ AST saja, tanpa LLM, tanpa biaya.
 ## Daftar periksa
 
 - [ ] Repo ter-clone
-- [ ] Claude Code terpasang
-- [ ] `/plugin install superpowers@claude-plugins-official` sudah dijalankan, lalu restart
-- [ ] `/brainstorm` muncul saat mengetik `/`
+- [ ] Claude Code dan/atau Copilot CLI terpasang
+- [ ] superpowers terpasang di **tiap** alat yang kamu pakai, lalu sesi dimulai ulang
+- [ ] `/brainstorm` muncul di Claude Code, atau `copilot plugin list` menyebut superpowers
+- [ ] Sudah membaca [13-superpowers.md](13-superpowers.md) — terutama dua bagian bahayanya
 - [ ] `pip install "graphifyy[sql]"` selesai
 - [ ] `graphify hook install` sudah dijalankan
 - [ ] `graphify query "apa aturan commit di repo ini"` memberi jawaban
@@ -134,6 +160,8 @@ AST saja, tanpa LLM, tanpa biaya.
 | Gejala | Kemungkinan sebab |
 |---|---|
 | `/brainstorm` tidak muncul | Belum restart Claude Code setelah install plugin |
+| Copilot CLI tidak mengenal skill superpowers | Sesi dimulai sebelum plugin dipasang — mulai sesi baru |
+| Agent memaksa memasang Vitest/Jest | Ia menuruti Hukum Besi TDD tanpa membaca [13-superpowers.md](13-superpowers.md) |
 | `graphify: command not found` | Paketnya `graphifyy` (dua huruf y), bukan `graphify` |
 | `graphify query` bilang graf tidak ada | Jalankan `/graphify .` sekali dari Claude Code |
 | Bentrok terus di `graph.json` | Belum menjalankan `graphify hook install` |
