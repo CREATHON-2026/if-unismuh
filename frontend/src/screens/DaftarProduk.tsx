@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, PackagePlus, ThumbsUp } from 'lucide-react';
+import { Package, PackagePlus, Search, ThumbsUp } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { RingkasanProduk } from '@shared/types';
 import { ambilDaftarProduk } from '../api/client';
 import { Layar } from '../components/Layar';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
+import { KolomCari } from '../components/InputTeks';
 import { BarisDaftar, KartuDaftar } from '../components/BarisDaftar';
 import { Lencana } from '../components/Lencana';
 import { Segmented } from '../components/Segmented';
@@ -37,6 +38,7 @@ export function DaftarProduk() {
   const nav = useNavigate();
   const [daftar, setDaftar] = useState<RingkasanProduk[] | null>(null);
   const [saring, setSaring] = useState<Saringan>('semua');
+  const [cari, setCari] = useState('');
   const [galat, setGalat] = useState('');
 
   const [memuat, setMemuat] = useState(true);
@@ -57,9 +59,18 @@ export function DaftarProduk() {
 
   // `merugi` bisa null kalau modalnya belum diketahui. Yang belum diketahui
   // tidak masuk "Untung" — belum tahu bukan berarti aman.
-  const terlihat = daftar?.filter((p) =>
-    saring === 'semua' ? true : saring === 'merugi' ? p.merugi === true : p.merugi === false,
-  );
+  //
+  // Pencarian dan penyaringan hanya MENYEMBUNYIKAN baris; keduanya tidak
+  // menyusun ulang urutan dan tidak menghitung apa pun. Urutan margin terendah
+  // lebih dulu tetap datang dari API (aturan #7).
+  const terlihat = useMemo(() => {
+    const kunci = cari.trim().toLowerCase();
+    return daftar
+      ?.filter((p) =>
+        saring === 'semua' ? true : saring === 'merugi' ? p.merugi === true : p.merugi === false,
+      )
+      .filter((p) => (kunci === '' ? true : p.nama.toLowerCase().includes(kunci)));
+  }, [daftar, saring, cari]);
 
   return (
     <Layar tanpaLogo atas>
@@ -74,13 +85,20 @@ export function DaftarProduk() {
       )}
 
       {daftar && daftar.length > 0 && (
-        <div className="mt-4">
-          <Segmented
-            label="Saring produk"
-            pilihan={SARINGAN}
-            nilai={saring}
-            onPilih={setSaring}
-          />
+        <div className="mt-4 flex flex-col gap-3">
+          {/* Kolom cari baru muncul saat daftarnya cukup panjang untuk perlu
+              dicari. Di warung dengan tiga produk, kotak cari bukan pertolongan
+              — ia satu kontrol lagi yang harus diabaikan. */}
+          {daftar.length > 5 && (
+            <KolomCari
+              ikon={Search}
+              value={cari}
+              onChange={(e) => setCari(e.target.value)}
+              placeholder="Cari produk"
+              aria-label="Cari produk"
+            />
+          )}
+          <Segmented label="Saring produk" pilihan={SARINGAN} nilai={saring} onPilih={setSaring} />
         </div>
       )}
 
@@ -97,7 +115,13 @@ export function DaftarProduk() {
       {/* Saringan yang tidak menghasilkan apa-apa. "Tidak ada yang merugi"
           adalah kabar baik, bukan pekerjaan — jadi tanpa tombol. */}
       {terlihat?.length === 0 && daftar && daftar.length > 0 && (
-        saring === 'merugi' ? (
+        cari.trim() !== '' ? (
+          <KeadaanKosong
+            ikon={Search}
+            judul="Tidak ketemu"
+            pesan={`Tidak ada produk bernama “${cari.trim()}”. Coba kata yang lebih pendek.`}
+          />
+        ) : saring === 'merugi' ? (
           <KeadaanKosong
             ikon={ThumbsUp}
             judul="Tidak ada yang merugi"
