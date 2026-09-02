@@ -1,20 +1,27 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import QRCode from 'react-qr-code';
 import { Lock } from 'lucide-react';
 import type { StatusWhatsappRes } from '@shared/types';
-import { hubungkanWhatsapp, statusWhatsapp } from '../api/client';
+import { hubungkanWhatsapp } from '../api/client';
 import { Layar } from '../components/Layar';
 import { NavBawah } from '../components/NavBawah';
 import { Tombol } from '../components/Tombol';
 import { InputTeks } from '../components/InputTeks';
+import { KeadaanGalat } from '../components/KeadaanGalat';
+import { useStatusWa } from '../state/statusWa';
 
 /**
  * Sambungkan WhatsApp — jalur OPSIONAL untuk Pesanan Masuk.
  *
- * ★ HANYA MEMBACA. Sistem tidak punya jalur mengirim, dan itu bukan pengaturan
- * yang bisa dinyalakan — modul WhatsApp di backend tidak mengekspor apa pun
- * yang bisa mengirim, socket-nya privat. Aturan #4.
+ * ★ Membaca selalu; mengirim HANYA kalau pedagang menekan tombolnya, dan hanya
+ * kalau rem `WA_BALAS_AKTIF` di server dilepas (bawaannya mati).
+ *
+ * Docblock ini dulu bersumpah sistem tidak punya jalur mengirim sama sekali.
+ * Sumpah itu dicabut saat fitur balas dibangun, dan aturan #4 di CLAUDE.md
+ * ditulis ulang bersamaan. Yang berlaku sekarang: server mengirim `hanya_baca`,
+ * dan LAYAR INI MENGIKUTINYA — bukan memaku kalimatnya. Janji yang dipaku akan
+ * berbohong pada hari remnya dilepas.
  *
  * Kalau tidak pernah disambungkan, atau sesinya putus, Pesanan Masuk tetap
  * berfungsi penuh lewat tempel manual. Itu sebabnya layar ini dicapai dari
@@ -36,38 +43,13 @@ const LABEL: Record<StatusWhatsappRes['status'], string> = {
 export function SambungWhatsApp() {
   const nav = useNavigate();
   const [nomor, setNomor] = useState('');
-  const [data, setData] = useState<StatusWhatsappRes | null>(null);
   const [sibuk, setSibuk] = useState(false);
   const [galat, setGalat] = useState('');
-  const jeda = useRef<number | null>(null);
 
-  async function muat() {
-    const j = await statusWhatsapp();
-    if (j.ok) setData(j.data);
-  }
-
-  useEffect(() => {
-    void muat();
-    return () => {
-      if (jeda.current) window.clearInterval(jeda.current);
-    };
-  }, []);
-
-  // Kode QR / pairing tidak langsung ada — socket butuh beberapa detik untuk
-  // siap, jadi statusnya dijemput berkala sampai kodenya muncul atau
-  // tersambung. Penjemputan ini juga yang membuat QR di layar ikut segar
-  // saat WhatsApp menerbitkan string QR baru.
-  useEffect(() => {
-    const perluTunggu = data?.status === 'menyambung' || data?.status === 'menunggu_qr';
-    if (!perluTunggu) {
-      if (jeda.current) window.clearInterval(jeda.current);
-      return;
-    }
-    jeda.current = window.setInterval(() => void muat(), 2000);
-    return () => {
-      if (jeda.current) window.clearInterval(jeda.current);
-    };
-  }, [data?.status]);
+  // Penjemputan berkala, irama dan penanganan galatnya di state/statusWa.ts.
+  // Yang penting di sini: status yang gagal dimuat TIDAK lagi tersangkut di
+  // "Memuat…" selamanya — ia dicoba lagi sendiri tiap 15 detik.
+  const { data, galat: galatStatus, memuat, muat, pasang } = useStatusWa(true);
 
   /**
    * @param pakaiNomor true -> kode pairing 8 digit (butuh nomor);
@@ -81,12 +63,20 @@ export function SambungWhatsApp() {
     setSibuk(true);
     setGalat('');
     const j = await hubungkanWhatsapp(pakaiNomor ? { nomor_hp: nomor.trim() } : {});
-    if (j.ok) setData(j.data);
+    if (j.ok) pasang(j.data);
     else setGalat(j.error.pesan);
     setSibuk(false);
   }
 
   const tersambung = data?.status === 'tersambung';
+  /**
+   * Rem `WA_BALAS_AKTIF` di server, dibaca lewat `hanya_baca`.
+   *
+   * Dipakai untuk memilih kalimat janji di bawah. Selama server belum terbaca,
+   * dianggap TIDAK boleh mengirim — kalimat yang lebih hati-hati adalah tebakan
+   * yang lebih aman kalau ternyata salah.
+   */
+  const bolehKirim = data?.hanya_baca === false;
   const menyiapkan = data?.status === 'menyambung' || sibuk;
 
   return (
@@ -104,11 +94,24 @@ export function SambungWhatsApp() {
           <Lock size={20} strokeWidth={2} aria-hidden="true" />
         </span>
         <div>
-          <p className="text-utama font-bold text-tinta">Hanya membaca</p>
+          <p className="text-utama font-bold text-tinta">
+            {bolehKirim ? 'Anda yang menekan kirim' : 'Hanya membaca'}
+          </p>
           <p className="mt-1 text-isi leading-relaxed text-sedang">
-            lapakAi <span className="font-bold text-tinta">tidak pernah</span> mengirim pesan dari
-            nomor Anda. Balasan tetap Anda salin dan kirim sendiri. Grup, status, dan media tidak
-            dibaca sama sekali.
+            {bolehKirim ? (
+              <>
+                Balasan disiapkan sendiri, tapi{' '}
+                <span className="font-bold text-tinta">tidak pernah terkirim</span> sebelum Anda
+                menekan tombolnya — dan hanya ke nomor yang menyapa Anda duluan. Grup, status, dan
+                media tidak dibaca sama sekali.
+              </>
+            ) : (
+              <>
+                lapakAi <span className="font-bold text-tinta">tidak pernah</span> mengirim pesan
+                dari nomor Anda. Balasan tetap Anda salin dan kirim sendiri. Grup, status, dan
+                media tidak dibaca sama sekali.
+              </>
+            )}
           </p>
         </div>
       </div>
@@ -121,9 +124,18 @@ export function SambungWhatsApp() {
               tersambung ? 'bg-merek text-white' : 'bg-kanvas text-sedang'
             }`}
           >
-            {data ? LABEL[data.status] : 'Memuat…'}
+            {data ? LABEL[data.status] : memuat ? 'Memuat…' : 'Belum terbaca'}
           </span>
         </div>
+
+        {/* Status gagal dibaca. Dulu layar cuma diam di "Memuat…" tanpa jalan
+            keluar; sekarang ada tombolnya — dan hook juga mencoba lagi sendiri
+            tiap 15 detik, jadi gangguan sesaat pulih tanpa ditekan apa pun. */}
+        {galatStatus && !data && (
+          <div className="mt-3">
+            <KeadaanGalat pesan={galatStatus} onCoba={() => void muat()} sedangMencoba={memuat} />
+          </div>
+        )}
 
         {data?.alasan && (
           <p className="mt-3 rounded-kontrol bg-tanda p-4 text-isi leading-relaxed text-tanda-tinta">

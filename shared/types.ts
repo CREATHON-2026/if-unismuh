@@ -103,10 +103,24 @@ export interface SimpanResepReq {
 export interface TemuanPertama {
   produk_id: number;
   nama: string;
-  modal_per_unit: number;
   harga_jual: number;
-  margin_per_unit: number;
-  merugi: boolean;
+
+  /**
+   * `null` kalau resepnya belum diisi — bukan nol, bukan false.
+   *
+   * Di onboarding ketiganya SELALU terisi, karena `POST /onboarding/resep`
+   * mewajibkan bahan. Tapi `POST /produk` sengaja menerima bahan kosong
+   * (pedagang yang buru-buru boleh mendaftarkan produknya dulu), dan
+   * `v_margin_produk` mengembalikan NULL untuk produk semacam itu.
+   *
+   * Ketiganya dulu ditulis non-nullable di sini, dan itu bohong: layar yang
+   * mempercayainya akan menampilkan "Rp NaN" pada produk pertama yang
+   * disimpan tanpa resep. Yang tidak diketahui harus tampil sebagai tidak
+   * diketahui — tampilkan "modal belum diisi", bukan untung penuh, bukan rugi.
+   */
+  modal_per_unit: number | null;
+  margin_per_unit: number | null;
+  merugi: boolean | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -321,6 +335,13 @@ export interface AnalisisPesanan {
   pesan_id: number | null;
   jenis: JenisPesan;
 
+  /**
+   * Draf balasan yang SUDAH disusun sistem, siap ditekan kirim.
+   *
+   * Tidak ada untuk pesan yang belum pasti produknya — lihat `BalasanPesan`.
+   */
+  balasan: BalasanPesan;
+
   produk: { id: number; nama: string } | null;
   nama_produk_mentah: string | null;
   jumlah: number | null;
@@ -384,6 +405,9 @@ export interface PesanMasukItem {
   pesanan_id: number | null;
   pesanan_nomor: string | null;
   pesanan_status: StatusPesanan | null;
+
+  /** Draf balasan yang menempel pada pesan ini — lihat `BalasanPesan`. */
+  balasan: BalasanPesan;
 }
 
 /** Balasan siap salin untuk pembeli — fitur 9, penutup alur Pesanan Masuk. */
@@ -414,6 +438,49 @@ export interface BalasanRes {
     untung_pesanan: number | null;
     merugi: boolean | null;
   };
+}
+
+/**
+ * Keadaan draf balasan.
+ *
+ * `tidak_ada` punya dua sebab yang berbeda dan dua-duanya sah: produknya belum
+ * pasti (aturan #8 — lebih baik tidak ada balasan daripada balasan untuk barang
+ * yang salah), atau penyusunannya gagal dan pesannya tetap diselamatkan.
+ */
+export type BalasanStatus = 'tidak_ada' | 'siap' | 'terkirim' | 'gagal';
+
+/**
+ * Draf balasan yang menempel pada satu pesan masuk.
+ *
+ * Disusun OTOMATIS begitu pesan tiba, tapi tidak pernah terkirim sendiri —
+ * pedagang yang menekan tombolnya (aturan #2). Maksud balasannya dipilih SQL
+ * dari penanda `merugi`, bukan oleh LLM: model memilih nada, dan kalimat
+ * pembeli yang ramah membuatnya cenderung menyanggupi — termasuk saat
+ * menyanggupi berarti rugi.
+ */
+export interface BalasanPesan {
+  status: BalasanStatus;
+  /** Kalimat siap kirim. Boleh disunting pedagang sebelum ditekan kirim. */
+  teks: string | null;
+  maksud: BalasanReq['maksud'] | null;
+  /** Angka SQL yang dipakai menyusun kalimat — jejak audit tiap rupiah. */
+  acuan: BalasanRes['acuan'] | null;
+
+  /**
+   * Boleh ditekan kirim atau tidak. Diputuskan server, bukan layar: yang
+   * menentukan adalah ada-tidaknya alamat chat, rem `WA_BALAS_AKTIF`, dan
+   * status drafnya — tiga hal yang tidak boleh disimpulkan sendiri di frontend.
+   */
+  bisa_dikirim: boolean;
+  /** Kalimat siap tampil kalau tidak bisa dikirim. Tombol mati tanpa alasan
+   *  adalah jalan buntu yang tidak punya pintu keluar. */
+  alasan_tidak_bisa: string | null;
+  dikirim_pada: string | null;
+}
+
+/** PATCH /pesanan/:id/balasan — pedagang memperbaiki kalimatnya sebelum kirim. */
+export interface SuntingBalasanReq {
+  teks: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -570,9 +637,14 @@ export interface PratinjauEkstraksiRes {
 export type StatusWa = 'terputus' | 'menunggu_qr' | 'menyambung' | 'tersambung';
 
 /**
- * ★ `hanya_baca` SELALU true, dan itu bukan pengaturan — itu kenyataan
- * strukturnya. Modul WhatsApp di backend tidak mengekspor apa pun yang bisa
- * mengirim; socket-nya privat. Lihat aturan #4 di CLAUDE.md.
+ * ★ `hanya_baca` dulu SELALU true, karena backend memang tidak punya jalur
+ * mengirim sama sekali. Sejak fitur balasan dibangun, nilainya mengikuti rem
+ * `WA_BALAS_AKTIF` di server — dan yang membacanya adalah layar, untuk
+ * memutuskan menampilkan tombol "Kirim" atau tombol "Salin".
+ *
+ * Yang TIDAK berubah: tidak ada satu pun pesan yang keluar tanpa pedagang
+ * menekan tombol. Lihat aturan #4 di CLAUDE.md, yang ditulis ulang bersamaan
+ * dengan fitur itu.
  *
  * Menautkan WhatsApp sifatnya OPSIONAL. Kalau tidak pernah ditautkan, atau
  * sesinya putus, Pesanan Masuk tetap berfungsi penuh lewat tempel manual.
@@ -583,7 +655,8 @@ export interface StatusWhatsappRes {
   qr: string | null;
   /** Kode 8 digit yang dimasukkan pengguna di HP-nya; null kalau memakai QR */
   kode_pairing: string | null;
-  hanya_baca: true;
+  /** false berarti tombol kirim boleh ditampilkan; true = salin saja */
+  hanya_baca: boolean;
   /** Alasan sambungan berhenti, kalau ada. Siap ditampilkan ke pengguna */
   alasan: string | null;
 }
@@ -715,7 +788,10 @@ export interface RiwayatPesanan {
     diproses: number;
     selesai: number;
     gagal: number;
-    /** Sudah diserahkan tapi uangnya belum masuk — piutang */
+    /**
+     * BANYAKNYA pesanan yang sudah diserahkan tapi uangnya belum masuk —
+     * cacahan, bukan rupiah. Jangan diformat sebagai uang di layar.
+     */
     belum_dibayar: number;
     /** HANYA dari pesanan selesai. Yang batal tidak menyentuh buku besar */
     untung: number;
@@ -744,84 +820,47 @@ export interface Struk {
 }
 
 // ---------------------------------------------------------------------------
-// Tanya lapakAi — chatbot
+// Tanya lapakAi - chatbot
 //
-// Rancangannya di docs/14-chatbot.md dan
-// docs/superpowers/specs/2026-09-02-chatbot-tanya-design.md.
-//
-// Yang perlu diketahui saat membaca tipe di bawah: LLM ada di ujung depan
-// (membaca maksud) dan template ada di ujung belakang (menyusun kalimat).
-// SQL ada di tengah, dan HANYA SQL yang menghitung.
+// Chatbotnya murni LLM. Server mengumpulkan seluruh catatan pedagang, menaruhnya
+// di prompt, lalu meneruskan pertanyaannya apa adanya. Tidak ada klasifikasi
+// maksud dan tidak ada daftar pertanyaan yang boleh - karena itulah kontraknya
+// tinggal satu kolom.
 // ---------------------------------------------------------------------------
-
-/**
- * Daftar maksud TERTUTUP. Bukan teks bebas.
- *
- * Model lokal mengarang nilai di luar daftar kalau diberi kesempatan, jadi
- * keluarannya divalidasi terhadap daftar ini dan yang tidak cocok jatuh ke
- * `tidak_paham`. Menambah maksud baru berarti menambah query SQL yang
- * menjawabnya — bukan sekadar menambah string di sini.
- */
-export const MAKSUD = {
-  UNTUNG_PERIODE: 'untung_periode',
-  PRODUK_MERUGI: 'produk_merugi',
-  MODAL_PRODUK: 'modal_produk',
-  SARAN_HARGA: 'saran_harga',
-  KAPASITAS_STOK: 'kapasitas_stok',
-  PRODUK_TERLARIS: 'produk_terlaris',
-  /** Tidak dijawab di sini — pengguna dialihkan ke layar Catat */
-  CATAT_TRANSAKSI: 'catat_transaksi',
-  /** Di luar cakupan. Dijawab jujur, dan `acuan` WAJIB null */
-  TIDAK_PAHAM: 'tidak_paham',
-} as const;
-
-export type Maksud = (typeof MAKSUD)[keyof typeof MAKSUD];
 
 export interface TanyaReq {
   pertanyaan: string;
 }
 
 /**
- * POST /tanya — satu pertanyaan, satu jawaban. Hanya-baca.
+ * POST /tanya - satu pertanyaan, satu jawaban.
  *
- * Tidak ada `percakapan_id` dan tidak ada riwayat: tiap pertanyaan berdiri
- * sendiri. "Kalau yang itu bagaimana?" memaksa model menyimpulkan rujukan, dan
- * salah rujuk berarti menjawab soal produk yang salah dengan angka yang benar —
- * kelas kegagalan yang paling sulit dilihat.
+ * Percakapannya BERINGATAN, delapan giliran terakhir, disimpan di sisi server
+ * dan diikat ke pengguna - jadi tidak ada percakapan_id yang perlu dikirim
+ * frontend.
  */
 export interface TanyaRes {
-  maksud: Maksud;
-
-  /** Kalimat siap tampil. Disusun template dari angka di `acuan` */
+  /** Kalimat siap tampil, apa adanya dari model. */
   jawaban: string;
+}
 
-  /**
-   * Angka mentah dari SQL, apa adanya.
-   *
-   * Ini yang membuat jawabannya bisa ditelusuri: kalau `jawaban` menyebut angka
-   * yang tidak ada di sini, itu ketahuan — oleh uji otomatis maupun oleh siapa
-   * pun yang membuka Network tab. Frontend menampilkannya sebagai kartu angka
-   * di bawah gelembung jawaban, BUKAN menghitung apa pun darinya (aturan #7).
-   *
-   * WAJIB null untuk `tidak_paham`: secara struktur mustahil mengarang angka
-   * untuk pertanyaan yang tidak dipahami.
-   */
-  acuan: Record<string, number | string> | null;
+/** Satu giliran percakapan yang tersimpan di server. */
+export interface GiliranTanya {
+  peran: 'pedagang' | 'asisten';
+  teks: string;
+}
 
-  /**
-   * Hal yang membuat angkanya tidak utuh, misalnya "2 transaksi belum ikut
-   * dihitung untungnya karena resepnya belum diisi".
-   *
-   * Angka yang tidak lengkap tanpa diberi tahu adalah angka yang salah.
-   */
-  peringatan: string[];
-
-  /**
-   * Diisi HANYA saat maksudnya `catat_transaksi`.
-   *
-   * Modul tanya tidak pernah menulis ke database. Mencatat dialihkan ke layar
-   * Catat yang sudah punya konfirmasi manusia — menyalin layar itu berarti
-   * menyediakan tempat kedua bagi aturan #2 untuk bocor.
-   */
-  alihkan_ke: { rute: '/catat'; teks: string } | null;
+/**
+ * GET /tanya — percakapan yang MASIH DIINGAT server.
+ *
+ * Ada karena server menyimpan percakapannya dan memakainya sebagai konteks
+ * pertanyaan berikutnya. Tanpa endpoint ini, layar jadi kosong setelah dimuat
+ * ulang padahal modelnya masih ingat — pengguna bertanya "yang tadi itu
+ * bagaimana?" ke layar kosong dan dijawab seolah ia pernah bertanya. Layar dan
+ * server harus menceritakan hal yang sama.
+ *
+ * Urut dari yang paling lama, siap ditampilkan apa adanya.
+ */
+export interface RiwayatTanyaRes {
+  giliran: GiliranTanya[];
 }

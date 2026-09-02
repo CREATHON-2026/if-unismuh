@@ -88,7 +88,10 @@ export function RiwayatPesanan() {
               <div className="mx-auto grid max-w-[19rem] grid-cols-3 gap-3 border-t border-white/20 pt-4">
                 <Angka label="Selesai" nilai={r.selesai} />
                 <Angka label="Diproses" nilai={r.diproses + r.menunggu_bayar} />
-                <Angka label="Piutang" nilai={r.belum_dibayar} sorot={r.belum_dibayar > 0} />
+                {/* "Belum bayar", bukan "Piutang". `belum_dibayar` adalah CACAHAN
+                    pesanan, bukan rupiah — dan kata "piutang" di antara dua label
+                    cacahan membuat angkanya terbaca sebagai jumlah uang. */}
+                <Angka label="Belum bayar" nilai={r.belum_dibayar} sorot={r.belum_dibayar > 0} />
               </div>
             )
           }

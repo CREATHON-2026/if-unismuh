@@ -79,7 +79,7 @@ export function KodeOtp() {
             <p className="text-utama text-sedang">Masukkan 6 digit kode yang kami kirim.</p>
             <p className="text-isi text-sedang">(Mode demo: ketik 123456)</p>
           </div>
-          <div className="flex w-full justify-center gap-1.5 pt-2 sm:gap-2" onPaste={tempel}>
+          <div className="flex justify-center gap-2 pt-2" onPaste={tempel}>
             {digit.map((d, i) => (
               <input
                 key={i}

@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, PackagePlus, Plus, Search, ThumbsUp } from 'lucide-react';
+import { Package, PackagePlus, Search, ThumbsUp } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { RingkasanProduk } from '@shared/types';
 import { ambilDaftarProduk } from '../api/client';
 import { Layar } from '../components/Layar';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
+import { KolomCari } from '../components/InputTeks';
+import { BarisDaftar, KartuDaftar } from '../components/BarisDaftar';
 import { Lencana } from '../components/Lencana';
 import { Segmented } from '../components/Segmented';
 import { NavBawah } from '../components/NavBawah';
@@ -56,22 +58,43 @@ export function DaftarProduk() {
   }, []);
 
   // `merugi` bisa null kalau modalnya belum diketahui. Yang belum diketahui
-  // tidak masuk "Untung" — belum tahu bukan berarti aman. Pencarian nama
-  // murni penyaring tampilan; urutan margin terendah dari API tidak diubah.
-  const kataCari = cari.trim().toLowerCase();
-  const terlihat = daftar?.filter(
-    (p) =>
-      (saring === 'semua' ? true : saring === 'merugi' ? p.merugi === true : p.merugi === false) &&
-      (kataCari === '' || p.nama.toLowerCase().includes(kataCari)),
-  );
+  // tidak masuk "Untung" — belum tahu bukan berarti aman.
+  //
+  // Pencarian dan penyaringan hanya MENYEMBUNYIKAN baris; keduanya tidak
+  // menyusun ulang urutan dan tidak menghitung apa pun. Urutan margin terendah
+  // lebih dulu tetap datang dari API (aturan #7).
+  const terlihat = useMemo(() => {
+    const kunci = cari.trim().toLowerCase();
+    return daftar
+      ?.filter((p) =>
+        saring === 'semua' ? true : saring === 'merugi' ? p.merugi === true : p.merugi === false,
+      )
+      .filter((p) => (kunci === '' ? true : p.nama.toLowerCase().includes(kunci)));
+  }, [daftar, saring, cari]);
 
   return (
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
-      <h1 className="mt-7 text-judul font-bold tracking-[-0.02em] text-tinta">Daftar Produk</h1>
-      <p className="mt-1 text-utama leading-relaxed text-sedang">
-        Kelola barang dagangan Anda di sini.
-      </p>
+      <div className="mt-7 flex items-center justify-between gap-3">
+        <h1 className="text-judul font-bold tracking-[-0.02em] text-tinta">Produk Anda</h1>
+        {/*
+          Pintu tambah yang selama ini tidak ada.
+          Tombolnya dulu hanya hidup di dalam cabang daftar-kosong di bawah,
+          jadi ia menghilang begitu pedagang punya satu produk — dan menambah
+          produk kedua menjadi mustahil dari layar ini. Ditaruh di kepala supaya
+          ia ada di kedua keadaan, kosong maupun berisi.
+        */}
+        {daftar && daftar.length > 0 && (
+          <button
+            type="button"
+            onClick={() => nav('/produk/tambah')}
+            className="flex min-h-12 shrink-0 items-center gap-2 rounded-full bg-merek px-4 text-utama font-semibold text-white transition active:scale-95"
+          >
+            <PackagePlus size={20} strokeWidth={1.9} aria-hidden="true" />
+            Tambah
+          </button>
+        )}
+      </div>
 
       {galat && <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />}
       {!daftar && !galat && (
@@ -81,25 +104,21 @@ export function DaftarProduk() {
       )}
 
       {daftar && daftar.length > 0 && (
-        <>
-          <label className="mt-4 flex items-center gap-3 rounded-full border border-garis bg-kartu px-4 py-3.5">
-            <Search size={20} strokeWidth={1.8} className="shrink-0 text-redup" aria-hidden="true" />
-            <input
+        <div className="mt-4 flex flex-col gap-3">
+          {/* Kolom cari baru muncul saat daftarnya cukup panjang untuk perlu
+              dicari. Di warung dengan tiga produk, kotak cari bukan pertolongan
+              — ia satu kontrol lagi yang harus diabaikan. */}
+          {daftar.length > 5 && (
+            <KolomCari
+              ikon={Search}
               value={cari}
               onChange={(e) => setCari(e.target.value)}
-              placeholder="Cari produk…"
-              className="w-full bg-transparent text-utama text-tinta placeholder:text-redup focus:outline-none"
+              placeholder="Cari produk"
+              aria-label="Cari produk"
             />
-          </label>
-          <div className="mt-3">
-            <Segmented
-              label="Saring produk"
-              pilihan={SARINGAN}
-              nilai={saring}
-              onPilih={setSaring}
-            />
-          </div>
-        </>
+          )}
+          <Segmented label="Saring produk" pilihan={SARINGAN} nilai={saring} onPilih={setSaring} />
+        </div>
       )}
 
       {daftar?.length === 0 && (
@@ -108,18 +127,18 @@ export function DaftarProduk() {
           judul="Belum ada produk"
           pesan="Ceritakan satu produk beserta bahannya, lalu modal dan untungnya dihitung sendiri."
           labelAksi="Tambah produk"
-          onAksi={() => nav('/onboarding/produk')}
+          onAksi={() => nav('/produk/tambah')}
         />
       )}
 
-      {/* Saringan atau pencarian yang tidak menghasilkan apa-apa. "Tidak ada
-          yang merugi" adalah kabar baik, bukan pekerjaan — jadi tanpa tombol. */}
+      {/* Saringan yang tidak menghasilkan apa-apa. "Tidak ada yang merugi"
+          adalah kabar baik, bukan pekerjaan — jadi tanpa tombol. */}
       {terlihat?.length === 0 && daftar && daftar.length > 0 && (
-        kataCari !== '' ? (
+        cari.trim() !== '' ? (
           <KeadaanKosong
             ikon={Search}
             judul="Tidak ketemu"
-            pesan={`Tidak ada produk bernama “${cari.trim()}”. Coba kata yang lain.`}
+            pesan={`Tidak ada produk bernama “${cari.trim()}”. Coba kata yang lebih pendek.`}
           />
         ) : saring === 'merugi' ? (
           <KeadaanKosong
@@ -133,109 +152,67 @@ export function DaftarProduk() {
             judul="Belum ada yang pasti untung"
             pesan="Produk yang resepnya belum lengkap tidak dihitung untung — modalnya belum diketahui."
             labelAksi="Lengkapi resep"
-            onAksi={() => nav('/onboarding/produk')}
+            onAksi={() => nav('/produk/tambah')}
           />
         )
       )}
 
       {terlihat && terlihat.length > 0 && (
-        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
-          {terlihat.map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => nav(`/produk/${p.id}`)}
-              /* .kartu tidak dipakai saat merugi: kelasnya tak berlapis (unlayered)
-                 sehingga menang atas utilitas border-rugi. Ditulis penuh saja. */
-              className={`w-full rounded-kartu border bg-kartu p-4 text-left transition active:scale-[0.99] ${
-                p.merugi ? 'border-rugi' : 'border-garis'
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span className="min-w-0 flex items-center gap-3">
-                  <span
-                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${
-                      p.merugi ? 'bg-rugi-muda text-rugi' : 'bg-kanvas text-sedang'
-                    }`}
-                    aria-hidden="true"
-                  >
-                    <Package size={20} strokeWidth={1.8} />
-                  </span>
-                  <span className="truncate text-sub font-bold text-tinta">{p.nama}</span>
-                </span>
-                {/* Produk bisa TERLARIS sekaligus MERUGI — dan justru itu inti
-                    ceritanya. TERLARIS kuning HANYA kalau produknya juga merugi:
-                    kuning berarti "perlu dicek", dan terlaris-tapi-rugi persis itu. */}
-                {(p.merugi || p.terlaris) && (
-                  <span className="flex shrink-0 flex-col items-end gap-1.5">
-                    {p.merugi && <Lencana nada="rugi">MERUGI</Lencana>}
-                    {p.terlaris && (
-                      <Lencana nada={p.merugi ? 'tanda' : 'netral'}>TERLARIS</Lencana>
-                    )}
-                  </span>
-                )}
-              </div>
-
-              <div className="mt-3.5 flex items-end justify-between gap-3 border-t border-garis pt-3">
-                <span className="flex flex-col gap-1 text-isi text-redup">
-                  <span>
-                    Modal{' '}
-                    <span className="angka font-semibold text-sedang">
-                      {p.modal_per_unit == null ? 'belum diisi' : formatRupiah(p.modal_per_unit)}
+        <div className="mt-3">
+          <KartuDaftar>
+            {terlihat.map((p) => (
+              <BarisDaftar
+                key={p.id}
+                ikon={Package}
+                nadaIkon={p.merugi ? 'rugi' : 'netral'}
+                judul={p.nama}
+                meta={
+                  <span className="flex flex-col gap-0.5">
+                    <span className="whitespace-nowrap">
+                      Modal{' '}
+                      <span className="font-semibold text-sedang">
+                        {p.modal_per_unit == null
+                          ? 'belum diisi'
+                          : formatRupiah(p.modal_per_unit)}
+                      </span>
+                    </span>
+                    <span className="whitespace-nowrap">
+                      Jual{' '}
+                      <span className="font-semibold text-sedang">
+                        {formatRupiah(p.harga_jual)}
+                      </span>
                     </span>
                   </span>
-                  <span>
-                    Jual{' '}
-                    <span className="angka font-semibold text-sedang">
-                      {formatRupiah(p.harga_jual)}
-                    </span>
-                  </span>
-                </span>
-                {/* null = belum diketahui. Bukan nol, dan bukan untung penuh. */}
-                <span className="flex shrink-0 flex-col items-end">
-                  <span
-                    className={`text-label font-semibold ${
-                      p.margin_per_unit == null
-                        ? 'text-redup'
-                        : p.merugi
-                          ? 'text-rugi'
-                          : 'text-untung'
-                    }`}
-                  >
-                    Margin
-                  </span>
-                  <span
-                    className={`angka text-judul-kecil font-extrabold leading-tight ${
-                      p.margin_per_unit == null
-                        ? 'text-redup'
-                        : p.merugi
-                          ? 'text-rugi'
-                          : 'text-untung'
-                    }`}
-                  >
-                    {p.margin_per_unit == null
-                      ? '—'
-                      : `${p.merugi ? '−' : '+'} ${formatRupiah(Math.abs(p.margin_per_unit))}`}
-                  </span>
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
-      )}
+                }
+                /* null = belum diketahui. Bukan nol, dan bukan untung penuh. */
+                nilai={
+                  p.margin_per_unit == null
+                    ? '—'
+                    : `${p.merugi ? '\u2212' : '+'} ${formatRupiah(Math.abs(p.margin_per_unit))}`
+                }
+                nadaNilai={p.margin_per_unit == null ? 'netral' : p.merugi ? 'rugi' : 'untung'}
+                /* Produk bisa TERLARIS sekaligus MERUGI — dan justru itu inti
+                   ceritanya. Menampilkan salah satu saja menghapus satu-satunya
+                   temuan yang membuat pedagang berhenti dan membaca.
 
-      {/* FAB tambah produk — aksen merek. Ikon navy di atas oranye: 3,4:1,
-          lolos batas kontras non-teks; putih hanya 2,8:1, makanya bukan putih. */}
-      {daftar && daftar.length > 0 && (
-        <div className="pointer-events-none sticky bottom-24 z-10 mt-4 flex justify-end">
-          <button
-            type="button"
-            aria-label="Tambah produk"
-            onClick={() => nav('/onboarding/produk')}
-            className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-aksen text-tinta shadow-lg transition active:scale-95"
-          >
-            <Plus size={26} strokeWidth={2.4} aria-hidden="true" />
-          </button>
+                   TERLARIS kuning HANYA kalau produknya juga merugi: kuning di
+                   aplikasi ini berarti "perlu dicek manusia", dan terlaris-tapi-
+                   rugi persis itu. Terlaris yang untung bukan peringatan, jadi
+                   pilnya netral. */
+                kanan={
+                  p.merugi || p.terlaris ? (
+                    <>
+                      {p.merugi && <Lencana nada="rugi">MERUGI</Lencana>}
+                      {p.terlaris && (
+                        <Lencana nada={p.merugi ? 'tanda' : 'netral'}>TERLARIS</Lencana>
+                      )}
+                    </>
+                  ) : undefined
+                }
+                onClick={() => nav(`/produk/${p.id}`)}
+              />
+            ))}
+          </KartuDaftar>
         </div>
       )}
 

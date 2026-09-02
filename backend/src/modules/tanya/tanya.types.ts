@@ -1,64 +1,79 @@
-import type { Maksud } from '../../../../shared/types.ts';
-
 /**
- * Keluaran LLM untuk satu pertanyaan.
+ * Tipe modul tanya.
  *
- * Perhatikan apa yang TIDAK ada di sini: tidak ada satu pun angka hasil
- * hitungan. Model hanya boleh mengembalikan maksud, nama produk apa adanya,
- * dan rentang tanggal. Semua rupiah lahir di tanya.queries.ts.
+ * Chatbotnya murni LLM. Yang dikerjakan modul ini cuma satu: mengumpulkan
+ * SELURUH data pedagang dari database, menyusunnya jadi teks yang enak dibaca
+ * model, lalu menyerahkan pertanyaannya apa adanya. Tidak ada klasifikasi
+ * maksud, tidak ada daftar pertanyaan yang boleh, tidak ada penyaringan
+ * jawaban.
  */
-export interface HasilBacaMaksud {
-  maksud: Maksud;
-  /** Nama produk PERSIS seperti ditulis pengguna. null kalau tidak menyebut. */
-  nama_produk_mentah: string | null;
-  /** YYYY-MM-DD, atau null kalau pengguna tidak menyebut periode. */
-  dari: string | null;
-  sampai: string | null;
+
+export interface GiliranPercakapan {
+  peran: 'pedagang' | 'asisten';
+  teks: string;
 }
 
-/** Baris v_margin_produk yang dipakai jawaban "produk mana yang merugi". */
-export interface BarisMerugi {
-  nama: string;
-  harga_jual: number;
-  modal_per_unit: number;
-  margin_per_unit: number;
-  /**
-   * `ABS(margin_per_unit)` — dihitung SQL, bukan `Math.abs()` di sini.
-   *
-   * Kalimatnya berbunyi "rugi Rp 1.200", bukan "rugi Rp -1.200", jadi angka
-   * positifnya harus ada. Kalau dibalik tandanya di TypeScript, `acuan` berisi
-   * angka yang SQL tidak pernah keluarkan — dan `acuan` adalah jejak audit
-   * jawaban ini. Satu-satunya cara jejak itu bernilai adalah kalau isinya
-   * benar-benar datang dari SQL.
-   */
-  rugi_per_unit: number;
+export interface ProfilUsaha {
+  nama_usaha: string | null;
+  jenis_usaha: string | null;
 }
 
-export interface BarisModal {
+export interface RingkasanPeriode {
+  omzet: number;
+  untung_bersih: number;
+  jumlah_baris: number;
+  baris_tanpa_modal: number;
+}
+
+export interface BarisProduk {
+  produk_id: number;
   nama: string;
   harga_jual: number;
   modal_per_unit: number | null;
   margin_per_unit: number | null;
-  /** Lihat catatan di BarisMerugi.rugi_per_unit. */
-  rugi_per_unit: number | null;
-}
-
-export interface BarisSaranHarga {
-  nama: string;
-  harga_jual: number;
-  harga_impas: number;
-  harga_disarankan: number;
-  kenaikan: number;
-  untung_per_unit: number;
-}
-
-export interface BarisKapasitas {
-  nama: string;
+  merugi: boolean | null;
+  /** null berarti stok bahannya belum lengkap dicatat — bukan nol. */
   maks_unit: number | null;
+  harga_disarankan: number | null;
+  untung_per_unit_disarankan: number | null;
+  terjual_periode: number;
+  omzet_periode: number;
+  terjual_total: number;
 }
 
-export interface BarisTerlaris {
+export interface BarisBahan {
   nama: string;
-  jumlah_terjual: number;
+  satuan: string;
+  harga_beli: number;
+  jumlah_beli: number;
+  /** null berarti belum pernah dicatat, bukan habis. */
+  stok: number | null;
+}
+
+export interface BarisResep {
+  produk: string;
+  bahan: string;
+  jumlah: number;
+  satuan: string;
+}
+
+export interface BarisPenjualan {
+  tanggal: string;
+  nama_produk: string | null;
+  jumlah: number;
+  harga_satuan: number;
+  sumber: string | null;
+}
+
+export interface BarisBulan {
+  bulan: string;
   omzet: number;
+  untung_bersih: number;
+  jumlah_baris: number;
+}
+
+export interface BarisPesanan {
+  diterima_pada: string;
+  pengirim_samar: string | null;
+  teks: string | null;
 }

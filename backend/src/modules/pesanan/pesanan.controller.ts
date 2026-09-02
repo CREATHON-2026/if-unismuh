@@ -2,7 +2,9 @@ import type { Request, Response } from 'express';
 import type { ReqBerpengguna } from '../../middleware/auth.ts';
 import { kirim, GalatTampil } from '../../lib/http.ts';
 import { KODE_GALAT, type BalasanReq } from '../../../../shared/types.ts';
-import { prosesPesan, buatBalasan, ambilDaftarPesan } from './pesanan.service.ts';
+import {
+  prosesPesan, buatBalasan, ambilDaftarPesan, suntingBalasan, kirimBalasan,
+} from './pesanan.service.ts';
 
 /**
  * Controller Pesanan Masuk — lapisan HTTP.
@@ -67,4 +69,47 @@ export async function balasanPesanan(req: Request, res: Response): Promise<void>
     jumlah: jumlah ?? undefined,
     harga_diminta: hargaDiminta ?? undefined,
   }));
+}
+
+/**
+ * PATCH /pesanan/:id/balasan
+ *
+ * Pedagang memperbaiki kalimat draf sebelum mengirimnya. Ini bukan tambahan
+ * kenyamanan: aturan #2 menuntut manusia MELIHAT hasil AI, dan melihat tanpa
+ * bisa memperbaiki hanya setengah janji.
+ */
+export async function ubahBalasan(req: Request, res: Response): Promise<void> {
+  const { userId } = req as ReqBerpengguna;
+  const id = Number(req.params.id);
+  const teks = String(req.body?.teks ?? '').trim();
+
+  if (!Number.isInteger(id)) {
+    throw new GalatTampil(KODE_GALAT.PERMINTAAN_TIDAK_VALID, 'Pesan tidak dikenali.');
+  }
+  if (!teks) {
+    throw new GalatTampil(KODE_GALAT.PERMINTAAN_TIDAK_VALID, 'Balasannya masih kosong.');
+  }
+
+  await suntingBalasan(userId, id, teks);
+  kirim(res, { ok: true });
+}
+
+/**
+ * POST /pesanan/:id/kirim-balasan
+ *
+ * SATU-SATUNYA jalur pengiriman ke nomor pembeli di seluruh aplikasi, dan ia
+ * hanya bisa dicapai oleh tombol yang ditekan pedagang. Tidak ada penjadwal
+ * dan tidak ada pemanggil otomatis — lihat aturan #4 di CLAUDE.md, yang
+ * ditulis ulang saat fitur ini dibangun.
+ */
+export async function kirimBalasanPesan(req: Request, res: Response): Promise<void> {
+  const { userId } = req as ReqBerpengguna;
+  const id = Number(req.params.id);
+
+  if (!Number.isInteger(id)) {
+    throw new GalatTampil(KODE_GALAT.PERMINTAAN_TIDAK_VALID, 'Pesan tidak dikenali.');
+  }
+
+  await kirimBalasan(userId, id);
+  kirim(res, { terkirim: true });
 }

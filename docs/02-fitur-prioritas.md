@@ -59,7 +59,9 @@ Urut dari yang paling layak. **Kerjakan berurutan dari atas, dan hanya setelah 1
 
 ### Kenapa nomor 23 sebaiknya tidak dikerjakan
 
-Koneksi WhatsApp otomatis biayanya paling tinggi, risiko gagal di panggung paling besar, dan nilainya paling rendah dibanding waktunya. Sistem kita memang **sengaja tidak pernah mengirim pesan ke nomor pembeli** — lihat aturan #4 di [CLAUDE.md](../CLAUDE.md). Tempel manual bukan versi murahan dari fitur ini; itu keputusan desain yang bisa dipertahankan.
+Koneksi WhatsApp otomatis biayanya paling tinggi dan risikonya paling besar di panggung. Tempel manual bukan versi murahan dari fitur ini; itu keputusan desain yang bisa dipertahankan, dan jalurnya **tidak boleh dihapus** — itulah yang tetap hidup saat sambungan mati.
+
+**Diperbarui 2 September 2026.** Membaca WhatsApp sudah dibangun, dan begitu juga membalas — tapi bukan "balas otomatis". Draf balasan disusun sendiri begitu pesan masuk; pengirimannya menunggu tombol pedagang, dan remnya (`WA_BALAS_AKTIF`) bawaannya mati. Aturan #4 di [CLAUDE.md](../CLAUDE.md) sudah ditulis ulang mengikuti kenyataan itu — baca versi barunya, bukan ingatan tentang versi lama.
 
 ### Chatbot: diusulkan, tapi tidak masuk daftar
 

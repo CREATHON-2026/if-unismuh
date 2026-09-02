@@ -88,13 +88,33 @@ Karena itu penyaringannya ketat:
 | Hanya pesan pribadi | Grup dan status broadcast diabaikan |
 | Hanya teks | Media, dokumen, dan suara tidak disentuh |
 | Bukan pesanan → **dibuang** | Teksnya tidak disimpan sama sekali, tidak masuk daftar |
-| Nomor pengirim **empat digit terakhir saja** | Pedagang cukup butuh mengenali percakapan; kita tidak perlu menyimpan identitas orang lain |
+| Nomor pengirim ditampilkan **empat digit terakhir saja** | Pedagang cukup butuh mengenali percakapan; layar tidak perlu memampangkan nomor orang lain |
 
-Nomor lengkap memang tidak diperlukan, karena sistem tidak pernah membalas sendiri — pedagang membalas dari WhatsApp-nya, tempat percakapan itu sudah ada.
+### Nomor pembeli sekarang disimpan — dan kenapa
 
-### Sistem tetap tidak pernah mengirim
+**Ini berubah pada 2 September 2026, dan perlu dikatakan terus terang.**
 
-Aturan #4 ditegakkan **struktur, bukan janji**: socket WhatsApp disimpan privat dan modulnya tidak mengekspor apa pun yang bisa mengirim. Yang tidak ada tidak bisa dipanggil.
+Sebelum fitur balasan ada, nomor pembeli benar-benar **dibuang**: `samarkan()` memotongnya jadi empat digit terakhir sebelum apa pun masuk database. Itu mungkin karena sistem tidak pernah membalas sendiri.
+
+Begitu pedagang bisa menekan tombol balas, alamatnya harus ada. Nomor lengkap kini tersimpan di kolom `pesan_masuk.pengirim_jid`. Batasannya:
+
+| Batas | Cara ditegakkan |
+|---|---|
+| Nomor **tidak pernah** sampai ke peramban | Layar hanya mengirim `pesan_id`; server yang mencari alamatnya. API mengembalikan `ada_alamat` (boolean), bukan nomornya |
+| Yang tampil di layar tetap tersamar | `pengirim_samar` tidak berubah — masih empat digit |
+| Hanya untuk nomor yang **menyapa duluan** | Alamat kirim hanya bisa berasal dari baris `pesan_masuk` yang sudah ada. Tidak ada jalur mengirim ke nomor sembarang |
+| Yang bukan pesanan tetap dibuang | Termasuk nomornya — barisnya memang tidak pernah dibuat |
+
+### Sistem tetap tidak mengirim sendiri
+
+Yang berubah adalah *bisa* mengirim, bukan *mengirim otomatis*. Penjagaannya:
+
+- Tidak ada penjadwal dan tidak ada pemanggil otomatis ke `kirimPesan`. Satu-satunya jalan adalah endpoint yang dipicu tombol pedagang.
+- Rem `WA_BALAS_AKTIF` bawaannya **mati**. Selama mati, draf tetap disusun untuk disalin tangan.
+- Batas 10 kirim per menit per pengguna — perilaku burst adalah pemicu ban tercepat.
+- Setiap pengiriman dicatat ke log beserta teks persisnya, supaya kalimat yang aneh bisa ditelusuri.
+
+Lihat aturan #4 di [CLAUDE.md](../CLAUDE.md), yang ditulis ulang bersamaan dengan fitur ini.
 
 ## Transkripsi suara — di browser, tapi bukan di perangkat
 

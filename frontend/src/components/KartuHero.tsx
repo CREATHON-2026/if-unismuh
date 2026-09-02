@@ -30,17 +30,15 @@ export function KartuHero({
     nada === 'rugi' ? 'text-rugi-terang' : nada === 'untung' ? 'text-untung-terang' : 'text-white';
 
   return (
-    <div className="rounded-kartu bg-hero p-6">
+    <div className="hero-gradien rounded-kartu p-6">
       <p className="text-isi font-medium text-white/70">{label}</p>
-      {/* break-words: rupiah jutaan di layar 320px patah di spasi ("Rp" /
-          "4.200.000"), bukan meluber keluar kartu. */}
-      <p className={`angka mt-1.5 break-words text-nomor-besar font-extrabold leading-none ${warnaAngka}`}>
+      <p className={`angka mt-1.5 text-nomor-besar font-extrabold leading-none ${warnaAngka}`}>
         {nilai}
       </p>
       {catatan && (
         <p className="mt-3 text-isi leading-relaxed text-white/70">{catatan}</p>
       )}
-      {bawah && <div className="mt-5 border-t border-white/12 pt-4">{bawah}</div>}
+      {bawah && <div className="mt-5 border-t border-white/20 pt-4">{bawah}</div>}
     </div>
   );
 }

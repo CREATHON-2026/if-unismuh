@@ -53,7 +53,27 @@ Jangan pernah membuat jalan pintas yang melewati tahap ini, sepraktis apa pun ke
 
 Saat `ekstraksi.status` jadi `dikonfirmasi`: hapus berkasnya, kosongkan `path_berkas`. Buku catatan berisi data usaha yang sensitif.
 
-### 5. Kunci API hanya di `.env`
+### 5. Hanya ada SATU jalur kirim, dan ia dipicu tombol
+
+`kirimPesan()` di `whatsapp/wa.client.ts` adalah satu-satunya fungsi di seluruh
+backend yang mengirim ke nomor pembeli. Empat batas yang menjaganya, dan
+keempatnya harus tetap ada:
+
+1. **Tidak ada pemanggil otomatis.** Satu-satunya jalan adalah
+   `POST /pesanan/:id/kirim-balasan`, yang dipicu tombol pedagang. Jangan
+   pernah memanggilnya dari `tanganiPesan()`, penjadwal, atau webhook.
+2. **Alamatnya tidak pernah bebas.** Hanya dari `pesan_masuk.pengirim_jid` —
+   nomor yang menyapa duluan. Jangan menambah parameter nomor dari request.
+3. **`WA_BALAS_AKTIF` bawaannya mati.** Jangan mengubah bawaannya jadi `true`.
+4. **Maksud draf diputuskan SQL.** Lihat `siapkanDraf()` di
+   `pesanan.service.ts`. Kalau suatu saat LLM yang memilih antara "terima" dan
+   "tawar", aturan #1 sudah bocor lewat pintu belakang — model akan memutuskan
+   soal uang, dan yang dilihatnya cuma nada kalimat.
+
+Lihat aturan #4 di [CLAUDE.md](../CLAUDE.md), yang ditulis ulang saat fitur ini
+dibangun.
+
+### 6. Kunci API hanya di `.env`
 
 `GEMINI_API_KEY` tidak pernah masuk kode, tidak pernah dikirim ke frontend. Semua panggilan Gemini terjadi di sini.
 
@@ -82,7 +102,7 @@ db/schema.sql          tabel + view. Semua rumus hidup di sini
 ```
 
 Pengecualian yang disengaja: `whatsapp/wa.client.ts` adalah adapter Baileys
-(hanya-baca) yang berperan sebagai service-nya modul itu.
+yang berperan sebagai service-nya modul itu.
 
 ### Siapa boleh memanggil siapa
 

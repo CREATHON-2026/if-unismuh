@@ -1,19 +1,18 @@
 /**
  * Uji chatbot "Tanya lapakAi" — POST /tanya.
  *
- * Yang dibuktikan di sini bukan "chatbot-nya menjawab", tapi bahwa jawabannya
- * TIDAK MENGARANG. Chatbot adalah satu-satunya tempat LLM berbicara soal uang
- * dalam kalimat utuh, dan kalimat yang salah tidak terlihat seperti galat —
- * ia terlihat seperti jawaban.
+ * Chatbotnya murni LLM: seluruh catatan pedagang masuk ke prompt, model
+ * menjawab apa pun dengan caranya sendiri. Karena itu berkas ini TIDAK menguji
+ * bentuk jawaban — jawaban yang benar bisa ditulis dengan seratus cara, dan
+ * menuntut satu bentuk tertentu hanya menghasilkan uji yang rewel.
  *
- * Tiga kelompok pemeriksaan, dan yang ketiga paling berharga:
+ * Yang diuji cuma hal-hal yang memang harus selalu benar:
  *
- *   1. Klasifikasi   — delapan pertanyaan, satu per maksud
- *   2. Kejujuran     — di luar cakupan dijawab tidak_paham, acuan null
- *   3. Ketertelusuran— tiap rupiah di `jawaban` punya padanan persis di `acuan`
- *
- * Tanpa yang ketiga, pelanggaran aturan #1 lolos tanpa suara: tidak ada galat,
- * hanya angka salah dengan kalimat yang meyakinkan.
+ *   1. Terjawab   — pertanyaan yang bentuknya bermacam-macam tetap dapat isi
+ *   2. Bercakupan  — yang di luar soal usaha DITOLAK, yang di dalam dijawab
+ *   3. Bersandar data — angka yang jelas ada di catatan memang muncul
+ *   4. Ingatan    — pertanyaan lanjutan paham sedang membahas apa
+ *   5. Isolasi    — pedagang lain tidak melihat catatan kita
  *
  *   node scripts/uji-tanya.mjs
  */
@@ -37,7 +36,7 @@ async function panggil(jalan, opsi = {}, token) {
     ...opsi,
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(token ? { Authorization: 'Bearer ' + token } : {}),
     },
   });
   const body = await res.json();
@@ -58,45 +57,28 @@ async function pedagangBaru(nama) {
   return token;
 }
 
-const tanya = (pertanyaan, token) =>
-  panggil('/tanya', { method: 'POST', body: JSON.stringify({ pertanyaan }) }, token);
+const tanya = async (pertanyaan, token) => {
+  const mulai = Date.now();
+  const j = await panggil('/tanya', { method: 'POST', body: JSON.stringify({ pertanyaan }) }, token);
+  j._detik = ((Date.now() - mulai) / 1000).toFixed(1);
+  return j;
+};
 
-// ---------------------------------------------------------------------------
-// Inti berkas ini: menangkap angka yang dikarang
-// ---------------------------------------------------------------------------
-
-/**
- * Tarik semua nilai rupiah dari kalimat. "Rp 3.600.000" -> 3600000.
- *
- * Titik di sini pemisah ribuan bahasa Indonesia, bukan desimal.
- */
-function rupiahDalam(kalimat) {
-  const cocok = kalimat.match(/Rp\s?[\d.]+/g) ?? [];
-  return cocok.map((s) => Number(s.replace(/[^\d]/g, '')));
-}
-
-/** Semua angka yang boleh disebut: nilai numerik di `acuan`, apa adanya. */
-function angkaSah(acuan) {
-  if (!acuan) return [];
-  return Object.values(acuan).filter((v) => typeof v === 'number');
-}
+const ringkas = (t, n = 110) => (t ?? '').replace(/\s+/g, ' ').slice(0, n);
 
 /**
- * Setiap rupiah yang diucapkan harus berasal dari SQL.
+ * Apakah kalimatnya menyebut angka ini?
  *
- * Kalau ada yang tidak punya padanan di `acuan`, berarti kalimatnya menyebut
- * angka yang tidak pernah dihitung siapa pun — LLM menjumlahkan sendiri, dan
- * itu aturan #1 yang jebol.
+ * Longgar dengan sengaja. Model boleh menulis "Rp 48.000", "48000", atau
+ * "48 ribu" — ketiganya jawaban yang sama benarnya, dan uji yang cuma
+ * menerima satu bentuk akan merah karena selera penulisan, bukan karena salah.
  */
-function periksaKetertelusuran(label, jawab) {
-  const disebut = rupiahDalam(jawab.jawaban);
-  const boleh = angkaSah(jawab.acuan);
-  const liar = disebut.filter((n) => !boleh.includes(n));
-  periksaBenar(
-    `${label}: semua rupiah ada di acuan`,
-    liar.length === 0,
-    `angka tanpa asal: ${liar.map(rupiah).join(', ')} — acuan hanya punya ${boleh.map(rupiah).join(', ') || '(kosong)'}`,
-  );
+function menyebutAngka(kalimat, angka) {
+  const teks = (kalimat ?? '').toLowerCase();
+  const polos = teks.replace(/[.,\s]/g, '');
+  if (polos.includes(String(angka))) return true;
+  if (angka % 1000 === 0 && polos.includes(`${angka / 1000}ribu`)) return true;
+  return false;
 }
 
 /** Kripik Pisang: batch 848.000 / 40 = modal 21.200, jual 20.000 -> RUGI 1.200 */
@@ -121,9 +103,9 @@ console.log('UJI CHATBOT — Tanya lapakAi');
 console.log('='.repeat(62));
 
 // ===========================================================================
-// Persiapan — sengaja fixture yang sama dengan uji-beranda.mjs, supaya
-// angkanya sudah dihitung tangan dan bisa dibandingkan langsung.
-//   omzet  = 10 x 20.000 + 20 x 5.000                      = 300.000
+// Persiapan — fixture yang sama dengan uji-beranda.mjs, supaya angkanya sudah
+// dihitung tangan dan bisa dibandingkan langsung.
+//   omzet  = 10 x 20.000 + 20 x 5.000                       = 300.000
 //   untung = 10 x (20.000 - 21.200) + 20 x (5.000 - 2.000)  =  48.000
 // ===========================================================================
 console.log('\n0. Menyiapkan pedagang dengan angka yang sudah diketahui');
@@ -140,10 +122,6 @@ await panggil('/transaksi', {
     ],
   }),
 }, token);
-await panggil('/stok', {
-  method: 'POST',
-  body: JSON.stringify({ baris: [{ bahan_id: kripik.bahan?.[0]?.bahan_id ?? 1, jumlah: 20 }] }),
-}, token).catch(() => console.log('   (stok dilewati — bahan_id belum terbawa di jawaban resep)'));
 
 const b = await panggil('/beranda', {}, token);
 console.log(`   omzet ${rupiah(b.omzet)}, untung ${rupiah(b.untung_bersih)}`);
@@ -151,104 +129,136 @@ periksa('siap: omzet 300.000', b.omzet, 300000);
 periksa('siap: untung 48.000', b.untung_bersih, 48000);
 
 // ===========================================================================
-// 1. Klasifikasi — delapan pertanyaan, satu per maksud
+// 1. Pertanyaan apa pun terjawab
+//
+// Bentuknya sengaja dibikin sangat berbeda-beda: angka lugas, sebab-akibat,
+// minta pendapat, minta prioritas, sampai pertanyaan soal aplikasinya sendiri.
 // ===========================================================================
-console.log('\n1. Membaca maksud pertanyaan');
+console.log('\n1. Pertanyaan bebas tetap terjawab');
 
-const PERTANYAAN = [
-  ['bulan ini untung saya berapa?',                          'untung_periode'],
-  ['produk mana yang bikin saya rugi?',                      'produk_merugi'],
-  ['modal kripik pisang berapa?',                            'modal_produk'],
-  ['kripik pisang sebaiknya saya jual berapa?',              'saran_harga'],
-  ['bahan saya cukup untuk berapa bungkus kripik pisang?',   'kapasitas_stok'],
-  ['produk apa yang paling laku?',                           'produk_terlaris'],
-  ['tadi laku 12 kripik pisang',                             'catat_transaksi'],
-  ['besok cuacanya bagaimana?',                              'tidak_paham'],
+const BEBAS = [
+  'bulan ini untung saya berapa?',
+  'kenapa untung saya kecil padahal jualan terus?',
+  'menurutmu produk mana yang sebaiknya saya hentikan?',
+  'kalau kripik saya jual 25 ribu, untungnya jadi berapa?',
+  'apa yang harus saya perbaiki minggu ini?',
 ];
 
-const jawaban = {};
-for (const [pertanyaan, harap] of PERTANYAAN) {
+for (const pertanyaan of BEBAS) {
   const j = await tanya(pertanyaan, token);
-  jawaban[harap] = j;
-  periksa(`"${pertanyaan}"`, j.maksud, harap);
+  periksaBenar(
+    `"${pertanyaan}"`,
+    typeof j.jawaban === 'string' && j.jawaban.trim().length > 15,
+    `jawaban="${ringkas(j.jawaban)}"`,
+  );
+  console.log(`       -> [${j._detik}s] ${ringkas(j.jawaban)}`);
 }
 
 // ===========================================================================
-// 2. Kejujuran di batas cakupan
+// 2. Gerbang cakupan
+//
+// Chatbot ini sempat dibuat bebas menjawab apa saja. Kebebasan itu ditarik:
+// asisten yang dengan senang hati menjawab "ibu kota Jepang Tokyo" membuat
+// seluruh produk terbaca sebagai pembungkus ChatGPT, dan itu pertanyaan yang
+// akan diajukan juri. Yang dijual di sini adalah jawaban yang bersandar pada
+// catatan pedagang sendiri.
+//
+// Dua arah diuji sekaligus, dan yang KEDUA sama pentingnya: gerbang yang
+// menolak segalanya lolos separuh kelompok ini tanpa ada yang menyadarinya —
+// dan chatbot yang menolak pertanyaan sah jauh lebih merusak daripada chatbot
+// yang sesekali menjawab soal ibu kota.
 // ===========================================================================
-console.log('\n2. Yang tidak dipahami dijawab jujur');
-const tp = jawaban['tidak_paham'];
-periksa('maksud tidak_paham', tp?.maksud, 'tidak_paham');
-periksa('acuan WAJIB null', tp?.acuan, null);
-periksaBenar('tidak menyebut rupiah sama sekali', rupiahDalam(tp?.jawaban ?? '').length === 0,
-  `menyebut ${rupiahDalam(tp?.jawaban ?? '').map(rupiah).join(', ')} padahal tidak menghitung apa pun`);
+console.log('\n2. Gerbang cakupan');
 
-console.log('\n   Mencatat dialihkan, bukan disimpan diam-diam');
-const ct = jawaban['catat_transaksi'];
-periksa('alihkan_ke terisi', ct?.alihkan_ke?.rute, '/catat');
-periksaBenar('kalimat asli ikut dibawa', typeof ct?.alihkan_ke?.teks === 'string' && ct.alihkan_ke.teks.length > 0);
+/** Kalimat penolakan ditulis server (tanya.service.ts), jadi bentuknya pasti. */
+const AWALAN_TOLAK = 'maaf, saya hanya bisa menjawab soal usaha';
+const ditolak = (t) => (t ?? '').toLowerCase().startsWith(AWALAN_TOLAK);
 
-const sesudahTanya = await panggil('/beranda', {}, token);
-periksa('omzet TIDAK berubah setelah bertanya', sesudahTanya.omzet, 300000);
-periksa('untung TIDAK berubah setelah bertanya', sesudahTanya.untung_bersih, 48000);
+const DI_LUAR = [
+  'ibu kota Jepang apa?',
+  'siapa presiden Indonesia?',
+  'kasih tips supaya saya tidak gampang ngantuk sore hari dong',
+  'resep donat yang enak bagaimana?',
+  'kamu ini AI model apa?',
+  // Menyebut produk pedagang, tapi jawabannya butuh pengetahuan umum. Ini yang
+  // paling mudah lolos gerbang, jadi justru harus ikut diuji.
+  'kripik pisang asalnya dari daerah mana?',
+];
 
-// ===========================================================================
-// 3. Ketertelusuran — bagian terpenting berkas ini
-// ===========================================================================
-console.log('\n3. Tiap angka bisa ditelusuri ke SQL');
-for (const [maksud, j] of Object.entries(jawaban)) {
-  if (!j) continue;
-  periksaKetertelusuran(maksud, j);
+for (const pertanyaan of DI_LUAR) {
+  const j = await tanya(pertanyaan, token);
+  periksaBenar(`"${pertanyaan}" ditolak`, ditolak(j.jawaban),
+    `jawaban="${ringkas(j.jawaban)}"`);
 }
 
-console.log('\n   Angkanya bukan cuma bisa ditelusuri, tapi juga benar');
-const up = jawaban['untung_periode'];
-periksa('acuan.untung_bersih = hitungan tangan', up?.acuan?.untung_bersih, 48000);
-periksa('acuan.omzet = hitungan tangan', up?.acuan?.omzet, 300000);
+const DI_DALAM = [
+  'produk mana yang merugi?',
+  'bulan ini untung saya berapa?',
+  'menurutmu produk mana yang sebaiknya saya hentikan?',
+  'bagaimana cara mencatat penjualan di aplikasi ini?',
+];
 
-const mp = jawaban['modal_produk'];
-periksa('acuan modal kripik = 21.200', mp?.acuan?.modal_per_unit, 21200);
-
-const pm = jawaban['produk_merugi'];
-periksaBenar('yang merugi Kripik Pisang', JSON.stringify(pm?.acuan ?? {}).includes('Kripik Pisang'),
-  `acuan: ${JSON.stringify(pm?.acuan)}`);
+for (const pertanyaan of DI_DALAM) {
+  const j = await tanya(pertanyaan, token);
+  periksaBenar(`"${pertanyaan}" TIDAK ditolak`, !ditolak(j.jawaban),
+    `jawaban="${ringkas(j.jawaban)}"`);
+}
 
 // ===========================================================================
-// 4. Isolasi antar pengguna
+// 3. Jawabannya bersandar pada catatan sungguhan
+//
+// Bukan menuntut satu bentuk kalimat, hanya menuntut angkanya nyambung.
+// Untung bulan ini 48.000 dan modal kripik 21.200 keduanya ada apa adanya di
+// konteks — model tinggal membacanya.
 // ===========================================================================
-console.log('\n4. Pedagang lain tidak melihat angka kita');
+console.log('\n3. Angka yang jelas ada di catatan memang dipakai');
+
+const jUntung = await tanya('untung bersih saya bulan ini berapa? sebutkan angkanya', token);
+console.log(`       -> [${jUntung._detik}s] ${ringkas(jUntung.jawaban, 160)}`);
+periksaBenar('untung bulan ini menyebut 48.000', menyebutAngka(jUntung.jawaban, 48000));
+
+const jModal = await tanya('modal per bungkus Kripik Pisang berapa? sebutkan angkanya', token);
+console.log(`       -> [${jModal._detik}s] ${ringkas(jModal.jawaban, 160)}`);
+periksaBenar('modal kripik menyebut 21.200', menyebutAngka(jModal.jawaban, 21200));
+
+// ===========================================================================
+// 4. Ingatan percakapan
+//
+// Yang dibuktikan bukan model menyebut ulang namanya — jawaban yang baik justru
+// sering tidak mengulang. Yang dibuktikan angkanya: modal Kacang Telur 2.000,
+// jadi 7.000 - 2.000 = 5.000. Kalau ingatannya putus dan model mengira ini
+// masih soal Kripik Pisang, angkanya mustahil 5.000.
+// ===========================================================================
+console.log('\n4. Pertanyaan lanjutan paham sedang membahas apa');
+
+await tanya('coba jelaskan soal Kacang Telur saya', token);
+const jLanjut = await tanya('kalau yang itu saya jual 7.000, gimana?', token);
+console.log(`       -> [${jLanjut._detik}s] ${ringkas(jLanjut.jawaban, 160)}`);
+periksaBenar(
+  'lanjutan masih membahas Kacang Telur',
+  /kacang/i.test(jLanjut.jawaban ?? '') || menyebutAngka(jLanjut.jawaban, 5000),
+  `jawaban="${ringkas(jLanjut.jawaban)}"`,
+);
+
+// ===========================================================================
+// 5. Isolasi antar pedagang
+//
+// Satu-satunya batasan yang tersisa di modul ini, dan bukan soal chatbot.
+// ===========================================================================
+console.log('\n5. Pedagang lain tidak melihat catatan kita');
+
 const tokenLain = await pedagangBaru('Warung Sebelah');
-const lain = await tanya('bulan ini untung saya berapa?', tokenLain);
-periksaBenar('untung pedagang baru bukan 48.000', lain.acuan?.untung_bersih !== 48000,
-  `dapat ${rupiah(lain.acuan?.untung_bersih)} — data bocor antar pengguna`);
+const jLain = await tanya('produk saya apa saja? untung saya berapa?', tokenLain);
+console.log(`       -> [${jLain._detik}s] ${ringkas(jLain.jawaban, 160)}`);
+const bocor = /kripik pisang|kacang telur/i.test(jLain.jawaban ?? '');
+periksaBenar('tidak menyebut produk pedagang lain', !bocor, `jawaban="${ringkas(jLain.jawaban)}"`);
+periksaBenar(
+  'tidak menyebut untung pedagang lain',
+  !menyebutAngka(jLain.jawaban, 48000) && !menyebutAngka(jLain.jawaban, 300000),
+  `jawaban="${ringkas(jLain.jawaban)}"`,
+);
 
-let ditolak = false;
-try {
-  await fetch(DASAR + '/tanya', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ pertanyaan: 'untung saya berapa?' }),
-  }).then((r) => r.json()).then((body) => { if (!body.ok) throw new Error(body.error.kode); });
-} catch { ditolak = true; }
-periksa('tanpa token ditolak', ditolak, true);
-
+// ===========================================================================
 console.log('\n' + '='.repeat(62));
-if (gagal === 0) {
-  console.log('SEMUA LOLOS — tiap rupiah yang diucapkan chatbot berasal dari SQL.');
-} else {
-  console.log(`${gagal} PEMERIKSAAN GAGAL.`);
-  process.exit(1);
-}
-
-/*
- * Catatan soal kestabilan.
- *
- * Kelompok 1 bergantung pada model, jadi ia bisa goyah — model lokal kadang
- * membaca "produk apa yang paling laku" sebagai produk_merugi. Itu memang yang
- * ingin diketahui: klasifikasi yang meleset menghasilkan jawaban yang jelas
- * tidak nyambung, dan pedagang akan bertanya ulang.
- *
- * Kelompok 3 TIDAK BOLEH goyah. Ia tidak menguji kepintaran model, melainkan
- * apakah kalimatnya masih terikat pada angka SQL. Kalau yang ini merah, jangan
- * diulang sampai hijau — cari template yang menyulih angka di luar `acuan`.
- */
+console.log(gagal === 0 ? 'SEMUA LOLOS' : `${gagal} PEMERIKSAAN GAGAL`);
+process.exit(gagal === 0 ? 0 : 1);

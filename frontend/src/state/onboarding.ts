@@ -3,7 +3,17 @@
 
 import type { BahanMasukan, TemuanPertama } from '@shared/types';
 
+/**
+ * Wizard resep dipakai DUA konteks: onboarding, dan menambah produk lain dari
+ * layar Produk. Yang membedakan hanya ujungnya — lihat ResepHarga.tsx.
+ *
+ * Kosong berarti 'onboarding', supaya alur lama tidak berubah perilakunya
+ * hanya karena medan ini ditambahkan.
+ */
+export type ModeResep = 'onboarding' | 'tambah';
+
 export interface JawabanOnboarding {
+  mode?: ModeResep;
   nomor_hp?: string;
   nama_usaha?: string;
   jenis_usaha?: string;

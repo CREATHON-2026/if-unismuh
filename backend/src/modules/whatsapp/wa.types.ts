@@ -16,6 +16,6 @@ export interface StatusWhatsappRes {
   /** Kode 8 digit yang dimasukkan pengguna di HP-nya; null kalau memakai QR. */
   kode_pairing: string | null;
   /** Selalu true — sistem tidak punya jalur mengirim. */
-  hanya_baca: true;
+  hanya_baca: boolean;
   alasan: string | null;
 }

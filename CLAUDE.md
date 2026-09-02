@@ -37,11 +37,20 @@ Pengguna kita berusia 35–60 tahun, literasi digital rendah, sering lupa passwo
 
 Identitas = **nomor HP + OTP**. Titik. Tidak ada kolom email, tidak ada password, tidak ada konfirmasi password. Sesi bertahan 90 hari dan tidak pernah logout otomatis.
 
-### 4. Sistem tidak pernah mengirim pesan ke nomor pembeli
+### 4. Tidak ada pesan yang keluar tanpa pedagang menekan tombol
 
-Pesanan masuk ditangani dengan **tempel teks manual** di layar Pesanan Masuk. Kita membaca dan menganalisis pesan pembeli, lalu menyiapkan balasan **untuk disalin pedagang sendiri**.
+**Aturan ini diubah pada 2 September 2026.** Sebelumnya berbunyi *"sistem tidak pernah mengirim pesan ke nomor pembeli"*, dan seluruh backend memang tidak punya jalur kirim sama sekali. Larangan itu dicabut dengan sadar saat fitur balasan dibangun. Yang menggantikannya lebih sempit, dan tetap harus dipegang:
 
-Jangan bangun pengiriman WhatsApp otomatis. Risikonya gagal di panggung, dan kita memang sengaja tidak mengirim apa pun ke pembeli.
+- Balasan **boleh** disusun otomatis begitu pesan masuk.
+- Balasan **tidak pernah** terkirim otomatis. Satu tekanan jari pedagang berdiri di antara kalimat yang disusun mesin dan chat pembeli.
+- Kalimatnya **bisa disunting** sebelum dikirim. Melihat hasil AI tanpa bisa memperbaikinya hanya setengah janji — ini penerapan aturan #2, bukan tambahan kenyamanan.
+- Alamat kirim **hanya** boleh berasal dari `pesan_masuk.pengirim_jid`, yaitu nomor yang menyapa duluan. Tidak ada jalur mengirim ke nomor yang diketik bebas.
+- **Maksud balasan diputuskan SQL, bukan LLM.** Kalau `merugi` true, draf yang lahir adalah tawar-menawar, tidak pernah "terima". Model memilih nada, dan kalimat pembeli yang ramah membuatnya cenderung menyanggupi — termasuk saat menyanggupi berarti rugi.
+- Kalau produknya belum pasti, **tidak ada draf sama sekali** (aturan #8). Balasan untuk barang yang salah adalah kalimat salah yang duduk satu tap dari terkirim.
+
+Pengirimannya dijaga rem `WA_BALAS_AKTIF`, **bawaannya mati**. Selama mati, draf tetap disusun dan tetap bisa disalin — jadi alur demo tidak pernah bergantung pada pengiriman. Baileys adalah klien tidak resmi dan nomornya bisa kena ban; jalur **tempel manual tidak boleh dihapus**, karena itulah yang tetap hidup saat sambungan mati.
+
+Rinciannya di `backend/src/modules/pesanan/pesanan.service.ts` dan `docs/08-keamanan-data.md`.
 
 ### 5. Harga di katalog = harga di aplikasi
 

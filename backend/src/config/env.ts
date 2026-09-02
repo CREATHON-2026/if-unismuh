@@ -42,6 +42,28 @@ export const PGLITE_DIR = process.env.PGLITE_DIR ?? '';
  */
 export const WA_AUTH_DIR = process.env.WA_AUTH_DIR ?? '';
 
+/**
+ * Izin mengirim balasan ke nomor pembeli. Bawaannya MATI.
+ *
+ * Ini rem, dan sengaja harus ditarik dengan sadar — sama seperti
+ * MIDTRANS_PRODUKSI. Baileys adalah klien tidak resmi: nomor yang dipakai bisa
+ * kena ban, dan nomor itu biasanya WhatsApp pribadi pedagang, bukan akun uji.
+ *
+ * Saat mati, draf balasan TETAP disusun dan tetap bisa disalin pedagang. Jadi
+ * alur demo tidak pernah bergantung pada pengiriman — kalau ada yang aneh di
+ * panggung, yang mati satu tombol, bukan satu nomor.
+ */
+export const WA_BALAS_AKTIF = process.env.WA_BALAS_AKTIF === 'true';
+
+/**
+ * Batas kirim per menit per pengguna.
+ *
+ * Perilaku burst adalah yang paling cepat memicu ban di WhatsApp. Angkanya
+ * longgar untuk pemakaian manusia — pedagang tidak menekan tombol sepuluh kali
+ * semenit — dan ketat untuk kesalahan kode yang mengirim dalam loop.
+ */
+export const WA_BALAS_PER_MENIT = Number(process.env.WA_BALAS_PER_MENIT ?? 10);
+
 /** Kosong -> pakai PGlite (tertanam). Diisi -> PostgreSQL sungguhan. */
 export const DATABASE_URL = process.env.DATABASE_URL ?? '';
 export const MODE_DB: 'postgres' | 'pglite' = DATABASE_URL ? 'postgres' : 'pglite';

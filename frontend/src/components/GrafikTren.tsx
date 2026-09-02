@@ -3,6 +3,12 @@ import type { TitikTren } from '@shared/types';
 /**
  * Grafik garis omzet vs untung — fitur 14. SVG polos, tanpa library.
  *
+ * Disalin dari rancangan Dev B di `main`, dengan SATU perubahan: token warna
+ * lama diganti padanan palet ungu (merek-tua). Branch ini sudah pindah dari
+ * palet krem, dan token lamanya tidak ada lagi. Di dalam SVG, warna yang tidak
+ * ada berarti garis omzetnya TIDAK TERGAMBAR SAMA SEKALI — tanpa satu pun
+ * galat. Jangan dikembalikan saat menyelesaikan konflik merge.
+ *
  * Satu library grafik penuh untuk dua garis adalah harga yang salah: bundle
  * membengkak di HP murah demi fitur zoom/tooltip yang pengguna kita tidak
  * butuh. Tiga puluh baris SVG menggambar hal yang sama.
@@ -69,7 +75,7 @@ export function GrafikTren({ titik }: { titik: TitikTren[] }) {
         <polyline
           points={jalur((t) => t.omzet)}
           fill="none"
-          stroke="var(--color-aksen-tua)"
+          stroke="var(--color-merek-tua)"
           strokeWidth="2"
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -85,7 +91,7 @@ export function GrafikTren({ titik }: { titik: TitikTren[] }) {
 
         {titik.map((t, i) => (
           <g key={t.label}>
-            <circle cx={x(i)} cy={y(t.omzet)} r="3" fill="var(--color-aksen-tua)" />
+            <circle cx={x(i)} cy={y(t.omzet)} r="3" fill="var(--color-merek-tua)" />
             {/* Minggu yang rugi diberi titik merah — satu-satunya arti merah */}
             <circle
               cx={x(i)}
@@ -117,7 +123,7 @@ export function GrafikTren({ titik }: { titik: TitikTren[] }) {
           Untung bersih
         </span>
         <span className="flex items-center gap-2 text-kecil font-medium text-sedang">
-          <span className="h-2.5 w-2.5 rounded-full bg-aksen-tua" aria-hidden="true" />
+          <span className="h-2.5 w-2.5 rounded-full bg-merek-tua" aria-hidden="true" />
           Uang masuk
         </span>
         {adaTitikRugi && (

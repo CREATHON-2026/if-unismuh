@@ -135,19 +135,20 @@ Tanpa parameter, bawaannya **bulan berjalan** — pemilih tanggal adalah friksi 
 
 **Kenapa `omzet` dan `untung_bersih` bisa tidak sebanding.** Uang masuk selalu diketahui, jadi omzet menghitung semua penjualan. Untung hanya menghitung penjualan yang modal produknya diketahui. Selisihnya dilaporkan lewat `baris_tanpa_modal` — bukan disembunyikan dengan membuang barisnya dari omzet juga.
 
-### `GET /rekap?hari=7` — **belum ada di backend**
-Fitur 14 — grafik tren omzet vs untung, harian. Tanpa parameter, bawaannya **7 hari terakhir** termasuk hari berjalan. Frontend sementara memakai data tiruan persis bentuk ini (`ambilRekap` di `frontend/src/api/client.ts`) sampai endpoint-nya jadi.
+### `GET /rekap?hari=7`
+Fitur 14 — grafik tren omzet vs untung, harian. Tanpa parameter, bawaannya **7 hari terakhir** termasuk hari berjalan. Batasnya 1–31; di luar itu ditolak `PERMINTAAN_TIDAK_VALID`.
 
 ```json
 { "ok": true, "data": {
     "hari": [
-      { "label": "Sen", "omzet": 620000, "untung_bersih": 54000 },
-      { "label": "Sel", "omzet": 480000, "untung_bersih": 41000 }
+      { "label": "Kam", "omzet": 0,      "untung_bersih": 0 },
+      { "label": "Min", "omzet": 200000, "untung_bersih": -6000 },
+      { "label": "Rab", "omzet": 200000, "untung_bersih": -12000 }
     ],
-    "omzet": 5400000,
-    "untung_bersih": 514000,
+    "omzet": 400000,
+    "untung_bersih": -18000,
     "ada_transaksi": true,
-    "produk_terlaris": { "id": 1, "nama": "Kripik Pisang", "jumlah_terjual": 124 }
+    "produk_terlaris": { "id": 2, "nama": "Es Teh", "jumlah_terjual": 20 }
 } }
 ```
 
@@ -157,9 +158,13 @@ Fitur 14 — grafik tren omzet vs untung, harian. Tanpa parameter, bawaannya **7
 | `hari[].untung_bersih` | Boleh negatif. Aturannya sama dengan Beranda: hanya penjualan yang modal produknya diketahui |
 | `omzet` · `untung_bersih` | Total sepanjang periode, **dijumlahkan SQL** — frontend tidak menjumlah titik-titik grafik |
 | `ada_transaksi` | `false` → tampilkan ajakan mencatat, jangan grafik datar nol |
-| `produk_terlaris` | Terbanyak terjual sepanjang periode. `null` kalau belum ada penjualan |
+| `produk_terlaris` | Terbanyak terjual sepanjang periode, diurutkan menurut **jumlah unit** bukan nilai rupiah. `null` kalau belum ada penjualan |
 
-Tidak ada field pembanding periode ("+12% dari minggu lalu") dan persen margin — kalau nanti dibutuhkan, tambahkan di sini dulu dan hitung di SQL, jangan di frontend.
+**Hari tanpa penjualan tetap muncul, bernilai nol.** Query memakai `generate_series` atas rentang tanggalnya, bukan mengelompokkan baris `transaksi` yang ada. Kalau hari kosong dibiarkan hilang, grafiknya menarik garis lurus melewatinya dan hari sepi tampak seolah tidak pernah ada — persis jenis kebohongan visual yang aplikasi ini ada untuk menghapusnya.
+
+**Totalnya memakai query yang SAMA dengan Beranda** (`ringkasanPenjualan()`), dengan batas rentang yang diturunkan dari `CURRENT_DATE` database — bukan dari jam proses Node, yang bisa berbeda sehari dan membuat total tidak sepadan dengan grafiknya. Karena itu untuk rentang yang sama, Rekap dan Beranda **tidak bisa** menyebut angka berbeda; `scripts/uji-rekap.mjs` membandingkan keduanya tiap kali dijalankan.
+
+Tidak ada field pembanding periode ("+12% dari minggu lalu") maupun persen margin — kalau nanti dibutuhkan, tambahkan di sini dulu dan hitung di SQL, jangan di frontend.
 
 ### `POST /transaksi`
 Fitur 3 — ketik manual. **Banyak baris sekaligus**, bentuknya sama dengan layar konfirmasi foto supaya komponen barisnya bisa dipakai untuk keduanya.
@@ -650,7 +655,7 @@ Satu pesanan dari view `v_pesanan`. Pesanan milik pedagang lain menjawab **404, 
 
 `cara`: `tunai` · `transfer` · `qris` · `nanti`. Yang `nanti` (kasbon) tetap memindahkan status ke `diproses` tapi membiarkan `dibayar_pada` tetap `null` — itulah yang membuatnya terhitung piutang.
 
-`qris` memanggil Midtrans Snap dan mengisi `midtrans_url`. Tautannya **disalin pedagang**; sistem tidak pernah mengirimnya ke pembeli (aturan #4). `gross_amount` dibaca ulang dari `v_pesanan.nilai_pesanan`, tidak pernah diterima dari browser.
+`qris` memanggil Midtrans Snap dan mengisi `midtrans_url`. Tautannya **disalin pedagang**; tidak ada jalur yang mengirimkannya ke pembeli, dan Midtrans pun tidak diberi `customer_details` supaya ia tidak mengemail pembeli sendiri. `gross_amount` dibaca ulang dari `v_pesanan.nilai_pesanan`, tidak pernah diterima dari browser.
 
 ### `GET /proses/:id/bayar/status`
 Menanyakan status pembayaran ke Midtrans. Polling, bukan webhook — webhook butuh alamat publik yang bisa dijangkau internet, dan itu hal yang paling gampang mati di hari demo.
@@ -731,11 +736,69 @@ Memulai sesi baca. **Opsional.** Kalau tidak pernah dipanggil atau sesinya putus
 
 `maksud`: `tawar_harga` · `terima` · `tolak` · `jawab_harga`
 
-LLM menyusun kalimatnya, tapi angka di dalamnya berasal dari SQL dan disodorkan sebagai fakta. Hasilnya **disalin pedagang sendiri** — sistem tidak mengirim apa pun.
+Endpoint ini untuk **menyusun ulang** dengan nada yang dipilih pedagang. Draf pertamanya sudah ada tanpa memanggil ini — lihat medan `balasan` di bawah.
+
+LLM menyusun kalimatnya, tapi angka di dalamnya berasal dari SQL dan disodorkan sebagai fakta.
 
 **`acuan` adalah angka SQL yang dipakai menyusun kalimat.** Disertakan supaya bisa dicocokkan: kalau angka di `teks` berbeda dari yang di `acuan`, berarti model mengarang — dan itu kegagalan, bukan sekadar kalimat yang kurang enak.
 
 Kalimatnya sengaja **tidak pernah menyebut modal, rugi, atau untung** kepada pembeli. Itu urusan dalam pedagang.
+
+### Medan `balasan` — draf yang lahir sendiri
+
+`POST /pesanan/analisis` dan `GET /pesanan` sama-sama menyertakan medan `balasan` pada tiap pesan. Drafnya sudah disusun saat pesan tiba; frontend tidak perlu memintanya.
+
+```json
+"balasan": {
+  "status": "siap",
+  "teks": "Kak, mohon maaf untuk harga Rp 18.000 belum bisa kami terima...",
+  "maksud": "tawar_harga",
+  "acuan": { "nama": "Kripik Pisang", "modal_per_unit": 21200, "harga_jual": 20000,
+             "harga_diminta": 18000, "jumlah": 20,
+             "untung_pesanan": -64000, "merugi": true },
+  "bisa_dikirim": true,
+  "alasan_tidak_bisa": null,
+  "dikirim_pada": null
+}
+```
+
+`status`: `tidak_ada` · `siap` · `terkirim` · `gagal`
+
+**`maksud` diputuskan SQL, bukan LLM.** `merugi` true → `tawar_harga`; `tanya_harga` → `jawab_harga`; sisanya `terima`. Model memilih nada, dan kalimat pembeli yang ramah membuatnya cenderung menyanggupi — termasuk saat menyanggupi berarti rugi.
+
+`status` `tidak_ada` berarti produknya belum pasti ([aturan #8](../CLAUDE.md)) atau penyusunannya gagal. Jangan tampilkan tombol; tampilkan apa yang harus dibereskan dulu.
+
+**`bisa_dikirim` diputuskan server, jangan disimpulkan di layar.** Ia menimbang tiga hal sekaligus: ada-tidaknya alamat chat, rem `WA_BALAS_AKTIF`, dan status drafnya. Kalau false, `alasan_tidak_bisa` berisi kalimat siap tampil — tawarkan tombol salin, jangan tombol mati tanpa penjelasan.
+
+Nomor pembeli **tidak pernah dikirim ke frontend**. Yang ada hanya `pengirim_samar` (empat digit) dan boolean di balik `bisa_dikirim`.
+
+### `PATCH /pesanan/:id/balasan`
+```json
+// permintaan
+{ "teks": "Kak, kripik pisangnya Rp 20.000 per bungkus ya. Terima kasih!" }
+// jawaban
+{ "ok": true, "data": { "ok": true } }
+```
+
+Pedagang memperbaiki kalimatnya sebelum mengirim. Ditolak `PESANAN_SUDAH_DIPROSES` kalau sudah terkirim — menyunting yang sudah terkirim tidak mengubah apa pun di HP pembeli, hanya membuat catatan kita berbohong.
+
+### `POST /pesanan/:id/kirim-balasan`
+```json
+{ "ok": true, "data": { "terkirim": true } }
+```
+
+**Satu-satunya jalur pengiriman ke pembeli di seluruh aplikasi**, dan ia hanya bergerak karena tombol pedagang — tidak ada penjadwal, tidak ada pemanggil otomatis. Lihat [aturan #4](../CLAUDE.md), yang ditulis ulang saat fitur ini dibangun.
+
+Frontend sebaiknya `PATCH` dulu lalu `POST`, selalu — supaya yang terkirim persis yang terbaca di layar.
+
+Penolakan yang mungkin:
+
+| Kode | Sebab |
+|---|---|
+| `PERMINTAAN_TIDAK_VALID` (409) | rem `WA_BALAS_AKTIF` mati, atau pesannya ditempel manual sehingga tidak punya chat |
+| `PERMINTAAN_TIDAK_VALID` (429) | lebih dari 10 kirim dalam semenit |
+| `PESANAN_SUDAH_DIPROSES` (409) | sudah terkirim, atau tidak ada draf yang siap |
+| `GALAT_SERVER` (502) | WhatsApp menolak; status kembali ke `gagal` supaya bisa dicoba lagi |
 
 ### `GET /stok`
 ```json
@@ -760,6 +823,20 @@ Semua baris masuk atau tidak sama sekali. Mencatat stok inilah yang menghidupkan
 ## Tanya lapakAi — chatbot
 
 Rancangan lengkapnya di [14-chatbot.md](14-chatbot.md) dan [spec implementasinya](superpowers/specs/2026-09-02-chatbot-tanya-design.md).
+
+### `GET /tanya`
+Percakapan yang **masih diingat server**, urut dari yang paling lama.
+
+```json
+{ "ok": true, "data": { "giliran": [
+    { "peran": "pedagang", "teks": "produk mana yang merugi?" },
+    { "peran": "asisten",  "teks": "Yang merugi adalah Kripik Pisang" }
+] } }
+```
+
+Ada karena server **menyimpan** percakapannya (tabel `percakapan`) dan memakainya sebagai konteks pertanyaan berikutnya. Tanpa endpoint ini layar Tanya kosong setiap kali dimuat ulang padahal modelnya masih ingat — jawaban berikutnya lalu merujuk giliran yang tidak pernah terlihat pengguna, dan chatbotnya terkesan menjawab pertanyaan yang tidak pernah diajukan. Layar dan server harus menceritakan hal yang sama.
+
+Batasnya sama persis dengan yang dipakai sebagai konteks model. Kalau layar menampilkan lebih banyak daripada yang diingat, pengguna akan merujuk giliran yang sudah dilupakan.
 
 ### `POST /tanya`
 ```json

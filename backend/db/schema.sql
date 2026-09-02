@@ -230,7 +230,29 @@ CREATE TABLE pesan_masuk (
   perlu_dicek        BOOLEAN NOT NULL DEFAULT false,
 
   hasil_mentah       JSONB,
-  diterima_pada      TIMESTAMPTZ NOT NULL DEFAULT now()
+  diterima_pada      TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+  -- --- balasan otomatis: draf disusun sistem, pedagang yang menekan kirim ---
+  --
+  -- Alamat kirim pembeli. NULL untuk sumber 'tempel' — tidak ada chat yang
+  -- bisa dibalas dari teks yang disalin tangan. Kolom ini TIDAK PERNAH ikut ke
+  -- frontend: peramban hanya mengirim pesan_id, server yang mencari alamatnya.
+  --
+  -- Sebelum fitur balas, nomor pembeli sengaja DIBUANG (samarkan() menyisakan 4
+  -- digit terakhir di pengirim_samar). Menyimpannya adalah konsekuensi langsung
+  -- dari keputusan mengirim, bukan kelalaian. Lihat docs/08-keamanan-data.md.
+  pengirim_jid       TEXT,
+
+  balasan_teks       TEXT,
+  balasan_maksud     TEXT,
+  -- Angka SQL yang dipakai LLM saat menyusun kalimat. Inilah yang membuat tiap
+  -- rupiah di balasan bisa dicocokkan ke sumbernya; kalau kalimatnya menyebut
+  -- angka yang tidak ada di sini, model mengarang — dan uji-balas.mjs
+  -- menemukannya.
+  balasan_acuan      JSONB,
+  balasan_status     TEXT NOT NULL DEFAULT 'tidak_ada'
+                       CHECK (balasan_status IN ('tidak_ada','siap','terkirim','gagal')),
+  balasan_dikirim_pada TIMESTAMPTZ
 );
 CREATE INDEX idx_pesan_masuk_user ON pesan_masuk (user_id, diterima_pada DESC);
 
@@ -384,3 +406,31 @@ FROM v_margin_produk m
 WHERE m.modal_per_unit IS NOT NULL
   -- Tidak ada yang perlu disarankan kalau harganya sudah mencapai target.
   AND m.harga_jual < CEIL(m.modal_per_unit * 1.20 / 500) * 500;
+
+-- ---------------------------------------------------------------------------
+-- percakapan — ingatan chatbot, delapan giliran terakhir
+--
+-- Desain pertama chatbot sengaja TIDAK punya ini. Alasannya waktu itu masuk
+-- akal: "kalau yang itu bagaimana?" memaksa model menyimpulkan rujukan, dan
+-- salah rujuk berarti menjawab soal produk yang salah dengan angka yang benar
+-- — kegagalan yang paling sulit dilihat.
+--
+-- Keputusan itu dibalik karena alasannya sudah tidak berlaku. Dulu jawaban
+-- dirakit template dari satu maksud, jadi salah rujuk tenggelam tanpa jejak.
+-- Sekarang tiap jawaban membawa `acuan` yang menyebut NAMA produknya, dan
+-- kartu angka di bawah gelembung menampilkannya — pedagang melihat sendiri
+-- kalau yang dijawab bukan yang ditanyakan.
+--
+-- Yang disimpan hanya teks. Tidak ada `acuan`, tidak ada angka: giliran lama
+-- dipakai untuk memahami rujukan ("yang itu", "kalau begitu"), bukan sebagai
+-- sumber angka. Angka selalu dibaca ulang dari lembar fakta yang segar, supaya
+-- jawaban hari ini tidak pernah mengutip stok kemarin.
+-- ---------------------------------------------------------------------------
+CREATE TABLE percakapan (
+  id          BIGSERIAL PRIMARY KEY,
+  user_id     BIGINT NOT NULL REFERENCES pengguna(id) ON DELETE CASCADE,
+  peran       TEXT NOT NULL CHECK (peran IN ('pedagang','asisten')),
+  teks        TEXT NOT NULL,
+  dibuat_pada TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_percakapan_user ON percakapan (user_id, id DESC);

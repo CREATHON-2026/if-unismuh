@@ -15,7 +15,8 @@ import { hubungkanWhatsapp, statusWhatsapp } from './wa.client.ts';
  * GET /whatsapp/status
  *
  * Dipakai frontend untuk menampilkan keadaan sambungan dan QR kalau perlu
- * dipindai. `hanya_baca` selalu true — sistem tidak punya jalur mengirim.
+ * dipindai. `hanya_baca` mengikuti rem WA_BALAS_AKTIF: true berarti layar
+ * hanya boleh menawarkan salin, bukan kirim.
  */
 export async function status(_req: Request, res: Response): Promise<void> {
   kirim(res, statusWhatsapp());

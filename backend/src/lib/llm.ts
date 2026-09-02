@@ -29,6 +29,7 @@ interface JawabanOllama {
 
 async function panggilOllama(
   model: string, prompt: string, format?: Record<string, unknown>,
+  opsiTambahan?: Record<string, unknown>,
 ): Promise<string> {
   const kendali = new AbortController();
   const jam = setTimeout(() => kendali.abort(), BATAS_WAKTU_MS);
@@ -44,7 +45,7 @@ async function panggilOllama(
         keep_alive: KEEP_ALIVE,
         // temperature 0: untuk membaca dan mengubah bentuk, kita mau jawaban
         // yang sama untuk masukan yang sama — bukan variasi.
-        options: { temperature: 0 },
+        options: { temperature: 0, ...opsiTambahan },
         ...(format ? { format } : {}),
       }),
     });
@@ -86,9 +87,10 @@ async function coba<T>(jalankan: (model: string) => Promise<T>): Promise<T> {
  */
 export function mintaJson<T>(
   prompt: string, skema: Record<string, unknown>,
+  opsi?: Record<string, unknown>,
 ): Promise<T> {
   return coba(async (model) => {
-    const mentah = await panggilOllama(model, prompt, skema);
+    const mentah = await panggilOllama(model, prompt, skema, opsi);
     return JSON.parse(mentah) as T;
   });
 }
@@ -154,10 +156,17 @@ export function tanggalSah(nilai: unknown): string | null {
 /**
  * Minta LLM menyusun kalimat biasa, bukan JSON.
  *
- * Satu-satunya tempat keluaran LLM tampil sebagai bahasa. Angka apa pun di
- * dalam kalimatnya harus sudah dihitung SQL dan disodorkan sebagai fakta di
- * dalam prompt — model tidak boleh menghitung sendiri.
+ * `opsi` diteruskan apa adanya ke Ollama dan menimpa bawaan. Yang paling
+ * berguna dua: `num_predict` untuk membatasi panjang jawaban, dan
+ * `temperature` untuk melonggarkan gaya bahasa.
+ *
+ * Membatasi `num_predict` bukan kemewahan. Pada suhu 0 model kecil kadang
+ * masuk ke pengulangan yang tidak berhenti sendiri; tanpa batas, satu
+ * permintaan bisa menggantung sampai socketnya diputus server — gejalanya
+ * ECONNRESET di sisi pemanggil, tanpa satu pun galat tercatat.
  */
-export function mintaTeks(prompt: string): Promise<string> {
-  return coba(async (model) => (await panggilOllama(model, prompt)).trim());
+export function mintaTeks(
+  prompt: string, opsi?: Record<string, unknown>,
+): Promise<string> {
+  return coba(async (model) => (await panggilOllama(model, prompt, undefined, opsi)).trim());
 }

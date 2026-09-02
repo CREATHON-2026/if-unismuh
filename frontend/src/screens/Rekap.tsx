@@ -30,6 +30,15 @@ import { RangkaKartu } from '../components/Rangka';
  *
  * Tidak ada angka yang dihitung di sini (aturan #7). Titik harian dan total
  * periode semuanya dijumlahkan SQL; layar ini hanya menggambar dan memformat.
+ *
+ * Disalin dari `main`, dengan token warna lama dipetakan ke palet ungu
+ * (merek-muda / merek-tua). Tailwind v4 tidak membangkitkan kelas untuk token
+ * yang tidak ada — bukan warna yang salah, melainkan tanpa warna, dan tanpa
+ * galat. Jangan dikembalikan saat menyelesaikan konflik merge.
+ *
+ * `ambilRekap` sekarang memanggil `GET /rekap` yang sungguhan. Sebelum endpoint
+ * itu ada, layar ini memampangkan tujuh angka yang ditulis tangan — halaman
+ * analytics berisi karangan adalah kebalikan persis dari janji aturan #1.
  */
 export function Rekap() {
   const nav = useNavigate();
@@ -110,53 +119,50 @@ export function Rekap() {
             Kalau dua garisnya berjauhan, banyak uang lewat yang tidak jadi untung.
           </p>
 
-          {/* Tablet ke atas: dua kartu periode berdampingan, tak perlu scroll. */}
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
-            <div className="kartu flex flex-col p-5">
-              <span className="flex items-center gap-2.5 text-isi font-medium text-sedang">
-                <span
-                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-aksen-muda text-aksen-tua"
-                  aria-hidden="true"
-                >
-                  <Wallet size={18} strokeWidth={1.8} />
-                </span>
-                Uang masuk minggu ini
+          <div className="kartu mt-3 flex flex-col p-5">
+            <span className="flex items-center gap-2.5 text-isi font-medium text-sedang">
+              <span
+                className="flex h-9 w-9 items-center justify-center rounded-xl bg-merek-muda text-merek-tua"
+                aria-hidden="true"
+              >
+                <Wallet size={18} strokeWidth={1.8} />
               </span>
-              <span className="angka mt-3 break-words text-nomor font-extrabold leading-none text-tinta">
-                {formatRupiah(data.omzet)}
-              </span>
-              <span className="mt-2 text-kecil text-redup">Belum dikurangi modal</span>
-            </div>
+              Uang masuk minggu ini
+            </span>
+            <span className="angka mt-3 text-nomor font-extrabold leading-none text-tinta">
+              {formatRupiah(data.omzet)}
+            </span>
+            <span className="mt-2 text-kecil text-redup">Belum dikurangi modal</span>
+          </div>
 
-            <div
-              className={`flex flex-col rounded-kartu p-5 ${rugi ? 'bg-rugi-muda' : 'bg-untung-muda'}`}
+          <div
+            className={`mt-3 flex flex-col rounded-kartu p-5 ${rugi ? 'bg-rugi-muda' : 'bg-untung-muda'}`}
+          >
+            <span
+              className={`flex items-center gap-2.5 text-isi font-semibold ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}
             >
               <span
-                className={`flex items-center gap-2.5 text-isi font-semibold ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}
+                className={`flex h-9 w-9 items-center justify-center rounded-xl text-white ${rugi ? 'bg-rugi' : 'bg-untung'}`}
+                aria-hidden="true"
               >
-                <span
-                  className={`flex h-9 w-9 items-center justify-center rounded-xl text-white ${rugi ? 'bg-rugi' : 'bg-untung'}`}
-                  aria-hidden="true"
-                >
-                  <PiggyBank size={18} strokeWidth={1.8} />
-                </span>
-                Untung bersih
+                <PiggyBank size={18} strokeWidth={1.8} />
               </span>
-              <span
-                className={`angka mt-3 break-words text-nomor font-extrabold leading-none ${rugi ? 'text-rugi' : 'text-untung'}`}
-              >
-                {formatRupiah(data.untung_bersih)}
-              </span>
-              <span className={`mt-2 text-kecil ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}>
-                {rugi ? 'Minggu ini uang keluar lebih besar' : 'Yang benar-benar tinggal minggu ini'}
-              </span>
-            </div>
+              Untung bersih
+            </span>
+            <span
+              className={`angka mt-3 text-nomor font-extrabold leading-none ${rugi ? 'text-rugi' : 'text-untung'}`}
+            >
+              {formatRupiah(data.untung_bersih)}
+            </span>
+            <span className={`mt-2 text-kecil ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}>
+              {rugi ? 'Minggu ini uang keluar lebih besar' : 'Yang benar-benar tinggal minggu ini'}
+            </span>
           </div>
 
           {data.produk_terlaris && (
             <>
               <p className="mt-7 flex items-center gap-2 text-sub font-bold text-tinta">
-                <Star size={19} strokeWidth={2} className="text-aksen-tua" aria-hidden="true" />
+                <Star size={19} strokeWidth={2} className="text-merek-tua" aria-hidden="true" />
                 Produk terlaris
               </p>
               <div className="mt-2">

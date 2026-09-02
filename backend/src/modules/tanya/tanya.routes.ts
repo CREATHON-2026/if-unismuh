@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { wajibLogin } from '../../middleware/auth.ts';
 import { jalur } from '../../lib/http.ts';
-import { tanya } from './tanya.controller.ts';
+import { riwayatTanya, tanya } from './tanya.controller.ts';
 
 /**
  * Rute chatbot — HANYA pemetaan jalur ke controller.
@@ -13,4 +13,5 @@ import { tanya } from './tanya.controller.ts';
 export const rutTanya = Router();
 rutTanya.use(wajibLogin);
 
+rutTanya.get('/', jalur(riwayatTanya));
 rutTanya.post('/', jalur(tanya));

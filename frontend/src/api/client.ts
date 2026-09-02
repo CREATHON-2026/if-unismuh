@@ -1,5 +1,4 @@
-// Klien API lapakAi — semuanya endpoint asli, kecuali SATU yang ditandai jelas:
-// ambilRekap masih data tiruan karena GET /rekap belum ada di backend.
+// Klien API lapakAi — semuanya endpoint asli, tidak ada mock yang tersisa.
 //
 // TIDAK ADA SATU PUN PERHITUNGAN UANG DI BERKAS INI. Setiap angka finansial
 // datang sudah jadi dari SQL (aturan #7). Kalau suatu saat ada yang tergoda
@@ -20,7 +19,9 @@ import type {
   BarisKonfirmasi,
   KonfirmasiRes,
   Beranda,
+  Rekap,
   RingkasanProduk,
+  UsulanProduk,
   DetailProduk,
   AnalisisPesanan,
   PesanMasukItem,
@@ -38,9 +39,8 @@ import type {
   OngkosTenagaReq,
   StatusWhatsappRes,
   HubungkanWhatsappReq,
-  Rekap,
-  Transaksi,
   TanyaRes,
+  RiwayatTanyaRes,
 } from '@shared/types';
 import { ambilToken } from './sesi';
 
@@ -101,43 +101,44 @@ export function ambilBeranda(): Promise<Jawaban<Beranda>> {
   return panggil('/beranda');
 }
 
-/** Riwayat penjualan — tanpa parameter, backend memakai bulan berjalan. */
-export function ambilTransaksi(): Promise<Jawaban<Transaksi[]>> {
-  return panggil('/transaksi');
-}
-
 /**
- * ★ DATA TIRUAN SEMENTARA — fitur 14. GET /rekap belum ada di backend;
- * bentuknya persis kontrak docs/06-kontrak-api.md. Saat endpoint-nya jadi,
- * ganti seluruh isi fungsi ini dengan `return panggil('/rekap');` — layar
- * Rekap tidak perlu diubah sama sekali.
+ * Fitur 14 — grafik tren omzet vs untung, 7 hari terakhir.
  *
- * Angka tiruan ini fixture, bukan perhitungan: totalnya ditulis tangan agar
- * konsisten dengan titik-titiknya, sebagaimana SQL nanti yang menjumlahkan.
+ * Di `main` fungsi ini masih mengembalikan tujuh angka yang ditulis tangan,
+ * karena `GET /rekap` belum ada saat layarnya dibangun. Endpointnya sekarang
+ * ada. Kalau merge nanti menabrakkan kedua versi, YANG INI yang menang —
+ * halaman analytics berisi karangan adalah kebalikan persis dari aturan #1.
  */
 export function ambilRekap(): Promise<Jawaban<Rekap>> {
-  return Promise.resolve({
-    ok: true,
-    data: {
-      hari: [
-        { label: 'Sen', omzet: 620_000, untung_bersih: 54_000 },
-        { label: 'Sel', omzet: 480_000, untung_bersih: 41_000 },
-        { label: 'Rab', omzet: 750_000, untung_bersih: 88_000 },
-        { label: 'Kam', omzet: 540_000, untung_bersih: -18_000 },
-        { label: 'Jum', omzet: 910_000, untung_bersih: 96_000 },
-        { label: 'Sab', omzet: 1_240_000, untung_bersih: 152_000 },
-        { label: 'Min', omzet: 860_000, untung_bersih: 101_000 },
-      ],
-      omzet: 5_400_000,
-      untung_bersih: 514_000,
-      ada_transaksi: true,
-      produk_terlaris: { id: 1, nama: 'Kripik Pisang', jumlah_terjual: 124 },
-    },
-  });
+  return panggil('/rekap');
 }
 
 export function ambilDaftarProduk(): Promise<Jawaban<RingkasanProduk[]>> {
   return panggil('/produk');
+}
+
+/**
+ * Fitur 10 — satu kalimat jadi USULAN produk. Tidak menyimpan apa pun.
+ *
+ * Hasil AI, jadi aturan #2 berlaku penuh: tampilkan usulannya, biarkan pedagang
+ * membetulkan, baru kirim ke `simpanProduk`. Yang tidak disebut TIDAK ditebak —
+ * kalau harga jualnya tidak diucapkan, ia muncul di `yang_kurang` dan tombol
+ * simpan harus ditahan sampai dijawab (aturan #8).
+ */
+export function usulanProdukDariTeks(teks: string): Promise<Jawaban<UsulanProduk>> {
+  return panggil('/produk/dari-teks', { method: 'POST', body: JSON.stringify({ teks }) });
+}
+
+/**
+ * Simpan produk — jalan masuk kedua selain onboarding.
+ *
+ * `bahan` boleh kosong: pedagang berhak mendaftarkan produknya dulu dan
+ * melengkapi resepnya nanti. Kalau kosong, `modal_per_unit`, `margin_per_unit`,
+ * dan `merugi` di jawabannya bernilai null — tampilkan sebagai "belum diisi",
+ * bukan sebagai untung penuh.
+ */
+export function simpanProduk(p: SimpanResepReq): Promise<Jawaban<TemuanPertama>> {
+  return panggil('/produk', { method: 'POST', body: JSON.stringify(p) });
 }
 
 /** Fitur 11 — catat waktu pedagang sebagai biaya. Perkaliannya di SQL. */
@@ -159,9 +160,33 @@ export function daftarPesanan(): Promise<Jawaban<PesanMasukItem[]>> {
   return panggil('/pesanan');
 }
 
-/** Balasan siap SALIN. Sistem tidak pernah mengirimnya — aturan #4. */
+/** Susun ulang balasan dengan maksud yang dipilih pedagang sendiri. */
 export function buatBalasan(p: BalasanReq): Promise<Jawaban<BalasanRes>> {
   return panggil('/pesanan/balasan', { method: 'POST', body: JSON.stringify(p) });
+}
+
+/**
+ * Perbaiki kalimat draf sebelum dikirim.
+ *
+ * Draf sudah disusun sistem begitu pesan masuk; ini kesempatan pedagang
+ * mengubahnya. Aturan #2 menuntut manusia melihat hasil AI — melihat tanpa bisa
+ * memperbaiki hanya setengah janji.
+ */
+export function ubahBalasan(pesanId: number, teks: string): Promise<Jawaban<{ ok: true }>> {
+  return panggil(`/pesanan/${pesanId}/balasan`, {
+    method: 'PATCH', body: JSON.stringify({ teks }),
+  });
+}
+
+/**
+ * Kirim balasan ke pembeli lewat WhatsApp.
+ *
+ * SATU-SATUNYA jalur pengiriman di aplikasi ini, dan ia hanya bergerak karena
+ * pedagang menekan tombolnya. Kalau `balasan.bisa_dikirim` false, jangan panggil
+ * ini — tampilkan `balasan.alasan_tidak_bisa` dan tawarkan salin.
+ */
+export function kirimBalasan(pesanId: number): Promise<Jawaban<{ terkirim: boolean }>> {
+  return panggil(`/pesanan/${pesanId}/kirim-balasan`, { method: 'POST' });
 }
 
 // ---------------------------------------------------------------------------
@@ -238,15 +263,26 @@ export function hubungkanWhatsapp(p: HubungkanWhatsappReq): Promise<Jawaban<Stat
 }
 
 /**
- * Tanya lapakAi — satu pertanyaan, satu jawaban. Hanya-baca.
+ * Tanya lapakAi — satu pertanyaan, satu jawaban.
  *
- * `jawaban` sudah berupa kalimat jadi dan `acuan` berisi angka SQL mentah.
- * Layar hanya menampilkan keduanya; jangan menghitung apa pun dari `acuan`
- * (aturan #7). Kalau ada angka yang dibutuhkan tapi belum ada di sana, minta
- * ke pemilik backend — jangan diturunkan sendiri di React.
+ * `jawaban` adalah kalimat jadi dari model, ditampilkan apa adanya. Server
+ * yang mengumpulkan seluruh catatan pedagang dan menaruhnya di prompt, jadi
+ * tidak ada data tambahan yang perlu dikirim dari sini.
  */
 export function tanya(pertanyaan: string): Promise<Jawaban<TanyaRes>> {
   return panggil('/tanya', { method: 'POST', body: JSON.stringify({ pertanyaan }) });
+}
+
+/**
+ * Percakapan yang MASIH DIINGAT server.
+ *
+ * Dimuat saat layar Tanya dibuka. Server menyimpan percakapannya dan memakainya
+ * sebagai konteks pertanyaan berikutnya — tanpa memuatnya, layar tampil kosong
+ * setelah dimuat ulang padahal modelnya masih ingat, dan jawaban berikutnya
+ * terasa merujuk sesuatu yang tidak pernah terlihat pengguna.
+ */
+export function riwayatTanya(): Promise<Jawaban<RiwayatTanyaRes>> {
+  return panggil('/tanya');
 }
 
 /**

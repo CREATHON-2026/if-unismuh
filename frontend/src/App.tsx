@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ambilSaya } from './api/client';
 import { ambilToken, simpanToken } from './api/sesi';
 import { tulisOnboarding } from './state/onboarding';
@@ -16,7 +16,9 @@ import { ResepHarga } from './screens/ResepHarga';
 import { TemuanPertama } from './screens/TemuanPertama';
 import { KonfirmasiEkstraksi } from './screens/KonfirmasiEkstraksi';
 import { Beranda } from './screens/Beranda';
+import { Rekap } from './screens/Rekap';
 import { DaftarProduk } from './screens/DaftarProduk';
+import { TambahProduk } from './screens/TambahProduk';
 import { DetailProduk } from './screens/DetailProduk';
 import { PesananMasuk } from './screens/PesananMasuk';
 import { ProsesPesanan } from './screens/ProsesPesanan';
@@ -24,21 +26,11 @@ import { RiwayatPesanan } from './screens/RiwayatPesanan';
 import { StrukPesanan } from './screens/StrukPesanan';
 import { CatatSuara } from './screens/CatatSuara';
 import { SambungWhatsApp } from './screens/SambungWhatsApp';
-import { Rekap } from './screens/Rekap';
-import { Profil } from './screens/Profil';
-import { Notifikasi } from './screens/Notifikasi';
-import { RiwayatPenjualan } from './screens/RiwayatPenjualan';
 import { Tanya } from './screens/Tanya';
 
 export default function App() {
   const nav = useNavigate();
   const lokasi = useLocation();
-
-  // Ponsel: tiap pindah layar mulai dari atas. Tanpa ini posisi scroll layar
-  // sebelumnya terbawa, dan pertanyaan onboarding bisa muncul setengah terpotong.
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [lokasi.pathname]);
 
   /**
    * GET /auth/saya tiap aplikasi dibuka: pulihkan + perpanjang sesi 90 hari,
@@ -80,22 +72,23 @@ export default function App() {
       <Route path="/temuan" element={<TemuanPertama />} />
       <Route path="/konfirmasi" element={<KonfirmasiEkstraksi />} />
       <Route path="/beranda" element={<Beranda />} />
+      <Route path="/rekap" element={<Rekap />} />
       <Route path="/produk" element={<DaftarProduk />} />
+      {/* Harus SEBELUM "/produk/:id", kalau tidak "tambah" tertangkap sebagai id. */}
+      <Route path="/produk/tambah" element={<TambahProduk />} />
       <Route path="/produk/:id" element={<DetailProduk />} />
       <Route path="/catat" element={<CatatSuara />} />
       <Route path="/tanya" element={<Tanya />} />
       <Route path="/pesanan" element={<PesananMasuk />} />
       <Route path="/pesanan/whatsapp" element={<SambungWhatsApp />} />
+      {/* Sekarang punya slot sendiri di NavBawah. Dulu sengaja tidak, dengan
+          alasan ikon kelima mengecilkan target sentuh yang sudah ada — dan itu
+          memang terjadi kalau kelimanya sederajat. Setelah Catat naik jadi
+          tombol bulat yang mengambang, tinggal empat slot datar yang berbagi
+          lebar, sama seperti sebelumnya. */}
       <Route path="/pesanan/riwayat" element={<RiwayatPesanan />} />
       <Route path="/proses/:id" element={<ProsesPesanan />} />
       <Route path="/struk/:id" element={<StrukPesanan />} />
-      <Route path="/rekap" element={<Rekap />} />
-      <Route path="/profil" element={<Profil />} />
-      <Route path="/notifikasi" element={<Notifikasi />} />
-      <Route path="/riwayat" element={<RiwayatPenjualan />} />
-      {/* Alamat tak dikenal jangan jadi layar kosong — pulangkan ke sambutan;
-          pemulih sesi di atas yang meneruskan ke beranda kalau sudah masuk. */}
-      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
