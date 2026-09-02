@@ -87,9 +87,10 @@ async function coba<T>(jalankan: (model: string) => Promise<T>): Promise<T> {
  */
 export function mintaJson<T>(
   prompt: string, skema: Record<string, unknown>,
+  opsi?: Record<string, unknown>,
 ): Promise<T> {
   return coba(async (model) => {
-    const mentah = await panggilOllama(model, prompt, skema);
+    const mentah = await panggilOllama(model, prompt, skema, opsi);
     return JSON.parse(mentah) as T;
   });
 }

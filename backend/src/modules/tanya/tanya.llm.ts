@@ -1,19 +1,88 @@
-import { mintaTeks } from '../../lib/llm.ts';
+import { mintaJson } from '../../lib/llm.ts';
 import type { GiliranPercakapan } from './tanya.types.ts';
 
 /**
- * Satu panggilan LLM, keluarannya langsung dipakai.
+ * Satu panggilan LLM, dengan SATU gerbang: pertanyaannya soal usaha atau bukan.
  *
- * Tidak ada JSON, tidak ada skema, tidak ada tahap kedua. Model menerima
- * seluruh data pedagang dan pertanyaannya, lalu menjawab dengan kalimatnya
- * sendiri — termasuk kalau pertanyaannya tidak ada hubungannya dengan usaha.
+ * Model mengembalikan dua medan — `dalam_cakupan` dan `jawaban` — dan itu
+ * disengaja. Menyuruh model "tolak pertanyaan di luar topik" lewat kalimat
+ * biasa tidak cukup: model kecil tetap tergoda menjawab "ibu kota Indonesia
+ * Jakarta" karena menjawab lebih mudah daripada menahan diri.
  *
- * Ada satu kalimat yang tetap dipertahankan di prompt: jangan mengarang data
- * yang tidak ada. Itu bukan pembatasan topik, melainkan syarat supaya
- * jawabannya masih ada gunanya — asisten yang menyebut angka penjualan yang
- * tidak pernah terjadi lebih buruk daripada asisten yang bilang "belum ada
+ * Dengan medan terpisah, keputusannya jadi penilaian ya/tidak yang jauh lebih
+ * mudah, dan KALIMAT PENOLAKANNYA MILIK SERVER — lihat tanya.service.ts. Kalau
+ * `dalam_cakupan` bernilai false, apa pun yang terlanjur ditulis model dibuang
+ * dan tidak pernah sampai ke layar. Jadi kebocoran satu lapis tidak cukup untuk
+ * membuat chatbot ini menjawab soal ibu kota.
+ *
+ * Yang tetap dipertahankan dari versi bebas sebelumnya: jangan mengarang
+ * catatan yang tidak ada. Asisten yang menyebut angka penjualan yang tidak
+ * pernah terjadi lebih buruk daripada asisten yang bilang "belum ada
  * catatannya".
  */
+
+/**
+ * Bentuk jawaban model. `jawaban` WAJIB kosong saat di luar cakupan — supaya
+ * secara struktur tidak ada kalimat di luar topik yang bisa lolos.
+ */
+const SKEMA = {
+  type: 'object',
+  properties: {
+    dalam_cakupan: {
+      type: 'boolean',
+      description: 'true kalau pertanyaannya soal usaha pedagang ini atau cara memakai aplikasinya.',
+    },
+    jawaban: {
+      type: 'string',
+      description: 'Jawabannya. Kosongkan kalau dalam_cakupan false.',
+    },
+  },
+  required: ['dalam_cakupan', 'jawaban'],
+} as const;
+
+const CAKUPAN = `# YANG BOLEH KAMU JAWAB
+
+Kamu HANYA menjawab soal usaha pedagang ini dan cara memakai aplikasi lapakAi.
+Semua bahannya ada di catatan di bawah.
+
+Yang termasuk cakupan (dalam_cakupan = true):
+- untung, modal, harga jual, margin, produk yang merugi
+- penjualan, uang masuk, produk terlaris, tren harian
+- bahan, resep, stok, kapasitas produksi
+- pesanan masuk, pembeli, balasan untuk pembeli
+- pengandaian ATAS DATA INI, mis. "kalau kripik saya jual 25 ribu untungnya berapa?"
+- saran dagang atas catatan ini, mis. "produk mana yang sebaiknya saya hentikan?"
+- cara memakai aplikasi ini, mis. "bagaimana cara mencatat penjualan?"
+
+Yang DI LUAR cakupan (dalam_cakupan = false):
+- pengetahuan umum apa pun — ibu kota, sejarah, tokoh, cuaca, olahraga, agama
+- politik, berita, hiburan, matematika umum, terjemahan
+- resep masakan atau cara membuat sesuatu secara umum
+- pertanyaan tentang dirimu sendiri, model AI, atau siapa yang membuatmu
+- kode, teknologi, atau hal lain yang tidak ada hubungannya dengan warung ini
+
+Aturan gerbangnya:
+1. Kalau ragu apakah pertanyaannya soal usaha ini, isi false. Menolak dengan
+   sopan jauh lebih murah daripada menjawab hal yang bukan urusan kita.
+2. Kalau dalam_cakupan false, KOSONGKAN jawaban. Jangan menulis penolakan
+   sendiri — aplikasi punya kalimatnya. Jangan menulis jawaban "sedikit saja".
+3. Pertanyaan yang menyebut usaha ini tapi jawabannya butuh pengetahuan umum
+   tetap false. Contoh: "kripik pisang asalnya dari daerah mana?"`
+
+const TUGAS = `Kamu adalah asisten lapakAi. Kamu membantu pemilik usaha kecil di
+Indonesia memahami usahanya sendiri, dan HANYA itu.
+
+Di dalam cakupan, kamu bebas: boleh berhitung, memperkirakan, membandingkan,
+memberi saran, dan berpendapat. Di luar cakupan, kamu tidak menjawab sama
+sekali.
+
+Jangan mengarang catatan yang tidak ada. Kalau sesuatu belum dicatat pedagang,
+katakan apa adanya bahwa belum ada catatannya, lalu sebutkan apa yang perlu
+dicatat supaya bisa dijawab. Itu tetap dalam cakupan.
+
+Satu petunjuk berhitung: untung per unit itu harga jual dikurangi MODAL per
+unit. Jadi kalau pedagang bertanya "kalau saya jual sekian", kurangi harga
+barunya dengan modal per unit — bukan dengan untung yang sekarang.`
 
 const GAYA = `Cara bicara:
 - Bahasa Indonesia sehari-hari. Pedagang yang membaca berumur 35-60 tahun dan
@@ -25,24 +94,6 @@ const GAYA = `Cara bicara:
 - Sapa dengan "Bapak/Ibu" bila perlu, jangan berlebihan.
 - Jangan menyebut "database", "SQL", "sistem", atau "data di atas". Bicaralah
   seperti orang yang memang tahu isi warungnya.`;
-
-const TUGAS = `Kamu adalah asisten lapakAi. Kamu membantu pemilik usaha kecil di
-Indonesia memahami usahanya.
-
-Kamu bebas menjawab apa saja yang ditanyakan. Boleh berhitung, memperkirakan,
-membandingkan, memberi saran, berpendapat, menolak setuju, atau sekadar
-mengobrol. Kalau pertanyaannya tidak ada hubungannya dengan usaha, jawab saja
-seperti asisten pada umumnya.
-
-Yang perlu dijaga hanya satu hal: jangan mengarang catatan yang tidak ada.
-Kalau sesuatu belum dicatat pedagang, katakan apa adanya bahwa belum ada
-catatannya, lalu sebutkan apa yang perlu dicatat supaya bisa dijawab. Selain
-itu, tidak ada larangan.
-
-Satu petunjuk berhitung, bukan larangan: untung per unit itu harga jual
-dikurangi MODAL per unit. Jadi kalau pedagang bertanya "kalau saya jual
-sekian", kurangi harga barunya dengan modal per unit — bukan dengan untung
-yang sekarang.`;
 
 function tulisRiwayat(riwayat: GiliranPercakapan[]): string {
   if (riwayat.length === 0) return '';
@@ -83,10 +134,18 @@ function rapikan(teks: string): string {
  */
 const OPSI = { num_predict: 600, num_ctx: 8192, temperature: 0.4 } as const;
 
-export async function jawabBebas(
+export interface HasilTanya {
+  dalamCakupan: boolean;
+  /** Kosong kalau di luar cakupan — kalimat penolakannya milik service. */
+  jawaban: string;
+}
+
+export async function jawabDalamCakupan(
   konteks: string, riwayat: GiliranPercakapan[], pertanyaan: string,
-): Promise<string> {
+): Promise<HasilTanya> {
   const prompt = `${TUGAS}
+
+${CAKUPAN}
 
 ${GAYA}
 
@@ -99,7 +158,23 @@ ${tulisRiwayat(riwayat)}
 # PERTANYAAN PEDAGANG
 ${pertanyaan}
 
-Jawab langsung, tanpa pengantar dan tanpa menyebut bahwa kamu membaca catatan.`;
+Tentukan dulu dalam_cakupan. Kalau true, jawab langsung tanpa pengantar dan
+tanpa menyebut bahwa kamu membaca catatan. Kalau false, kosongkan jawaban.`;
 
-  return rapikan(await mintaTeks(prompt, OPSI));
+  const hasil = await mintaJson<Partial<HasilTanyaMentah>>(prompt, SKEMA, OPSI);
+
+  // Model kecil kadang mengembalikan string "false"/"true" alih-alih boolean,
+  // dan kadang melewatkan medannya sama sekali. Yang tidak bisa dibaca sebagai
+  // "ya, ini soal usaha" diperlakukan sebagai DI LUAR cakupan — gerbang yang
+  // gagal harus gagal ke arah menolak, bukan ke arah menjawab.
+  const dalamCakupan = hasil.dalam_cakupan === true || hasil.dalam_cakupan === 'true';
+  return {
+    dalamCakupan,
+    jawaban: dalamCakupan ? rapikan(String(hasil.jawaban ?? '')) : '',
+  };
+}
+
+interface HasilTanyaMentah {
+  dalam_cakupan: boolean | string;
+  jawaban: string;
 }

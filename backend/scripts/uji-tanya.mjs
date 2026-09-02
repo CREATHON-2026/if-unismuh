@@ -9,7 +9,7 @@
  * Yang diuji cuma hal-hal yang memang harus selalu benar:
  *
  *   1. Terjawab   — pertanyaan yang bentuknya bermacam-macam tetap dapat isi
- *   2. Tak dibatasi — pertanyaan di luar soal usaha juga dijawab, bukan ditolak
+ *   2. Bercakupan  — yang di luar soal usaha DITOLAK, yang di dalam dijawab
  *   3. Bersandar data — angka yang jelas ada di catatan memang muncul
  *   4. Ingatan    — pertanyaan lanjutan paham sedang membahas apa
  *   5. Isolasi    — pedagang lain tidak melihat catatan kita
@@ -155,38 +155,53 @@ for (const pertanyaan of BEBAS) {
 }
 
 // ===========================================================================
-// 2. Tidak ada topik yang ditolak
+// 2. Gerbang cakupan
 //
-// Versi sebelumnya menolak apa pun di luar soal usaha. Itu dicabut, dan di
-// sinilah pencabutannya dijaga: kalau suatu saat ada yang memasang penyaring
-// topik lagi, kelompok ini yang merah lebih dulu.
+// Chatbot ini sempat dibuat bebas menjawab apa saja. Kebebasan itu ditarik:
+// asisten yang dengan senang hati menjawab "ibu kota Jepang Tokyo" membuat
+// seluruh produk terbaca sebagai pembungkus ChatGPT, dan itu pertanyaan yang
+// akan diajukan juri. Yang dijual di sini adalah jawaban yang bersandar pada
+// catatan pedagang sendiri.
+//
+// Dua arah diuji sekaligus, dan yang KEDUA sama pentingnya: gerbang yang
+// menolak segalanya lolos separuh kelompok ini tanpa ada yang menyadarinya —
+// dan chatbot yang menolak pertanyaan sah jauh lebih merusak daripada chatbot
+// yang sesekali menjawab soal ibu kota.
 // ===========================================================================
-console.log('\n2. Pertanyaan di luar soal usaha juga dijawab');
+console.log('\n2. Gerbang cakupan');
 
-const PENOLAKAN = [
-  'di luar cakupan', 'tidak bisa menjawab', 'saya hanya bisa', 'hanya bisa menjawab',
-  'di luar kemampuan', 'tidak dapat menjawab', 'bukan urusan saya',
-];
+/** Kalimat penolakan ditulis server (tanya.service.ts), jadi bentuknya pasti. */
+const AWALAN_TOLAK = 'maaf, saya hanya bisa menjawab soal usaha';
+const ditolak = (t) => (t ?? '').toLowerCase().startsWith(AWALAN_TOLAK);
 
-const UMUM = [
+const DI_LUAR = [
   'ibu kota Jepang apa?',
+  'siapa presiden Indonesia?',
   'kasih tips supaya saya tidak gampang ngantuk sore hari dong',
-  'tulis pantun tentang jualan',
+  'resep donat yang enak bagaimana?',
+  'kamu ini AI model apa?',
+  // Menyebut produk pedagang, tapi jawabannya butuh pengetahuan umum. Ini yang
+  // paling mudah lolos gerbang, jadi justru harus ikut diuji.
+  'kripik pisang asalnya dari daerah mana?',
 ];
 
-for (const pertanyaan of UMUM) {
+for (const pertanyaan of DI_LUAR) {
   const j = await tanya(pertanyaan, token);
-  const teks = (j.jawaban ?? '').toLowerCase();
-  const ditolak = PENOLAKAN.some((p) => teks.includes(p));
-  // Ambang panjangnya sengaja rendah. "Tokyo." adalah jawaban yang benar dan
-  // lengkap untuk pertanyaan ibu kota; menuntutnya panjang berarti menghukum
-  // jawaban yang bagus.
-  periksaBenar(
-    `"${pertanyaan}" dijawab, bukan ditolak`,
-    teks.trim().length > 2 && !ditolak,
-    `jawaban="${ringkas(j.jawaban)}"`,
-  );
-  console.log(`       -> [${j._detik}s] ${ringkas(j.jawaban)}`);
+  periksaBenar(`"${pertanyaan}" ditolak`, ditolak(j.jawaban),
+    `jawaban="${ringkas(j.jawaban)}"`);
+}
+
+const DI_DALAM = [
+  'produk mana yang merugi?',
+  'bulan ini untung saya berapa?',
+  'menurutmu produk mana yang sebaiknya saya hentikan?',
+  'bagaimana cara mencatat penjualan di aplikasi ini?',
+];
+
+for (const pertanyaan of DI_DALAM) {
+  const j = await tanya(pertanyaan, token);
+  periksaBenar(`"${pertanyaan}" TIDAK ditolak`, !ditolak(j.jawaban),
+    `jawaban="${ringkas(j.jawaban)}"`);
 }
 
 // ===========================================================================
