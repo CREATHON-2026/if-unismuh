@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CircleAlert, MessageCircle, Mic, Package, ReceiptText, TrendingDown } from 'lucide-react';
+import { CircleAlert, MessageCircle, Mic, Package, Sparkles, TrendingDown } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { Beranda as DataBeranda } from '@shared/types';
 import { ambilBeranda, ambilSaya } from '../api/client';
@@ -90,11 +90,19 @@ export function Beranda() {
     </span>
   );
 
+  /**
+   * Kartu aksi dikunci empat (KartuAksi.tsx). Jadi Tanya masuk dengan MENUKAR,
+   * bukan menambah: aksi kelima hilang diam-diam.
+   *
+   * Yang ditukar adalah Riwayat, karena Riwayat sudah punya slot sendiri di
+   * NavBawah — satu ibu jari di bawah kartu ini. Tanya tidak punya slot di mana
+   * pun, dan ini satu-satunya pintu masuknya.
+   */
   const aksiCepat = [
     { ikon: Mic, label: 'Catat', onClick: () => nav('/catat') },
     { ikon: Package, label: 'Produk', onClick: () => nav('/produk') },
     { ikon: MessageCircle, label: 'Pesanan', onClick: () => nav('/pesanan') },
-    { ikon: ReceiptText, label: 'Riwayat', onClick: () => nav('/pesanan/riwayat') },
+    { ikon: Sparkles, label: 'Tanya', onClick: () => nav('/tanya') },
   ];
 
   if (galat) {

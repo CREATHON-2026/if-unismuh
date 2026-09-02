@@ -24,6 +24,7 @@ import { RiwayatPesanan } from './screens/RiwayatPesanan';
 import { StrukPesanan } from './screens/StrukPesanan';
 import { CatatSuara } from './screens/CatatSuara';
 import { SambungWhatsApp } from './screens/SambungWhatsApp';
+import { Tanya } from './screens/Tanya';
 
 export default function App() {
   const nav = useNavigate();
@@ -72,6 +73,7 @@ export default function App() {
       <Route path="/produk" element={<DaftarProduk />} />
       <Route path="/produk/:id" element={<DetailProduk />} />
       <Route path="/catat" element={<CatatSuara />} />
+      <Route path="/tanya" element={<Tanya />} />
       <Route path="/pesanan" element={<PesananMasuk />} />
       <Route path="/pesanan/whatsapp" element={<SambungWhatsApp />} />
       {/* Sekarang punya slot sendiri di NavBawah. Dulu sengaja tidak, dengan

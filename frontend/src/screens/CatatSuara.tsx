@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Mic } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { BarisUsulan, UsulanTransaksi } from '@shared/types';
@@ -46,12 +46,33 @@ function buatPengenal(): PengenalSuara | null {
 
 export function CatatSuara() {
   const nav = useNavigate();
+  const lokasi = useLocation();
   const [teks, setTeks] = useState('');
   const [usulan, setUsulan] = useState<UsulanTransaksi | null>(null);
   const [mendengar, setMendengar] = useState(false);
   const [sibuk, setSibuk] = useState(false);
   const [galat, setGalat] = useState('');
   const pengenal = useRef<PengenalSuara | null>(null);
+  const sudahIsiAwal = useRef(false);
+
+  /**
+   * Kalimat kiriman dari layar Tanya.
+   *
+   * Diisi ke kotak teks, TIDAK langsung dibaca ke backend dan jelas tidak
+   * disimpan. Pedagang melihat kalimatnya lebih dulu dan menekan "Baca kalimat
+   * ini" sendiri — sama persis seperti kalau ia mengetiknya di sini.
+   *
+   * Dijaga `sudahIsiAwal` supaya render ulang tidak menimpa suntingan pengguna
+   * dengan kalimat asli yang sudah ia perbaiki.
+   */
+  useEffect(() => {
+    if (sudahIsiAwal.current) return;
+    const awal = (lokasi.state as { teks?: string } | null)?.teks;
+    if (typeof awal === 'string' && awal.trim()) {
+      setTeks(awal.trim());
+      sudahIsiAwal.current = true;
+    }
+  }, [lokasi.state]);
 
   const adaSuara = typeof window !== 'undefined' && buatPengenal() !== null;
   const amanUntukMic = typeof window !== 'undefined' && window.isSecureContext;
