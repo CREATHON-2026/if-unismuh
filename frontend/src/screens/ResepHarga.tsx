@@ -6,14 +6,12 @@ import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
 import { KepalaResep } from '../components/KepalaResep';
 import { bacaOnboarding, tulisOnboarding } from '../state/onboarding';
-import { alurUsahaAktif } from '../state/alurUsaha';
 
 export function ResepHarga() {
   const nav = useNavigate();
   const [harga, setHarga] = useState('');
   const [sibuk, setSibuk] = useState(false);
   const [galat, setGalat] = useState('');
-  const alur = alurUsahaAktif();
   const valid = Number(harga) > 0;
 
   async function kirim() {
@@ -61,7 +59,7 @@ export function ResepHarga() {
 
       <div className="kartu mt-6 p-6">
         <h1 className="text-judul font-bold leading-snug tracking-[-0.02em] text-tinta">
-          {alur.tanyaHarga}
+          Dijual berapa per bungkus?
         </h1>
         <p className="mt-2 text-utama leading-relaxed text-sedang">
           Harga jual saat ini ke pembeli.
@@ -74,7 +72,7 @@ export function ResepHarga() {
             type="tel"
             inputMode="numeric"
             autoFocus
-            aria-label={`Harga jual per ${alur.satuanJual}`}
+            aria-label="Harga jual per bungkus"
             placeholder="20000"
             value={harga}
             onChange={(e) => setHarga(e.target.value.replace(/\D/g, ''))}

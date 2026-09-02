@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, Package, Mic, MessageCircle, ChartColumnBig, type LucideIcon } from 'lucide-react';
 
 /**
- * Navigasi bawah — empat slot datar + satu tombol Tanya terangkat di tengah.
+ * Navigasi bawah — lima tujuan, yang tengah menonjol.
  *
  * Dulu empat, dengan alasan tertulis bahwa pilihan yang banyak membuat pengguna
  * kehilangan orientasi. Alasan itu masih benar dan tidak dicabut; yang kelima
@@ -30,12 +30,16 @@ import { Home, Package, Mic, MessageCircle, ChartColumnBig, type LucideIcon } fr
  * dibuka memang mencatat lewat suara. Ikon yang menjanjikan hal lain adalah
  * afordansi yang berbohong.
  */
-const KIRI: readonly { ke: string; label: string; ikon: LucideIcon }[] = [
+type Tujuan = { ke: string; label: string; ikon: LucideIcon };
+
+const KIRI: readonly Tujuan[] = [
   { ke: '/beranda', label: 'Beranda', ikon: Home },
   { ke: '/produk', label: 'Produk', ikon: Package },
 ];
 
-const KANAN: readonly { ke: string; label: string; ikon: LucideIcon }[] = [
+const PUSAT: Tujuan = { ke: '/catat', label: 'Catat', ikon: Mic };
+
+const KANAN: readonly Tujuan[] = [
   { ke: '/pesanan', label: 'Pesanan', ikon: MessageCircle },
   { ke: '/rekap', label: 'Rekap', ikon: ChartColumnBig },
 ];
@@ -81,60 +85,53 @@ function Slot({ tujuan, aktif, onPilih }: { tujuan: Tujuan; aktif: boolean; onPi
 export function NavBawah() {
   const nav = useNavigate();
   const { pathname } = useLocation();
-  const aktifTanya = pathname === '/tanya' || pathname.startsWith('/tanya/');
-
-  const slot = (t: { ke: string; label: string; ikon: LucideIcon }) => {
-    const aktif = pathname === t.ke || pathname.startsWith(`${t.ke}/`);
-    const Ikon = t.ikon;
-    return (
-      <button
-        key={t.ke}
-        type="button"
-        onClick={() => nav(t.ke)}
-        aria-current={aktif ? 'page' : undefined}
-        className={`flex min-h-16 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-1 transition active:scale-95 ${
-          aktif ? 'bg-aksen-muda' : 'hover:bg-kanvas'
-        }`}
-      >
-        <Ikon
-          size={24}
-          strokeWidth={aktif ? 2.2 : 1.8}
-          className={aktif ? 'text-tinta' : 'text-redup'}
-          aria-hidden="true"
-        />
-        <span className={`text-kecil ${aktif ? 'font-bold text-tinta' : 'text-redup'}`}>
-          {t.label}
-        </span>
-      </button>
-    );
-  };
+  const aktif = tujuanAktif(pathname);
+  const IkonPusat = PUSAT.ikon;
+  const pusatAktif = aktif === PUSAT.ke;
 
   return (
-    <nav className="sticky bottom-0 -mx-5 mt-4 border-t border-garis bg-kartu/95 aman-bawah px-2 pt-2 backdrop-blur md:-mx-8">
-      <div className="flex items-stretch justify-between">
-        {KIRI.map(slot)}
+    <nav className="sticky bottom-0 -mx-5 mt-auto border-t border-garis bg-kartu/95 aman-bawah px-2 pt-2 backdrop-blur">
+      <div className="relative flex items-stretch justify-between">
+        {/* Jarak ke isi di atasnya datang dari `mt-auto`, bukan dari margin
+            tetap: di layar yang isinya pendek nav terdorong ke dasar layar, dan
+            di layar yang isinya panjang ia menempel tepat di bawah isi. Margin
+            tetap hanya benar untuk salah satu dari keduanya. */}
+        {KIRI.map((t) => (
+          <Slot key={t.ke} tujuan={t} aktif={aktif === t.ke} onPilih={() => nav(t.ke)} />
+        ))}
 
-        <button
-          type="button"
-          onClick={() => nav('/tanya')}
-          aria-label="Tanya lapakAi"
-          aria-current={aktifTanya ? 'page' : undefined}
-          className="flex flex-col items-center justify-start gap-1 px-2"
-        >
-          <span
-            className={`-mt-5 flex h-14 w-14 items-center justify-center rounded-full bg-hero text-white shadow-lg transition active:scale-95 ${
-              aktifTanya ? 'ring-2 ring-aksen ring-offset-2 ring-offset-kartu' : ''
+        {/* Slot tengah hanya menyediakan ruang; tombolnya mengambang di atasnya
+            supaya bagian atasnya keluar dari bar — itu yang membuatnya terbaca
+            sebagai satu-satunya tujuan yang membuat data. Labelnya tetap ada:
+            tombol bulat tanpa tulisan menuntut pengguna menebak, dan pengguna
+            kita adalah orang yang paling tidak punya alasan untuk menebak.
+
+            Keadaan aktifnya ditandai cincin, bukan warna yang lebih gelap.
+            Empat slot lain menjadi LEBIH terang saat aktif; kalau yang tengah
+            justru meredup, arah isyaratnya berlawanan di satu bar yang sama.
+            Cincinnya ungu tembus 30%, bukan `merek-muda`: di atas bar putih
+            `merek-muda` hanya 1,16:1 — ada di CSS tapi tidak ada di mata. */}
+        <div className="flex min-h-16 flex-1 flex-col items-center justify-end pb-1.5">
+          <button
+            type="button"
+            onClick={() => nav(PUSAT.ke)}
+            aria-current={pusatAktif ? 'page' : undefined}
+            className={`absolute -top-7 flex h-14 w-14 items-center justify-center rounded-full tombol-gradien text-white shadow-fab transition active:scale-95 ${
+              pusatAktif ? 'ring-4 ring-merek/30' : ''
             }`}
-            aria-hidden="true"
           >
-            <Sparkles size={24} strokeWidth={1.9} />
+            <IkonPusat size={24} strokeWidth={2.1} aria-hidden="true" />
+          </button>
+          <span
+            className={`text-kecil leading-none ${pusatAktif ? 'font-bold text-merek' : 'text-redup'}`}
+          >
+            {PUSAT.label}
           </span>
-          <span className={`text-kecil ${aktifTanya ? 'font-bold text-tinta' : 'text-redup'}`}>
-            Tanya
-          </span>
-        </button>
+        </div>
 
-        {KANAN.map(slot)}
+        {KANAN.map((t) => (
+          <Slot key={t.ke} tujuan={t} aktif={aktif === t.ke} onPilih={() => nav(t.ke)} />
+        ))}
       </div>
     </nav>
   );

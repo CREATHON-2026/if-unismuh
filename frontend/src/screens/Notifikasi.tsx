@@ -81,7 +81,7 @@ export function Notifikasi() {
           <button
             type="button"
             onClick={tandaiSemuaDibaca}
-            className="min-h-11 shrink-0 rounded-full bg-aksen-muda px-4 text-isi font-semibold text-tinta transition hover:bg-aksen-muda/70 active:scale-95"
+            className="min-h-11 shrink-0 rounded-full bg-merek-muda px-4 text-isi font-semibold text-tinta transition hover:bg-merek-muda/70 active:scale-95"
           >
             Tandai sudah dibaca
           </button>
@@ -120,7 +120,7 @@ export function Notifikasi() {
               >
                 <span
                   className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${
-                    p.perlu_dicek ? 'bg-tanda text-tanda-tinta' : 'bg-aksen-muda text-aksen-tua'
+                    p.perlu_dicek ? 'bg-tanda text-tanda-tinta' : 'bg-merek-muda text-merek-tua'
                   }`}
                   aria-hidden="true"
                 >
@@ -134,7 +134,7 @@ export function Notifikasi() {
                     <span className="flex shrink-0 items-center gap-1.5 text-kecil text-redup">
                       {waktuRelatif(p.diterima_pada)}
                       {belumDibaca && (
-                        <span className="h-2 w-2 rounded-full bg-aksen" aria-hidden="true" />
+                        <span className="h-2 w-2 rounded-full bg-merek" aria-hidden="true" />
                       )}
                     </span>
                   </span>

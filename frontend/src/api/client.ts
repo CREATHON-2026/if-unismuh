@@ -1,5 +1,4 @@
-// Klien API lapakAi — semuanya endpoint asli, kecuali SATU yang ditandai jelas:
-// ambilRekap masih data tiruan karena GET /rekap belum ada di backend.
+// Klien API lapakAi — semuanya endpoint asli, tidak ada mock yang tersisa.
 //
 // TIDAK ADA SATU PUN PERHITUNGAN UANG DI BERKAS INI. Setiap angka finansial
 // datang sudah jadi dari SQL (aturan #7). Kalau suatu saat ada yang tergoda
@@ -21,6 +20,7 @@ import type {
   KonfirmasiRes,
   Beranda,
   Rekap,
+  Transaksi,
   RingkasanProduk,
   UsulanProduk,
   DetailProduk,
@@ -40,8 +40,6 @@ import type {
   OngkosTenagaReq,
   StatusWhatsappRes,
   HubungkanWhatsappReq,
-  Rekap,
-  Transaksi,
   TanyaRes,
   RiwayatTanyaRes,
 } from '@shared/types';
@@ -102,6 +100,11 @@ export function simpanResep(p: SimpanResepReq): Promise<Jawaban<TemuanPertama>> 
 
 export function ambilBeranda(): Promise<Jawaban<Beranda>> {
   return panggil('/beranda');
+}
+
+/** Riwayat penjualan — tanpa parameter, backend memakai bulan berjalan. */
+export function ambilTransaksi(): Promise<Jawaban<Transaksi[]>> {
+  return panggil('/transaksi');
 }
 
 /**

@@ -150,7 +150,7 @@ export function RiwayatPenjualan() {
             <Wallet size={17} strokeWidth={1.8} aria-hidden="true" />
             Uang masuk bulan ini
           </span>
-          <span className="angka mt-2 break-words text-nomor font-extrabold leading-none text-aksen-tua">
+          <span className="angka mt-2 break-words text-nomor font-extrabold leading-none text-merek-tua">
             {formatRupiah(beranda.omzet)}
           </span>
           <span className="mt-2 text-kecil text-redup">Belum dikurangi modal</span>

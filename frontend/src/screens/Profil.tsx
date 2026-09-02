@@ -151,7 +151,7 @@ export function Profil() {
       <div className="kartu mt-4 flex items-center gap-4 p-5">
         {/* Cincin oranye = sentuhan merek dari mockup; avatarnya tetap inisial,
             tidak ada penyimpanan foto. */}
-        <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-hero text-judul-kecil font-bold text-white ring-2 ring-aksen ring-offset-2 ring-offset-kartu">
+        <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-hero text-judul-kecil font-bold text-white ring-2 ring-merek ring-offset-2 ring-offset-kartu">
           {inisial}
         </span>
         <span className="min-w-0">
@@ -233,7 +233,7 @@ export function Profil() {
             <button
               type="button"
               onClick={bukaUbah}
-              className="min-h-11 shrink-0 rounded-full bg-aksen-muda px-4 text-isi font-semibold text-tinta transition hover:bg-aksen-muda/70 active:scale-95"
+              className="min-h-11 shrink-0 rounded-full bg-merek-muda px-4 text-isi font-semibold text-tinta transition hover:bg-merek-muda/70 active:scale-95"
             >
               Ubah
             </button>
@@ -254,7 +254,7 @@ export function Profil() {
             <button
               type="button"
               onClick={bukaUbah}
-              className="min-h-11 shrink-0 rounded-full bg-aksen-muda px-4 text-isi font-semibold text-tinta transition hover:bg-aksen-muda/70 active:scale-95"
+              className="min-h-11 shrink-0 rounded-full bg-merek-muda px-4 text-isi font-semibold text-tinta transition hover:bg-merek-muda/70 active:scale-95"
             >
               Ubah
             </button>

@@ -1,26 +1,12 @@
 import type { ReactNode } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import { LogoTeks } from './Logo';
+import { TombolIkon } from './TombolIkon';
 
 // Latar layar. Namanya masih "gradien" karena dipakai di banyak berkas; isinya
 // sudah lama bukan gradien, dan sekarang jadi kanvas abu netral. Gradien
 // warna-warni yang dulu ada di sini bersaing dengan angka merah dan hijau —
 // padahal justru dua warna itulah yang harus paling dulu tertangkap mata.
 export const LATAR_GRADIEN = 'bg-kanvas';
-
-// Tombol kembali standar — bentuknya sama di semua layar.
-export function TombolKembali({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      aria-label="Kembali"
-      onClick={onClick}
-      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-2xl leading-none text-tinta shadow-sm ring-1 ring-garis active:scale-95"
-    >
-      ←
-    </button>
-  );
-}
 
 // Kerangka layar: header (kembali + wordmark), pertanyaan, isi, aksi bawah.
 export function Layar({
@@ -41,19 +27,22 @@ export function Layar({
   kembali?: () => void;
   atas?: boolean;
   /**
-   * Kepala penuh-lebar (mis. KepalaHero), dirender DI LUAR padding mendatar.
-   * Layar dengan hero mengatur padding isinya sendiri — header bawaan,
-   * `pertanyaan`, dan `atas` tidak berlaku di jalur ini.
+   * Kepala bergradien penuh-lebar, dirender DI LUAR padding mendatar.
+   *
+   * Kalau diisi, layar bertanggung jawab atas padding isinya sendiri — biasanya
+   * dengan membungkusnya dalam `<Lembar>`. Header bawaan, `pertanyaan`, dan
+   * `atas` tidak berlaku di jalur ini: gradien sudah menjadi kepalanya, dan
+   * menumpuk wordmark di bawahnya membuat dua judul bersaing.
    */
   hero?: ReactNode;
 }) {
   if (hero) {
     return (
       <div className={`min-h-dvh ${latar ?? 'bg-kanvas'}`}>
-        <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col md:max-w-lg xl:max-w-xl">
+        <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col">
           {hero}
           {children}
-          {aksi && <div className="flex flex-col gap-3 px-5 pb-6 md:px-8">{aksi}</div>}
+          {aksi && <div className="flex flex-col gap-3 px-5 pb-6">{aksi}</div>}
         </div>
       </div>
     );
@@ -61,24 +50,15 @@ export function Layar({
 
   return (
     <div className={`min-h-dvh ${latar ?? 'bg-kanvas'}`}>
-      {/* Satu kolom di semua ukuran — ini aplikasi saku, bukan dashboard.
-          Di tablet/desktop kolomnya melebar secukupnya lalu berhenti: 512px
-          (md) dan 576px (xl). Lebih dari itu, baris teks jadi terlalu panjang
-          dan angka-angka yang harus dibandingkan saling menjauh. */}
-      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 py-6 md:max-w-lg md:px-8 md:py-8 xl:max-w-xl">
+      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 py-6">
         {!tanpaLogo && (
-          <div className="relative flex items-center justify-center pb-6 sm:pb-8">
+          <div className="relative flex items-center justify-center pb-8">
             {kembali && (
-              <button
-                type="button"
-                aria-label="Kembali"
-                onClick={kembali}
-                className="absolute left-0 flex h-11 w-11 items-center justify-center rounded-full text-tinta transition active:scale-95"
-              >
-                <ArrowLeft size={24} strokeWidth={2} aria-hidden="true" />
-              </button>
+              <span className="absolute left-0">
+                <TombolIkon ikon={ArrowLeft} label="Kembali" nada="terang" onClick={kembali} />
+              </span>
             )}
-            <LogoTeks className="text-sub" />
+            <span className="text-sub font-extrabold tracking-[-0.02em] text-tinta">lapakAi</span>
           </div>
         )}
         {pertanyaan && (
