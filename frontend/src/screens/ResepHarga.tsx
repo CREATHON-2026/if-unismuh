@@ -6,12 +6,14 @@ import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
 import { KepalaResep } from '../components/KepalaResep';
 import { bacaOnboarding, tulisOnboarding } from '../state/onboarding';
+import { alurUsahaAktif } from '../state/alurUsaha';
 
 export function ResepHarga() {
   const nav = useNavigate();
   const [harga, setHarga] = useState('');
   const [sibuk, setSibuk] = useState(false);
   const [galat, setGalat] = useState('');
+  const alur = alurUsahaAktif();
   const valid = Number(harga) > 0;
 
   async function kirim() {
@@ -44,20 +46,20 @@ export function ResepHarga() {
 
       <div className="kartu mt-6 p-6">
         <h1 className="text-judul font-bold leading-snug tracking-[-0.02em] text-tinta">
-          Dijual berapa per bungkus?
+          {alur.tanyaHarga}
         </h1>
         <p className="mt-2 text-utama leading-relaxed text-sedang">
           Harga jual saat ini ke pembeli.
         </p>
 
-        <div className="mt-5 flex h-[72px] items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 transition focus-within:border-hero">
+        <div className="mt-5 flex h-[72px] items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 transition focus-within:border-merek">
           <span className="text-sub font-bold text-sedang">Rp</span>
           <span className="mx-3 h-8 w-px bg-garis" aria-hidden="true" />
           <input
             type="tel"
             inputMode="numeric"
             autoFocus
-            aria-label="Harga jual per bungkus"
+            aria-label={`Harga jual per ${alur.satuanJual}`}
             placeholder="20000"
             value={harga}
             onChange={(e) => setHarga(e.target.value.replace(/\D/g, ''))}
@@ -68,7 +70,7 @@ export function ResepHarga() {
       </div>
 
       <div className="mt-8">
-        <Tombol varian="gelap" disabled={!valid || sibuk} onClick={kirim}>
+        <Tombol varian="utama" disabled={!valid || sibuk} onClick={kirim}>
           <span className="flex items-center justify-center gap-2.5">
             {sibuk ? 'Menghitung…' : 'Lihat hasilnya'}
             {!sibuk && <ArrowRight size={20} strokeWidth={2.2} aria-hidden="true" />}

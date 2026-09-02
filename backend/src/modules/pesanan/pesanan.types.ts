@@ -16,6 +16,12 @@ export interface HasilKlasifikasi {
   harga_diminta: number | null;
   tanggal_dibutuhkan: string | null;
   alasan: string;
+  /**
+   * Diisi penyaring deterministik kalau ada yang tidak bisa dibuktikan dari
+   * teks pembeli. Bukan keluaran model — model tidak pernah menilai dirinya
+   * sendiri. null berarti tidak ada yang mencurigakan.
+   */
+  ragu: string | null;
 }
 
 /** Keputusan pencocokan nama produk: otomatis, tanya pengguna, atau baru. */

@@ -126,6 +126,54 @@ CREATE TABLE stok (
 );
 ```
 
+### pesanan
+
+Satu baris per pesanan yang **disepakati pedagang**. Perantara antara `pesan_masuk` (apa kata pembeli) dan `transaksi` (buku besar).
+
+Tiga tabel, tiga peran, dan sengaja tidak digabung. Menambahkan status ke `pesan_masuk` akan mencampur "apa kata pembeli" dengan "apa yang disepakati" — percampuran itulah yang dulu melahirkan bug pembalik untung. Kalau AI salah baca produk lalu pedagang mengoreksinya, koreksi masuk ke sini; bacaan AI tetap utuh untuk ditelusuri.
+
+```sql
+CREATE TABLE pesanan (
+  id            BIGSERIAL PRIMARY KEY,
+  user_id       BIGINT NOT NULL REFERENCES pengguna(id) ON DELETE CASCADE,
+  pesan_id      BIGINT REFERENCES pesan_masuk(id) ON DELETE SET NULL,  -- NULL = pembeli datang langsung
+  produk_id     BIGINT NOT NULL REFERENCES produk(id) ON DELETE RESTRICT,
+
+  jumlah        NUMERIC NOT NULL CHECK (jumlah > 0),
+  harga_satuan  INTEGER NOT NULL CHECK (harga_satuan >= 0),  -- yang DISEPAKATI, bukan harga daftar
+
+  tanggal       DATE NOT NULL DEFAULT CURRENT_DATE,
+  urutan_harian INTEGER NOT NULL CHECK (urutan_harian > 0),
+
+  status        TEXT NOT NULL DEFAULT 'menunggu_bayar'
+                  CHECK (status IN ('menunggu_bayar','diproses','selesai','batal')),
+
+  -- fakta pembayaran, TERPISAH dari status
+  cara_bayar        TEXT CHECK (cara_bayar IN ('tunai','transfer','qris','nanti')),
+  dibayar_pada      TIMESTAMPTZ,      -- NULL untuk kasbon
+  midtrans_order_id TEXT UNIQUE,
+  midtrans_status   TEXT,
+  midtrans_url      TEXT,
+
+  alasan_batal  TEXT,
+  transaksi_id  BIGINT REFERENCES transaksi(id) ON DELETE SET NULL,  -- jembatan ke buku besar
+
+  dibuat_pada   TIMESTAMPTZ NOT NULL DEFAULT now(),
+  selesai_pada  TIMESTAMPTZ,
+
+  UNIQUE (user_id, tanggal, urutan_harian)
+);
+```
+
+Beberapa keputusan yang tidak boleh dibalik tanpa alasan kuat:
+
+- **`status` adalah tahap penyerahan barang, bukan keadaan uang.** Tidak ada nilai `dibayar`: pesanan kasbon akan tampil "Dibayar" padahal uangnya belum masuk. Kebohongan diam-diam itu dilarang aturan #2 sama kerasnya dengan menyimpan tanpa konfirmasi.
+- **`produk_id` memakai `ON DELETE RESTRICT`,** bukan `SET NULL`. Menghapus produk yang punya pesanan berjalan akan membuat modalnya hilang dan untungnya mendadak tak terhitung.
+- **`urutan_harian` reset tiap hari, per pedagang.** Urutan global akan membocorkan volume usaha antar pengguna. `UNIQUE (user_id, tanggal, urutan_harian)` adalah penjaga terakhir kalau dua permintaan datang bersamaan — nomor kembar ditolak database, bukan sekadar diharapkan tidak terjadi.
+- **`transaksi_id` hanya terisi saat `selesai`.** Selama masih `null`, pesanan ini belum pernah menyentuh buku besar, dan membatalkannya tidak perlu mengedit apa pun.
+
+Nomor pesanan (`"0902-07"`) **tidak disimpan sebagai kolom**, melainkan dirakit di view `v_pesanan` dari `tanggal` + `urutan_harian`. Satu tempat merakit, jadi tidak ada dua tempat yang merakitnya beda.
+
 ## Rumus perhitungan
 
 Semua rumus di bawah dijalankan SQL. **Tidak satu pun boleh dipindah ke JavaScript atau ke LLM.**
@@ -215,6 +263,30 @@ WHERE r.produk_id = $1;
 ```
 
 Inilah yang menghasilkan peringatan "bahan cuma cukup 14" di demo.
+
+### Pesanan jadi untung — satu transaksi database
+
+Untung dari pesanan naik **hanya** saat barangnya diserahkan, bukan saat uangnya masuk. Pesanan yang sudah dibayar tapi belum diserahkan adalah titipan uang; kalau pembeli membatalkan sebelum mengambilnya, uang itu harus kembali dan tidak boleh pernah tercatat sebagai untung.
+
+Tiga hal terjadi sekaligus, dalam **satu** transaksi database — kalau salah satu gagal, tidak ada yang jadi:
+
+```sql
+-- 1. Rebut haknya. Nol baris = ada yang sudah menyelesaikan duluan -> 409.
+UPDATE pesanan SET status = 'selesai', selesai_pada = now()
+WHERE id = $1 AND user_id = $2 AND status = 'diproses'
+RETURNING jumlah, harga_satuan, produk_id;
+
+-- 2. Tulis buku besar lewat pintu yang sama dengan jalur foto dan suara.
+--    sumber = 'pesanan' supaya asal-usul tiap baris bisa ditelusuri.
+INSERT INTO transaksi (user_id, produk_id, jumlah, harga_satuan, sumber, tanggal) …
+
+-- 3. Kurangi stok sesuai resep.
+UPDATE stok s SET jumlah = GREATEST(0, s.jumlah - r.jumlah_pakai * $jumlah) …
+```
+
+`UPDATE … WHERE status = 'diproses' RETURNING` adalah kunci idempotensinya: tombol yang ditekan dua kali membuat permintaan kedua tidak menemukan baris, dan penjualan mustahil tercatat dobel.
+
+`GREATEST(0, …)` bukan kemalasan. `stok.jumlah` punya `CHECK (jumlah >= 0)`; nilai negatif akan menggagalkan **seluruh** transaksi termasuk penjualan yang sah. Bahan yang belum punya catatan stok dibiarkan apa adanya — belum dicatat ≠ nol.
 
 ## Kenapa tenaga sendiri perlu dihitung
 

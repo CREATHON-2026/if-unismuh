@@ -139,7 +139,7 @@ export function DaftarProduk() {
       )}
 
       {terlihat && terlihat.length > 0 && (
-        <div className="mt-3 flex flex-col gap-3">
+        <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
           {terlihat.map((p) => (
             <button
               key={p.id}

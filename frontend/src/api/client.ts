@@ -26,12 +26,21 @@ import type {
   PesanMasukItem,
   BalasanReq,
   BalasanRes,
+  BuatPesananReq,
+  Pesanan,
+  PilihanPesanan,
+  RiwayatPesanan,
+  StatusPesanan,
+  CaraBayar,
+  Struk,
   UsulanTransaksi,
   CatatTransaksiReq,
   OngkosTenagaReq,
   StatusWhatsappRes,
   HubungkanWhatsappReq,
   Rekap,
+  Transaksi,
+  TanyaRes,
 } from '@shared/types';
 import { ambilToken } from './sesi';
 
@@ -92,6 +101,11 @@ export function ambilBeranda(): Promise<Jawaban<Beranda>> {
   return panggil('/beranda');
 }
 
+/** Riwayat penjualan — tanpa parameter, backend memakai bulan berjalan. */
+export function ambilTransaksi(): Promise<Jawaban<Transaksi[]>> {
+  return panggil('/transaksi');
+}
+
 /**
  * ★ DATA TIRUAN SEMENTARA — fitur 14. GET /rekap belum ada di backend;
  * bentuknya persis kontrak docs/06-kontrak-api.md. Saat endpoint-nya jadi,
@@ -150,6 +164,57 @@ export function buatBalasan(p: BalasanReq): Promise<Jawaban<BalasanRes>> {
   return panggil('/pesanan/balasan', { method: 'POST', body: JSON.stringify(p) });
 }
 
+// ---------------------------------------------------------------------------
+// Proses pesanan — pesan masuk sampai jadi untung
+//
+// Setiap angka di bawah datang SUDAH JADI dari view v_pesanan. Tidak ada satu
+// pun perkalian jumlah × harga di sisi ini, termasuk untuk struk. Kalau layar
+// butuh angka yang belum ada, mintakan kolomnya ke backend — jangan hitung
+// sendiri (aturan #7).
+// ---------------------------------------------------------------------------
+
+/** Isi bottom sheet: tebakan AI, kandidat mirip, dan seluruh produk pedagang. */
+export function pilihanPesan(pesanId: number): Promise<Jawaban<PilihanPesanan>> {
+  return panggil(`/pesanan/${pesanId}/pilihan`);
+}
+
+/** Ubah kesepakatan jadi pesanan bernomor. Belum menyentuh buku besar. */
+export function buatPesanan(p: BuatPesananReq): Promise<Jawaban<Pesanan>> {
+  return panggil('/proses', { method: 'POST', body: JSON.stringify(p) });
+}
+
+export function ambilPesanan(id: number): Promise<Jawaban<Pesanan>> {
+  return panggil(`/proses/${id}`);
+}
+
+/** Langkah 1 — catat pembayaran. Untung BELUM naik di sini. */
+export function bayarPesanan(id: number, cara: CaraBayar): Promise<Jawaban<Pesanan>> {
+  return panggil(`/proses/${id}/bayar`, { method: 'POST', body: JSON.stringify({ cara }) });
+}
+
+/** Tanya Midtrans apakah QR-nya sudah dibayar. */
+export function cekBayarPesanan(id: number): Promise<Jawaban<Pesanan>> {
+  return panggil(`/proses/${id}/bayar/status`);
+}
+
+/** Langkah 2 — barang diserahkan. DI SINILAH untung naik. */
+export function selesaikanPesanan(id: number): Promise<Jawaban<Pesanan>> {
+  return panggil(`/proses/${id}/selesai`, { method: 'POST', body: '{}' });
+}
+
+export function batalkanPesanan(id: number, alasan: string): Promise<Jawaban<Pesanan>> {
+  return panggil(`/proses/${id}/batal`, { method: 'POST', body: JSON.stringify({ alasan }) });
+}
+
+export function riwayatPesanan(status?: StatusPesanan): Promise<Jawaban<RiwayatPesanan>> {
+  return panggil(`/proses${status ? `?status=${status}` : ''}`);
+}
+
+/** Struk 58 mm. Sengaja TANPA modal dan untung — pembeli ikut melihatnya. */
+export function strukPesanan(id: number): Promise<Jawaban<Struk>> {
+  return panggil(`/proses/${id}/struk`);
+}
+
 /** Fitur 2 — kalimat bebas jadi USULAN. Tidak menyimpan apa pun (aturan #2). */
 export function usulanDariTeks(teks: string): Promise<Jawaban<UsulanTransaksi>> {
   return panggil('/transaksi/dari-teks', { method: 'POST', body: JSON.stringify({ teks }) });
@@ -170,6 +235,18 @@ export function statusWhatsapp(): Promise<Jawaban<StatusWhatsappRes>> {
  */
 export function hubungkanWhatsapp(p: HubungkanWhatsappReq): Promise<Jawaban<StatusWhatsappRes>> {
   return panggil('/whatsapp/hubungkan', { method: 'POST', body: JSON.stringify(p) });
+}
+
+/**
+ * Tanya lapakAi — satu pertanyaan, satu jawaban. Hanya-baca.
+ *
+ * `jawaban` sudah berupa kalimat jadi dan `acuan` berisi angka SQL mentah.
+ * Layar hanya menampilkan keduanya; jangan menghitung apa pun dari `acuan`
+ * (aturan #7). Kalau ada angka yang dibutuhkan tapi belum ada di sana, minta
+ * ke pemilik backend — jangan diturunkan sendiri di React.
+ */
+export function tanya(pertanyaan: string): Promise<Jawaban<TanyaRes>> {
+  return panggil('/tanya', { method: 'POST', body: JSON.stringify({ pertanyaan }) });
 }
 
 /**

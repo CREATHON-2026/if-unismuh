@@ -17,7 +17,7 @@ function Balok({ kelas = '' }: { kelas?: string }) {
 /** Rangka kartu gelap berisi satu angka besar — pasangan `KartuHero`. */
 export function RangkaHero() {
   return (
-    <div className="rounded-kartu bg-hero p-6">
+    <div className="hero-gradien rounded-kartu p-6">
       <div className="h-3.5 w-24 animate-pulse rounded bg-white/15" />
       <div className="mt-3 h-10 w-52 animate-pulse rounded-lg bg-white/15" />
       <div className="mt-5 border-t border-white/10 pt-4">

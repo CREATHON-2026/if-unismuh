@@ -27,10 +27,11 @@ export function Tombol({
   // `utama` dan `gelap` sengaja sama: keduanya sudah tersebar di layar yang
   // ditulis dua orang, dan menyeragamkannya di sini lebih aman daripada
   // menyisir semua pemanggilnya di tengah lomba.
+  // hover hanya terasa di desktop — di HP tidak mengubah apa-apa.
   const gaya =
     varian === 'garis'
-      ? 'border-[1.5px] border-garis-tua bg-transparent text-tinta'
-      : 'bg-hero text-white';
+      ? 'border-[1.5px] border-garis-tua bg-transparent text-tinta hover:bg-kanvas'
+      : 'bg-hero text-white hover:bg-hero-muda';
   // children WAJIB dirender eksplisit: ia sudah dikeluarkan dari `...props`
   // oleh destructuring di atas, jadi spread saja menghasilkan tombol kosong.
   return (

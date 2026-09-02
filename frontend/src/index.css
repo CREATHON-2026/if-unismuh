@@ -117,6 +117,46 @@
   /* Sudut. Kartu besar tumpul, kontrol kecil lebih rapat. */
   --radius-kartu: 20px;
   --radius-kontrol: 14px;
+  /* Lembar konten yang menimpa hero, dan ubin kecil di dalamnya. */
+  --radius-lembar: 32px;
+  --radius-ubin: 18px;
+
+  /* Angka tunggal di dalam KepalaHero — lebih besar dari nomor-besar. */
+  --text-nomor-hero: 46px;
+
+  /*
+   * KOMPATIBILITAS RUPA — hasil keputusan tim (2026-09-02): rupa final
+   * navy/oranye logo resmi. Komponen dari branch chatbot ditulis dengan nama
+   * token "merek" (dulu ungu) dan jembatan shadcn; di sini semuanya dipetakan
+   * ke keluarga navy supaya komponennya bekerja tanpa disunting satu-satu.
+   */
+  --color-merek: #29447D;
+  --color-merek-terang: #3A5694;
+  --color-merek-tua: #1E3459;
+  --color-merek-pekat: #14233C;
+  --color-merek-muda: #E8EDF7;
+  /* Permukaan lipatan di dalam kartu — sengaja beda tipis dari kanvas. */
+  --color-permukaan: #F5F7FA;
+
+  /* Jembatan shadcn/beUI (komponen agents & ui). destructive = merah rugi. */
+  --color-background: var(--color-kanvas);
+  --color-foreground: var(--color-tinta);
+  --color-card: var(--color-kartu);
+  --color-card-foreground: var(--color-tinta);
+  --color-popover: var(--color-kartu);
+  --color-popover-foreground: var(--color-tinta);
+  --color-muted: var(--color-permukaan);
+  --color-muted-foreground: var(--color-redup);
+  --color-accent: var(--color-merek-muda);
+  --color-accent-foreground: var(--color-merek-tua);
+  --color-primary: var(--color-merek);
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: var(--color-permukaan);
+  --color-secondary-foreground: var(--color-tinta);
+  --color-destructive: var(--color-rugi);
+  --color-destructive-foreground: #FFFFFF;
+  --color-input: var(--color-garis);
+  --color-ring: var(--color-merek);
 }
 
 html {
@@ -129,6 +169,16 @@ body {
   color: var(--color-tinta);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  /* Kilat abu-abu bawaan Android saat menyentuh tombol terasa seperti galat —
+     umpan balik sentuh sudah diurus active:scale di tiap kontrol. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Fokus keyboard terlihat di kontrol mana pun — kenyamanan desktop & a11y.
+   Hanya :focus-visible: pengguna sentuh tidak melihat cincin yang mengganggu. */
+:focus-visible {
+  outline: 2.5px solid var(--color-hero);
+  outline-offset: 2px;
 }
 
 /*
@@ -165,6 +215,26 @@ body {
   background: var(--color-kartu);
   border: 1px solid var(--color-garis);
   border-radius: var(--radius-kartu);
+}
+
+/*
+ * Kepala bergradien & kawan-kawannya — navy, bukan ungu: keputusan tim memilih
+ * rupa logo resmi. JEBAKAN LAPISAN: ketiganya tak berlapis, jadi menang atas
+ * utilitas Tailwind; kalau butuh keadaan tanpa gradien, jangan pasang kelasnya.
+ */
+.hero-gradien {
+  background-image: linear-gradient(to bottom left, var(--color-merek), var(--color-merek-pekat));
+}
+
+.tombol-gradien {
+  background-image: linear-gradient(to bottom, var(--color-merek-terang), var(--color-merek));
+}
+
+/* Lembar konten yang naik menimpa hero — tepi halaman, bukan kartu. */
+.lembar {
+  background: var(--color-kartu);
+  border-top-left-radius: var(--radius-lembar);
+  border-top-right-radius: var(--radius-lembar);
 }
 
 /*

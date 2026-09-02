@@ -31,6 +31,7 @@ export function Layar({
   latar,
   kembali,
   atas = false,
+  hero,
 }: {
   pertanyaan?: string;
   children?: ReactNode;
@@ -39,7 +40,25 @@ export function Layar({
   latar?: string;
   kembali?: () => void;
   atas?: boolean;
+  /**
+   * Kepala penuh-lebar (mis. KepalaHero), dirender DI LUAR padding mendatar.
+   * Layar dengan hero mengatur padding isinya sendiri — header bawaan,
+   * `pertanyaan`, dan `atas` tidak berlaku di jalur ini.
+   */
+  hero?: ReactNode;
 }) {
+  if (hero) {
+    return (
+      <div className={`min-h-dvh ${latar ?? 'bg-kanvas'}`}>
+        <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col md:max-w-lg xl:max-w-xl">
+          {hero}
+          {children}
+          {aksi && <div className="flex flex-col gap-3 px-5 pb-6 md:px-8">{aksi}</div>}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`min-h-dvh ${latar ?? 'bg-kanvas'}`}>
       {/* Satu kolom di semua ukuran — ini aplikasi saku, bukan dashboard.

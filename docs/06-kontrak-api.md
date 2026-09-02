@@ -107,6 +107,8 @@ Wawancara resep satu produk. **Di sinilah temuan pertama lahir.**
 
 Frontend **tidak** menghitung `20000 - 21200`. Backend yang mengirim `margin_per_unit` dan `merugi`.
 
+**Pemetaan per jenis usaha (murni frontend, kontrak tidak berubah):** pertanyaan wawancara bercabang mengikuti `jenis_usaha` — makanan "sekali masak/porsi", minuman "sekali racik/gelas", **sembako mengirim satu bahan kulakan** (nama bahan = nama produk, `jumlah_beli` = `jumlah`), jasa "bahan habis pakai per sekian pelanggan". Semuanya tetap bentuk permintaan di atas; `bahan` tetap wajib ≥ 1.
+
 ## Beranda
 
 ### `GET /beranda?dari=2026-08-01&sampai=2026-08-31`
@@ -180,6 +182,8 @@ Fitur 3 — ketik manual. **Banyak baris sekaligus**, bentuknya sama dengan laya
 
 ### `GET /transaksi?dari=&sampai=`
 Daftar transaksi beserta nama produknya. Bawaannya bulan berjalan.
+
+**Usulan dari desain Riwayat Penjualan (belum ada):** field `subtotal` per baris dan `total_periode`, keduanya dihitung SQL — frontend tidak boleh mengalikan `jumlah × harga_satuan` sendiri (aturan #7). Sementara itu layar riwayat hanya menampilkan angka yang sudah ada.
 
 ### `POST /transaksi/dari-teks`
 Fitur 2 — kalimat bebas jadi **usulan** transaksi. Melayani hasil transkripsi suara maupun ketikan bebas; endpoint ini tidak peduli teksnya datang dari mana.
@@ -365,6 +369,14 @@ Tampilkan produk seperti itu sebagai **"modal belum diisi"**, bukan sebagai untu
 
 Kalau `bahan` diisi, `hasil_per_batch` wajib dan setiap bahan wajib punya `jumlah`, `jumlah_beli`, dan `harga_beli` — resep setengah jadi menghasilkan modal yang salah tanpa pesan galat.
 
+### `PATCH /produk/:id/harga` — **belum ada di backend**
+Usulan dari desain Detail Produk: pedagang mengganti harga jual (mis. memakai harga yang disarankan fitur 8). Body `{ "harga_jual": 22000 }`, jawabannya **DetailProduk penuh** dengan margin/saran terbaru dari SQL — frontend tidak menghitung selisihnya sendiri.
+
+**Harga modal TIDAK pernah bisa diubah lewat endpoint mana pun** — modal hasil hitungan resep (fitur 5). Mengubah modal = mengubah resep.
+
+### `DELETE /produk/:id` — **belum ada di backend**
+Usulan dari desain Detail Produk. Jawaban `{ "terhapus": true }`. Transaksi lama produk itu harus tetap utuh di laporan (jangan ikut terhapus) — detail keputusannya di pemilik backend.
+
 ### `PATCH /produk/:id/tenaga` — fitur 11
 
 Hitung waktu pedagang sebagai bagian dari modal.
@@ -539,9 +551,12 @@ Semua angka di sini dihitung SQL. `peringatan` sudah berupa kalimat siap tampil.
 
 | Field | Catatan |
 |---|---|
-| `jenis` | `pesanan` · `tanya_harga` · `menawar` · `bukan_pesanan` |
+| `jenis` | `pesanan` · `tanya_harga` · `menawar` · `bukan_pesanan`. Dikoreksi kode setelah LLM, dan koreksinya **dua arah**: angka di bawah harga jual tersimpan menaikkan `pesanan` jadi `menawar`, sedangkan `menawar` tanpa bukti apa pun — tanpa angka harga dan tanpa kata tawar-menawar — diturunkan kembali jadi `pesanan`. Kata tawar-menawar di kalimatnya punya hak veto atas angka. Kata "pesan"/"order" tanpa kata tanya menaikkan `tanya_harga` jadi `pesanan` |
+| `jumlah` | **`null` kalau bilangannya tidak benar-benar tertulis** di pesan. Angka harga tidak dihitung sebagai bukti jumlah: di "pesan kripik pisang, bisa 18rb ga?" pembeli tidak pernah menyebut mau berapa bungkus, jadi `jumlah` dikosongkan dan `perlu_dicek` menyala |
+| `nama_produk_mentah` | Disalin apa adanya dari pesan, termasuk kalau salah eja. Kata satuan (bungkus, biji, ikat) tidak ikut. Berbeda dari angka, nama **tidak** dikosongkan saat ragu — nama salah tulis masih bisa dicocokkan pedagang lewat `kandidat`, sedangkan nama kosong membuat pesanannya tidak terbaca sama sekali |
 | `pesan_id` | **`null` kalau `bukan_pesanan`** — pesannya sengaja tidak disimpan |
-| `perlu_dicek` | `true` kalau pencocokan nama produk tidak meyakinkan. Tampilkan `kandidat` dan minta pengguna memilih |
+| `perlu_dicek` | `true` karena **dua sebab berbeda**: pencocokan nama produk tidak meyakinkan (tampilkan `kandidat`), **atau** ada angka yang tidak bisa dipertanggungjawabkan. Sebabnya selalu dijelaskan di `peringatan[0]` |
+| `harga_diminta` | **`null` kalau angkanya ternyata harga total, bukan per satuan.** Angkanya dibuang, bukan dibagi — membagi berarti menebak (aturan #8). Perhitungan kembali memakai harga jual tersimpan, dan `peringatan[0]` memberi tahu pedagang untuk memastikan sendiri |
 | `stok_cukup_untuk` | **`null` berarti stok belum dicatat**, bukan berarti nol. Jangan tampilkan sebagai "cukup 0" |
 | `untung_pesanan` | `null` kalau resep produk belum diisi — modal belum bisa dihitung |
 
@@ -549,6 +564,8 @@ Kalau pesannya `bukan_pesanan`, semua field lain `null` dan `peringatan` kosong.
 
 ### `GET /pesanan`
 Daftar pesanan masuk terbaru (maks 30), dari jalur tempel maupun WhatsApp, lengkap dengan angka yang sudah dihitung SQL. Pesan yang bukan pesanan tidak pernah muncul di sini.
+
+**Baris di sini membawa angka yang sama dengan jawaban `POST /pesanan/analisis`,** termasuk saat `perlu_dicek` bernilai `true`. Dugaan produk tetap disimpan, ditemani penandanya — jadi peringatan "rugi" tidak menguap saat layarnya dimuat ulang. Ini penting untuk jalur WhatsApp: pesan masuk saat pedagang tidak menatap layar, dan yang ia lihat kemudian hanyalah daftar ini.
 
 ```json
 { "ok": true, "data": [ {
@@ -559,11 +576,124 @@ Daftar pesanan masuk terbaru (maks 30), dari jalur tempel maupun WhatsApp, lengk
   "diterima_pada": "2026-09-02T03:05:00.000Z",
   "produk_id": 3, "nama_produk": "Kripik Pisang", "modal_per_unit": 21200,
   "nilai_pesanan": 360000, "untung_pesanan": -64000, "merugi": true,
-  "stok_cukup_untuk": 14
+  "stok_cukup_untuk": 14,
+  "pesanan_id": 12, "pesanan_nomor": "0902-07", "pesanan_status": "diproses"
 } ] }
 ```
 
 Tipe: `PesanMasukItem[]` di `shared/types.ts`. `sumber` `whatsapp` berarti terbaca otomatis dari sambungan baca-saja; `pengirim_samar` hanya empat digit terakhir (privasi pembeli).
+
+`pesanan_id`/`pesanan_nomor`/`pesanan_status` menunjuk pesanan **hidup** yang lahir dari chat ini, atau `null` kalau belum diproses. Pesanan yang dibatalkan sengaja dianggap tidak ada lagi: pembeli yang berubah pikiran lalu memesan ulang harus bisa diproses dari chat yang sama. Frontend memakai ini untuk tidak membuka lagi sheet keputusan atas pesan yang sudah jadi pesanan — tanpa itu, satu chat bisa melahirkan dua pesanan dan stoknya berkurang dua kali.
+
+### `GET /pesanan/:id/pilihan`
+Isi bottom sheet keputusan: bacaan AI, kandidat produk yang mirip, dan **seluruh** produk pedagang sebagai jalan keluar kalau tebakannya meleset jauh.
+
+Endpoint ini **tidak memanggil LLM**. Ia membaca `pesan_masuk` yang sudah ada dan menjalankan pencocokan nama lewat `cariKandidatProduk` — pintu pencocokan yang sama dengan `POST /pesanan/analisis`. Ini menggantikan tombol "periksa ulang" lama yang menjalankan model tiap kali ditekan: hasilnya bisa berbeda tiap ketukan, dan tiap ketukan menyisipkan baris baru ke kotak masuk.
+
+```json
+{ "ok": true, "data": {
+  "pesan_id": 7, "nama_produk_mentah": "kripik pisang",
+  "jumlah": 20, "harga_diminta": 18000, "perlu_dicek": false,
+  "kandidat": [ { "id": 3, "nama": "Kripik Pisang", "skor": 0.94 } ],
+  "produk": [ { "id": 3, "nama": "Kripik Pisang", "harga_jual": 20000, "modal_per_unit": 21200, "margin_per_unit": -1200, "merugi": true, "terlaris": true } ]
+} }
+```
+
+Tipe: `PilihanPesanan`.
+
+## Proses Pesanan — dari chat sampai jadi untung
+
+Rantainya tiga tabel, tiga peran, tidak boleh tercampur: `pesan_masuk` (apa kata pembeli) → `pesanan` (apa yang **disepakati pedagang**) → `transaksi` (buku besar).
+
+Mesin statusnya:
+
+```
+menunggu_bayar ──POST /proses/:id/bayar──> diproses ──POST /proses/:id/selesai──> selesai
+       │                                       │                                     └─> transaksi ditulis
+       └───────── POST /proses/:id/batal ──────┴──> batal (buku besar tidak tersentuh)
+```
+
+`status` adalah **tahap penyerahan barang, bukan keadaan uang.** Sengaja tidak ada nilai `dibayar`: pesanan kasbon akan tampil "Dibayar" padahal uangnya belum masuk, dan itu kebohongan diam-diam yang dilarang aturan #2 sama kerasnya dengan menyimpan tanpa konfirmasi. Fakta pembayaran hidup di `cara_bayar` dan `dibayar_pada`.
+
+**Untung naik di `selesai`, bukan di `bayar`.** Uang masuk belum tentu barang keluar; pesanan yang sudah dibayar tapi belum diserahkan adalah titipan uang, bukan penjualan.
+
+### `POST /proses`
+Mengubah kesepakatan jadi pesanan bernomor. **Belum menyentuh buku besar.**
+
+```json
+{ "pesan_id": 7, "produk_id": 3, "jumlah": 20, "harga_satuan": 18000 }
+```
+
+`produk_id`, `jumlah`, dan `harga_satuan` adalah pilihan **pedagang** dan mengalahkan tebakan AI. Bacaan AI di `pesan_masuk` tidak ikut berubah — itu jejak audit. `pesan_id` boleh `null` untuk pembeli yang datang langsung tanpa chat.
+
+Jawabannya `Pesanan`, dengan `nomor` seperti `"0902-07"` (MMDD + urutan harian, reset tiap hari, per pedagang) dan semua angka uang sudah dihitung SQL:
+
+```json
+{ "ok": true, "data": {
+  "id": 12, "nomor": "0902-07", "status": "menunggu_bayar",
+  "produk_id": 3, "nama_produk": "Kripik Pisang", "jumlah": 20, "harga_satuan": 18000,
+  "cara_bayar": null, "dibayar_pada": null, "midtrans_url": null,
+  "transaksi_id": null, "alasan_batal": null,
+  "nilai_pesanan": 360000, "modal_per_unit": 21200,
+  "untung_pesanan": -64000, "merugi": true, "stok_cukup_untuk": 14,
+  "peringatan": ["Pesanan ini RUGI Rp 64.000…"]
+} }
+```
+
+### `GET /proses/:id`
+Satu pesanan dari view `v_pesanan`. Pesanan milik pedagang lain menjawab **404, bukan 403** — 403 mengakui pesanan itu ada dan membocorkan bahwa ada pedagang lain dengan nomor tersebut.
+
+### `POST /proses/:id/bayar`
+```json
+{ "cara": "tunai" }
+```
+
+`cara`: `tunai` · `transfer` · `qris` · `nanti`. Yang `nanti` (kasbon) tetap memindahkan status ke `diproses` tapi membiarkan `dibayar_pada` tetap `null` — itulah yang membuatnya terhitung piutang.
+
+`qris` memanggil Midtrans Snap dan mengisi `midtrans_url`. Tautannya **disalin pedagang**; sistem tidak pernah mengirimnya ke pembeli (aturan #4). `gross_amount` dibaca ulang dari `v_pesanan.nilai_pesanan`, tidak pernah diterima dari browser.
+
+### `GET /proses/:id/bayar/status`
+Menanyakan status pembayaran ke Midtrans. Polling, bukan webhook — webhook butuh alamat publik yang bisa dijangkau internet, dan itu hal yang paling gampang mati di hari demo.
+
+### `POST /proses/:id/selesai`
+**Satu-satunya endpoint di alur ini yang menulis ke buku besar.** Dalam satu transaksi database: menulis baris `transaksi` dengan `sumber = 'pesanan'`, mengurangi stok sesuai resep, dan mengubah status jadi `selesai`.
+
+Idempoten lewat `UPDATE … WHERE status = 'diproses' RETURNING`. Nol baris berarti sudah diproses → **409**, mustahil dobel-catat walau tombolnya ditekan dua kali.
+
+Pengurangan stok memakai `GREATEST(0, …)`. Ini bukan kemalasan: `stok.jumlah` punya `CHECK (jumlah >= 0)`, jadi nilai negatif akan menggagalkan **seluruh** transaksi termasuk penjualan yang sah. Bahan yang belum punya catatan stok dibiarkan `NULL` — belum dicatat ≠ nol.
+
+### `POST /proses/:id/batal`
+```json
+{ "alasan": "pembeli berubah pikiran" }
+```
+Tidak menyentuh buku besar dan tidak mengurangi stok. Pesanan yang sudah `selesai` menjawab 409 — buku besar tidak diedit.
+
+### `GET /proses?status=selesai`
+Riwayat, semua status kalau `status` dikosongkan.
+
+`ringkasan` dihitung SQL sebagai agregat penuh, **bukan** dari menjumlahkan `daftar` — daftar itu dibatasi, dan menjumlahkan yang terlihat akan diam-diam salah begitu pesanannya lebih banyak dari batasnya.
+
+```json
+{ "ok": true, "data": {
+  "daftar": [ /* Pesanan[] */ ],
+  "ringkasan": { "total": 9, "menunggu_bayar": 1, "diproses": 2, "selesai": 5, "gagal": 1, "belum_dibayar": 1, "untung": 214000 }
+} }
+```
+
+`ringkasan.untung` **hanya** dari pesanan `selesai`. Yang batal tidak pernah menyentuh buku besar.
+
+### `GET /proses/:id/struk`
+Data struk 58 mm.
+
+**Sengaja tidak memuat `modal_per_unit` maupun `untung_pesanan`,** dan itu disaring di SQL, bukan disembunyikan CSS: struk ini dilihat pembeli, dan yang disembunyikan CSS tetap terkirim lewat kabel.
+
+```json
+{ "ok": true, "data": {
+  "nomor": "0902-07", "transaksi_id": 41, "nama_usaha": "Warung Bu Sri",
+  "nama_produk": "Kripik Pisang", "jumlah": 20, "harga_satuan": 18000, "total": 360000,
+  "cara_bayar": "tunai", "lunas": true, "tanggal": "2 Sep 2026", "waktu": "10.05"
+} }
+```
 
 ### `GET /whatsapp/status`
 ```json
@@ -626,6 +756,44 @@ Kalimatnya sengaja **tidak pernah menyebut modal, rugi, atau untung** kepada pem
 ```
 
 Semua baris masuk atau tidak sama sekali. Mencatat stok inilah yang menghidupkan peringatan *"Bahan hanya cukup untuk 14 dari 20 yang dipesan"* di Pesanan Masuk — sebelum ada stok, jawabannya selalu *"stok belum dicatat"*.
+
+## Tanya lapakAi — chatbot
+
+Rancangan lengkapnya di [14-chatbot.md](14-chatbot.md) dan [spec implementasinya](superpowers/specs/2026-09-02-chatbot-tanya-design.md).
+
+### `POST /tanya`
+```json
+// permintaan
+{ "pertanyaan": "bulan ini untungnya berapa?" }
+// jawaban
+{ "ok": true, "data": {
+    "maksud": "untung_periode",
+    "jawaban": "Bulan ini uang masuk Rp 3.600.000, untung bersihnya Rp 420.000.",
+    "acuan": { "omzet": 3600000, "untung_bersih": 420000, "baris_tanpa_modal": 2 },
+    "peringatan": ["2 transaksi belum ikut dihitung untungnya karena resepnya belum diisi."],
+    "alihkan_ke": null
+} }
+```
+
+**Endpoint ini tidak pernah menulis ke database.** LLM hanya membaca maksud pertanyaan; SQL menghitung; template menyusun kalimatnya. Tidak ada satu pun aritmetika yang lewat model.
+
+`maksud` adalah daftar tertutup: `untung_periode` · `produk_merugi` · `modal_produk` · `saran_harga` · `kapasitas_stok` · `produk_terlaris` · `catat_transaksi` · `tidak_paham`. Pertanyaan di luar daftar dijawab `tidak_paham`, bukan ditebak.
+
+**`acuan` adalah angka SQL apa adanya**, sama seperti di `POST /pesanan/balasan`. Kalau angka di `jawaban` tidak punya padanan di `acuan`, berarti kalimatnya mengarang. Untuk `tidak_paham`, `acuan` **selalu `null`** — mustahil mengarang angka untuk pertanyaan yang tidak dipahami.
+
+`alihkan_ke` hanya terisi saat maksudnya `catat_transaksi`:
+
+```json
+{ "maksud": "catat_transaksi",
+  "jawaban": "Saya bukakan layar Catat, tinggal diperiksa lalu disimpan.",
+  "acuan": null,
+  "peringatan": [],
+  "alihkan_ke": { "rute": "/catat", "teks": "tadi laku 12 pisang goreng" } }
+```
+
+Frontend membuka `/catat` dengan `teks` sudah terisi. Yang menyimpan tetap layar Catat, dengan konfirmasi manusia seperti biasa — [aturan #2](../CLAUDE.md) tidak punya jalan pintas lewat chatbot.
+
+Tidak ada `percakapan_id` dan tidak ada riwayat. Tiap pertanyaan berdiri sendiri.
 
 ## Kode galat
 

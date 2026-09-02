@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight, CircleCheck, Clipboard, MessageCircle } from 'lucide-react';
+import { ChevronRight, CircleCheck, Clipboard, MessageCircle, Receipt } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { AnalisisPesanan, BalasanReq, BalasanRes, JenisPesan, PesanMasukItem } from '@shared/types';
-import { analisisPesanan, buatBalasan, daftarPesanan } from '../api/client';
+import { analisisPesanan, buatBalasan, buatPesanan, daftarPesanan } from '../api/client';
 import { Layar } from '../components/Layar';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
 import { KartuHero } from '../components/KartuHero';
 import { Lencana } from '../components/Lencana';
 import { NavBawah } from '../components/NavBawah';
+import { SheetPesanan } from '../components/SheetPesanan';
 import { Tombol } from '../components/Tombol';
 
 /**
@@ -59,6 +60,8 @@ export function PesananMasuk() {
   const [galat, setGalat] = useState('');
   const [tersalin, setTersalin] = useState(false);
   const [daftar, setDaftar] = useState<PesanMasukItem[]>([]);
+  // Pesan yang sedang diputuskan di sheet — alur "jadi untung" (modul proses).
+  const [terpilih, setTerpilih] = useState<PesanMasukItem | null>(null);
 
   async function muatDaftar() {
     const j = await daftarPesanan();
@@ -96,6 +99,21 @@ export function PesananMasuk() {
     setTeks(p.teks);
     window.scrollTo({ top: 0, behavior: 'smooth' });
     void periksaTeks(p.teks);
+  }
+
+  /** Pilihan pedagang dari sheet → pesanan dibuat → layar proses. */
+  async function proses(arg: { produk_id: number; jumlah: number; harga_satuan: number }) {
+    if (!terpilih) return;
+    setSibuk(true);
+    setGalat('');
+    const j = await buatPesanan({ pesan_id: terpilih.pesan_id, ...arg });
+    setSibuk(false);
+    if (!j.ok) {
+      setGalat(j.error.pesan);
+      return;
+    }
+    setTerpilih(null);
+    nav(`/proses/${j.data.id}`);
   }
 
   async function susunBalasan(maksud: BalasanReq['maksud']) {
@@ -149,20 +167,23 @@ export function PesananMasuk() {
       </p>
 
       <div className="kartu mt-4 p-4">
-        <p className="text-utama font-bold text-tinta">Pesan pembeli</p>
+        <p id="label-pesan-pembeli" className="text-utama font-bold text-tinta">
+          Pesan pembeli
+        </p>
         <div className="relative mt-3">
           <textarea
             value={teks}
             onChange={(e) => setTeks(e.target.value)}
             placeholder={`Contoh: ${CONTOH}`}
             rows={4}
+            aria-labelledby="label-pesan-pembeli"
             className="w-full rounded-kontrol border-[1.5px] border-garis bg-kanvas p-4 pb-12 text-utama leading-relaxed text-tinta outline-none transition placeholder:text-redup focus:border-hero"
           />
           <button
             type="button"
             aria-label="Tempel dari papan klip"
             onClick={() => void tempelDariPapanKlip()}
-            className="absolute bottom-3.5 right-2.5 flex h-10 w-10 items-center justify-center rounded-xl text-aksen-tua transition active:scale-95"
+            className="absolute bottom-3 right-2.5 flex h-11 w-11 items-center justify-center rounded-xl text-aksen-tua transition hover:bg-aksen-muda active:scale-95"
           >
             <Clipboard size={20} strokeWidth={1.9} aria-hidden="true" />
           </button>
@@ -347,13 +368,24 @@ export function PesananMasuk() {
           Semua angkanya sudah dihitung SQL; di sini hanya ditampilkan. */}
       {daftar.length > 0 && (
         <div className="kartu mt-4 px-5 py-5">
-          <p className="label-bagian">MASUK TERBARU</p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="label-bagian">MASUK TERBARU</p>
+            <button
+              type="button"
+              onClick={() => nav('/pesanan/riwayat')}
+              className="flex items-center gap-1 text-isi font-semibold text-tinta transition active:scale-95"
+            >
+              <Receipt size={16} strokeWidth={1.9} aria-hidden="true" />
+              Riwayat
+              <ChevronRight size={16} className="text-redup" aria-hidden="true" />
+            </button>
+          </div>
           <div className="mt-1 flex flex-col divide-y divide-garis">
             {daftar.map((p) => (
               <button
                 key={p.pesan_id}
                 type="button"
-                onClick={() => tinjau(p)}
+                onClick={() => setTerpilih(p)}
                 disabled={sibuk}
                 className="py-3.5 text-left transition active:scale-[0.99] disabled:opacity-60"
               >
@@ -391,10 +423,25 @@ export function PesananMasuk() {
             ))}
           </div>
           <p className="mt-2 text-kecil leading-relaxed text-redup">
-            Ketuk pesan untuk meninjau ulang margin dan stok, lalu menyiapkan balasan.
+            Ketuk pesan untuk memutuskan: proses jadi pesanan, atau siapkan balasan.
           </p>
         </div>
       )}
+
+      {/* Sheet keputusan — memilih produk/jumlah/harga sekali, bukan
+          menjalankan ulang AI tiap ketuk. Untungnya dihitung SQL di layar
+          proses setelah pesanan dibuat. */}
+      <SheetPesanan
+        pesan={terpilih}
+        sibuk={sibuk}
+        onTutup={() => setTerpilih(null)}
+        onProses={(arg) => void proses(arg)}
+        onBalas={() => {
+          const p = terpilih;
+          setTerpilih(null);
+          if (p) tinjau(p);
+        }}
+      />
 
       <NavBawah />
     </Layar>

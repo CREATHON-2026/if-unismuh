@@ -1,30 +1,41 @@
+import { useNavigate } from 'react-router-dom';
+import { Bell } from 'lucide-react';
 import { bacaOnboarding } from '../state/onboarding';
 import { LogoTeks } from './Logo';
 
 /**
- * Header aplikasi: avatar inisial usaha + wordmark.
+ * Header aplikasi: avatar inisial usaha + wordmark + lonceng.
  *
- * Ikon lonceng dihapus. Ia digambar sebagai lingkaran seukuran tombol di pojok
- * kanan — terlihat persis seperti sesuatu yang bisa ditekan — padahal berupa
- * <span> tanpa perilaku apa pun. Tidak ada sistem notifikasi di aplikasi ini,
- * jadi menekannya tidak akan pernah melakukan apa-apa.
- *
- * Afordansi yang berbohong lebih buruk daripada ruang kosong, terutama untuk
- * pengguna yang baru pertama memakai aplikasi seperti ini: satu ketukan tanpa
- * hasil membuat mereka ragu apakah aplikasinya rusak atau mereka yang salah.
- * Dikembalikan kalau notifikasinya benar-benar ada.
+ * Lonceng pernah dihapus karena dulu berupa <span> tanpa perilaku — afordansi
+ * yang berbohong. Sekarang halaman /notifikasi benar-benar ada (rangkuman hal
+ * yang perlu diperhatikan), jadi ia kembali — persis syarat yang ditulis di
+ * catatan lama: "dikembalikan kalau notifikasinya benar-benar ada".
  *
  * `nama` boleh dikirim layar yang sudah memuat nama usahanya sendiri, supaya
  * inisialnya ikut benar walau sessionStorage masih kosong.
  */
 export function KepalaAplikasi({ nama }: { nama?: string | null }) {
+  const nav = useNavigate();
   const inisial = ((nama ?? bacaOnboarding().nama_usaha ?? 'W').trim().charAt(0) || 'W').toUpperCase();
   return (
     <div className="flex items-center gap-3">
-      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-hero text-lg font-bold text-white">
+      <button
+        type="button"
+        aria-label="Buka profil"
+        onClick={() => nav('/profil')}
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-hero text-lg font-bold text-white transition active:scale-95"
+      >
         {inisial}
-      </span>
+      </button>
       <LogoTeks className="text-sub" />
+      <button
+        type="button"
+        aria-label="Buka notifikasi"
+        onClick={() => nav('/notifikasi')}
+        className="ml-auto flex h-11 w-11 items-center justify-center rounded-full text-tinta transition hover:bg-kanvas active:scale-95"
+      >
+        <Bell size={22} strokeWidth={1.9} aria-hidden="true" />
+      </button>
     </div>
   );
 }

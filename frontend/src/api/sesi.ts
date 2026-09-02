@@ -10,3 +10,8 @@ export function simpanToken(token: string): void {
 export function ambilToken(): string | null {
   return localStorage.getItem(KUNCI_TOKEN);
 }
+
+// Untuk tombol "Keluar" di Profil — satu-satunya jalur keluar yang disengaja.
+export function hapusToken(): void {
+  localStorage.removeItem(KUNCI_TOKEN);
+}

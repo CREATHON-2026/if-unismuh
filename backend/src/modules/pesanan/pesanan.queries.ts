@@ -167,10 +167,23 @@ export function daftarPesan(userId: number, batas = 30) {
        CASE WHEN m.modal_per_unit IS NULL THEN NULL
             ELSE (COALESCE(pm.harga_diminta, m.harga_jual) - m.modal_per_unit) < 0
        END AS merugi,
-       k.maks_unit AS stok_cukup_untuk
+       k.maks_unit AS stok_cukup_untuk,
+       ps.id AS pesanan_id, ps.nomor AS pesanan_nomor, ps.status AS pesanan_status
      FROM pesan_masuk pm
      LEFT JOIN v_margin_produk m   ON m.produk_id = pm.produk_id
      LEFT JOIN v_kapasitas_produk k ON k.produk_id = pm.produk_id
+     -- Lewat v_pesanan, bukan tabel mentahnya, supaya nomor "0902-07" tetap
+     -- dirakit di satu tempat saja. Pesanan yang HIDUP dari chat ini; yang
+     -- batal sengaja dilewati: pembeli yang berubah pikiran lalu memesan lagi
+     -- harus bisa diproses ulang, dan pesan yang tertutup selamanya karena satu
+     -- salah tekan adalah jalan buntu yang tidak punya tombol keluar.
+     LEFT JOIN LATERAL (
+       SELECT p.id, p.nomor, p.status
+       FROM v_pesanan p
+       WHERE p.pesan_id = pm.id AND p.status <> 'batal'
+       ORDER BY p.id DESC
+       LIMIT 1
+     ) ps ON TRUE
      WHERE pm.user_id = $1 AND pm.jenis <> 'bukan_pesanan'
      ORDER BY pm.diterima_pada DESC
      LIMIT $2`,

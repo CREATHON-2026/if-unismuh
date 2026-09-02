@@ -61,6 +61,17 @@ Urut dari yang paling layak. **Kerjakan berurutan dari atas, dan hanya setelah 1
 
 Koneksi WhatsApp otomatis biayanya paling tinggi, risiko gagal di panggung paling besar, dan nilainya paling rendah dibanding waktunya. Sistem kita memang **sengaja tidak pernah mengirim pesan ke nomor pembeli** — lihat aturan #4 di [CLAUDE.md](../CLAUDE.md). Tempel manual bukan versi murahan dari fitur ini; itu keputusan desain yang bisa dipertahankan.
 
+### Chatbot: diusulkan, tapi tidak masuk daftar
+
+Chatbot tanya-jawab pernah diusulkan dan **sengaja tidak diberi nomor** — ia
+ada di bawah nomor 24. Rancangan teknisnya sudah ditulis di
+[14-chatbot.md](14-chatbot.md) supaya kalau suatu saat dikerjakan, tidak
+dikerjakan dengan cara yang melanggar aturan #1.
+
+Baca dokumen itu sebelum memulai. Chatbot cara biasa — kirim pertanyaan dan
+data ke LLM, tampilkan jawabannya — membuat LLM menghitung uang, dan itu
+menghapus seluruh pertahanan teknis kita di depan juri.
+
 ## Katalog: kapan ditunjukkan
 
 Katalog digital (fitur 19) **jangan dimasukkan ke alur demo utama** — akan memecah tempo.

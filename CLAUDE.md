@@ -113,6 +113,26 @@ Tulis deskripsi seperti menjelaskan ke rekan tim, bukan ke mesin. Hindari commit
 
 Aturan branch dan PR ada di [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Memakai superpowers
+
+Repo ini memakai [superpowers](https://github.com/obra/superpowers) — metodologi kerja untuk AI assistant: pahami dulu, rancang, rencanakan, baru tulis kode. Skill-nya aktif otomatis. Cara pasang ada di [docs/11-setup-tim.md](docs/11-setup-tim.md).
+
+**Dua skill bawaannya butuh penyesuaian di proyek ini. Baca [docs/13-superpowers.md](docs/13-superpowers.md) sebelum memakainya.** Ringkasnya:
+
+- **`using-git-worktrees`** — jangan dipakai untuk pekerjaan backend tanpa menyiapkan `PGLITE_DIR`, `WA_AUTH_DIR`, dan `PORT` yang berbeda. PGlite dan sesi WhatsApp hanya boleh dipegang satu proses; dua proses merusak datanya, dan pemulihannya adalah menghapus seluruh data pengguna.
+
+- **`test-driven-development`** — repo ini **tidak punya test runner**, dan itu keputusan sadar untuk lomba 24 jam. **Jangan memasang framework pengujian baru.** Yang berlaku sebagai baseline verifikasi:
+
+  ```bash
+  cd backend  && npm run typecheck    # tipe, tanpa server
+  cd frontend && npm run build        # tsc --noEmit lalu vite build
+  node backend/scripts/uji-alur.mjs   # uji asap, server harus hidup di :3000
+  ```
+
+  Untuk perilaku baru, tambahkan pemeriksaan ke skrip `uji-*.mjs` yang relevan **sebelum** menulis kode. Untuk rumus finansial, ini wajib — angka yang salah adalah kegagalan paling mahal di produk ini.
+
+**Kalau superpowers dan dokumen ini bertentangan, dokumen ini yang menang.** Superpowers adalah metodologi umum; delapan aturan di atas adalah pertahanan teknis kita di depan juri.
+
 ## Memakai graphify
 
 Repo ini punya knowledge graph di `graphify-out/`. **Sebelum menjelajah kode dengan grep atau membaca banyak file, tanya grafnya dulu:**

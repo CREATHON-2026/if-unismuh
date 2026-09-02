@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera, ChevronRight, Keyboard, MessageCircle, Mic, PiggyBank, TriangleAlert, Wallet } from 'lucide-react';
+import { Camera, ChevronRight, Keyboard, MessageCircle, Mic, PiggyBank, ReceiptText, TriangleAlert, Wallet } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { Beranda as DataBeranda, PesanMasukItem, Rekap } from '@shared/types';
 import { ambilBeranda, ambilRekap, ambilSaya, daftarPesanan, ekstraksiFoto } from '../api/client';
@@ -157,16 +157,21 @@ export function Beranda() {
           transaksi, dua angka nol bukan hasil; tampilkan ajakan (docs/06). */}
       {data.ada_transaksi ? (
         <div className="mt-5 grid grid-cols-2 gap-3">
-          <div className="kartu flex flex-col p-4">
+          {/* Uang masuk = daftar penjualan — kartunya membuka riwayat. */}
+          <button
+            type="button"
+            onClick={() => nav('/riwayat')}
+            className="kartu flex flex-col p-4 text-left transition hover:bg-kanvas/40 active:scale-[0.99]"
+          >
             <span className="flex items-center gap-2 text-isi font-medium text-sedang">
               <Wallet size={17} strokeWidth={1.8} aria-hidden="true" />
               Uang masuk
             </span>
-            <span className="angka mt-3 text-judul-kecil font-bold leading-tight text-tinta">
+            <span className="angka mt-3 break-words text-judul-kecil font-bold leading-tight text-tinta">
               {formatRupiah(data.omzet)}
             </span>
-            <span className="mt-1.5 text-label text-redup">Belum dikurangi modal</span>
-          </div>
+            <span className="mt-1.5 text-label text-redup">Belum dikurangi modal · riwayat ›</span>
+          </button>
 
           <div
             className={`flex flex-col rounded-kartu p-4 ${rugi ? 'bg-rugi-muda' : 'bg-untung-muda'}`}
@@ -178,7 +183,7 @@ export function Beranda() {
               Untung bersih
             </span>
             <span
-              className={`angka mt-3 text-judul font-extrabold leading-tight ${rugi ? 'text-rugi' : 'text-untung'}`}
+              className={`angka mt-3 break-words text-judul font-extrabold leading-tight ${rugi ? 'text-rugi' : 'text-untung'}`}
             >
               {formatRupiah(data.untung_bersih)}
             </span>
@@ -350,6 +355,19 @@ export function Beranda() {
           </div>
         </>
       )}
+
+      {/* Selalu tampil — pintu riwayat tidak boleh ikut hilang saat kartu
+          Uang masuk disembunyikan (belum ada transaksi). */}
+      <div className="mt-5">
+        <KartuDaftar>
+          <BarisDaftar
+            ikon={ReceiptText}
+            judul="Riwayat penjualan"
+            meta="Semua catatan bulan ini, satu per satu"
+            onClick={() => nav('/riwayat')}
+          />
+        </KartuDaftar>
+      </div>
 
       <NavBawah />
     </Layar>

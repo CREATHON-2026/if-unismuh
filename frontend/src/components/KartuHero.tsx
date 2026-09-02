@@ -32,7 +32,9 @@ export function KartuHero({
   return (
     <div className="rounded-kartu bg-hero p-6">
       <p className="text-isi font-medium text-white/70">{label}</p>
-      <p className={`angka mt-1.5 text-nomor-besar font-extrabold leading-none ${warnaAngka}`}>
+      {/* break-words: rupiah jutaan di layar 320px patah di spasi ("Rp" /
+          "4.200.000"), bukan meluber keluar kartu. */}
+      <p className={`angka mt-1.5 break-words text-nomor-besar font-extrabold leading-none ${warnaAngka}`}>
         {nilai}
       </p>
       {catatan && (
