@@ -11,8 +11,12 @@ import { ArrowLeft } from 'lucide-react';
  * bisa menandinginya.
  *
  * Dipakai untuk satu angka yang menjadi seluruh alasan layar itu ada: untung
- * bersih di Beranda, nilai pesanan di Struk. Kalau layarnya punya dua angka
- * setara, ini komponen yang salah — pakai `KartuHero`.
+ * bersih di Beranda, nilai pesanan di layar proses. Kalau layarnya punya dua
+ * angka setara, ini komponen yang salah — pakai `KartuHero`.
+ *
+ * `nilai` boleh dikosongkan. Tanpa angka, ini tinggal kepala bergradien berisi
+ * kembali–judul–aksi; itu bentuk yang benar untuk layar yang isinya sendiri
+ * sudah memuat angkanya, mis. Struk.
  *
  * `nilai` diterima sebagai teks yang SUDAH diformat. Tidak menghitung, tidak
  * membulatkan, tidak menyimpulkan apa pun — aturan #7.

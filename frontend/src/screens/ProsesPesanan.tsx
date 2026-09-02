@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import QRCode from 'react-qr-code';
-import { Banknote, Clock, CreditCard, QrCode } from 'lucide-react';
+import { Banknote, Check, Clock, CreditCard, QrCode } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { CaraBayar, Pesanan } from '@shared/types';
 import {
@@ -12,8 +12,9 @@ import {
   selesaikanPesanan,
 } from '../api/client';
 import { BottomSheet } from '../components/BottomSheet';
-import { KartuHero } from '../components/KartuHero';
+import { KepalaHero } from '../components/KepalaHero';
 import { Layar } from '../components/Layar';
+import { Lembar } from '../components/Lembar';
 import { Lencana } from '../components/Lencana';
 import { Tombol } from '../components/Tombol';
 
@@ -132,42 +133,28 @@ export function ProsesPesanan() {
 
   const p = pesanan;
 
+  const lencanaStatus = (
+    <Lencana nada={p.status === 'selesai' ? 'untung' : p.status === 'batal' ? 'netral' : 'tanda'}>
+      {p.status === 'menunggu_bayar'
+        ? 'LANGKAH 1 — BAYAR'
+        : p.status === 'diproses'
+          ? 'LANGKAH 2 — SERAHKAN'
+          : p.status === 'selesai'
+            ? 'SELESAI'
+            : 'BATAL'}
+    </Lencana>
+  );
+
   return (
-    <Layar kembali={() => nav('/pesanan')} atas>
-      <div className="flex items-center justify-between gap-3">
-        <h1 className="angka text-judul font-bold tracking-[-0.02em] text-tinta">#{p.nomor}</h1>
-        <Lencana
-          nada={p.status === 'selesai' ? 'untung' : p.status === 'batal' ? 'netral' : 'tanda'}
-        >
-          {p.status === 'menunggu_bayar'
-            ? 'LANGKAH 1 — BAYAR'
-            : p.status === 'diproses'
-              ? 'LANGKAH 2 — SERAHKAN'
-              : p.status === 'selesai'
-                ? 'SELESAI'
-                : 'BATAL'}
-        </Lencana>
-      </div>
-
-      <div className="kartu mt-4 px-5 py-4">
-        <div className="flex items-center justify-between gap-3">
-          <p className="min-w-0 text-sub font-bold text-tinta">{p.nama_produk}</p>
-          <span className="angka shrink-0 text-utama font-semibold text-sedang">
-            {p.jumlah} × {formatRupiah(p.harga_satuan)}
-          </span>
-        </div>
-        {p.teks_pesan && (
-          <p className="mt-2 rounded-kontrol bg-kanvas p-3 text-isi leading-relaxed text-sedang">
-            “{p.teks_pesan}”
-          </p>
-        )}
-      </div>
-
-      {/* Angka terpenting layar ini: pesanan ini menambah untung atau
-          menggerusnya. Nilai pesanan ikut di bawah garis karena nilai besar
-          tanpa untung adalah jebakan yang persis mau kami tunjukkan. */}
-      <div className="mt-3">
-        <KartuHero
+    <Layar
+      hero={
+        /* Angka terpenting layar ini hidup di dalam gradien, bukan di kartu:
+           pesanan ini menambah untung atau menggerusnya. Nilai pesanan ikut di
+           bawah garis karena nilai besar tanpa untung adalah jebakan yang
+           persis mau kami tunjukkan. */
+        <KepalaHero
+          judul={`#${p.nomor}`}
+          kembali={() => nav('/pesanan')}
           label={p.status === 'selesai' ? 'Untung yang sudah masuk' : 'Untung kalau diteruskan'}
           nilai={
             p.untung_pesanan == null
@@ -181,16 +168,34 @@ export function ProsesPesanan() {
               : undefined
           }
           bawah={
-            <div className="flex items-center justify-between text-isi">
+            <div className="mx-auto flex max-w-[19rem] items-center justify-between border-t border-white/20 pt-4 text-isi">
               <span className="text-white/70">Nilai pesanan</span>
-              <span className="angka font-semibold text-white">
-                {formatRupiah(p.nilai_pesanan)}
-              </span>
+              <span className="angka font-semibold text-white">{formatRupiah(p.nilai_pesanan)}</span>
             </div>
           }
+          bawahIsi
         />
-      </div>
-
+      }
+    >
+      <Lembar
+        mengambang={
+          <div className="rounded-kartu bg-kartu p-5 shadow-mengambang">
+            <div className="flex items-start justify-between gap-3">
+              <p className="min-w-0 text-sub font-bold text-tinta">{p.nama_produk}</p>
+              {lencanaStatus}
+            </div>
+            <p className="angka mt-1 text-utama font-semibold text-sedang">
+              {p.jumlah} × {formatRupiah(p.harga_satuan)}
+            </p>
+            {p.teks_pesan && (
+              <p className="mt-3 rounded-kontrol bg-permukaan p-3 text-isi leading-relaxed text-sedang">
+                “{p.teks_pesan}”
+              </p>
+            )}
+          </div>
+        }
+        className="pb-6"
+      >
       {/* Peringatan SEBELUM tombol, bukan sesudah — supaya pedagang tahu ini
           merugikan sebelum ia memutuskan, bukan setelah. */}
       {p.peringatan.map((t) => (
@@ -286,7 +291,7 @@ export function ProsesPesanan() {
             Barangnya sudah diserahkan ke pembeli? Untungnya baru dihitung setelah itu.
           </p>
           <div className="mt-3">
-            <Tombol varian="gelap" disabled={sibuk} onClick={() => setKonfirmasi(true)}>
+            <Tombol varian="utama" disabled={sibuk} onClick={() => setKonfirmasi(true)}>
               Barang sudah diserahkan
             </Tombol>
           </div>
@@ -295,8 +300,22 @@ export function ProsesPesanan() {
 
       {/* --- SELESAI --- */}
       {p.status === 'selesai' && (
-        <div className="kartu mt-3 px-5 py-5">
-          <p className="text-utama leading-relaxed text-sedang">
+        <div className="kartu mt-3 px-5 py-6">
+          {/* Centang hijau, bukan hijau "berhasil" bawaan rujukan: di titik
+              inilah untungnya benar-benar tercatat, jadi hijau di sini memang
+              berarti untung — bukan sekadar "operasi sukses". */}
+          <div className="flex justify-center">
+            <span
+              className="flex h-20 w-20 items-center justify-center rounded-full bg-untung-muda"
+              aria-hidden="true"
+            >
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-untung text-white">
+                <Check size={30} strokeWidth={3} />
+              </span>
+            </span>
+          </div>
+          <p className="mt-4 text-center text-sub font-bold text-tinta">Pesanan selesai</p>
+          <p className="mt-2 text-center text-utama leading-relaxed text-sedang">
             Sudah tercatat di buku sebagai penjualan
             {p.transaksi_id != null && (
               <span className="angka font-semibold text-tinta"> nomor {p.transaksi_id}</span>
@@ -308,8 +327,8 @@ export function ProsesPesanan() {
               Uangnya belum masuk. Pesanan ini tercatat sebagai piutang di Riwayat.
             </p>
           )}
-          <div className="mt-4 flex flex-col gap-2">
-            <Tombol varian="gelap" onClick={() => nav(`/struk/${p.id}`)}>
+          <div className="mt-5 flex flex-col gap-2">
+            <Tombol varian="utama" onClick={() => nav(`/struk/${p.id}`)}>
               Lihat struk
             </Tombol>
             <Tombol varian="garis" onClick={() => nav('/pesanan')}>
@@ -344,6 +363,7 @@ export function ProsesPesanan() {
           Batalkan pesanan
         </button>
       )}
+      </Lembar>
 
       {/* Konfirmasi. Satu-satunya tombol di aplikasi ini yang menulis ke buku
           besar dari jalur pesanan — aturan #2 menuntut mata manusia melihatnya
@@ -356,7 +376,7 @@ export function ProsesPesanan() {
         keterangan="Setelah dicatat, angkanya masuk buku dan tidak dihapus lagi."
         aksi={
           <div className="flex flex-col gap-2">
-            <Tombol varian="gelap" disabled={sibuk} onClick={() => void selesai()}>
+            <Tombol varian="utama" disabled={sibuk} onClick={() => void selesai()}>
               {sibuk ? 'Mencatat…' : 'Ya, catat sekarang'}
             </Tombol>
             <button
