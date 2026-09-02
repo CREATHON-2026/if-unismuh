@@ -538,11 +538,124 @@ Daftar pesanan masuk terbaru (maks 30), dari jalur tempel maupun WhatsApp, lengk
   "diterima_pada": "2026-09-02T03:05:00.000Z",
   "produk_id": 3, "nama_produk": "Kripik Pisang", "modal_per_unit": 21200,
   "nilai_pesanan": 360000, "untung_pesanan": -64000, "merugi": true,
-  "stok_cukup_untuk": 14
+  "stok_cukup_untuk": 14,
+  "pesanan_id": 12, "pesanan_nomor": "0902-07", "pesanan_status": "diproses"
 } ] }
 ```
 
 Tipe: `PesanMasukItem[]` di `shared/types.ts`. `sumber` `whatsapp` berarti terbaca otomatis dari sambungan baca-saja; `pengirim_samar` hanya empat digit terakhir (privasi pembeli).
+
+`pesanan_id`/`pesanan_nomor`/`pesanan_status` menunjuk pesanan **hidup** yang lahir dari chat ini, atau `null` kalau belum diproses. Pesanan yang dibatalkan sengaja dianggap tidak ada lagi: pembeli yang berubah pikiran lalu memesan ulang harus bisa diproses dari chat yang sama. Frontend memakai ini untuk tidak membuka lagi sheet keputusan atas pesan yang sudah jadi pesanan — tanpa itu, satu chat bisa melahirkan dua pesanan dan stoknya berkurang dua kali.
+
+### `GET /pesanan/:id/pilihan`
+Isi bottom sheet keputusan: bacaan AI, kandidat produk yang mirip, dan **seluruh** produk pedagang sebagai jalan keluar kalau tebakannya meleset jauh.
+
+Endpoint ini **tidak memanggil LLM**. Ia membaca `pesan_masuk` yang sudah ada dan menjalankan pencocokan nama lewat `cariKandidatProduk` — pintu pencocokan yang sama dengan `POST /pesanan/analisis`. Ini menggantikan tombol "periksa ulang" lama yang menjalankan model tiap kali ditekan: hasilnya bisa berbeda tiap ketukan, dan tiap ketukan menyisipkan baris baru ke kotak masuk.
+
+```json
+{ "ok": true, "data": {
+  "pesan_id": 7, "nama_produk_mentah": "kripik pisang",
+  "jumlah": 20, "harga_diminta": 18000, "perlu_dicek": false,
+  "kandidat": [ { "id": 3, "nama": "Kripik Pisang", "skor": 0.94 } ],
+  "produk": [ { "id": 3, "nama": "Kripik Pisang", "harga_jual": 20000, "modal_per_unit": 21200, "margin_per_unit": -1200, "merugi": true, "terlaris": true } ]
+} }
+```
+
+Tipe: `PilihanPesanan`.
+
+## Proses Pesanan — dari chat sampai jadi untung
+
+Rantainya tiga tabel, tiga peran, tidak boleh tercampur: `pesan_masuk` (apa kata pembeli) → `pesanan` (apa yang **disepakati pedagang**) → `transaksi` (buku besar).
+
+Mesin statusnya:
+
+```
+menunggu_bayar ──POST /proses/:id/bayar──> diproses ──POST /proses/:id/selesai──> selesai
+       │                                       │                                     └─> transaksi ditulis
+       └───────── POST /proses/:id/batal ──────┴──> batal (buku besar tidak tersentuh)
+```
+
+`status` adalah **tahap penyerahan barang, bukan keadaan uang.** Sengaja tidak ada nilai `dibayar`: pesanan kasbon akan tampil "Dibayar" padahal uangnya belum masuk, dan itu kebohongan diam-diam yang dilarang aturan #2 sama kerasnya dengan menyimpan tanpa konfirmasi. Fakta pembayaran hidup di `cara_bayar` dan `dibayar_pada`.
+
+**Untung naik di `selesai`, bukan di `bayar`.** Uang masuk belum tentu barang keluar; pesanan yang sudah dibayar tapi belum diserahkan adalah titipan uang, bukan penjualan.
+
+### `POST /proses`
+Mengubah kesepakatan jadi pesanan bernomor. **Belum menyentuh buku besar.**
+
+```json
+{ "pesan_id": 7, "produk_id": 3, "jumlah": 20, "harga_satuan": 18000 }
+```
+
+`produk_id`, `jumlah`, dan `harga_satuan` adalah pilihan **pedagang** dan mengalahkan tebakan AI. Bacaan AI di `pesan_masuk` tidak ikut berubah — itu jejak audit. `pesan_id` boleh `null` untuk pembeli yang datang langsung tanpa chat.
+
+Jawabannya `Pesanan`, dengan `nomor` seperti `"0902-07"` (MMDD + urutan harian, reset tiap hari, per pedagang) dan semua angka uang sudah dihitung SQL:
+
+```json
+{ "ok": true, "data": {
+  "id": 12, "nomor": "0902-07", "status": "menunggu_bayar",
+  "produk_id": 3, "nama_produk": "Kripik Pisang", "jumlah": 20, "harga_satuan": 18000,
+  "cara_bayar": null, "dibayar_pada": null, "midtrans_url": null,
+  "transaksi_id": null, "alasan_batal": null,
+  "nilai_pesanan": 360000, "modal_per_unit": 21200,
+  "untung_pesanan": -64000, "merugi": true, "stok_cukup_untuk": 14,
+  "peringatan": ["Pesanan ini RUGI Rp 64.000…"]
+} }
+```
+
+### `GET /proses/:id`
+Satu pesanan dari view `v_pesanan`. Pesanan milik pedagang lain menjawab **404, bukan 403** — 403 mengakui pesanan itu ada dan membocorkan bahwa ada pedagang lain dengan nomor tersebut.
+
+### `POST /proses/:id/bayar`
+```json
+{ "cara": "tunai" }
+```
+
+`cara`: `tunai` · `transfer` · `qris` · `nanti`. Yang `nanti` (kasbon) tetap memindahkan status ke `diproses` tapi membiarkan `dibayar_pada` tetap `null` — itulah yang membuatnya terhitung piutang.
+
+`qris` memanggil Midtrans Snap dan mengisi `midtrans_url`. Tautannya **disalin pedagang**; sistem tidak pernah mengirimnya ke pembeli (aturan #4). `gross_amount` dibaca ulang dari `v_pesanan.nilai_pesanan`, tidak pernah diterima dari browser.
+
+### `GET /proses/:id/bayar/status`
+Menanyakan status pembayaran ke Midtrans. Polling, bukan webhook — webhook butuh alamat publik yang bisa dijangkau internet, dan itu hal yang paling gampang mati di hari demo.
+
+### `POST /proses/:id/selesai`
+**Satu-satunya endpoint di alur ini yang menulis ke buku besar.** Dalam satu transaksi database: menulis baris `transaksi` dengan `sumber = 'pesanan'`, mengurangi stok sesuai resep, dan mengubah status jadi `selesai`.
+
+Idempoten lewat `UPDATE … WHERE status = 'diproses' RETURNING`. Nol baris berarti sudah diproses → **409**, mustahil dobel-catat walau tombolnya ditekan dua kali.
+
+Pengurangan stok memakai `GREATEST(0, …)`. Ini bukan kemalasan: `stok.jumlah` punya `CHECK (jumlah >= 0)`, jadi nilai negatif akan menggagalkan **seluruh** transaksi termasuk penjualan yang sah. Bahan yang belum punya catatan stok dibiarkan `NULL` — belum dicatat ≠ nol.
+
+### `POST /proses/:id/batal`
+```json
+{ "alasan": "pembeli berubah pikiran" }
+```
+Tidak menyentuh buku besar dan tidak mengurangi stok. Pesanan yang sudah `selesai` menjawab 409 — buku besar tidak diedit.
+
+### `GET /proses?status=selesai`
+Riwayat, semua status kalau `status` dikosongkan.
+
+`ringkasan` dihitung SQL sebagai agregat penuh, **bukan** dari menjumlahkan `daftar` — daftar itu dibatasi, dan menjumlahkan yang terlihat akan diam-diam salah begitu pesanannya lebih banyak dari batasnya.
+
+```json
+{ "ok": true, "data": {
+  "daftar": [ /* Pesanan[] */ ],
+  "ringkasan": { "total": 9, "menunggu_bayar": 1, "diproses": 2, "selesai": 5, "gagal": 1, "belum_dibayar": 1, "untung": 214000 }
+} }
+```
+
+`ringkasan.untung` **hanya** dari pesanan `selesai`. Yang batal tidak pernah menyentuh buku besar.
+
+### `GET /proses/:id/struk`
+Data struk 58 mm.
+
+**Sengaja tidak memuat `modal_per_unit` maupun `untung_pesanan`,** dan itu disaring di SQL, bukan disembunyikan CSS: struk ini dilihat pembeli, dan yang disembunyikan CSS tetap terkirim lewat kabel.
+
+```json
+{ "ok": true, "data": {
+  "nomor": "0902-07", "transaksi_id": 41, "nama_usaha": "Warung Bu Sri",
+  "nama_produk": "Kripik Pisang", "jumlah": 20, "harga_satuan": 18000, "total": 360000,
+  "cara_bayar": "tunai", "lunas": true, "tanggal": "2 Sep 2026", "waktu": "10.05"
+} }
+```
 
 ### `GET /whatsapp/status`
 ```json

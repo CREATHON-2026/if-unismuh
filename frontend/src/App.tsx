@@ -19,6 +19,9 @@ import { Beranda } from './screens/Beranda';
 import { DaftarProduk } from './screens/DaftarProduk';
 import { DetailProduk } from './screens/DetailProduk';
 import { PesananMasuk } from './screens/PesananMasuk';
+import { ProsesPesanan } from './screens/ProsesPesanan';
+import { RiwayatPesanan } from './screens/RiwayatPesanan';
+import { StrukPesanan } from './screens/StrukPesanan';
 import { CatatSuara } from './screens/CatatSuara';
 import { SambungWhatsApp } from './screens/SambungWhatsApp';
 
@@ -71,6 +74,11 @@ export default function App() {
       <Route path="/catat" element={<CatatSuara />} />
       <Route path="/pesanan" element={<PesananMasuk />} />
       <Route path="/pesanan/whatsapp" element={<SambungWhatsApp />} />
+      {/* Dicapai dari dalam layar Pesanan, bukan dari NavBawah — ikon kelima
+          akan mengecilkan keempat target sentuh yang sudah ada. */}
+      <Route path="/pesanan/riwayat" element={<RiwayatPesanan />} />
+      <Route path="/proses/:id" element={<ProsesPesanan />} />
+      <Route path="/struk/:id" element={<StrukPesanan />} />
     </Routes>
   );
 }

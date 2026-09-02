@@ -60,7 +60,7 @@ pesan_masuk ──ketuk──> bottom sheet (koreksi produk/jumlah/harga)
               LANGKAH 1 — PEMBAYARAN
               tunai · transfer · qris (Midtrans) · nanti
                               ▼
-                          dibayar
+                          diproses
                               │
               LANGKAH 2 — PENYELESAIAN (barang diserahkan)
                               ▼
@@ -72,6 +72,12 @@ pesan_masuk ──ketuk──> bottom sheet (koreksi produk/jumlah/harga)
     batal (dari status mana pun) + alasan_batal
         └──> GAGAL. Tidak pernah menyentuh buku besar.
 ```
+
+**Status = tahap PENYERAHAN BARANG, bukan keadaan uang.** Rancangan awal menamai
+status tengah ini `dibayar`, dan itu diubah saat implementasi: pesanan kasbon
+akan tampil "Dibayar" di layar padahal uangnya belum masuk. Kebohongan diam-diam
+itu dilarang aturan #2 sama kerasnya dengan menyimpan tanpa konfirmasi. Fakta
+pembayaran hidup terpisah, di `cara_bayar` dan `dibayar_pada`.
 
 **Untung naik di langkah 2, bukan saat dibayar.** Uang masuk belum tentu barang
 keluar; yang dibayar tapi belum diserahkan adalah titipan, bukan pendapatan. Ini
@@ -127,7 +133,7 @@ pesanan — kelas kegagalan yang sama dengan bug pembalik untung.
 
 ```sql
 UPDATE pesanan SET status='selesai'
-WHERE id=$1 AND user_id=$2 AND status='dibayar'
+WHERE id=$1 AND user_id=$2 AND status='diproses'
 RETURNING id
 ```
 
@@ -170,7 +176,7 @@ ditempel ke WhatsApp.
 | `GET /pesanan/:id/pilihan` | Kandidat + seluruh produk, lewat `cariKandidatProduk` yang sudah ada |
 | `POST /proses` | Buat pesanan dari pesan → nomor |
 | `GET /proses/:id` | Satu pesanan, angka dari `v_pesanan` |
-| `POST /proses/:id/bayar` | Tandai dibayar; `qris` memanggil Midtrans |
+| `POST /proses/:id/bayar` | Catat pembayaran → `diproses`; `qris` memanggil Midtrans |
 | `GET /proses/:id/bayar/status` | Polling status Midtrans |
 | `POST /proses/:id/selesai` | Tulis transaksi + kurangi stok |
 | `POST /proses/:id/batal` | Batalkan + alasan |

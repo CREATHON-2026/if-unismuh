@@ -344,6 +344,15 @@ export interface PesanMasukItem {
   merugi: boolean | null;
   /** null = stok bahannya belum dicatat, bukan berarti nol */
   stok_cukup_untuk: number | null;
+
+  /**
+   * Pesanan HIDUP yang lahir dari chat ini — null kalau belum diproses, dan
+   * null lagi kalau pesanannya dibatalkan. Ada supaya kotak masuk tidak
+   * menawarkan pesan yang sama dua kali dan membuat pesanan kembar.
+   */
+  pesanan_id: number | null;
+  pesanan_nomor: string | null;
+  pesanan_status: StatusPesanan | null;
 }
 
 /** Balasan siap salin untuk pembeli — fitur 9, penutup alur Pesanan Masuk. */

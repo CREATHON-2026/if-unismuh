@@ -361,6 +361,39 @@ periksa('untungnya tetap dihitung', await untungBeranda(token), untungAwal + 400
 const riwayatAkhir = await panggil('/proses', {}, token);
 periksa('piutang terhitung', riwayatAkhir.ringkasan.belum_dibayar, 1);
 
+// ---------------------------------------------------------------------------
+// 13. Kotak masuk menandai pesan yang SUDAH jadi pesanan
+//
+// Tanpa penanda ini, mengetuk pesan yang sama dua kali membuat dua pesanan
+// untuk satu chat yang sama, dan pedagang baru sadar setelah stoknya berkurang
+// dua kali. Penandanya harus datang dari SQL, bukan dari ingatan layar.
+// ---------------------------------------------------------------------------
+console.log('-'.repeat(66));
+console.log('13. Kotak masuk tahu pesan mana yang sudah jadi pesanan');
+
+const kotak = await panggil('/pesanan', {}, token);
+const sudah = kotak.find((p) => p.pesan_id === pesanA.pesan_id);
+periksa('pesan yang sudah diproses membawa nomor pesanan', sudah.pesanan_nomor, order1.nomor);
+periksa('status pesanannya ikut terbawa', sudah.pesanan_status, 'selesai');
+
+// order2 lahir dari pesan yang sama lalu dibatalkan. Yang batal tidak boleh
+// menutup pesannya — pembeli yang berubah pikiran bisa memesan lagi.
+periksa('pesanan batal tidak ikut menempel', sudah.pesanan_id, order1.id);
+
+const pesanBaru = await pesanMasuk('bu pesan donat 4 biji dong');
+const kotak2 = await panggil('/pesanan', {}, token);
+const belum = kotak2.find((p) => p.pesan_id === pesanBaru.pesan_id);
+periksa('pesan yang belum diproses tidak berpenanda', belum.pesanan_id, null);
+periksa('nomornya pun kosong', belum.pesanan_nomor, null);
+
+const orderCabut = await panggil('/proses', POST({
+  pesan_id: pesanBaru.pesan_id, produk_id: donat.produk_id, jumlah: 4, harga_satuan: 3000,
+}), token);
+await panggil(`/proses/${orderCabut.id}/batal`, POST({ alasan: 'salah tekan' }), token);
+const kotak3 = await panggil('/pesanan', {}, token);
+const dibatalkan = kotak3.find((p) => p.pesan_id === pesanBaru.pesan_id);
+periksa('setelah dibatalkan, pesannya terbuka lagi', dibatalkan.pesanan_id, null);
+
 console.log('\n' + '='.repeat(66));
 if (gagal === 0) {
   console.log('SEMUA LOLOS — untung naik dari SQL, dan tidak ada yang tercatat dua kali.');
