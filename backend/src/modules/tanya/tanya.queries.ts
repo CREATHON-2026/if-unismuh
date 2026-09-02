@@ -26,7 +26,8 @@ import type {
  */
 export function produkMerugi(userId: number, batas = 3): Promise<BarisMerugi[]> {
   return query<BarisMerugi>(
-    `SELECT nama, harga_jual, modal_per_unit, margin_per_unit
+    `SELECT nama, harga_jual, modal_per_unit, margin_per_unit,
+            ABS(margin_per_unit)::int AS rugi_per_unit
      FROM v_margin_produk
      WHERE user_id = $1 AND merugi
      ORDER BY margin_per_unit ASC
@@ -37,7 +38,8 @@ export function produkMerugi(userId: number, batas = 3): Promise<BarisMerugi[]> 
 
 export function modalProduk(userId: number, produkId: number): Promise<BarisModal | null> {
   return satu<BarisModal>(
-    `SELECT nama, harga_jual, modal_per_unit, margin_per_unit
+    `SELECT nama, harga_jual, modal_per_unit, margin_per_unit,
+            ABS(margin_per_unit)::int AS rugi_per_unit
      FROM v_margin_produk
      WHERE user_id = $1 AND produk_id = $2`,
     [userId, produkId],

@@ -111,7 +111,7 @@ async function jawabProdukMerugi(userId: number): Promise<TanyaRes> {
   const acuan: Acuan = { jumlah_merugi: baris.length };
   baris.forEach((b, i) => {
     acuan[`produk_${i + 1}`] = b.nama;
-    acuan[`rugi_per_unit_${i + 1}`] = Math.abs(b.margin_per_unit);
+    acuan[`rugi_per_unit_${i + 1}`] = b.rugi_per_unit;
     acuan[`harga_jual_${i + 1}`] = b.harga_jual;
     acuan[`modal_${i + 1}`] = b.modal_per_unit;
   });
@@ -128,7 +128,7 @@ async function jawabModalProduk(userId: number, produkId: number): Promise<Tanya
   const b = await modalProduk(userId, produkId);
   if (!b) return produkTidakJelas(null, []);
 
-  if (b.modal_per_unit === null || b.margin_per_unit === null) {
+  if (b.modal_per_unit === null || b.margin_per_unit === null || b.rugi_per_unit === null) {
     return jawab(MAKSUD.MODAL_PRODUK,
       `Modal "${b.nama}" belum bisa dihitung karena resepnya belum diisi.`,
       { produk: b.nama },
@@ -142,9 +142,16 @@ async function jawabModalProduk(userId: number, produkId: number): Promise<Tanya
     margin_per_unit: b.margin_per_unit,
   };
 
-  const untungRugi = b.margin_per_unit < 0
-    ? `rugi ${rupiah(Math.abs(acuan.margin_per_unit as number))}`
-    : `untung ${rupiah(acuan.margin_per_unit as number)}`;
+  // Angka positifnya datang dari ABS() di SQL, bukan Math.abs() di sini.
+  // Dimasukkan ke acuan dulu, lalu dibaca kembali untuk menyusun kalimat —
+  // supaya tiap rupiah yang terucap punya padanan persis di jejak auditnya.
+  let untungRugi: string;
+  if (b.margin_per_unit < 0) {
+    acuan.rugi_per_unit = b.rugi_per_unit;
+    untungRugi = `rugi ${rupiah(acuan.rugi_per_unit as number)}`;
+  } else {
+    untungRugi = `untung ${rupiah(acuan.margin_per_unit as number)}`;
+  }
 
   return jawab(MAKSUD.MODAL_PRODUK,
     `Modal ${acuan.produk} ${rupiah(acuan.modal_per_unit as number)} per buah, `

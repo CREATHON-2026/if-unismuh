@@ -22,6 +22,16 @@ export interface BarisMerugi {
   harga_jual: number;
   modal_per_unit: number;
   margin_per_unit: number;
+  /**
+   * `ABS(margin_per_unit)` — dihitung SQL, bukan `Math.abs()` di sini.
+   *
+   * Kalimatnya berbunyi "rugi Rp 1.200", bukan "rugi Rp -1.200", jadi angka
+   * positifnya harus ada. Kalau dibalik tandanya di TypeScript, `acuan` berisi
+   * angka yang SQL tidak pernah keluarkan — dan `acuan` adalah jejak audit
+   * jawaban ini. Satu-satunya cara jejak itu bernilai adalah kalau isinya
+   * benar-benar datang dari SQL.
+   */
+  rugi_per_unit: number;
 }
 
 export interface BarisModal {
@@ -29,6 +39,8 @@ export interface BarisModal {
   harga_jual: number;
   modal_per_unit: number | null;
   margin_per_unit: number | null;
+  /** Lihat catatan di BarisMerugi.rugi_per_unit. */
+  rugi_per_unit: number | null;
 }
 
 export interface BarisSaranHarga {
