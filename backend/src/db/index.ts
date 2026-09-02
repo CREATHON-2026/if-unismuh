@@ -21,6 +21,7 @@ import { DATABASE_URL, MODE_DB, PGLITE_DIR } from '../config/env.ts';
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const DB_DIR = path.join(DIR, '..', '..', 'db');
 const SCHEMA = path.join(DB_DIR, 'schema.sql');
+const SUSULAN = path.join(DB_DIR, 'susulan.sql');
 const DATA_DIR = PGLITE_DIR || path.join(DB_DIR, 'data');
 
 /** Antarmuka minimal yang dipenuhi kedua mode. */
@@ -91,6 +92,10 @@ export async function siapkanDb(): Promise<void> {
     await lite.exec(readFileSync(SCHEMA, 'utf-8'));
     console.log('Skema database dibuat.');
   }
+
+  // Tabel yang lahir setelah database pertama dibuat. Aman dijalankan berulang
+  // — lihat catatan panjang di db/susulan.sql.
+  await lite.exec(readFileSync(SUSULAN, 'utf-8'));
 
   db = lite as unknown as Pelaksana;
   jalankanTransaksi = (fn) => lite.transaction((tx) => fn(tx as unknown as Pelaksana)) as any;

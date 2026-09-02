@@ -716,28 +716,25 @@ export interface Struk {
 // Tanya lapakAi — chatbot
 //
 // Rancangannya di docs/14-chatbot.md dan
-// docs/superpowers/specs/2026-09-02-chatbot-tanya-design.md.
+// docs/superpowers/specs/2026-09-02-chatbot-bebas-design.md.
 //
-// Yang perlu diketahui saat membaca tipe di bawah: LLM ada di ujung depan
-// (membaca maksud) dan template ada di ujung belakang (menyusun kalimat).
-// SQL ada di tengah, dan HANYA SQL yang menghitung.
+// Yang perlu diketahui saat membaca tipe di bawah: LLM bebas menyusun
+// kalimatnya, tapi seluruh angka yang boleh dipakainya sudah dihitung SQL
+// lebih dulu dan disodorkan sebagai lembar fakta. Model memilih angka mana
+// yang relevan dan apa artinya; model tidak menghasilkan angka.
 // ---------------------------------------------------------------------------
 
 /**
- * Daftar maksud TERTUTUP. Bukan teks bebas.
+ * Tiga jalur jawaban. Bukan daftar topik.
  *
- * Model lokal mengarang nilai di luar daftar kalau diberi kesempatan, jadi
- * keluarannya divalidasi terhadap daftar ini dan yang tidak cocok jatuh ke
- * `tidak_paham`. Menambah maksud baru berarti menambah query SQL yang
- * menjawabnya — bukan sekadar menambah string di sini.
+ * Versi pertama chatbot ini punya delapan maksud tetap, dan itu yang justru
+ * membuatnya tidak terpakai: pedagang tidak bertanya dalam delapan bentuk.
+ * Yang tersisa sekarang bukan topik melainkan CARA jawabannya dihasilkan,
+ * karena hanya itu yang perlu dibedakan pemanggilnya.
  */
 export const MAKSUD = {
-  UNTUNG_PERIODE: 'untung_periode',
-  PRODUK_MERUGI: 'produk_merugi',
-  MODAL_PRODUK: 'modal_produk',
-  SARAN_HARGA: 'saran_harga',
-  KAPASITAS_STOK: 'kapasitas_stok',
-  PRODUK_TERLARIS: 'produk_terlaris',
+  /** Jawaban bebas yang bersandar pada lembar fakta hasil SQL */
+  BEBAS: 'bebas',
   /** Tidak dijawab di sini — pengguna dialihkan ke layar Catat */
   CATAT_TRANSAKSI: 'catat_transaksi',
   /** Di luar cakupan. Dijawab jujur, dan `acuan` WAJIB null */
@@ -753,15 +750,18 @@ export interface TanyaReq {
 /**
  * POST /tanya — satu pertanyaan, satu jawaban. Hanya-baca.
  *
- * Tidak ada `percakapan_id` dan tidak ada riwayat: tiap pertanyaan berdiri
- * sendiri. "Kalau yang itu bagaimana?" memaksa model menyimpulkan rujukan, dan
- * salah rujuk berarti menjawab soal produk yang salah dengan angka yang benar —
- * kelas kegagalan yang paling sulit dilihat.
+ * Percakapannya BERINGATAN, delapan giliran terakhir, disimpan di sisi server
+ * dan diikat ke pengguna — jadi tidak ada `percakapan_id` yang perlu dikirim
+ * frontend. Rancangan pertama sengaja tidak punya ingatan, dengan alasan salah
+ * rujuk ("kalau yang itu bagaimana?") berarti menjawab soal produk yang salah
+ * dengan angka yang benar. Alasan itu gugur begitu tiap jawaban membawa
+ * `acuan` yang menyebut nama produknya: salah rujuk sekarang terlihat oleh
+ * pedagang di kartu angka, bukan tersembunyi.
  */
 export interface TanyaRes {
   maksud: Maksud;
 
-  /** Kalimat siap tampil. Disusun template dari angka di `acuan` */
+  /** Kalimat siap tampil. Angkanya disalin dari `acuan`, tidak pernah dihitung */
   jawaban: string;
 
   /**

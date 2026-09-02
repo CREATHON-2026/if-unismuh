@@ -384,3 +384,31 @@ FROM v_margin_produk m
 WHERE m.modal_per_unit IS NOT NULL
   -- Tidak ada yang perlu disarankan kalau harganya sudah mencapai target.
   AND m.harga_jual < CEIL(m.modal_per_unit * 1.20 / 500) * 500;
+
+-- ---------------------------------------------------------------------------
+-- percakapan — ingatan chatbot, delapan giliran terakhir
+--
+-- Desain pertama chatbot sengaja TIDAK punya ini. Alasannya waktu itu masuk
+-- akal: "kalau yang itu bagaimana?" memaksa model menyimpulkan rujukan, dan
+-- salah rujuk berarti menjawab soal produk yang salah dengan angka yang benar
+-- — kegagalan yang paling sulit dilihat.
+--
+-- Keputusan itu dibalik karena alasannya sudah tidak berlaku. Dulu jawaban
+-- dirakit template dari satu maksud, jadi salah rujuk tenggelam tanpa jejak.
+-- Sekarang tiap jawaban membawa `acuan` yang menyebut NAMA produknya, dan
+-- kartu angka di bawah gelembung menampilkannya — pedagang melihat sendiri
+-- kalau yang dijawab bukan yang ditanyakan.
+--
+-- Yang disimpan hanya teks. Tidak ada `acuan`, tidak ada angka: giliran lama
+-- dipakai untuk memahami rujukan ("yang itu", "kalau begitu"), bukan sebagai
+-- sumber angka. Angka selalu dibaca ulang dari lembar fakta yang segar, supaya
+-- jawaban hari ini tidak pernah mengutip stok kemarin.
+-- ---------------------------------------------------------------------------
+CREATE TABLE percakapan (
+  id          BIGSERIAL PRIMARY KEY,
+  user_id     BIGINT NOT NULL REFERENCES pengguna(id) ON DELETE CASCADE,
+  peran       TEXT NOT NULL CHECK (peran IN ('pedagang','asisten')),
+  teks        TEXT NOT NULL,
+  dibuat_pada TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX idx_percakapan_user ON percakapan (user_id, id DESC);

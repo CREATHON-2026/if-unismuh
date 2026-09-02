@@ -45,17 +45,21 @@ interface Baris {
 }
 
 /**
- * Contoh pertanyaan yang benar-benar bisa dijawab.
+ * Contoh pertanyaan.
  *
  * Bukan basa-basi. Kotak teks kosong adalah pertanyaan tanpa jawaban bagi orang
  * yang belum pernah memakai chatbot, dan pengguna kita berusia 35–60 tahun.
- * Daftar ini juga jujur menunjukkan batas cakupannya: yang di luar ini memang
- * tidak akan terjawab.
+ *
+ * Dipilih yang bentuknya BERBEDA-BEDA — satu angka lugas, satu pengandaian,
+ * satu minta pendapat. Chatbot ini menjawab bebas dari data pedagang, jadi
+ * contoh yang seragam justru menyesatkan: pengguna akan mengira hanya tiga
+ * kalimat itu yang bisa ditanyakan, persis seperti versi sebelumnya yang
+ * memang cuma mengenali delapan bentuk pertanyaan.
  */
 const CONTOH = [
   'Bulan ini untung saya berapa?',
-  'Produk mana yang bikin saya rugi?',
-  'Produk apa yang paling laku?',
+  'Kalau kripik saya jual 25 ribu, untungnya berapa?',
+  'Menurutmu produk mana yang sebaiknya saya hentikan?',
 ];
 
 /** `untung_bersih` -> "Untung bersih", `rugi_per_unit_2` -> "Rugi per unit". */
@@ -132,7 +136,8 @@ export function Tanya() {
 
       <h1 className="mt-8 tracking-[-0.02em] text-judul font-bold text-tinta">Tanya lapakAi</h1>
       <p className="mt-1 text-utama leading-relaxed text-sedang">
-        Tanya soal untung, modal, harga, stok, dan produk yang paling laku.
+        Tanya apa saja soal usaha Bapak/Ibu — untung, modal, harga, stok, sampai
+        minta saran.
       </p>
 
       {kosong ? (
