@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Camera, ChevronRight, Keyboard, MessageCircle, MessagesSquare, Mic, PiggyBank, ReceiptText, TriangleAlert, Wallet } from 'lucide-react';
+import { Camera, ChevronRight, Keyboard, MessageCircle, Mic, PiggyBank, ReceiptText, TriangleAlert, Wallet } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { Beranda as DataBeranda, PesanMasukItem, Rekap } from '@shared/types';
 import { ambilBeranda, ambilRekap, ambilSaya, daftarPesanan, ekstraksiFoto } from '../api/client';
@@ -309,18 +309,6 @@ export function Beranda() {
             e.target.value = '';
           }}
         />
-      </div>
-
-      {/* Chatbot Tanya (modul tanya) — masuk dari sini, bukan tab kelima. */}
-      <div className="mt-3">
-        <KartuDaftar>
-          <BarisDaftar
-            ikon={MessagesSquare}
-            judul="Tanya lapakAi"
-            meta="Tanya apa saja soal untung dan penjualan Anda"
-            onClick={() => nav('/tanya')}
-          />
-        </KartuDaftar>
       </div>
 
       {/* Cuplikan tren dari GET /rekap — titik dan totalnya dihitung SQL;
