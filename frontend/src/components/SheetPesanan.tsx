@@ -153,10 +153,20 @@ export function SheetPesanan({
       {pilihan && (
         <>
           {/* Keyakinan AI, dikatakan apa adanya. Kalimatnya berbeda bukan cuma
-              warnanya — pedagang yang buru-buru membaca kalimat, bukan warna. */}
+              warnanya — pedagang yang buru-buru membaca kalimat, bukan warna.
+
+              Yang yakin memakai ungu, BUKAN hijau. Hijau di aplikasi ini cuma
+              boleh berarti untung, dan "AI yakin" bukan untung — pesanannya
+              malah bisa rugi. Ini persis jebakan yang membuat hijau `#4ED3A3`
+              dari rujukan rupa sengaja tidak diambil: hijau yang berarti
+              "berhasil" akan mengajari mata membaca hijau sebagai kabar baik,
+              lalu angka rugi berwarna merah kehilangan lawannya.
+
+              Bedanya juga jadi masuk akal: yang tidak yakin berteriak kuning
+              karena menuntut tindakan, yang yakin cukup berbisik. */}
           <div
             className={`mt-3 rounded-kontrol p-4 ${
-              pilihan.perlu_dicek ? 'bg-tanda' : 'bg-untung-pucat'
+              pilihan.perlu_dicek ? 'bg-tanda' : 'bg-merek-muda'
             }`}
           >
             {pilihan.perlu_dicek ? (
@@ -168,7 +178,7 @@ export function SheetPesanan({
                 </p>
               </>
             ) : (
-              <p className="text-isi leading-relaxed text-untung-tua">
+              <p className="text-isi leading-relaxed text-tinta">
                 AI cukup yakin ini{' '}
                 <span className="font-bold">{terpilih?.nama ?? pilihan.nama_produk_mentah}</span>.
                 Tetap boleh diganti.

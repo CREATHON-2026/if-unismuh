@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { TombolIkon } from './TombolIkon';
 
 /**
  * Kepala layar bergradien — bidang ungu penuh-lebar di puncak halaman.
@@ -63,17 +64,7 @@ export function KepalaHero({
     <div className={`hero-gradien aman-atas px-5 ${bawahIsi ? 'pb-28' : 'pb-10'}`}>
       <div className="relative flex min-h-12 items-center justify-center">
         <div className="absolute left-0">
-          {kiri ??
-            (kembali && (
-              <button
-                type="button"
-                aria-label="Kembali"
-                onClick={kembali}
-                className="flex h-11 w-11 items-center justify-center rounded-kontrol border border-white/30 text-white transition active:scale-95"
-              >
-                <ArrowLeft size={22} strokeWidth={2} aria-hidden="true" />
-              </button>
-            ))}
+          {kiri ?? (kembali && <TombolIkon ikon={ArrowLeft} label="Kembali" onClick={kembali} />)}
         </div>
         {judul && (
           <h1 className="text-sub font-bold tracking-[-0.02em] text-white">{judul}</h1>

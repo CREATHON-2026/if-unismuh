@@ -37,7 +37,7 @@ export function TombolIkon({
       aria-label={label}
       onClick={onClick}
       disabled={disabled}
-      className={`flex h-11 w-11 items-center justify-center rounded-kontrol border transition active:scale-95 disabled:opacity-35 ${gaya}`}
+      className={`flex h-12 w-12 items-center justify-center rounded-kontrol border transition active:scale-95 disabled:opacity-35 ${gaya}`}
     >
       <Ikon size={22} strokeWidth={2} aria-hidden="true" />
     </button>

@@ -39,7 +39,12 @@ export function Tombol({
   //    jadi ia kalah. Satu-satunya cara yang jujur adalah tidak memasang
   //    gradiennya sejak awal.
   const gaya = disabled
-    ? 'bg-garis text-sedang'
+    ? // `garis` tetap bergaris saat mati. Kalau ia ikut jadi balok abu pejal,
+      // tombol sekunder yang mati terlihat lebih berat daripada saat hidup —
+      // dan mirip tombol utama yang mati, padahal perannya berbeda.
+      varian === 'garis'
+      ? 'border-[1.5px] border-garis bg-transparent text-redup'
+      : 'bg-garis text-sedang'
     : varian === 'garis'
       ? 'border-[1.5px] border-garis-tua bg-transparent text-tinta active:scale-[0.98]'
       : varian === 'gelap'
