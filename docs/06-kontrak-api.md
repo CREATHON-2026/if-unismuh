@@ -107,6 +107,8 @@ Wawancara resep satu produk. **Di sinilah temuan pertama lahir.**
 
 Frontend **tidak** menghitung `20000 - 21200`. Backend yang mengirim `margin_per_unit` dan `merugi`.
 
+**Pemetaan per jenis usaha (murni frontend, kontrak tidak berubah):** pertanyaan wawancara bercabang mengikuti `jenis_usaha` — makanan "sekali masak/porsi", minuman "sekali racik/gelas", **sembako mengirim satu bahan kulakan** (nama bahan = nama produk, `jumlah_beli` = `jumlah`), jasa "bahan habis pakai per sekian pelanggan". Semuanya tetap bentuk permintaan di atas; `bahan` tetap wajib ≥ 1.
+
 ## Beranda
 
 ### `GET /beranda?dari=2026-08-01&sampai=2026-08-31`

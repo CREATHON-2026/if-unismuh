@@ -8,6 +8,7 @@ import { Tombol } from '../components/Tombol';
 import { KartuHero } from '../components/KartuHero';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
 import { bacaOnboarding } from '../state/onboarding';
+import { alurUsahaAktif } from '../state/alurUsaha';
 import { tulisEkstraksi } from '../state/ekstraksi';
 
 export function TemuanPertama() {
@@ -64,7 +65,7 @@ export function TemuanPertama() {
           label={temuan.merugi ? 'Potensi kerugian' : 'Potensi keuntungan'}
           nilai={`${temuan.merugi ? '\u2212' : '+'} ${selisih}`}
           nada={temuan.merugi ? 'rugi' : 'untung'}
-          catatan={`${namaProduk} — setiap satu bungkus terjual.`}
+          catatan={`${namaProduk} — ${alurUsahaAktif().kalimatTemuan}.`}
           bawah={
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center justify-between text-isi">
