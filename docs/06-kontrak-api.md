@@ -719,6 +719,44 @@ Kalimatnya sengaja **tidak pernah menyebut modal, rugi, atau untung** kepada pem
 
 Semua baris masuk atau tidak sama sekali. Mencatat stok inilah yang menghidupkan peringatan *"Bahan hanya cukup untuk 14 dari 20 yang dipesan"* di Pesanan Masuk — sebelum ada stok, jawabannya selalu *"stok belum dicatat"*.
 
+## Tanya lapakAi — chatbot
+
+Rancangan lengkapnya di [14-chatbot.md](14-chatbot.md) dan [spec implementasinya](superpowers/specs/2026-09-02-chatbot-tanya-design.md).
+
+### `POST /tanya`
+```json
+// permintaan
+{ "pertanyaan": "bulan ini untungnya berapa?" }
+// jawaban
+{ "ok": true, "data": {
+    "maksud": "untung_periode",
+    "jawaban": "Bulan ini uang masuk Rp 3.600.000, untung bersihnya Rp 420.000.",
+    "acuan": { "omzet": 3600000, "untung_bersih": 420000, "baris_tanpa_modal": 2 },
+    "peringatan": ["2 transaksi belum ikut dihitung untungnya karena resepnya belum diisi."],
+    "alihkan_ke": null
+} }
+```
+
+**Endpoint ini tidak pernah menulis ke database.** LLM hanya membaca maksud pertanyaan; SQL menghitung; template menyusun kalimatnya. Tidak ada satu pun aritmetika yang lewat model.
+
+`maksud` adalah daftar tertutup: `untung_periode` · `produk_merugi` · `modal_produk` · `saran_harga` · `kapasitas_stok` · `produk_terlaris` · `catat_transaksi` · `tidak_paham`. Pertanyaan di luar daftar dijawab `tidak_paham`, bukan ditebak.
+
+**`acuan` adalah angka SQL apa adanya**, sama seperti di `POST /pesanan/balasan`. Kalau angka di `jawaban` tidak punya padanan di `acuan`, berarti kalimatnya mengarang. Untuk `tidak_paham`, `acuan` **selalu `null`** — mustahil mengarang angka untuk pertanyaan yang tidak dipahami.
+
+`alihkan_ke` hanya terisi saat maksudnya `catat_transaksi`:
+
+```json
+{ "maksud": "catat_transaksi",
+  "jawaban": "Saya bukakan layar Catat, tinggal diperiksa lalu disimpan.",
+  "acuan": null,
+  "peringatan": [],
+  "alihkan_ke": { "rute": "/catat", "teks": "tadi laku 12 pisang goreng" } }
+```
+
+Frontend membuka `/catat` dengan `teks` sudah terisi. Yang menyimpan tetap layar Catat, dengan konfirmasi manusia seperti biasa — [aturan #2](../CLAUDE.md) tidak punya jalan pintas lewat chatbot.
+
+Tidak ada `percakapan_id` dan tidak ada riwayat. Tiap pertanyaan berdiri sendiri.
+
 ## Kode galat
 
 | Kode | Arti |

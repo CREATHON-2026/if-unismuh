@@ -711,3 +711,86 @@ export interface Struk {
   tanggal: string;
   waktu: string;
 }
+
+// ---------------------------------------------------------------------------
+// Tanya lapakAi — chatbot
+//
+// Rancangannya di docs/14-chatbot.md dan
+// docs/superpowers/specs/2026-09-02-chatbot-tanya-design.md.
+//
+// Yang perlu diketahui saat membaca tipe di bawah: LLM ada di ujung depan
+// (membaca maksud) dan template ada di ujung belakang (menyusun kalimat).
+// SQL ada di tengah, dan HANYA SQL yang menghitung.
+// ---------------------------------------------------------------------------
+
+/**
+ * Daftar maksud TERTUTUP. Bukan teks bebas.
+ *
+ * Model lokal mengarang nilai di luar daftar kalau diberi kesempatan, jadi
+ * keluarannya divalidasi terhadap daftar ini dan yang tidak cocok jatuh ke
+ * `tidak_paham`. Menambah maksud baru berarti menambah query SQL yang
+ * menjawabnya — bukan sekadar menambah string di sini.
+ */
+export const MAKSUD = {
+  UNTUNG_PERIODE: 'untung_periode',
+  PRODUK_MERUGI: 'produk_merugi',
+  MODAL_PRODUK: 'modal_produk',
+  SARAN_HARGA: 'saran_harga',
+  KAPASITAS_STOK: 'kapasitas_stok',
+  PRODUK_TERLARIS: 'produk_terlaris',
+  /** Tidak dijawab di sini — pengguna dialihkan ke layar Catat */
+  CATAT_TRANSAKSI: 'catat_transaksi',
+  /** Di luar cakupan. Dijawab jujur, dan `acuan` WAJIB null */
+  TIDAK_PAHAM: 'tidak_paham',
+} as const;
+
+export type Maksud = (typeof MAKSUD)[keyof typeof MAKSUD];
+
+export interface TanyaReq {
+  pertanyaan: string;
+}
+
+/**
+ * POST /tanya — satu pertanyaan, satu jawaban. Hanya-baca.
+ *
+ * Tidak ada `percakapan_id` dan tidak ada riwayat: tiap pertanyaan berdiri
+ * sendiri. "Kalau yang itu bagaimana?" memaksa model menyimpulkan rujukan, dan
+ * salah rujuk berarti menjawab soal produk yang salah dengan angka yang benar —
+ * kelas kegagalan yang paling sulit dilihat.
+ */
+export interface TanyaRes {
+  maksud: Maksud;
+
+  /** Kalimat siap tampil. Disusun template dari angka di `acuan` */
+  jawaban: string;
+
+  /**
+   * Angka mentah dari SQL, apa adanya.
+   *
+   * Ini yang membuat jawabannya bisa ditelusuri: kalau `jawaban` menyebut angka
+   * yang tidak ada di sini, itu ketahuan — oleh uji otomatis maupun oleh siapa
+   * pun yang membuka Network tab. Frontend menampilkannya sebagai kartu angka
+   * di bawah gelembung jawaban, BUKAN menghitung apa pun darinya (aturan #7).
+   *
+   * WAJIB null untuk `tidak_paham`: secara struktur mustahil mengarang angka
+   * untuk pertanyaan yang tidak dipahami.
+   */
+  acuan: Record<string, number | string> | null;
+
+  /**
+   * Hal yang membuat angkanya tidak utuh, misalnya "2 transaksi belum ikut
+   * dihitung untungnya karena resepnya belum diisi".
+   *
+   * Angka yang tidak lengkap tanpa diberi tahu adalah angka yang salah.
+   */
+  peringatan: string[];
+
+  /**
+   * Diisi HANYA saat maksudnya `catat_transaksi`.
+   *
+   * Modul tanya tidak pernah menulis ke database. Mencatat dialihkan ke layar
+   * Catat yang sudah punya konfirmasi manusia — menyalin layar itu berarti
+   * menyediakan tempat kedua bagi aturan #2 untuk bocor.
+   */
+  alihkan_ke: { rute: '/catat'; teks: string } | null;
+}

@@ -18,6 +18,7 @@ import { rutBeranda } from './modules/beranda/beranda.routes.ts';
 import { rutProduk } from './modules/produk/produk.routes.ts';
 import { rutEkstraksi } from './modules/ekstraksi/ekstraksi.routes.ts';
 import { rutStok } from './modules/stok/stok.routes.ts';
+import { rutTanya } from './modules/tanya/tanya.routes.ts';
 
 export function buatApp() {
   const app = express();
@@ -40,6 +41,7 @@ export function buatApp() {
   app.use('/produk', rutProduk);
   app.use('/stok', rutStok);
   app.use('/ekstraksi', rutEkstraksi);
+  app.use('/tanya', rutTanya);
 
   // Harus paling belakang, setelah semua rute terpasang.
   app.use(tangkapGalat);
