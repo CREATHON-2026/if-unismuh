@@ -788,7 +788,10 @@ export interface RiwayatPesanan {
     diproses: number;
     selesai: number;
     gagal: number;
-    /** Sudah diserahkan tapi uangnya belum masuk — piutang */
+    /**
+     * BANYAKNYA pesanan yang sudah diserahkan tapi uangnya belum masuk —
+     * cacahan, bukan rupiah. Jangan diformat sebagai uang di layar.
+     */
     belum_dibayar: number;
     /** HANYA dari pesanan selesai. Yang batal tidak menyentuh buku besar */
     untung: number;

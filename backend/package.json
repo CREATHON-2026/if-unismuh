@@ -8,7 +8,8 @@
     "dev": "tsx watch src/server.ts",
     "start": "tsx src/server.ts",
     "demo": "node scripts/siapkan-demo.mjs",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "demo:besar": "node scripts/siapkan-demo-besar.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.8",
