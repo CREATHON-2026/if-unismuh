@@ -75,7 +75,26 @@ export function DaftarProduk() {
   return (
     <Layar tanpaLogo atas>
       <KepalaAplikasi />
-      <h1 className="mt-7 text-judul font-bold tracking-[-0.02em] text-tinta">Produk Anda</h1>
+      <div className="mt-7 flex items-center justify-between gap-3">
+        <h1 className="text-judul font-bold tracking-[-0.02em] text-tinta">Produk Anda</h1>
+        {/*
+          Pintu tambah yang selama ini tidak ada.
+          Tombolnya dulu hanya hidup di dalam cabang daftar-kosong di bawah,
+          jadi ia menghilang begitu pedagang punya satu produk — dan menambah
+          produk kedua menjadi mustahil dari layar ini. Ditaruh di kepala supaya
+          ia ada di kedua keadaan, kosong maupun berisi.
+        */}
+        {daftar && daftar.length > 0 && (
+          <button
+            type="button"
+            onClick={() => nav('/produk/tambah')}
+            className="flex min-h-12 shrink-0 items-center gap-2 rounded-full bg-merek px-4 text-utama font-semibold text-white transition active:scale-95"
+          >
+            <PackagePlus size={20} strokeWidth={1.9} aria-hidden="true" />
+            Tambah
+          </button>
+        )}
+      </div>
 
       {galat && <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />}
       {!daftar && !galat && (
@@ -108,7 +127,7 @@ export function DaftarProduk() {
           judul="Belum ada produk"
           pesan="Ceritakan satu produk beserta bahannya, lalu modal dan untungnya dihitung sendiri."
           labelAksi="Tambah produk"
-          onAksi={() => nav('/onboarding/produk')}
+          onAksi={() => nav('/produk/tambah')}
         />
       )}
 
@@ -133,7 +152,7 @@ export function DaftarProduk() {
             judul="Belum ada yang pasti untung"
             pesan="Produk yang resepnya belum lengkap tidak dihitung untung — modalnya belum diketahui."
             labelAksi="Lengkapi resep"
-            onAksi={() => nav('/onboarding/produk')}
+            onAksi={() => nav('/produk/tambah')}
           />
         )
       )}

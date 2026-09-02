@@ -26,7 +26,10 @@ export function ProdukTerlaris() {
 
   function lanjut() {
     if (!produk.trim()) return;
-    tulisOnboarding({ nama_produk: produk.trim() });
+    // `mode` dicap eksplisit, bukan dibiarkan kosong: sessionStorage bisa
+    // masih menyimpan 'tambah' dari kunjungan sebelumnya ke layar Tambah
+    // Produk, dan wizard yang sama akan berakhir di tempat yang salah.
+    tulisOnboarding({ nama_produk: produk.trim(), mode: 'onboarding' });
     nav('/resep/bahan');
   }
 

@@ -18,10 +18,24 @@ export function TemuanPertama() {
   const [sibuk, setSibuk] = useState(false);
   const [galat, setGalat] = useState('');
 
+  /**
+   * Layar ini hanya punya arti kalau modalnya diketahui — seluruh isinya adalah
+   * selisih antara modal dan harga jual.
+   *
+   * Di onboarding ketiganya SELALU terisi, karena `POST /onboarding/resep`
+   * mewajibkan bahan. Penjagaan ini untuk jalur lain: sejak produk bisa
+   * disimpan tanpa resep lewat `POST /produk`, `modal_per_unit` dan
+   * `margin_per_unit` boleh null — dan layar yang mempercayainya akan
+   * menampilkan "Rp NaN" alih-alih mengaku tidak tahu.
+   */
+  const lengkap =
+    temuan != null && temuan.modal_per_unit != null && temuan.margin_per_unit != null;
+
   useEffect(() => {
     if (!temuan) nav('/');
-  }, [temuan, nav]);
-  if (!temuan) return null;
+    else if (!lengkap) nav('/produk');
+  }, [temuan, lengkap, nav]);
+  if (!temuan || temuan.modal_per_unit == null || temuan.margin_per_unit == null) return null;
 
   // Math.abs hanya untuk tampilan; angkanya sendiri datang jadi dari API.
   const selisih = formatRupiah(Math.abs(temuan.margin_per_unit));

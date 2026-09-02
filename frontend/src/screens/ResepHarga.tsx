@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import { simpanResep } from '../api/client';
+import { simpanProduk, simpanResep } from '../api/client';
 import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
 import { KepalaResep } from '../components/KepalaResep';
@@ -23,15 +23,30 @@ export function ResepHarga() {
       setSibuk(false);
       return;
     }
-    const jawaban = await simpanResep({
+    const isi = {
       nama_produk: data.nama_produk ?? '',
       bahan: data.bahan,
       hasil_per_batch: data.hasil_per_batch ?? 0,
       harga_jual: Number(harga),
-    });
+    };
+
+    /**
+     * Wizard yang sama melayani DUA konteks, dan ujungnya berbeda di keduanya.
+     *
+     * Bukan cuma soal tujuan navigasi. `POST /onboarding/resep` menolak bahan
+     * kosong, karena tanpa bahan tidak ada modal dan tanpa modal tidak ada
+     * temuan pertama — benar untuk onboarding. `POST /produk` menerimanya, dan
+     * itu juga benar: pedagang yang menambah produk kesepuluh berhak
+     * mendaftarkannya dulu dan melengkapi resepnya nanti.
+     *
+     * Dan "Temuan pertama" jelas bukan judul yang jujur untuk produk keenam.
+     */
+    const menambah = data.mode === 'tambah';
+    const jawaban = menambah ? await simpanProduk(isi) : await simpanResep(isi);
+
     if (jawaban.ok) {
       tulisOnboarding({ harga_jual: Number(harga), temuan: jawaban.data });
-      nav('/temuan');
+      nav(menambah ? '/produk' : '/temuan');
       return;
     }
     setGalat(jawaban.error.pesan);
