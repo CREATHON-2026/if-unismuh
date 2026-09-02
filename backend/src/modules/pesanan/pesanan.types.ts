@@ -64,6 +64,11 @@ export interface SimpanPesanArg {
   teks: string;
   sumber: 'tempel' | 'whatsapp';
   pengirimSamar: string | null;
+  /**
+   * Alamat kirim lengkap. NULL untuk sumber 'tempel' — teks yang disalin
+   * tangan tidak punya chat yang bisa dibalas. Tidak pernah ikut ke frontend.
+   */
+  pengirimJid: string | null;
   jenis: JenisPesan;
   namaProdukMentah: string | null;
   produkId: number | null;

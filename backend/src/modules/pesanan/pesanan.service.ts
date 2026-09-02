@@ -1,9 +1,17 @@
 import { rupiah } from '../../lib/rupiah.ts';
 import { llmSiap } from '../../lib/llm.ts';
 import { GalatTampil } from '../../lib/http.ts';
-import { KODE_GALAT, type AnalisisPesanan, type BalasanReq, type BalasanRes, type KandidatProduk } from '../../../../shared/types.ts';
+import { WA_BALAS_AKTIF, WA_BALAS_PER_MENIT } from '../../config/env.ts';
+import {
+  KODE_GALAT, type AnalisisPesanan, type BalasanPesan, type BalasanReq,
+  type BalasanRes, type BalasanStatus, type JenisPesan, type KandidatProduk,
+} from '../../../../shared/types.ts';
 import { klasifikasiPesan, susunBalasan, adaPenandaTawar, HARGA_TOTAL } from './pesanan.llm.ts';
-import { cariKandidatProduk, hitungPesanan, simpanPesan, daftarPesan } from './pesanan.queries.ts';
+import {
+  cariKandidatProduk, hitungPesanan, simpanPesan, daftarPesan,
+  simpanDraf, suntingDraf, bacaDraf, kunciUntukKirim, tandaiGagalKirim,
+  hitungKirimTerakhir,
+} from './pesanan.queries.ts';
 import type { CocokNamaProduk, HasilCocok, HitungPesanan } from './pesanan.types.ts';
 
 /**
@@ -117,6 +125,13 @@ function susunPeringatan(
 
 const BUKAN_PESANAN: AnalisisPesanan = {
   pesan_id: null, jenis: 'bukan_pesanan',
+  // Tidak disimpan, jadi tidak ada yang bisa dibalas — dan memang tidak perlu:
+  // yang bukan pesanan tidak menunggu jawaban dari aplikasi pembukuan.
+  balasan: {
+    status: 'tidak_ada', teks: null, maksud: null, acuan: null,
+    bisa_dikirim: false, alasan_tidak_bisa: 'Ini bukan pesanan.',
+    dikirim_pada: null,
+  },
   produk: null, nama_produk_mentah: null, jumlah: null,
   harga_diminta: null, tanggal_dibutuhkan: null,
   perlu_dicek: false, kandidat: [],
@@ -130,6 +145,7 @@ export async function prosesPesan(
   teks: string,
   sumber: 'tempel' | 'whatsapp',
   pengirimSamar: string | null = null,
+  pengirimJid: string | null = null,
 ): Promise<AnalisisPesanan> {
   if (!llmSiap()) {
     throw new GalatTampil(
@@ -240,7 +256,7 @@ export async function prosesPesan(
   const perluDicek = cocok.perluDicek || ragu !== null;
 
   const pesanId = await simpanPesan({
-    userId, teks, sumber, pengirimSamar,
+    userId, teks, sumber, pengirimSamar, pengirimJid,
     jenis,
     namaProdukMentah: baca.nama_produk_mentah,
     // Dugaan pencocokan DISIMPAN apa adanya, ditemani penanda `perlu_dicek`.
@@ -269,9 +285,17 @@ export async function prosesPesan(
     hasilMentah: baca,
   });
 
+  // Draf balasan disusun DI SINI, bukan di wa.client.ts, supaya jalur tempel
+  // dan jalur WhatsApp melewati kode yang sama persis. Jalur tempel juga yang
+  // membuat fitur ini bisa diuji tanpa sesi WhatsApp hidup.
+  const balasan = await siapkanDraf(
+    userId, pesanId, jenis, hitung, baca.jumlah, hargaDiminta, perluDicek, pengirimJid,
+  );
+
   return {
     pesan_id: pesanId,
     jenis,
+    balasan,
     produk: hitung ? { id: hitung.produk_id, nama: hitung.nama } : null,
     nama_produk_mentah: baca.nama_produk_mentah,
     jumlah: baca.jumlah,
@@ -339,7 +363,208 @@ export async function buatBalasan(userId: number, req: BalasanReq): Promise<Bala
   };
 }
 
-/** Daftar pesanan masuk terbaru — angka-angkanya sudah dihitung SQL. */
-export function ambilDaftarPesan(userId: number) {
-  return daftarPesan(userId);
+/**
+ * Daftar pesanan masuk terbaru — angka-angkanya sudah dihitung SQL.
+ *
+ * Kolom balasan yang datar dari SQL dilipat jadi satu objek `balasan`, supaya
+ * layar menerima bentuk yang sama persis dengan yang dikembalikan
+ * `POST /pesanan/analisis`. Dua bentuk berbeda untuk data yang sama berarti dua
+ * cabang tampilan, dan cepat atau lambat salah satunya lupa diperbarui.
+ */
+export async function ambilDaftarPesan(userId: number) {
+  const baris = await daftarPesan(userId);
+  return baris.map((b: any) => {
+    const { balasan_teks, balasan_maksud, balasan_acuan, balasan_status,
+      balasan_dikirim_pada, ada_alamat, ...sisa } = b;
+    return {
+      ...sisa,
+      balasan: bentukBalasan(
+        balasan_status ?? 'tidak_ada',
+        balasan_teks ?? null,
+        balasan_maksud ?? null,
+        balasan_acuan ?? null,
+        ada_alamat === true,
+        balasan_dikirim_pada ?? null,
+      ),
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Balasan otomatis — draf disusun sistem, pedagang yang menekan kirim
+// ---------------------------------------------------------------------------
+
+/**
+ * Kenapa sebuah draf tidak bisa dikirim. Dikembalikan sebagai KALIMAT, bukan
+ * kode, karena satu-satunya pembacanya adalah pedagang — dan tombol mati tanpa
+ * alasan adalah jalan buntu yang tidak punya pintu keluar.
+ */
+function alasanTidakBisaKirim(
+  status: BalasanStatus, adaAlamat: boolean,
+): string | null {
+  if (!WA_BALAS_AKTIF) return 'Pengiriman lewat WhatsApp sedang dimatikan. Salin saja balasannya.';
+  if (!adaAlamat) return 'Pesan ini ditempel manual, jadi tidak ada chat yang bisa dibalas. Salin balasannya.';
+  if (status === 'terkirim') return 'Balasan ini sudah terkirim.';
+  if (status !== 'siap') return 'Belum ada balasan yang siap dikirim.';
+  return null;
+}
+
+/** Bentuk medan `balasan` yang dikirim ke layar — satu tempat, satu bentuk. */
+function bentukBalasan(
+  status: BalasanStatus,
+  teks: string | null,
+  maksud: BalasanReq['maksud'] | null,
+  acuan: BalasanRes['acuan'] | null,
+  adaAlamat: boolean,
+  dikirimPada: string | null = null,
+): BalasanPesan {
+  const alasan = alasanTidakBisaKirim(status, adaAlamat);
+  return {
+    status, teks, maksud, acuan,
+    bisa_dikirim: alasan === null,
+    alasan_tidak_bisa: alasan,
+    dikirim_pada: dikirimPada,
+  };
+}
+
+const TANPA_BALASAN = (adaAlamat: boolean): BalasanPesan =>
+  bentukBalasan('tidak_ada', null, null, null, adaAlamat);
+
+/**
+ * Susun draf balasan begitu pesan masuk.
+ *
+ * MAKSUDNYA DIPILIH SQL, BUKAN LLM. Ini inti pertahanan aturan #1 di fitur ini:
+ * kalau model yang memutuskan "terima atau tawar", maka model sedang memutuskan
+ * soal uang — dan model memilih nada, bukan angka. Kalimat pembeli yang ramah
+ * membuatnya cenderung menyetujui, termasuk saat menyetujui berarti rugi.
+ *
+ * `merugi` datang dari v_margin_produk. Yang diserahkan ke LLM hanyalah menulis
+ * kalimatnya, dengan fakta yang sudah jadi.
+ *
+ * Tidak ada draf sama sekali kalau produknya belum pasti (aturan #8). Balasan
+ * untuk produk yang salah adalah kalimat salah yang duduk satu tap dari
+ * terkirim — jauh lebih berbahaya daripada tidak ada balasan.
+ */
+async function siapkanDraf(
+  userId: number,
+  pesanId: number,
+  jenis: JenisPesan,
+  hitung: HitungPesanan | null,
+  jumlah: number | null,
+  hargaDiminta: number | null,
+  perluDicek: boolean,
+  pengirimJid: string | null,
+): Promise<BalasanPesan> {
+  const adaAlamat = pengirimJid !== null;
+
+  if (!hitung || perluDicek) return TANPA_BALASAN(adaAlamat);
+
+  const maksud: BalasanReq['maksud'] =
+    jenis === 'tanya_harga' ? 'jawab_harga'
+      : hitung.merugi ? 'tawar_harga'
+        : 'terima';
+
+  const req: BalasanReq = {
+    maksud,
+    produk_id: hitung.produk_id,
+    jumlah: jumlah ?? undefined,
+    harga_diminta: hargaDiminta ?? undefined,
+  };
+
+  try {
+    const hasil = await buatBalasan(userId, req);
+    await simpanDraf(pesanId, userId, maksud, hasil.teks, hasil.acuan);
+    return bentukBalasan('siap', hasil.teks, maksud, hasil.acuan, adaAlamat);
+  } catch (err) {
+    // Gagal menyusun draf TIDAK BOLEH menjatuhkan pesannya. Pesan yang sudah
+    // tersimpan lebih berharga daripada balasan yang gagal disusun — pedagang
+    // masih bisa menulis sendiri, tapi pesan yang hilang hilang selamanya.
+    console.error('[draf balasan gagal]', err instanceof Error ? err.message : err);
+    return TANPA_BALASAN(adaAlamat);
+  }
+}
+
+/** Pedagang memperbaiki kalimatnya sebelum mengirim. */
+export async function suntingBalasan(
+  userId: number, pesanId: number, teks: string,
+): Promise<void> {
+  const baris = await suntingDraf(pesanId, userId, teks);
+  if (!baris) {
+    throw new GalatTampil(
+      KODE_GALAT.PESANAN_SUDAH_DIPROSES,
+      'Balasan ini sudah terkirim, jadi tidak bisa diubah lagi.', 409,
+    );
+  }
+}
+
+/**
+ * Kirim balasan ke pembeli. SATU-SATUNYA jalur pengiriman di seluruh backend,
+ * dan ia hanya bisa dicapai lewat tombol yang ditekan pedagang.
+ */
+export async function kirimBalasan(userId: number, pesanId: number): Promise<void> {
+  if (!WA_BALAS_AKTIF) {
+    throw new GalatTampil(
+      KODE_GALAT.PERMINTAAN_TIDAK_VALID,
+      'Pengiriman lewat WhatsApp sedang dimatikan. Salin saja balasannya.', 409,
+    );
+  }
+
+  // Batas laju diperiksa SEBELUM mengunci, supaya permintaan yang ditolak tidak
+  // ikut menghabiskan draf yang sah.
+  if (await hitungKirimTerakhir(userId) >= WA_BALAS_PER_MENIT) {
+    throw new GalatTampil(
+      KODE_GALAT.PERMINTAAN_TIDAK_VALID,
+      'Terlalu banyak balasan terkirim dalam semenit. Tunggu sebentar.', 429,
+    );
+  }
+
+  // Penolakan yang sudah pasti diperiksa DULU, tanpa menyentuh apa pun. Kalau
+  // pemeriksaan ini terjadi setelah penguncian, pesan tempel akan berakhir
+  // berstatus 'gagal' — padahal tidak ada yang gagal, dan drafnya masih layak
+  // disalin. Status yang berbohong lebih buruk daripada tombol yang menolak.
+  const draf = await bacaDraf(pesanId, userId);
+  if (!draf) {
+    throw new GalatTampil(
+      KODE_GALAT.PESANAN_TIDAK_DITEMUKAN, 'Pesan tidak ditemukan.', 404,
+    );
+  }
+  if (!draf.ada_alamat) {
+    throw new GalatTampil(
+      KODE_GALAT.PERMINTAAN_TIDAK_VALID,
+      'Pesan ini ditempel manual, jadi tidak ada chat yang bisa dibalas.', 409,
+    );
+  }
+
+  // Mengunci dan menandai terkirim dalam satu pernyataan — dua tombol yang
+  // tertekan bersamaan tidak bisa dua-duanya lolos. Pemeriksaan di atas tidak
+  // menggantikan ini: ia menyaring yang sudah pasti salah, sedangkan yang
+  // menjaga perlombaan tetap satu pernyataan UPDATE.
+  const siap = await kunciUntukKirim(pesanId, userId);
+  if (!siap) {
+    throw new GalatTampil(
+      KODE_GALAT.PESANAN_SUDAH_DIPROSES,
+      'Balasan ini sudah terkirim, atau belum ada yang siap dikirim.', 409,
+    );
+  }
+
+  try {
+    // Impor dinamis, dan itu disengaja: wa.client.ts sudah mengimpor
+    // `prosesPesan` dari berkas ini, jadi impor statis ke arah sebaliknya
+    // membuat lingkaran. ESM biasanya selamat karena keduanya deklarasi fungsi
+    // yang ter-hoist — tapi "biasanya selamat" bukan dasar yang layak untuk
+    // satu-satunya jalur pengiriman di aplikasi ini. Modulnya di-cache setelah
+    // panggilan pertama.
+    const { kirimPesan } = await import('../whatsapp/wa.client.ts');
+    await kirimPesan(siap.pengirim_jid, siap.balasan_teks ?? '');
+  } catch (err) {
+    // Dikembalikan ke 'gagal', bukan dibiarkan 'terkirim'. Catatan yang
+    // mengaku sudah mengirim padahal tidak adalah kebohongan yang membuat
+    // pedagang menunggu jawaban yang tidak akan pernah datang.
+    await tandaiGagalKirim(pesanId, userId);
+    console.error('[kirim balasan gagal]', err instanceof Error ? err.message : err);
+    throw new GalatTampil(
+      KODE_GALAT.GALAT_SERVER,
+      'Balasannya gagal terkirim. Coba lagi, atau salin dan kirim sendiri.', 502,
+    );
+  }
 }

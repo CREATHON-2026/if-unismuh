@@ -230,7 +230,29 @@ CREATE TABLE pesan_masuk (
   perlu_dicek        BOOLEAN NOT NULL DEFAULT false,
 
   hasil_mentah       JSONB,
-  diterima_pada      TIMESTAMPTZ NOT NULL DEFAULT now()
+  diterima_pada      TIMESTAMPTZ NOT NULL DEFAULT now(),
+
+  -- --- balasan otomatis: draf disusun sistem, pedagang yang menekan kirim ---
+  --
+  -- Alamat kirim pembeli. NULL untuk sumber 'tempel' — tidak ada chat yang
+  -- bisa dibalas dari teks yang disalin tangan. Kolom ini TIDAK PERNAH ikut ke
+  -- frontend: peramban hanya mengirim pesan_id, server yang mencari alamatnya.
+  --
+  -- Sebelum fitur balas, nomor pembeli sengaja DIBUANG (samarkan() menyisakan 4
+  -- digit terakhir di pengirim_samar). Menyimpannya adalah konsekuensi langsung
+  -- dari keputusan mengirim, bukan kelalaian. Lihat docs/08-keamanan-data.md.
+  pengirim_jid       TEXT,
+
+  balasan_teks       TEXT,
+  balasan_maksud     TEXT,
+  -- Angka SQL yang dipakai LLM saat menyusun kalimat. Inilah yang membuat tiap
+  -- rupiah di balasan bisa dicocokkan ke sumbernya; kalau kalimatnya menyebut
+  -- angka yang tidak ada di sini, model mengarang — dan uji-balas.mjs
+  -- menemukannya.
+  balasan_acuan      JSONB,
+  balasan_status     TEXT NOT NULL DEFAULT 'tidak_ada'
+                       CHECK (balasan_status IN ('tidak_ada','siap','terkirim','gagal')),
+  balasan_dikirim_pada TIMESTAMPTZ
 );
 CREATE INDEX idx_pesan_masuk_user ON pesan_masuk (user_id, diterima_pada DESC);
 

@@ -2,23 +2,37 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronRight, MessageCircle, Receipt } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
-import type { BalasanReq, BalasanRes, PesanMasukItem, StatusPesanan } from '@shared/types';
-import { analisisPesanan, buatBalasan, buatPesanan, daftarPesanan } from '../api/client';
+import type { BalasanReq, PesanMasukItem, StatusPesanan } from '@shared/types';
+import {
+  analisisPesanan, buatBalasan, buatPesanan, daftarPesanan, kirimBalasan, ubahBalasan,
+} from '../api/client';
 import { Layar } from '../components/Layar';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
 import { Lencana } from '../components/Lencana';
 import { NavBawah } from '../components/NavBawah';
 import { SheetPesanan } from '../components/SheetPesanan';
+import { KeadaanGalat } from '../components/KeadaanGalat';
+import { RangkaDaftar } from '../components/Rangka';
+import { useStatusWa } from '../state/statusWa';
 import { Tombol } from '../components/Tombol';
 
 /**
  * Pesanan Masuk — kotak masuk, bukan alat analisis.
  *
- * ★ SISTEM TIDAK PERNAH MENGIRIM APA PUN KE PEMBELI (aturan #4). Tidak ada
- * tombol kirim di layar ini, dan tidak boleh ditambahkan. Balasan disalin, lalu
- * pedagang sendiri yang menempelkannya di WhatsApp-nya. Reputasi pedagang ada di
- * chat itu; sistem yang bisa mengirim atas namanya adalah sistem yang bisa
- * mempermalukannya.
+ * ★ BALASAN DISUSUN OTOMATIS, TAPI TIDAK PERNAH TERKIRIM SENDIRI (aturan #2).
+ *
+ * Layar ini dulu melarang tombol kirim sama sekali. Larangan itu dicabut dengan
+ * sadar saat fitur balasan dibangun, dan aturan #4 di CLAUDE.md ditulis ulang
+ * pada saat yang sama. Yang menggantikannya lebih sempit tapi tetap tegas:
+ * draf boleh lahir sendiri, pengirimannya tidak. Satu tekanan jari pedagang
+ * berdiri di antara kalimat yang disusun mesin dan chat pembeli.
+ *
+ * Kalimatnya juga BISA DISUNTING sebelum dikirim. Itu bukan kenyamanan
+ * tambahan: melihat hasil AI tanpa bisa memperbaikinya hanya setengah janji.
+ *
+ * Reputasi pedagang ada di chat itu. Kalau `bisa_dikirim` false — remnya
+ * ditarik, atau pesannya ditempel manual sehingga tidak punya chat — yang
+ * ditawarkan tombol salin, dan alasannya ditulis apa adanya.
  *
  * Pesan yang masuk SUDAH dibaca AI saat tiba — tidak ada tombol "periksa" di
  * sini, dan itu disengaja. Tombol itu dulu menjalankan ulang model tiap kali
@@ -63,18 +77,58 @@ function waktuSingkat(iso: string): string {
 export function PesananMasuk() {
   const nav = useNavigate();
   const [teks, setTeks] = useState('');
-  const [daftar, setDaftar] = useState<PesanMasukItem[]>([]);
+  /**
+   * `null` berarti BELUM DIMUAT — bukan kosong.
+   *
+   * Dulu ini dimulai sebagai `[]`, sehingga kedua keadaan itu tidak bisa
+   * dibedakan dan layar langsung menulis "Belum ada pesanan masuk" pada render
+   * pertama, sebelum permintaannya selesai. Pesan yang ada tampak lenyap sesaat
+   * tiap kali halaman dimuat ulang. Pola `null` + rangka ini sudah dipakai
+   * DaftarProduk; layar inilah yang menyimpang.
+   */
+  const [daftar, setDaftar] = useState<PesanMasukItem[] | null>(null);
+  const [galatDaftar, setGalatDaftar] = useState('');
+
+  /**
+   * Hanya untuk memilih kalimat di kartu ajakan WhatsApp — layar ini tidak
+   * memantau sambungan, jadi dijemput sekali saja (`berkala: false`).
+   *
+   * `hanya_baca === false` berarti rem WA_BALAS_AKTIF di server sudah dilepas.
+   * Selama server belum terbaca, dianggap belum boleh mengirim: kalimat yang
+   * lebih hati-hati adalah tebakan yang lebih aman kalau ternyata salah.
+   */
+  const { data: statusWa } = useStatusWa(false);
+  const bolehKirim = statusWa?.hanya_baca === false;
   const [terpilih, setTerpilih] = useState<PesanMasukItem | null>(null);
   const [balasUntuk, setBalasUntuk] = useState<PesanMasukItem | null>(null);
-  const [balasan, setBalasan] = useState<BalasanRes | null>(null);
   const [sibuk, setSibuk] = useState(false);
   const [galat, setGalat] = useState('');
   const [catatan, setCatatan] = useState('');
   const [tersalin, setTersalin] = useState(false);
+  /** Isi kotak balasan yang sedang dilihat pedagang — boleh ia ubah. */
+  const [draf, setDraf] = useState('');
+  const [terkirim, setTerkirim] = useState(false);
 
+  /**
+   * Kegagalan TIDAK ditelan, tapi juga tidak menghapus yang sudah tampil.
+   *
+   * Dua hal berbeda, dan keduanya penting. Dulu `if (!j.ok) return []` membuat
+   * gangguan jaringan tampil persis seperti "tidak ada pesanan" — pedagang
+   * menyimpulkan pesanannya hilang. Tapi layar ini juga menjemput ulang tiap 12
+   * detik, jadi kegagalan pada penjemputan LATAR tidak boleh mengosongkan
+   * daftar yang sudah terlihat; kalau tidak, layar berkedip tiap jaringan
+   * tersendak. Galatnya hanya ditampilkan kalau memang belum ada apa-apa.
+   */
   async function muatDaftar(): Promise<PesanMasukItem[]> {
     const j = await daftarPesanan();
-    if (!j.ok) return [];
+    if (!j.ok) {
+      setGalatDaftar(j.error.pesan);
+      // `daftar` sengaja TIDAK disentuh. Kalau masih null, ia tetap null dan
+      // layar menampilkan galat bertombol ulang — bukan "belum ada pesanan".
+      // Kalau sudah berisi, isinya bertahan.
+      return [];
+    }
+    setGalatDaftar('');
     setDaftar(j.data);
     return j.data;
   }
@@ -125,7 +179,7 @@ export function PesananMasuk() {
       return;
     }
     setBalasUntuk(null);
-    setBalasan(null);
+    setDraf('');
     setTerpilih(p);
   }
 
@@ -154,20 +208,55 @@ export function PesananMasuk() {
       ...(balasUntuk.harga_diminta != null ? { harga_diminta: balasUntuk.harga_diminta } : {}),
     });
     if (j.ok) {
-      setBalasan(j.data);
+      // Nada diganti pedagang: kalimatnya disusun ulang, tapi TIDAK langsung
+      // tersimpan. Yang tersimpan baru isi kotak, saat tombol kirim ditekan.
+      setDraf(j.data.teks);
+      setTerkirim(false);
       setTersalin(false);
     } else setGalat(j.error.pesan);
     setSibuk(false);
   }
 
   async function salin() {
-    if (!balasan) return;
+    if (!draf.trim()) return;
     try {
-      await navigator.clipboard.writeText(balasan.teks);
+      // Yang disalin adalah isi kotak, bukan kalimat asli dari model.
+      // Kalau pedagang sudah memperbaikinya, perbaikan itu yang ia bawa.
+      await navigator.clipboard.writeText(draf);
       setTersalin(true);
     } catch {
       setGalat('Belum bisa menyalin otomatis. Tekan lama teksnya lalu salin.');
     }
+  }
+
+  /**
+   * Kirim ke pembeli — satu-satunya tempat di seluruh aplikasi yang melakukannya.
+   *
+   * Suntingan disimpan LEBIH DULU, selalu, bahkan kalau pedagang merasa tidak
+   * mengubah apa pun. Yang terkirim harus persis yang terbaca di layar; menebak
+   * "sepertinya tidak berubah" adalah cara termurah untuk mengirim kalimat yang
+   * berbeda dari yang disetujui.
+   */
+  async function kirim() {
+    if (!balasUntuk || !draf.trim()) return;
+    setSibuk(true);
+    setGalat('');
+
+    const disimpan = await ubahBalasan(balasUntuk.pesan_id, draf.trim());
+    if (!disimpan.ok) {
+      setGalat(disimpan.error.pesan);
+      setSibuk(false);
+      return;
+    }
+
+    const j = await kirimBalasan(balasUntuk.pesan_id);
+    setSibuk(false);
+    if (!j.ok) {
+      setGalat(j.error.pesan);
+      return;
+    }
+    setTerkirim(true);
+    void muatDaftar();
   }
 
   return (
@@ -192,7 +281,15 @@ export function PesananMasuk() {
           </span>
           <span className="min-w-0 flex-1 text-isi leading-relaxed text-sedang">
             Sambungkan WhatsApp supaya pesanan terbaca sendiri.{' '}
-            <span className="font-semibold text-tinta">Hanya membaca, tidak pernah mengirim.</span>
+            {/* Janji ini dulu dipaku di sini. Sejak fitur balas ada, kalimat
+                itu hanya benar selama remnya mati — jadi ia mengikuti server,
+                bukan ditulis mati. Layar yang menjanjikan hal yang tidak lagi
+                berlaku lebih merusak daripada layar yang tidak menjanjikan. */}
+            <span className="font-semibold text-tinta">
+              {bolehKirim
+                ? 'Balasan hanya terkirim kalau Anda menekan tombolnya.'
+                : 'Hanya membaca, tidak pernah mengirim.'}
+            </span>
           </span>
           <ChevronRight size={20} className="shrink-0 text-redup" aria-hidden="true" />
         </button>
@@ -220,7 +317,20 @@ export function PesananMasuk() {
       <div className="kartu mt-4 px-5 py-5">
         <p className="label-bagian">MASUK TERBARU</p>
 
-        {daftar.length === 0 ? (
+        {/* Tiga keadaan, bukan dua. "Belum dimuat" dulu tidak punya tampilan
+            sendiri dan meminjam tampilan "kosong" — itu bug yang membuat pesan
+            tampak lenyap tiap kali halaman dimuat ulang. */}
+        {daftar === null && !galatDaftar ? (
+          <div className="mt-3">
+            <RangkaDaftar baris={3} />
+          </div>
+        ) : daftar === null ? (
+          <KeadaanGalat
+            pesan={galatDaftar}
+            onCoba={() => void muatDaftar()}
+            sedangMencoba={sibuk}
+          />
+        ) : daftar.length === 0 ? (
           <p className="mt-3 text-utama leading-relaxed text-redup">
             Belum ada pesanan masuk. Sambungkan WhatsApp, atau tempel chat pembeli di bawah.
           </p>
@@ -302,22 +412,60 @@ export function PesananMasuk() {
             ))}
           </div>
 
-          {balasan && (
+          {/* Draf sudah ada sejak pesannya tiba. Kotak ini muncul lebih dulu
+              daripada tombol nada di atas — pedagang membaca kalimatnya, bukan
+              memilih dulu baru membaca. */}
+          {draf ? (
             <>
-              <p className="mt-4 rounded-kontrol bg-kanvas p-4 text-utama leading-relaxed text-tinta">
-                {balasan.teks}
-              </p>
-              <div className="mt-3">
-                <Tombol varian="utama" onClick={() => void salin()}>
-                  {tersalin ? 'Tersalin ✓' : 'Salin balasan'}
-                </Tombol>
-              </div>
-              {/* Bukan basa-basi: ini yang membedakan kami dari sistem yang
-                  mengirim atas nama pedagang. */}
-              <p className="mt-3 text-center text-isi leading-relaxed text-redup">
-                Tempel sendiri di WhatsApp Anda. lapakAi tidak pernah mengirim pesan ke pembeli.
-              </p>
+              <textarea
+                value={draf}
+                onChange={(e) => { setDraf(e.target.value); setTerkirim(false); setTersalin(false); }}
+                rows={4}
+                disabled={terkirim || balasUntuk.balasan.status === 'terkirim'}
+                className="mt-4 w-full resize-none rounded-kontrol bg-kanvas p-4 text-utama leading-relaxed text-tinta outline-none focus:ring-2 focus:ring-merek disabled:opacity-60"
+              />
+
+              {terkirim || balasUntuk.balasan.status === 'terkirim' ? (
+                <p className="mt-3 rounded-kontrol bg-untung-muda p-4 text-center text-utama font-semibold text-untung-tua">
+                  Terkirim ke pembeli ✓
+                </p>
+              ) : balasUntuk.balasan.bisa_dikirim ? (
+                <>
+                  <div className="mt-3">
+                    <Tombol varian="utama" disabled={sibuk || !draf.trim()} onClick={() => void kirim()}>
+                      {sibuk ? 'Mengirim…' : 'Kirim ke pembeli'}
+                    </Tombol>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => void salin()}
+                    className="mt-2 min-h-11 w-full text-utama font-semibold text-merek"
+                  >
+                    {tersalin ? 'Tersalin ✓' : 'Atau salin saja'}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="mt-3">
+                    <Tombol varian="utama" onClick={() => void salin()}>
+                      {tersalin ? 'Tersalin ✓' : 'Salin balasan'}
+                    </Tombol>
+                  </div>
+                  {/* Tombol yang mati tanpa alasan adalah jalan buntu.
+                      Alasannya datang dari server, bukan ditebak di sini. */}
+                  <p className="mt-3 text-center text-isi leading-relaxed text-redup">
+                    {balasUntuk.balasan.alasan_tidak_bisa}
+                  </p>
+                </>
+              )}
             </>
+          ) : (
+            /* Tidak ada draf berarti produknya belum pasti — aturan #8. Yang
+               dibutuhkan pedagang bukan tombol, tapi tahu apa yang kurang. */
+            <p className="mt-4 rounded-kontrol bg-tanda p-4 text-utama leading-relaxed text-tanda-tinta">
+              Balasan belum bisa disiapkan karena barang yang dimaksud belum pasti.
+              Pastikan dulu produknya, atau pilih nada balasan di atas.
+            </p>
           )}
         </div>
       )}
@@ -346,7 +494,11 @@ export function PesananMasuk() {
         onProses={(arg) => void proses(arg)}
         onBalas={() => {
           setBalasUntuk(terpilih);
-          setBalasan(null);
+          // Draf sudah disusun saat pesannya tiba — langsung ditampilkan,
+          // bukan menunggu pedagang memilih nada dulu.
+          setDraf(terpilih?.balasan.teks ?? '');
+          setTerkirim(false);
+          setTersalin(false);
           setTerpilih(null);
         }}
       />

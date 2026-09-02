@@ -138,14 +138,15 @@ export function hitungPesanan(
 export async function simpanPesan(a: SimpanPesanArg): Promise<number> {
   const baris = await satu<{ id: number }>(
     `INSERT INTO pesan_masuk
-       (user_id, teks, sumber, pengirim_samar, jenis, nama_produk_mentah,
-        produk_id, jumlah, harga_diminta, tanggal_dibutuhkan,
-        keyakinan_cocok, perlu_dicek, hasil_mentah)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+       (user_id, teks, sumber, pengirim_samar, pengirim_jid, jenis,
+        nama_produk_mentah, produk_id, jumlah, harga_diminta,
+        tanggal_dibutuhkan, keyakinan_cocok, perlu_dicek, hasil_mentah)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
      RETURNING id`,
-    [a.userId, a.teks, a.sumber, a.pengirimSamar, a.jenis, a.namaProdukMentah,
-     a.produkId, a.jumlah, a.hargaDiminta, a.tanggalDibutuhkan,
-     a.keyakinanCocok, a.perluDicek, JSON.stringify(a.hasilMentah)],
+    [a.userId, a.teks, a.sumber, a.pengirimSamar, a.pengirimJid, a.jenis,
+     a.namaProdukMentah, a.produkId, a.jumlah, a.hargaDiminta,
+     a.tanggalDibutuhkan, a.keyakinanCocok, a.perluDicek,
+     JSON.stringify(a.hasilMentah)],
   );
   return baris!.id;
 }
@@ -157,6 +158,11 @@ export function daftarPesan(userId: number, batas = 30) {
        pm.id AS pesan_id, pm.jenis, pm.teks, pm.sumber, pm.pengirim_samar,
        pm.nama_produk_mentah, pm.jumlah::float8 AS jumlah, pm.harga_diminta,
        pm.tanggal_dibutuhkan, pm.perlu_dicek, pm.diterima_pada,
+       pm.balasan_teks, pm.balasan_maksud, pm.balasan_acuan,
+       pm.balasan_status, pm.balasan_dikirim_pada,
+       -- Yang keluar hanya "ada alamatnya atau tidak", BUKAN alamatnya.
+       -- Nomor pembeli tidak pernah menyeberang ke peramban.
+       (pm.pengirim_jid IS NOT NULL) AS ada_alamat,
        pm.produk_id, m.nama AS nama_produk, m.modal_per_unit,
        CASE WHEN pm.jumlah IS NULL THEN NULL
             ELSE ROUND(pm.jumlah * COALESCE(pm.harga_diminta, m.harga_jual))::int
@@ -189,4 +195,116 @@ export function daftarPesan(userId: number, batas = 30) {
      LIMIT $2`,
     [userId, batas],
   );
+}
+
+// ---------------------------------------------------------------------------
+// Balasan otomatis
+// ---------------------------------------------------------------------------
+
+/**
+ * Simpan draf balasan pada pesannya.
+ *
+ * `acuan` ikut disimpan, dan itu bukan kelengkapan administratif: ia yang
+ * membuat tiap rupiah di kalimat bisa dicocokkan ke angka SQL asalnya. Tanpa
+ * itu, kalimat yang mengarang dan kalimat yang benar terlihat persis sama.
+ */
+export function simpanDraf(
+  pesanId: number, userId: number,
+  maksud: string, teks: string, acuan: unknown,
+): Promise<{ id: number } | null> {
+  return satu<{ id: number }>(
+    `UPDATE pesan_masuk
+     SET balasan_maksud = $3, balasan_teks = $4, balasan_acuan = $5,
+         balasan_status = 'siap'
+     WHERE id = $1 AND user_id = $2
+     RETURNING id`,
+    [pesanId, userId, maksud, teks, JSON.stringify(acuan)],
+  );
+}
+
+/**
+ * Pedagang menyunting draf sebelum mengirimnya.
+ *
+ * Hanya boleh saat masih 'siap'. Menyunting yang sudah terkirim tidak mengubah
+ * apa pun di HP pembeli — ia hanya membuat catatan kita berbohong tentang apa
+ * yang benar-benar dikirim.
+ */
+export function suntingDraf(
+  pesanId: number, userId: number, teks: string,
+): Promise<{ id: number } | null> {
+  return satu<{ id: number }>(
+    `UPDATE pesan_masuk SET balasan_teks = $3
+     WHERE id = $1 AND user_id = $2 AND balasan_status IN ('siap','gagal')
+     RETURNING id`,
+    [pesanId, userId, teks],
+  );
+}
+
+/**
+ * Keadaan draf SEBELUM apa pun diubah.
+ *
+ * Dibaca lebih dulu supaya penolakan yang sudah pasti — pesan tempel yang tidak
+ * punya chat — tidak sempat menyentuh status drafnya. Sebelum ini, pesan tempel
+ * dikunci jadi 'terkirim' lalu dikembalikan ke 'gagal', dan pedagang melihat
+ * "Gagal" pada balasan yang sebenarnya baik-baik saja dan masih layak disalin.
+ * Tidak ada yang gagal di situ; ia memang tidak pernah bisa dikirim.
+ */
+export function bacaDraf(
+  pesanId: number, userId: number,
+): Promise<{ ada_alamat: boolean; balasan_status: string } | null> {
+  return satu<{ ada_alamat: boolean; balasan_status: string }>(
+    `SELECT (pengirim_jid IS NOT NULL) AS ada_alamat, balasan_status
+     FROM pesan_masuk WHERE id = $1 AND user_id = $2`,
+    [pesanId, userId],
+  );
+}
+
+/**
+ * Ambil alamat dan teks SEKALIGUS menandainya terkirim, dalam satu pernyataan.
+ *
+ * Pola yang sama dengan konfirmasi ekstraksi, dan alasannya sama: dua tombol
+ * yang tertekan hampir bersamaan akan lolos kalau pemeriksaan dan penandaan
+ * terpisah. Di sini yang kedua mendapat nol baris, karena `balasan_status`
+ * sudah bukan 'siap' lagi saat ia tiba.
+ *
+ * Ditandai terkirim SEBELUM benar-benar dikirim. Itu disengaja: kalau
+ * pengirimannya gagal, statusnya dikembalikan ke 'gagal' oleh pemanggil.
+ * Urutan sebaliknya — kirim dulu, tandai kemudian — bisa mengirim dua kali
+ * kalau proses mati di antaranya, dan pesan ganda ke pembeli jauh lebih buruk
+ * daripada tombol yang perlu ditekan ulang.
+ */
+export function kunciUntukKirim(
+  pesanId: number, userId: number,
+  // `pengirim_jid` dijanjikan non-null oleh WHERE di bawah, jadi tipenya pun
+  // non-null. Kalau syarat itu dicabut suatu saat, tsc yang menagih di sini.
+): Promise<{ pengirim_jid: string; balasan_teks: string | null } | null> {
+  return satu<{ pengirim_jid: string; balasan_teks: string | null }>(
+    `UPDATE pesan_masuk
+     SET balasan_status = 'terkirim', balasan_dikirim_pada = now()
+     WHERE id = $1 AND user_id = $2 AND balasan_status = 'siap'
+       AND pengirim_jid IS NOT NULL
+     RETURNING pengirim_jid, balasan_teks`,
+    [pesanId, userId],
+  );
+}
+
+/** Kembalikan ke 'gagal' supaya pedagang bisa mencoba lagi. */
+export function tandaiGagalKirim(pesanId: number, userId: number): Promise<unknown> {
+  return satu(
+    `UPDATE pesan_masuk
+     SET balasan_status = 'gagal', balasan_dikirim_pada = NULL
+     WHERE id = $1 AND user_id = $2
+     RETURNING id`,
+    [pesanId, userId],
+  );
+}
+
+/** Berapa balasan yang terkirim dalam satu menit terakhir — untuk batas laju. */
+export async function hitungKirimTerakhir(userId: number): Promise<number> {
+  const baris = await satu<{ n: number }>(
+    `SELECT count(*)::int AS n FROM pesan_masuk
+     WHERE user_id = $1 AND balasan_dikirim_pada > now() - interval '1 minute'`,
+    [userId],
+  );
+  return baris?.n ?? 0;
 }
