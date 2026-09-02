@@ -2,18 +2,31 @@ import path from 'node:path';
 import { readFile, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import qrterminal from 'qrcode-terminal';
-import { WA_AUTH_DIR } from '../../config/env.ts';
+import { WA_AUTH_DIR, WA_BALAS_AKTIF } from '../../config/env.ts';
 import { satu } from '../../db/index.ts';
 import { prosesPesan } from '../pesanan/pesanan.service.ts';
 import type { StatusWa, StatusWhatsappRes } from './wa.types.ts';
 
 /**
- * Pembaca WhatsApp — HANYA MEMBACA.
+ * Penghubung WhatsApp — membaca, dan mengirim HANYA saat pedagang menekan tombol.
  *
- * Modul ini sengaja TIDAK PERNAH mengekspor apa pun yang bisa mengirim pesan.
- * Socket Baileys disimpan di variabel privat dan tidak pernah dikembalikan ke
- * pemanggil. Aturan #4 bukan janji di dokumen — di sini ia ditegakkan struktur:
- * yang tidak ada tidak bisa dipanggil.
+ * Modul ini dulu hanya membaca, dan docblock di sini bersumpah tidak akan
+ * pernah mengekspor pengirim. Sumpah itu dicabut dengan sadar saat fitur balas
+ * dibangun; aturan #4 di CLAUDE.md ikut ditulis ulang pada saat yang sama,
+ * supaya kode dan dokumen tidak saling membantah.
+ *
+ * Yang menggantikannya adalah tiga batas yang lebih sempit, dan ketiganya
+ * ditegakkan struktur — bukan sekadar dijanjikan:
+ *
+ *  1. `kirimPesan` tidak menerima nomor bebas. Alamatnya hanya bisa datang dari
+ *     `pesan_masuk.pengirim_jid`, jadi mustahil mengirim ke orang yang tidak
+ *     menyapa duluan.
+ *  2. Tidak ada satu pun pemanggil otomatis. Satu-satunya jalur ke fungsi ini
+ *     adalah endpoint yang dipicu tombol pedagang (aturan #2).
+ *  3. `WA_BALAS_AKTIF` bawaannya mati. Selama mati, fungsi ini menolak dipanggil
+ *     dan draf balasan tetap disusun untuk disalin tangan.
+ *
+ * Socket Baileys tetap privat dan tidak pernah dikembalikan ke pemanggil.
  *
  * Batasan yang diketahui dan tidak disembunyikan:
  *  - Satu koneksi WhatsApp Web per pedagang. Tidak akan menskala ke ribuan
@@ -108,12 +121,25 @@ async function tanganiPesan(m: any): Promise<void> {
     console.log(`[wa] dilewati (${dilewati}) dari ${samarkan(m.key?.remoteJid ?? '')}`);
     return;
   }
-  const teks = ambilTeks(m)!;
-  const dari = samarkan(m.key.remoteJid);
-  const cuplikan = teks.length > 60 ? teks.slice(0, 60) + '…' : teks;
+  // JID dibaca dengan optional chaining, bukan dereferensi langsung.
+  // `m.key.remoteJid` pernah ada di sini apa adanya, dan itu berarti satu pesan
+  // berbentuk aneh — tanpa `key` — melempar TypeError di LUAR try, keluar dari
+  // listener `async` yang promise-nya tidak dimiliki siapa pun, lalu mematikan
+  // seluruh backend. Pesan yang tidak punya alamat dilewati dengan catatan.
+  const jid: string | undefined = m.key?.remoteJid;
+  if (!jid) {
+    console.log('[wa] dilewati (pesan tanpa remoteJid)');
+    return;
+  }
+  const dari = samarkan(jid);
 
   try {
-    const hasil = await prosesPesan(pemilik, teks, 'whatsapp', dari);
+    const teks = ambilTeks(m)!;
+    const cuplikan = teks.length > 60 ? teks.slice(0, 60) + '…' : teks;
+    // JID lengkap ikut disimpan — inilah alamat yang dipakai kalau pedagang
+    // nanti menekan tombol balas. Yang tampil di layar tetap `dari` yang sudah
+    // tersamar; nomor utuhnya tidak pernah menyeberang ke peramban.
+    const hasil = await prosesPesan(pemilik, teks, 'whatsapp', dari, jid);
 
     // SETIAP hasil dicatat, termasuk bukan_pesanan. Sebelumnya kasus itu
     // diam-diam tidak mencetak apa pun, sehingga pesan yang sebenarnya sudah
@@ -131,9 +157,11 @@ async function tanganiPesan(m: any): Promise<void> {
     );
     for (const p of hasil.peringatan) console.log(`[wa]    ! ${p}`);
   } catch (err) {
-    // Kegagalan membaca satu pesan tidak boleh menjatuhkan koneksi.
-    console.error(`[wa] GAGAL memproses pesan dari ${dari}: "${cuplikan}" —`,
-      err instanceof Error ? err.message : err);
+    // Kegagalan membaca satu pesan tidak boleh menjatuhkan koneksi — apalagi
+    // server. Stack ikut dicetak: galat di jalur ini dulu hanya menampilkan
+    // pesannya, dan itu tidak cukup untuk menemukan barisnya.
+    console.error(`[wa] GAGAL memproses pesan dari ${dari} —`,
+      err instanceof Error ? (err.stack ?? err.message) : err);
   }
 }
 
@@ -268,16 +296,31 @@ export async function hubungkanWhatsapp(
     }
   });
 
+  /**
+   * Listener ini `async`, dan Baileys TIDAK PERNAH menunggu promise-nya.
+   *
+   * Artinya apa pun yang melempar di dalam sini tidak punya pemanggil yang bisa
+   * menangkapnya — ia jadi unhandled rejection, dan di Node 22 itu mematikan
+   * seluruh proses. Backend pernah mati begitu, tanpa meninggalkan jejak apa
+   * pun. Jadi seluruh isinya dibungkus, tanpa kecuali: tidak boleh ada satu
+   * baris pun di sini yang bisa lolos keluar.
+   */
   s.ev.on('messages.upsert', async ({ messages, type }: any) => {
-    if (s !== sock) return;   // socket lama yang sudah digantikan
-    // Dicatat SEBELUM disaring. Kalau tidak ada baris ini sama sekali saat
-    // chat masuk, berarti masalahnya di koneksi — bukan di penyaringan.
-    console.log(`[wa] messages.upsert: type=${type}, ${messages?.length ?? 0} pesan`);
-    if (type !== 'notify') {
-      console.log(`[wa] dilewati semua (type "${type}", bukan pesan baru)`);
-      return;
+    try {
+      if (s !== sock) return;   // socket lama yang sudah digantikan
+      // Dicatat SEBELUM disaring. Kalau tidak ada baris ini sama sekali saat
+      // chat masuk, berarti masalahnya di koneksi — bukan di penyaringan.
+      console.log(`[wa] messages.upsert: type=${type}, ${messages?.length ?? 0} pesan`);
+      if (type !== 'notify') {
+        console.log(`[wa] dilewati semua (type "${type}", bukan pesan baru)`);
+        return;
+      }
+      for (const m of messages ?? []) await tanganiPesan(m);
+    } catch (err) {
+      // Satu pesan yang gagal tidak boleh menjatuhkan koneksi, apalagi server.
+      console.error('[wa] GAGAL menangani messages.upsert —',
+        err instanceof Error ? (err.stack ?? err.message) : err);
     }
-    for (const m of messages) await tanganiPesan(m);
   });
 
   return status;
@@ -288,9 +331,35 @@ export function statusWhatsapp(): StatusWhatsappRes {
     status,
     qr: qrTerakhir,
     kode_pairing: kodePairing,
-    hanya_baca: true,
+    // Bukan lagi konstanta. Layar memakainya untuk memutuskan apakah tombol
+    // "Kirim ke pembeli" ditampilkan sama sekali — kalau remnya ditarik, yang
+    // muncul tombol salin, bukan tombol kirim yang menolak saat ditekan.
+    hanya_baca: !WA_BALAS_AKTIF,
     alasan: alasanBerhenti,
   };
+}
+
+/**
+ * Kirim satu balasan ke pembeli. DIPANGGIL HANYA DARI ENDPOINT BERTOMBOL.
+ *
+ * Tidak ada penjadwal, tidak ada pemanggil otomatis, dan tidak ada jalan
+ * memanggilnya dengan nomor yang diketik bebas: `jid` selalu berasal dari
+ * `pesan_masuk.pengirim_jid`, yaitu nomor yang menyapa pedagang duluan.
+ *
+ * Melempar, tidak menelan galat. Pemanggil yang memutuskan apa yang dilihat
+ * pedagang — dan pesan yang gagal terkirim harus TERLIHAT gagal, bukan diam.
+ */
+export async function kirimPesan(jid: string, teks: string): Promise<void> {
+  if (!WA_BALAS_AKTIF) {
+    throw new Error('Pengiriman balasan sedang dimatikan (WA_BALAS_AKTIF).');
+  }
+  if (sock === null || status !== 'tersambung') {
+    throw new Error('WhatsApp belum tersambung.');
+  }
+  await sock.sendMessage(jid, { text: teks });
+  // Dicatat lengkap dengan teksnya. Kalau nanti ada pembeli yang menerima
+  // kalimat aneh, satu-satunya cara menelusurinya adalah log ini.
+  console.log(`[wa] TERKIRIM ke ${samarkan(jid)}: "${teks}"`);
 }
 
 /**

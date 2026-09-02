@@ -15,6 +15,7 @@ import { rutWhatsapp } from './modules/whatsapp/wa.routes.ts';
 import { pulihkanWhatsapp } from './modules/whatsapp/wa.client.ts';
 import { rutTransaksi } from './modules/transaksi/transaksi.routes.ts';
 import { rutBeranda } from './modules/beranda/beranda.routes.ts';
+import { rutRekap } from './modules/rekap/rekap.routes.ts';
 import { rutProduk } from './modules/produk/produk.routes.ts';
 import { rutEkstraksi } from './modules/ekstraksi/ekstraksi.routes.ts';
 import { rutStok } from './modules/stok/stok.routes.ts';
@@ -38,6 +39,7 @@ export function buatApp() {
   app.use('/whatsapp', rutWhatsapp);
   app.use('/transaksi', rutTransaksi);
   app.use('/beranda', rutBeranda);
+  app.use('/rekap', rutRekap);
   app.use('/produk', rutProduk);
   app.use('/stok', rutStok);
   app.use('/ekstraksi', rutEkstraksi);
@@ -99,3 +101,40 @@ async function berhentiRapi(sinyal: string): Promise<void> {
 for (const sinyal of ['SIGINT', 'SIGTERM'] as const) {
   process.on(sinyal, () => void berhentiRapi(sinyal));
 }
+
+/**
+ * Jaring pengaman proses — MENCATAT, LALU TETAP HIDUP.
+ *
+ * Ini ada karena backend pernah mati sendiri tanpa meninggalkan apa pun: tidak
+ * ada pesan, tidak ada stack, tidak ada cara tahu apa yang terjadi. Di Node 22
+ * satu promise yang ditolak tanpa penangkap langsung mematikan proses, dan
+ * sebelumnya tidak ada satu pun handler di seluruh backend ini.
+ *
+ * Jadi gunanya BUKAN "supaya tidak crash". Gunanya supaya kejadian berikutnya
+ * punya nama — dicetak lengkap dengan stack, bisa dikejar sampai barisnya.
+ *
+ * Paparan terbesarnya adalah listener `async` yang promise-nya tidak dimiliki
+ * siapa pun, seperti `messages.upsert` milik Baileys: apa pun yang melempar di
+ * dalamnya tidak punya pemanggil yang bisa menangkapnya.
+ *
+ * ⚠ PERTUKARAN YANG DIAMBIL SADAR. Menahan `uncaughtException` bertentangan
+ * dengan nasihat umum — proses bisa tertinggal dalam keadaan setengah rusak,
+ * dan idealnya ia keluar rapi lalu dinyalakan ulang oleh pengawas. Di lomba ini
+ * tidak ada pengawas, dan backend yang mati di tengah demo jauh lebih mahal
+ * daripada proses yang mungkin cacat sebagian. Datanya sendiri aman: PGlite dan
+ * kredensial Baileys sama-sama tersimpan di disk, bukan di memori proses.
+ *
+ * Kalau ini dipakai sungguhan setelah lomba, kembalikan `uncaughtException`
+ * menjadi "catat lalu keluar rapi", dan pasang pengawas yang menyalakan ulang.
+ */
+process.on('unhandledRejection', (alasan) => {
+  console.error('\n[FATAL] Promise ditolak tanpa penangkap — server SENGAJA tetap hidup.');
+  console.error(alasan instanceof Error ? alasan.stack ?? alasan.message : alasan);
+  console.error('');
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('\n[FATAL] Galat tak tertangkap — server SENGAJA tetap hidup.');
+  console.error(err.stack ?? err.message);
+  console.error('');
+});
