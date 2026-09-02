@@ -20,9 +20,9 @@
     "semantic_hash": "dde4daf07babba100df333d6139f61c1"
   },
   "CLAUDE.md": {
-    "mtime": 1788249091.1977835,
-    "ast_hash": "964f49025665e83915a17be1e60b227e",
-    "semantic_hash": "964f49025665e83915a17be1e60b227e"
+    "mtime": 1788301773.1733682,
+    "ast_hash": "7752e0ffd01e1111c4aa26a739a83795",
+    "semantic_hash": ""
   },
   "CONTRIBUTING.md": {
     "mtime": 1788249131.4095373,
@@ -40,8 +40,8 @@
     "semantic_hash": ""
   },
   "docs/00-mulai-di-sini.md": {
-    "mtime": 1788253191.8894262,
-    "ast_hash": "9646a6dc2b834c2ca51216d6550dd172",
+    "mtime": 1788302731.1441987,
+    "ast_hash": "0642850ecc6ffe0384219461bcc7115f",
     "semantic_hash": ""
   },
   "docs/01-produk.md": {
@@ -50,9 +50,9 @@
     "semantic_hash": "9eff3cbab2d6fc89a57dfbddf4f9313c"
   },
   "docs/02-fitur-prioritas.md": {
-    "mtime": 1788249205.733271,
-    "ast_hash": "beb9665b233aa5620f7c4d5214887958",
-    "semantic_hash": "beb9665b233aa5620f7c4d5214887958"
+    "mtime": 1788302763.3417234,
+    "ast_hash": "b15d09c62eb4884d224aa6ce7373ba1e",
+    "semantic_hash": ""
   },
   "docs/03-arsitektur.md": {
     "mtime": 1788249247.9052439,
@@ -70,8 +70,8 @@
     "semantic_hash": "930fe47eeb71acda303705152a75a342"
   },
   "docs/06-kontrak-api.md": {
-    "mtime": 1788298058.6405647,
-    "ast_hash": "fa0ac02b3feaafae5e7dafd7f9492377",
+    "mtime": 1788302443.49924,
+    "ast_hash": "2bb01cbb3ed689d07a49e7ebd8ec2999",
     "semantic_hash": ""
   },
   "docs/07-alur-pengguna.md": {
@@ -95,8 +95,8 @@
     "semantic_hash": "5b009fd996686b68e4aebdeecf522835"
   },
   "docs/11-setup-tim.md": {
-    "mtime": 1788278205.3166444,
-    "ast_hash": "db91279aec8717d187c9000e132fa149",
+    "mtime": 1788301773.1540072,
+    "ast_hash": "933bf4a4300c0683fd60ec1326992e06",
     "semantic_hash": ""
   },
   "frontend/CLAUDE.md": {
@@ -665,18 +665,18 @@
     "semantic_hash": ""
   },
   "backend/src/modules/pesanan/pesanan.llm.ts": {
-    "mtime": 1788290290.2549155,
-    "ast_hash": "e25b228d50dcd1f3eaca218d8340f30c",
+    "mtime": 1788302132.090919,
+    "ast_hash": "32a29c274c6d70f3c7c04e087fea2740",
     "semantic_hash": ""
   },
   "backend/src/modules/pesanan/pesanan.service.ts": {
-    "mtime": 1788290560.6934228,
-    "ast_hash": "497820b2c3df01e750fee68bf0eaf67d",
+    "mtime": 1788299901.188166,
+    "ast_hash": "d67dfb5167630b363e9d7c3b75785717",
     "semantic_hash": ""
   },
   "backend/src/modules/pesanan/pesanan.types.ts": {
-    "mtime": 1788290227.3489177,
-    "ast_hash": "aadf653ce31d7a2b95ece6f95ff6ae08",
+    "mtime": 1788298540.7782793,
+    "ast_hash": "818741b90b1ade20acfd2a7e38a0ec27",
     "semantic_hash": ""
   },
   "backend/src/modules/produk/produk.controller.ts": {
@@ -762,6 +762,16 @@
   "frontend/src/components/KartuTenaga.tsx": {
     "mtime": 1788297987.1752374,
     "ast_hash": "937d639899c6a8a3f4c8b5a773b3470a",
+    "semantic_hash": ""
+  },
+  "docs/13-superpowers.md": {
+    "mtime": 1788301686.9682,
+    "ast_hash": "05dd158a17e1964b7564efd98e61c349",
+    "semantic_hash": ""
+  },
+  "docs/14-chatbot.md": {
+    "mtime": 1788302845.9984834,
+    "ast_hash": "8fba763c2a36906441aa64d1b4caffb1",
     "semantic_hash": ""
   }
 }
