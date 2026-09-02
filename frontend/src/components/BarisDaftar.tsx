@@ -8,6 +8,10 @@ import type { ReactNode } from 'react';
  * satu bahasa. Tinggi minimum 72px — rujukan rupanya memakai baris padat, tapi
  * jari yang tidak terbiasa butuh sasaran yang lebih besar daripada itu.
  *
+ * Chipnya bulat, mengikuti irama daftar frame Contact. Bulat juga menolong di
+ * sini: baris ini punya lencana kotak-membulat di kanan, dan dua bentuk yang
+ * hampir sama di satu baris terlihat seperti kesalahan, bukan pilihan.
+ *
  * `nilai` sudah jadi dan sudah diformat. Tidak ada hitungan di sini.
  */
 export function BarisDaftar({
@@ -47,10 +51,10 @@ export function BarisDaftar({
     <div className="flex min-h-[72px] w-full items-center gap-3.5 px-4 py-3.5 text-left">
       {Ikon && (
         <span
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${warnaChip}`}
+          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${warnaChip}`}
           aria-hidden="true"
         >
-          <Ikon size={20} strokeWidth={1.8} />
+          <Ikon size={21} strokeWidth={1.8} />
         </span>
       )}
       <div className="min-w-0 flex-1">

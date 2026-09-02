@@ -25,7 +25,7 @@ export function BarProgres({
   nilai: string;
   nada?: 'netral' | 'tenaga';
 }) {
-  const warnaBar = nada === 'tenaga' ? 'bg-redup' : 'bg-hero';
+  const warnaBar = nada === 'tenaga' ? 'bg-redup' : 'bg-merek';
 
   return (
     <div className="py-3">

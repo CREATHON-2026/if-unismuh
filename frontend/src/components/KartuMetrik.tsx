@@ -48,12 +48,12 @@ export function KartuMetrik({
         ? 'bg-untung-muda text-untung'
         : nada === 'tanda'
           ? 'bg-tanda text-tanda-tinta'
-          : 'bg-kanvas text-sedang';
+          : 'bg-permukaan text-sedang';
 
   const isi = (
     <>
       <span
-        className={`flex h-10 w-10 items-center justify-center rounded-xl ${warnaChip}`}
+        className={`flex h-10 w-10 items-center justify-center rounded-full ${warnaChip}`}
         aria-hidden="true"
       >
         <Ikon size={20} strokeWidth={1.8} />

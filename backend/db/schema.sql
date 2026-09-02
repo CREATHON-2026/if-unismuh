@@ -116,7 +116,7 @@ CREATE TABLE transaksi (
   harga_satuan INTEGER NOT NULL CHECK (harga_satuan >= 0),
   tanggal      DATE NOT NULL,
 
-  sumber       TEXT NOT NULL CHECK (sumber IN ('foto','suara','manual')),
+  sumber       TEXT NOT NULL CHECK (sumber IN ('foto','suara','manual','pesanan')),
   sumber_id    BIGINT REFERENCES ekstraksi(id) ON DELETE SET NULL,
   keyakinan    NUMERIC,   -- null kalau diketik manusia
   -- Apa yang tertulis di buku sebelum dicocokkan ke produk. Disimpan supaya
@@ -233,6 +233,129 @@ CREATE TABLE pesan_masuk (
   diterima_pada      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX idx_pesan_masuk_user ON pesan_masuk (user_id, diterima_pada DESC);
+
+-- ---------------------------------------------------------------------------
+-- pesanan — apa yang PEDAGANG SETUJUI, bukan apa yang pembeli tulis
+--
+-- Tabel ketiga di rantai pesan_masuk -> pesanan -> transaksi, dan ketiganya
+-- sengaja tidak digabung:
+--
+--   pesan_masuk  apa kata pembeli + apa yang dibaca AI   tidak pernah diubah
+--   pesanan      apa yang disepakati pedagang            boleh diubah pedagang
+--   transaksi    buku besar                              tidak pernah diubah
+--
+-- Menambahkan kolom status ke pesan_masuk akan mencampur "apa kata pembeli"
+-- dengan "apa yang disepakati". Percampuran seperti itulah yang dulu melahirkan
+-- bug pembalik untung: koreksi pedagang menimpa bacaan AI, lalu tidak ada lagi
+-- yang bisa ditelusuri saat angkanya janggal.
+--
+-- CATATAN NAMA STATUS: status di sini menyatakan TAHAP PENYERAHAN BARANG, bukan
+-- keadaan uang. Pesanan kasbon memakai cara_bayar='nanti' dengan dibayar_pada
+-- NULL — statusnya tetap 'diproses'. Menamainya 'dibayar' akan membuat layar
+-- menuliskan "Dibayar" untuk pesanan yang uangnya belum diterima, dan berbohong
+-- di layar adalah pelanggaran aturan #2 sama seriusnya dengan menyimpan diam-diam.
+-- ---------------------------------------------------------------------------
+CREATE TABLE pesanan (
+  id            BIGSERIAL PRIMARY KEY,
+  user_id       BIGINT NOT NULL REFERENCES pengguna(id) ON DELETE CASCADE,
+  -- Boleh NULL: pesanan bisa lahir dari pembeli yang datang langsung, tanpa chat.
+  pesan_id      BIGINT REFERENCES pesan_masuk(id) ON DELETE SET NULL,
+  -- RESTRICT, bukan SET NULL: menghapus produk yang punya pesanan berjalan akan
+  -- membuat modalnya hilang dan untungnya mendadak tak terhitung.
+  produk_id     BIGINT NOT NULL REFERENCES produk(id) ON DELETE RESTRICT,
+
+  jumlah        NUMERIC NOT NULL CHECK (jumlah > 0),
+  -- Harga yang DISEPAKATI, bukan harga daftar. Kalau pembeli menawar 18.000 dan
+  -- pedagang setuju, 18.000 yang tercatat — meski produknya berharga 20.000.
+  harga_satuan  INTEGER NOT NULL CHECK (harga_satuan >= 0),
+
+  tanggal       DATE NOT NULL DEFAULT CURRENT_DATE,
+  -- Nomor yang diucapkan pedagang ke pembeli. Reset tiap hari, per pedagang:
+  -- urutan global akan membocorkan volume usaha antar pengguna.
+  urutan_harian INTEGER NOT NULL CHECK (urutan_harian > 0),
+
+  status        TEXT NOT NULL DEFAULT 'menunggu_bayar'
+                  CHECK (status IN ('menunggu_bayar','diproses','selesai','batal')),
+
+  -- --- fakta pembayaran, terpisah dari status ---
+  cara_bayar        TEXT CHECK (cara_bayar IN ('tunai','transfer','qris','nanti')),
+  -- NULL untuk kasbon: langkah bayar sudah dilewati, uangnya belum masuk.
+  dibayar_pada      TIMESTAMPTZ,
+  midtrans_order_id TEXT UNIQUE,
+  midtrans_status   TEXT,
+  midtrans_url      TEXT,
+
+  alasan_batal  TEXT,
+  -- Diisi hanya saat status jadi 'selesai'. Inilah jembatan ke buku besar.
+  transaksi_id  BIGINT REFERENCES transaksi(id) ON DELETE SET NULL,
+
+  dibuat_pada   TIMESTAMPTZ NOT NULL DEFAULT now(),
+  selesai_pada  TIMESTAMPTZ,
+
+  -- Penjaga terakhir kalau dua permintaan datang bersamaan: nomor kembar
+  -- ditolak database, bukan diharapkan tidak terjadi.
+  UNIQUE (user_id, tanggal, urutan_harian)
+);
+CREATE INDEX idx_pesanan_user     ON pesanan (user_id, dibuat_pada DESC);
+CREATE INDEX idx_pesanan_status   ON pesanan (user_id, status);
+CREATE INDEX idx_pesanan_transaksi ON pesanan (transaksi_id);
+
+-- ---------------------------------------------------------------------------
+-- v_pesanan — SEMUA uang pesanan lahir di sini
+--
+-- Tidak ada satu pun angka di bawah yang boleh dihitung ulang di TypeScript
+-- atau di React (aturan #1 dan #7). Kalau layar butuh angka baru, tambahkan
+-- kolomnya di sini.
+--
+-- untung_pesanan memakai harga_satuan YANG DISEPAKATI, bukan harga_jual produk.
+-- Di situlah letak seluruh gunanya: pesanan 20 kripik yang ditawar jadi 18.000
+-- muncul sebagai MINUS Rp 64.000, dan pedagang melihatnya sebelum menyetujui.
+-- ---------------------------------------------------------------------------
+CREATE VIEW v_pesanan AS
+SELECT
+  ps.id,
+  ps.user_id,
+  ps.pesan_id,
+  ps.produk_id,
+  m.nama              AS nama_produk,
+  ps.jumlah,
+  ps.harga_satuan,
+  ps.tanggal,
+  ps.urutan_harian,
+  -- "0902-07". Dirakit di SQL supaya tidak ada dua tempat yang merakitnya beda.
+  to_char(ps.tanggal, 'MMDD') || '-' || lpad(ps.urutan_harian::text, 2, '0') AS nomor,
+  ps.status,
+  ps.cara_bayar,
+  ps.dibayar_pada,
+  ps.midtrans_order_id,
+  ps.midtrans_status,
+  ps.midtrans_url,
+  ps.alasan_batal,
+  ps.transaksi_id,
+  ps.dibuat_pada,
+  ps.selesai_pada,
+
+  -- Konteks dari pesan aslinya, diambil lewat join alih-alih disalin: satu
+  -- kebenaran, dan kalimat pembeli tetap utuh di tempatnya.
+  pm.teks               AS teks_pesan,
+  pm.pengirim_samar,
+  pm.tanggal_dibutuhkan,
+
+  -- --- dihitung SQL ---
+  ROUND(ps.jumlah * ps.harga_satuan)::int AS nilai_pesanan,
+  m.modal_per_unit,
+  CASE WHEN m.modal_per_unit IS NULL THEN NULL
+       ELSE ROUND(ps.jumlah * (ps.harga_satuan - m.modal_per_unit))::int
+  END                   AS untung_pesanan,
+  CASE WHEN m.modal_per_unit IS NULL THEN NULL
+       ELSE (ps.harga_satuan - m.modal_per_unit) < 0
+  END                   AS merugi,
+  -- NULL = stok bahannya belum dicatat, BUKAN berarti habis.
+  k.maks_unit           AS stok_cukup_untuk
+FROM pesanan ps
+LEFT JOIN v_margin_produk    m  ON m.produk_id  = ps.produk_id
+LEFT JOIN v_kapasitas_produk k  ON k.produk_id  = ps.produk_id
+LEFT JOIN pesan_masuk        pm ON pm.id        = ps.pesan_id;
 
 -- ---------------------------------------------------------------------------
 -- v_saran_harga — fitur 8, menjawab "terus saya harus jual berapa?"

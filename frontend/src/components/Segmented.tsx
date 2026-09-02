@@ -18,7 +18,7 @@ export function Segmented<T extends string>({
   label: string;
 }) {
   return (
-    <div role="tablist" aria-label={label} className="flex gap-1 rounded-kontrol bg-kanvas p-1">
+    <div role="tablist" aria-label={label} className="flex gap-1 rounded-full bg-permukaan p-1">
       {pilihan.map((p) => {
         const aktif = p.nilai === nilai;
         return (
@@ -28,8 +28,8 @@ export function Segmented<T extends string>({
             role="tab"
             aria-selected={aktif}
             onClick={() => onPilih(p.nilai)}
-            className={`min-h-11 flex-1 rounded-[10px] px-2 text-isi font-semibold transition ${
-              aktif ? 'bg-kartu text-tinta shadow-sm' : 'text-sedang active:scale-95'
+            className={`min-h-11 flex-1 rounded-full px-2 text-isi font-semibold transition ${
+              aktif ? 'bg-kartu text-merek shadow-sm' : 'text-sedang active:scale-95'
             }`}
           >
             {p.label}

@@ -8,6 +8,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@shared': fileURLToPath(new URL('../shared', import.meta.url)),
+      // Dipakai komponen yang disalin dari registri shadcn (beUI), yang
+      // sumbernya selalu mengimpor '@/lib/utils'. Wajib ada di SINI dan di
+      // tsconfig.json sekaligus — kalau hanya salah satu, `tsc` lolos tapi
+      // Vite pecah, atau sebaliknya, dan galatnya baru muncul saat dibuka.
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   // Browser memanggil /api relatif; dev server meneruskan ke backend lokal.

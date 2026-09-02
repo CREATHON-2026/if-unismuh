@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Mic } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { BarisUsulan, UsulanTransaksi } from '@shared/types';
@@ -46,12 +46,33 @@ function buatPengenal(): PengenalSuara | null {
 
 export function CatatSuara() {
   const nav = useNavigate();
+  const lokasi = useLocation();
   const [teks, setTeks] = useState('');
   const [usulan, setUsulan] = useState<UsulanTransaksi | null>(null);
   const [mendengar, setMendengar] = useState(false);
   const [sibuk, setSibuk] = useState(false);
   const [galat, setGalat] = useState('');
   const pengenal = useRef<PengenalSuara | null>(null);
+  const sudahIsiAwal = useRef(false);
+
+  /**
+   * Kalimat kiriman dari layar Tanya.
+   *
+   * Diisi ke kotak teks, TIDAK langsung dibaca ke backend dan jelas tidak
+   * disimpan. Pedagang melihat kalimatnya lebih dulu dan menekan "Baca kalimat
+   * ini" sendiri — sama persis seperti kalau ia mengetiknya di sini.
+   *
+   * Dijaga `sudahIsiAwal` supaya render ulang tidak menimpa suntingan pengguna
+   * dengan kalimat asli yang sudah ia perbaiki.
+   */
+  useEffect(() => {
+    if (sudahIsiAwal.current) return;
+    const awal = (lokasi.state as { teks?: string } | null)?.teks;
+    if (typeof awal === 'string' && awal.trim()) {
+      setTeks(awal.trim());
+      sudahIsiAwal.current = true;
+    }
+  }, [lokasi.state]);
 
   const adaSuara = typeof window !== 'undefined' && buatPengenal() !== null;
   const amanUntukMic = typeof window !== 'undefined' && window.isSecureContext;
@@ -148,7 +169,7 @@ export function CatatSuara() {
         type="button"
         disabled={!adaSuara || !amanUntukMic || mendengar}
         onClick={mulaiRekam}
-        className="mt-4 flex min-h-20 w-full items-center justify-center gap-3 rounded-full bg-hero text-sub font-bold text-white transition active:scale-[0.98] disabled:opacity-40"
+        className="mt-4 flex min-h-20 w-full items-center justify-center gap-3 rounded-full bg-merek text-sub font-bold text-white transition active:scale-[0.98] disabled:bg-garis disabled:text-sedang disabled:active:scale-100"
       >
         <Mic size={26} strokeWidth={1.9} aria-hidden="true" />
         {mendengar ? 'Mendengarkan…' : 'Mulai bicara'}
@@ -163,7 +184,7 @@ export function CatatSuara() {
         onChange={(e) => setTeks(e.target.value)}
         rows={3}
         placeholder="hari ini laku 10 kripik pisang"
-        className="mt-2 w-full rounded-kartu border-[1.5px] border-garis-tua bg-kartu p-4 text-utama leading-relaxed text-tinta outline-none placeholder:text-redup focus:border-hero"
+        className="mt-2 w-full rounded-kartu border-[1.5px] border-garis-tua bg-kartu p-4 text-utama leading-relaxed text-tinta outline-none placeholder:text-redup focus:border-merek"
       />
       <div className="mt-3">
         <Tombol varian="gelap" disabled={!teks.trim() || sibuk} onClick={() => void bacaKalimat(teks)}>
@@ -225,7 +246,7 @@ export function CatatSuara() {
                         }
                         className={`min-h-12 rounded-full border-2 px-4 text-isi font-medium transition active:scale-95 ${
                           b.produk_id === k.id && !b.perlu_dicek
-                            ? 'border-hero bg-kanvas text-tinta'
+                            ? 'border-merek bg-kanvas text-tinta'
                             : 'border-garis-tua bg-white text-tinta'
                         }`}
                       >
@@ -247,7 +268,7 @@ export function CatatSuara() {
                       const n = e.target.value.trim();
                       ubahBaris(i, { jumlah: n === '' ? null : Number(n) });
                     }}
-                    className="h-14 w-24 rounded-2xl border-2 border-garis-tua px-4 text-lg outline-none focus:border-hero"
+                    className="h-14 w-24 rounded-2xl border-2 border-garis-tua px-4 text-lg outline-none focus:border-merek"
                   />
                 </div>
               </div>
@@ -261,7 +282,7 @@ export function CatatSuara() {
           )}
 
           <div className="mt-5">
-            <Tombol varian="gelap" disabled={siap.length === 0 || sibuk} onClick={() => void simpan()}>
+            <Tombol varian="utama" disabled={siap.length === 0 || sibuk} onClick={() => void simpan()}>
               Simpan {siap.length} penjualan
             </Tombol>
           </div>

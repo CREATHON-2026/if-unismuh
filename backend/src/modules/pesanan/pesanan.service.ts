@@ -2,7 +2,7 @@ import { rupiah } from '../../lib/rupiah.ts';
 import { llmSiap } from '../../lib/llm.ts';
 import { GalatTampil } from '../../lib/http.ts';
 import { KODE_GALAT, type AnalisisPesanan, type BalasanReq, type BalasanRes, type KandidatProduk } from '../../../../shared/types.ts';
-import { klasifikasiPesan, susunBalasan } from './pesanan.llm.ts';
+import { klasifikasiPesan, susunBalasan, adaPenandaTawar, HARGA_TOTAL } from './pesanan.llm.ts';
 import { cariKandidatProduk, hitungPesanan, simpanPesan, daftarPesan } from './pesanan.queries.ts';
 import type { CocokNamaProduk, HasilCocok, HitungPesanan } from './pesanan.types.ts';
 
@@ -160,9 +160,69 @@ export async function prosesPesan(
     : TANPA_NAMA;
 
   // Semua angka di bawah ini datang dari SQL.
-  const hitung = cocok.produkId
-    ? await hitungPesanan(cocok.produkId, userId, baca.jumlah, baca.harga_diminta)
+  //
+  // `hargaDisebut` disimpan terpisah karena dipakai dua kali: sekali untuk
+  // memutuskan apakah angkanya harga satuan atau harga total, sekali lagi
+  // untuk memutuskan pembeli ini sedang menawar atau tidak.
+  const hargaDisebut = baca.harga_diminta;
+  let hargaDiminta = hargaDisebut;
+  let angkaItuTotal = false;
+  let ragu = baca.ragu;
+  let hitung = cocok.produkId
+    ? await hitungPesanan(cocok.produkId, userId, baca.jumlah, hargaDiminta)
     : null;
+
+  // Bukti terkuat bahwa angka yang disebut pembeli sebenarnya harga TOTAL:
+  // tidak ada pembeli yang menawar LEBIH MAHAL dari harga jual pedagang.
+  //
+  // Penyaring teks di pesanan.llm.ts hanya melihat kalimatnya, jadi ia lolos
+  // pada "kripik pisang 10 bungkus 150rb" — 150rb memang tertulis, dan tidak
+  // ada kata "total". Di sini kita punya harga jual tersimpan, dan itu cukup
+  // untuk memastikan tanpa perlu membagi apa pun.
+  //
+  // Akibat kalau dibiarkan (terukur di uji 120 pesan): nilai pesanan
+  // membengkak sampai 10x DAN penanda merugi terbalik — aplikasi memberi tahu
+  // pedagang bahwa ia untung justru pada pesanan yang membuatnya rugi.
+  //
+  // Yang dilakukan di sini bukan membagi harga total jadi harga satuan — itu
+  // menebak (aturan #8). Angkanya DIBUANG, perhitungan kembali memakai harga
+  // jual tersimpan, dan pedagang diberi tahu untuk memastikan sendiri.
+  if (hitung && hargaDiminta !== null && baca.jumlah !== null && baca.jumlah > 1
+      && hargaDiminta > hitung.harga_jual) {
+    hargaDiminta = null;
+    angkaItuTotal = true;
+    ragu ??= HARGA_TOTAL;
+    hitung = await hitungPesanan(hitung.produk_id, userId, baca.jumlah, null);
+  }
+
+  // Menawar atau tidak — diputuskan dengan MEMBANDINGKAN angka SQL, bukan
+  // menebak dari pilihan kata.
+  //
+  // Model salah di kedua arah: "bu kacang telurnya 4000 aja ya" dibacanya
+  // pesanan biasa (padahal harga jualnya 5000 — itu tawaran), sementara "yang
+  // 5000an" dibacanya tawaran (padahal 5000 memang harga jualnya — pembeli cuma
+  // memastikan). Kata-katanya nyaris sama; yang membedakan hanya angkanya.
+  //
+  // Salah arah pertama yang berbahaya: tawaran yang menyamar jadi pesanan biasa
+  // membuat pedagang menyiapkan barang tanpa pernah melihat layar tawar-menawar,
+  // dan potongan harganya baru ketahuan setelah barang jadi.
+  //
+  // Tapi angka saja tidak cukup. "bisa ji kurang harganya? mau ka ambil 20
+  // donat" adalah tawaran yang tegas, dan model mengisi harga_diminta dengan
+  // harga jual — kalau angka yang menang, tawaran itu turun jadi pesanan biasa.
+  // Jadi kalimatnya punya hak veto: angka boleh MENAIKKAN pesanan jadi tawaran,
+  // tapi hanya boleh menurunkannya kalau tidak ada kata tawar-menawar sama
+  // sekali.
+  //
+  // Perbandingan di bawah tidak menghitung apa pun: `harga_jual` dan
+  // `nilai_pesanan` dua-duanya keluar dari SQL, di sini hanya dibandingkan.
+  let jenis = baca.jenis;
+  if (hitung && hargaDisebut !== null && (jenis === 'pesanan' || jenis === 'menawar')) {
+    const dibandingkan = angkaItuTotal ? hitung.nilai_pesanan : hitung.harga_jual;
+    if (dibandingkan !== null) {
+      jenis = hargaDisebut < dibandingkan || adaPenandaTawar(teks) ? 'menawar' : 'pesanan';
+    }
+  }
 
   // Dua keadaan yang berbeda, dan pedagang perlu tahu bedanya:
   // barangnya tidak disebut sama sekali, vs disebut tapi belum terdaftar.
@@ -171,29 +231,53 @@ export async function prosesPesan(
     : baca.nama_produk_mentah
       ? [`Produk "${baca.nama_produk_mentah}" belum ada di daftar. Tambahkan dulu supaya untung-ruginya bisa dicek.`]
       : ['Pembeli belum menyebutkan barang apa yang dipesan. Tanyakan dulu ke pembelinya.'];
+  if (ragu !== null) peringatan.unshift(ragu);
+
+  // Satu penanda "mohon dilihat dulu" untuk dua sebab yang berbeda: nama
+  // produknya belum pasti, atau ada angka yang tidak bisa dipertanggungjawabkan.
+  // Alasannya dijelaskan `peringatan`; penanda ini yang membuat kartunya
+  // bertanda di layar.
+  const perluDicek = cocok.perluDicek || ragu !== null;
 
   const pesanId = await simpanPesan({
     userId, teks, sumber, pengirimSamar,
-    jenis: baca.jenis,
+    jenis,
     namaProdukMentah: baca.nama_produk_mentah,
-    produkId: cocok.perluDicek ? null : cocok.produkId,
+    // Dugaan pencocokan DISIMPAN apa adanya, ditemani penanda `perlu_dicek`.
+    //
+    // Dulu kolom ini dikosongkan setiap kali `perluDicek`, dan akibatnya
+    // parah: jawaban langsung menampilkan "RUGI Rp 12.000", tapi begitu
+    // daftarnya dimuat ulang, produk, nilai pesanan, untung, dan penanda rugi
+    // semuanya jadi null — karena daftarPesan() LEFT JOIN ke produk_id yang
+    // kosong. Yang tersisa cuma teks mentahnya.
+    //
+    // Di jalur WhatsApp pedagang tidak sedang menatap layar saat pesan masuk;
+    // yang ia lihat besok pagi HANYA daftar itu. Jadi justru peringatan
+    // terpentinglah yang tidak pernah sampai. Menyimpan dugaan + penanda
+    // "belum pasti" lebih jujur daripada menyimpan ketidaktahuan: pedagang
+    // melihat angkanya sekaligus melihat bahwa itu belum dipastikan.
+    //
+    // Ini tidak melanggar aturan #2 — `pesan_masuk` adalah kotak masuk, bukan
+    // pembukuan. Tidak ada satu pun baris `transaksi` yang lahir dari sini
+    // tanpa pedagang menekan tombol.
+    produkId: cocok.produkId,
     jumlah: baca.jumlah,
-    hargaDiminta: baca.harga_diminta,
+    hargaDiminta,
     tanggalDibutuhkan: baca.tanggal_dibutuhkan,
     keyakinanCocok: cocok.skor,
-    perluDicek: cocok.perluDicek,
+    perluDicek,
     hasilMentah: baca,
   });
 
   return {
     pesan_id: pesanId,
-    jenis: baca.jenis,
+    jenis,
     produk: hitung ? { id: hitung.produk_id, nama: hitung.nama } : null,
     nama_produk_mentah: baca.nama_produk_mentah,
     jumlah: baca.jumlah,
-    harga_diminta: baca.harga_diminta,
+    harga_diminta: hargaDiminta,
     tanggal_dibutuhkan: baca.tanggal_dibutuhkan,
-    perlu_dicek: cocok.perluDicek,
+    perlu_dicek: perluDicek,
     kandidat: cocok.kandidat,
     nilai_pesanan: hitung?.nilai_pesanan ?? null,
     untung_pesanan: hitung?.untung_pesanan ?? null,

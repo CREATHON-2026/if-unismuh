@@ -32,6 +32,7 @@ const SUMBER_LABEL: Record<Transaksi['sumber'], string> = {
   foto: 'Foto',
   suara: 'Suara',
   manual: 'Ketik',
+  pesanan: 'Pesanan',
 };
 
 type Saringan = 'hari' | 'minggu' | 'bulan';

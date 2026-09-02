@@ -2,6 +2,9 @@
 import { wajibLogin } from '../../middleware/auth.ts';
 import { jalur } from '../../lib/http.ts';
 import { analisisPesanan, daftarPesanan, balasanPesanan } from './pesanan.controller.ts';
+// Isi bottom sheet. Hidup di modul proses karena yang dilayaninya adalah
+// keputusan "jadi pesanan apa", bukan pembacaan pesannya.
+import { pilihan } from '../proses/proses.controller.ts';
 
 /**
  * Rute Pesanan Masuk — HANYA pemetaan jalur ke controller.
@@ -14,3 +17,4 @@ rutPesanan.use(wajibLogin);
 rutPesanan.post('/analisis', jalur(analisisPesanan));
 rutPesanan.get('/', jalur(daftarPesanan));
 rutPesanan.post('/balasan', jalur(balasanPesanan));
+rutPesanan.get('/:id/pilihan', jalur(pilihan));

@@ -28,6 +28,10 @@ export const KODE_GALAT = {
   BERKAS_TERLALU_BESAR: 'BERKAS_TERLALU_BESAR',
   RESEP_BELUM_LENGKAP: 'RESEP_BELUM_LENGKAP',
   PERMINTAAN_TIDAK_VALID: 'PERMINTAAN_TIDAK_VALID',
+  /** Pesanan tidak ada, atau milik pedagang lain — dua-duanya dijawab 404 */
+  PESANAN_TIDAK_DITEMUKAN: 'PESANAN_TIDAK_DITEMUKAN',
+  /** Sudah dibayar/diselesaikan/dibatalkan sebelumnya — mencegah catat ganda */
+  PESANAN_SUDAH_DIPROSES: 'PESANAN_SUDAH_DIPROSES',
   GALAT_SERVER: 'GALAT_SERVER',
 } as const;
 
@@ -371,6 +375,15 @@ export interface PesanMasukItem {
   merugi: boolean | null;
   /** null = stok bahannya belum dicatat, bukan berarti nol */
   stok_cukup_untuk: number | null;
+
+  /**
+   * Pesanan HIDUP yang lahir dari chat ini — null kalau belum diproses, dan
+   * null lagi kalau pesanannya dibatalkan. Ada supaya kotak masuk tidak
+   * menawarkan pesan yang sama dua kali dan membuat pesanan kembar.
+   */
+  pesanan_id: number | null;
+  pesanan_nomor: string | null;
+  pesanan_status: StatusPesanan | null;
 }
 
 /** Balasan siap salin untuk pembeli — fitur 9, penutup alur Pesanan Masuk. */
@@ -425,7 +438,7 @@ export interface StokBahan {
 // Transaksi
 // ---------------------------------------------------------------------------
 
-export type SumberTransaksi = 'foto' | 'suara' | 'manual';
+export type SumberTransaksi = 'foto' | 'suara' | 'manual' | 'pesanan';
 
 export interface BarisTransaksi {
   produk_id: number;
@@ -606,4 +619,209 @@ export interface OngkosTenagaReq {
   jam_per_batch: number;
   /** Kalau kerja di tempat orang, sejam dibayar berapa */
   upah_per_jam: number;
+}
+
+// ---------------------------------------------------------------------------
+// Proses Pesanan — pesanan masuk sampai jadi untung
+//
+// Rantainya: pesan_masuk (apa kata pembeli) -> pesanan (apa yang disepakati
+// pedagang) -> transaksi (buku besar). Tiga tabel, tiga peran, tidak boleh
+// tercampur. Lihat docs/superpowers/specs/2026-09-02-pesanan-ke-untung-design.md
+// ---------------------------------------------------------------------------
+
+/**
+ * Tahap PENYERAHAN BARANG, bukan keadaan uang.
+ *
+ * Sengaja tidak ada nilai 'dibayar': pesanan kasbon akan tampil "Dibayar"
+ * padahal uangnya belum masuk. Fakta pembayaran hidup di `cara_bayar` dan
+ * `dibayar_pada`, terpisah dari status.
+ */
+export type StatusPesanan = 'menunggu_bayar' | 'diproses' | 'selesai' | 'batal';
+
+export type CaraBayar = 'tunai' | 'transfer' | 'qris' | 'nanti';
+
+export interface BuatPesananReq {
+  /** Boleh null: pembeli yang datang langsung tidak punya chat */
+  pesan_id: number | null;
+  /** Pilihan PEDAGANG, mengalahkan tebakan AI */
+  produk_id: number;
+  jumlah: number;
+  /** Harga yang DISEPAKATI, bukan harga daftar */
+  harga_satuan: number;
+}
+
+export interface Pesanan {
+  id: number;
+  /** "0902-07" — dirakit di SQL, diucapkan pedagang ke pembeli */
+  nomor: string;
+  pesan_id: number | null;
+  produk_id: number;
+  nama_produk: string | null;
+  jumlah: number;
+  harga_satuan: number;
+  tanggal: string;
+
+  status: StatusPesanan;
+  cara_bayar: CaraBayar | null;
+  /** null untuk kasbon: langkah bayar dilewati, uangnya belum masuk */
+  dibayar_pada: string | null;
+  /** Tautan bayar Midtrans — DISALIN pedagang, tidak pernah dikirim sistem */
+  midtrans_url: string | null;
+  midtrans_status: string | null;
+  alasan_batal: string | null;
+  /** Terisi hanya setelah selesai — inilah jejak ke buku besar */
+  transaksi_id: number | null;
+  dibuat_pada: string;
+  selesai_pada: string | null;
+
+  /** Kalimat asli pembeli, diambil lewat join — bukan disalin */
+  teks_pesan: string | null;
+  pengirim_samar: string | null;
+  tanggal_dibutuhkan: string | null;
+
+  // --- dihitung SQL (aturan #1 dan #7) ---
+  nilai_pesanan: number;
+  modal_per_unit: number | null;
+  untung_pesanan: number | null;
+  merugi: boolean | null;
+  /** null = stok bahannya belum dicatat, BUKAN habis */
+  stok_cukup_untuk: number | null;
+
+  /** Kalimat siap tampil; kosong kalau tidak ada yang perlu diwaspadai */
+  peringatan: string[];
+}
+
+/** Isi bottom sheet: yang ditebak AI, dan semua yang bisa dipilih pedagang. */
+export interface PilihanPesanan {
+  pesan_id: number;
+  nama_produk_mentah: string | null;
+  jumlah: number | null;
+  harga_diminta: number | null;
+  perlu_dicek: boolean;
+  /** Diurutkan dari yang paling mirip; kosong kalau AI yakin */
+  kandidat: KandidatProduk[];
+  /** Semua produk pedagang — jalan keluar kalau tebakan AI meleset jauh */
+  produk: RingkasanProduk[];
+}
+
+export interface BayarReq { cara: CaraBayar; }
+export interface BatalReq { alasan: string; }
+
+export interface RiwayatPesanan {
+  daftar: Pesanan[];
+  ringkasan: {
+    total: number;
+    menunggu_bayar: number;
+    diproses: number;
+    selesai: number;
+    gagal: number;
+    /** Sudah diserahkan tapi uangnya belum masuk — piutang */
+    belum_dibayar: number;
+    /** HANYA dari pesanan selesai. Yang batal tidak menyentuh buku besar */
+    untung: number;
+  };
+}
+
+/**
+ * Struk 58 mm.
+ *
+ * SENGAJA tidak memuat modal maupun untung: struk ini dilihat pembeli, dan
+ * margin adalah rahasia dagang pedagang. Disembunyikan di lapisan data, bukan
+ * lewat CSS — yang disembunyikan CSS tetap terkirim lewat kabel.
+ */
+export interface Struk {
+  nomor: string;
+  transaksi_id: number | null;
+  nama_usaha: string | null;
+  nama_produk: string | null;
+  jumlah: number;
+  harga_satuan: number;
+  total: number;
+  cara_bayar: CaraBayar | null;
+  lunas: boolean;
+  tanggal: string;
+  waktu: string;
+}
+
+// ---------------------------------------------------------------------------
+// Tanya lapakAi — chatbot
+//
+// Rancangannya di docs/14-chatbot.md dan
+// docs/superpowers/specs/2026-09-02-chatbot-tanya-design.md.
+//
+// Yang perlu diketahui saat membaca tipe di bawah: LLM ada di ujung depan
+// (membaca maksud) dan template ada di ujung belakang (menyusun kalimat).
+// SQL ada di tengah, dan HANYA SQL yang menghitung.
+// ---------------------------------------------------------------------------
+
+/**
+ * Daftar maksud TERTUTUP. Bukan teks bebas.
+ *
+ * Model lokal mengarang nilai di luar daftar kalau diberi kesempatan, jadi
+ * keluarannya divalidasi terhadap daftar ini dan yang tidak cocok jatuh ke
+ * `tidak_paham`. Menambah maksud baru berarti menambah query SQL yang
+ * menjawabnya — bukan sekadar menambah string di sini.
+ */
+export const MAKSUD = {
+  UNTUNG_PERIODE: 'untung_periode',
+  PRODUK_MERUGI: 'produk_merugi',
+  MODAL_PRODUK: 'modal_produk',
+  SARAN_HARGA: 'saran_harga',
+  KAPASITAS_STOK: 'kapasitas_stok',
+  PRODUK_TERLARIS: 'produk_terlaris',
+  /** Tidak dijawab di sini — pengguna dialihkan ke layar Catat */
+  CATAT_TRANSAKSI: 'catat_transaksi',
+  /** Di luar cakupan. Dijawab jujur, dan `acuan` WAJIB null */
+  TIDAK_PAHAM: 'tidak_paham',
+} as const;
+
+export type Maksud = (typeof MAKSUD)[keyof typeof MAKSUD];
+
+export interface TanyaReq {
+  pertanyaan: string;
+}
+
+/**
+ * POST /tanya — satu pertanyaan, satu jawaban. Hanya-baca.
+ *
+ * Tidak ada `percakapan_id` dan tidak ada riwayat: tiap pertanyaan berdiri
+ * sendiri. "Kalau yang itu bagaimana?" memaksa model menyimpulkan rujukan, dan
+ * salah rujuk berarti menjawab soal produk yang salah dengan angka yang benar —
+ * kelas kegagalan yang paling sulit dilihat.
+ */
+export interface TanyaRes {
+  maksud: Maksud;
+
+  /** Kalimat siap tampil. Disusun template dari angka di `acuan` */
+  jawaban: string;
+
+  /**
+   * Angka mentah dari SQL, apa adanya.
+   *
+   * Ini yang membuat jawabannya bisa ditelusuri: kalau `jawaban` menyebut angka
+   * yang tidak ada di sini, itu ketahuan — oleh uji otomatis maupun oleh siapa
+   * pun yang membuka Network tab. Frontend menampilkannya sebagai kartu angka
+   * di bawah gelembung jawaban, BUKAN menghitung apa pun darinya (aturan #7).
+   *
+   * WAJIB null untuk `tidak_paham`: secara struktur mustahil mengarang angka
+   * untuk pertanyaan yang tidak dipahami.
+   */
+  acuan: Record<string, number | string> | null;
+
+  /**
+   * Hal yang membuat angkanya tidak utuh, misalnya "2 transaksi belum ikut
+   * dihitung untungnya karena resepnya belum diisi".
+   *
+   * Angka yang tidak lengkap tanpa diberi tahu adalah angka yang salah.
+   */
+  peringatan: string[];
+
+  /**
+   * Diisi HANYA saat maksudnya `catat_transaksi`.
+   *
+   * Modul tanya tidak pernah menulis ke database. Mencatat dialihkan ke layar
+   * Catat yang sudah punya konfirmasi manusia — menyalin layar itu berarti
+   * menyediakan tempat kedua bagi aturan #2 untuk bocor.
+   */
+  alihkan_ke: { rute: '/catat'; teks: string } | null;
 }

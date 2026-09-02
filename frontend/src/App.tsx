@@ -19,12 +19,16 @@ import { Beranda } from './screens/Beranda';
 import { DaftarProduk } from './screens/DaftarProduk';
 import { DetailProduk } from './screens/DetailProduk';
 import { PesananMasuk } from './screens/PesananMasuk';
+import { ProsesPesanan } from './screens/ProsesPesanan';
+import { RiwayatPesanan } from './screens/RiwayatPesanan';
+import { StrukPesanan } from './screens/StrukPesanan';
 import { CatatSuara } from './screens/CatatSuara';
 import { SambungWhatsApp } from './screens/SambungWhatsApp';
 import { Rekap } from './screens/Rekap';
 import { Profil } from './screens/Profil';
 import { Notifikasi } from './screens/Notifikasi';
 import { RiwayatPenjualan } from './screens/RiwayatPenjualan';
+import { Tanya } from './screens/Tanya';
 
 export default function App() {
   const nav = useNavigate();
@@ -79,8 +83,12 @@ export default function App() {
       <Route path="/produk" element={<DaftarProduk />} />
       <Route path="/produk/:id" element={<DetailProduk />} />
       <Route path="/catat" element={<CatatSuara />} />
+      <Route path="/tanya" element={<Tanya />} />
       <Route path="/pesanan" element={<PesananMasuk />} />
       <Route path="/pesanan/whatsapp" element={<SambungWhatsApp />} />
+      <Route path="/pesanan/riwayat" element={<RiwayatPesanan />} />
+      <Route path="/proses/:id" element={<ProsesPesanan />} />
+      <Route path="/struk/:id" element={<StrukPesanan />} />
       <Route path="/rekap" element={<Rekap />} />
       <Route path="/profil" element={<Profil />} />
       <Route path="/notifikasi" element={<Notifikasi />} />

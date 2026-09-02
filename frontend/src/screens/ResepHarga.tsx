@@ -52,7 +52,7 @@ export function ResepHarga() {
           Harga jual saat ini ke pembeli.
         </p>
 
-        <div className="mt-5 flex h-[72px] items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 transition focus-within:border-hero">
+        <div className="mt-5 flex h-[72px] items-center rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 transition focus-within:border-merek">
           <span className="text-sub font-bold text-sedang">Rp</span>
           <span className="mx-3 h-8 w-px bg-garis" aria-hidden="true" />
           <input
@@ -70,7 +70,7 @@ export function ResepHarga() {
       </div>
 
       <div className="mt-8">
-        <Tombol varian="gelap" disabled={!valid || sibuk} onClick={kirim}>
+        <Tombol varian="utama" disabled={!valid || sibuk} onClick={kirim}>
           <span className="flex items-center justify-center gap-2.5">
             {sibuk ? 'Menghitung…' : 'Lihat hasilnya'}
             {!sibuk && <ArrowRight size={20} strokeWidth={2.2} aria-hidden="true" />}
