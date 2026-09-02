@@ -31,7 +31,9 @@ Kalau kamu hanya sempat membaca satu file, baca [CLAUDE.md](../CLAUDE.md) di roo
 
 ### Kamu AI coding assistant
 
-Baca [CLAUDE.md](../CLAUDE.md) dan `CLAUDE.md` di folder tempat kamu bekerja. Sebelum menjelajah kode, tanya knowledge graph dulu:
+Baca [CLAUDE.md](../CLAUDE.md) dan `CLAUDE.md` di folder tempat kamu bekerja. Lalu [13-superpowers.md](13-superpowers.md) — metodologi kerja yang berlaku di repo ini, beserta dua penyesuaian yang wajib diketahui sebelum membuat worktree atau menulis tes.
+
+Sebelum menjelajah kode, tanya knowledge graph dulu:
 
 ```bash
 graphify query "pertanyaanmu di sini"
@@ -51,8 +53,10 @@ graphify query "pertanyaanmu di sini"
 | [08-keamanan-data.md](08-keamanan-data.md) | Autentikasi, sesi, isolasi data, retensi |
 | [09-demo.md](09-demo.md) | Skrip demo, akun demo, persiapan tanya jawab |
 | [10-kerja-tim.md](10-kerja-tim.md) | Pembagian kerja, kepemilikan, aturan freeze |
-| [11-setup-tim.md](11-setup-tim.md) | Pasang Claude Code, superpowers, graphify |
+| [11-setup-tim.md](11-setup-tim.md) | Pasang Claude Code / Copilot CLI, superpowers, graphify |
 | [12-kriteria-foto-buku.md](12-kriteria-foto-buku.md) | Foto buku seperti apa yang terpakai — panduan untuk yang mengumpulkan |
+| [13-superpowers.md](13-superpowers.md) | Metodologi kerja AI assistant, dan dua penyesuaian wajib untuk repo ini |
+| [14-chatbot.md](14-chatbot.md) | Rancangan chatbot "Tanya lapakAi" — **belum dikerjakan**, dan kenapa belum |
 
 ## Kalau dokumen dan kode berbeda
 
