@@ -19,6 +19,14 @@ import { RangkaHero, RangkaKartu } from '../components/Rangka';
  * keluarnya (saran harga, fitur 8). Berhenti di kabar buruk saja membuat
  * pedagang merasa dihakimi, bukan dibantu.
  *
+ * Dari mockup tim yang sengaja TIDAK dibawa:
+ * - "Harga Modal" sebagai kolom ketik: modal DIHITUNG SQL dari resep bahan
+ *   (fitur 5), bukan diketik — modal ketikan tidak bisa ditelusuri asalnya.
+ *   Mau mengubah modal? Ubah resep/bahannya.
+ * - Simpan Perubahan & Hapus Produk: endpoint-nya belum ada — kontraknya
+ *   sudah diusulkan di docs/06 (PATCH /produk/:id/harga, DELETE /produk/:id).
+ * - Foto, kategori, toggle "stok tersedia": tidak ada di data produk.
+ *
  * Rincian bahan menjumlah PERSIS ke modal per unit — itu dijaga uji di backend.
  * Frontend hanya menampilkan; tidak ada satu penjumlahan pun di sini.
  */
@@ -104,18 +112,20 @@ export function DetailProduk() {
               : `Sudah terjual ${d.total_terjual} kali.`
           }
           bawah={
-            <div className="flex flex-col gap-2.5">
-              <div className="flex items-center justify-between text-isi">
-                <span className="text-white/70">Modal per unit</span>
-                <span className="angka font-semibold text-white">
+            /* Dua kolom ala mockup: modal kiri, jual kanan — tetap read-only. */
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-isi font-medium text-white/70">Harga modal</p>
+                <p className="angka mt-1 text-judul-kecil font-bold text-white">
                   {d.modal_per_unit == null ? 'belum diisi' : formatRupiah(d.modal_per_unit)}
-                </span>
+                </p>
+                <p className="mt-0.5 text-label text-white/70">Dihitung dari resep</p>
               </div>
-              <div className="flex items-center justify-between text-isi">
-                <span className="text-white/70">Harga jual</span>
-                <span className="angka font-semibold text-white">
+              <div>
+                <p className="text-isi font-medium text-white/70">Harga jual</p>
+                <p className="angka mt-1 text-judul-kecil font-bold text-white">
                   {formatRupiah(d.harga_jual)}
-                </span>
+                </p>
               </div>
             </div>
           }

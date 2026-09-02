@@ -365,6 +365,14 @@ Tampilkan produk seperti itu sebagai **"modal belum diisi"**, bukan sebagai untu
 
 Kalau `bahan` diisi, `hasil_per_batch` wajib dan setiap bahan wajib punya `jumlah`, `jumlah_beli`, dan `harga_beli` — resep setengah jadi menghasilkan modal yang salah tanpa pesan galat.
 
+### `PATCH /produk/:id/harga` — **belum ada di backend**
+Usulan dari desain Detail Produk: pedagang mengganti harga jual (mis. memakai harga yang disarankan fitur 8). Body `{ "harga_jual": 22000 }`, jawabannya **DetailProduk penuh** dengan margin/saran terbaru dari SQL — frontend tidak menghitung selisihnya sendiri.
+
+**Harga modal TIDAK pernah bisa diubah lewat endpoint mana pun** — modal hasil hitungan resep (fitur 5). Mengubah modal = mengubah resep.
+
+### `DELETE /produk/:id` — **belum ada di backend**
+Usulan dari desain Detail Produk. Jawaban `{ "terhapus": true }`. Transaksi lama produk itu harus tetap utuh di laporan (jangan ikut terhapus) — detail keputusannya di pemilik backend.
+
 ### `PATCH /produk/:id/tenaga` — fitur 11
 
 Hitung waktu pedagang sebagai bagian dari modal.
