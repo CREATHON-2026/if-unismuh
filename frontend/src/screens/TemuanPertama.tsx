@@ -68,7 +68,7 @@ export function TemuanPertama() {
           bawah={
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center justify-between text-isi">
-                <span className="flex items-center gap-2.5 text-white/55">
+                <span className="flex items-center gap-2.5 text-white/70">
                   <ShoppingCart size={17} strokeWidth={1.8} aria-hidden="true" />
                   Modal Anda
                 </span>
@@ -77,7 +77,7 @@ export function TemuanPertama() {
                 </span>
               </div>
               <div className="flex items-center justify-between text-isi">
-                <span className="flex items-center gap-2.5 text-white/55">
+                <span className="flex items-center gap-2.5 text-white/70">
                   <Tag size={17} strokeWidth={1.8} aria-hidden="true" />
                   Dijual
                 </span>

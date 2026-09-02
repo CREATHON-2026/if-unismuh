@@ -17,6 +17,11 @@
  * Yang diambil dari rujukan adalah sistem rupanya, bukan kepadatannya.
  *
  * Warna dipakai untuk arti, bukan hiasan:
+ *   navy   = warna merek dari logo (#29447D). Tinta, kartu gelap, tombol,
+ *            dan keadaan aktif — semuanya satu keluarga navy ini.
+ *   oranye = aksen merek (#FF7100), HANYA untuk logo/wordmark dan sentuhan
+ *            dekoratif. Gagal AA sebagai latar teks (putih 2,8:1, navy 3,4:1)
+ *            — jangan pernah jadi tombol atau teks penting.
  *   hijau  = untung. Hanya itu. Tidak untuk "aman", "berhasil", atau hiasan —
  *            kalau ada hijau yang bukan soal uang masuk, artinya rusak.
  *   merah  = rugi, galat, dan tindakan yang menghapus. Satu register rasa:
@@ -32,9 +37,9 @@
      sekarang menunjuk ke Geist, bukan lagi ke huruf yang berbeda sendiri. */
   --font-logo: "Geist", ui-sans-serif, system-ui, sans-serif;
 
-  /* Tinta */
-  --color-tinta: #0F172A;
-  --color-sedang: #475569;
+  /* Tinta — keluarga navy logo, digelapkan supaya nyaman sebagai teks */
+  --color-tinta: #1B2B4D;
+  --color-sedang: #47587B;
   /* Diukur, bukan dipilih dari selera: #8A94A6 yang lama hanya 2,75:1 di atas
      kanvas — gagal WCAG AA, padahal dipakai 39 kali untuk teks 12,5-14px.
      Pengguna kita berusia 35-60 tahun; justru kelompok yang paling butuh
@@ -49,9 +54,19 @@
   --color-garis-tua: #CBD3DC;
 
   /* Kartu gelap — untuk SATU angka terpenting per layar, tidak lebih.
+     Warnanya navy logo apa adanya (#29447D). Karena lebih terang daripada
+     arang yang lama, teks putih-transparan di atasnya minimal /70 — white/70
+     memberi 5,6:1, sedangkan /50 yang dulu lolos kini hanya 3,7:1.
      Kalau ada dua kartu gelap, tidak ada lagi yang "paling penting". */
-  --color-hero: #1B2536;
-  --color-hero-muda: #2A3648;
+  --color-hero: #29447D;
+  --color-hero-muda: #3A5694;
+
+  /* Aksen merek dari logo. Lihat catatan oranye di atas: bukan untuk teks. */
+  --color-aksen: #FF7100;
+  --color-aksen-muda: #FFEFE2;
+  /* Oranye digelapkan untuk garis grafik: 3,6:1 di atas putih (batas non-teks);
+     #FF7100 asli hanya 2,8:1. */
+  --color-aksen-tua: #E06000;
 
   /* Untung */
   --color-untung: #1E6F4C;

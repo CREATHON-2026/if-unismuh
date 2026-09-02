@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { ArrowLeft } from 'lucide-react';
+import { LogoTeks } from './Logo';
 
 // Latar layar. Namanya masih "gradien" karena dipakai di banyak berkas; isinya
 // sudah lama bukan gradien, dan sekarang jadi kanvas abu netral. Gradien
@@ -41,7 +42,11 @@ export function Layar({
 }) {
   return (
     <div className={`min-h-dvh ${latar ?? 'bg-kanvas'}`}>
-      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 py-6">
+      {/* Satu kolom di semua ukuran — ini aplikasi saku, bukan dashboard.
+          Di tablet/desktop kolomnya melebar secukupnya lalu berhenti: 512px
+          (md) dan 576px (xl). Lebih dari itu, baris teks jadi terlalu panjang
+          dan angka-angka yang harus dibandingkan saling menjauh. */}
+      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 py-6 md:max-w-lg md:px-8 md:py-8 xl:max-w-xl">
         {!tanpaLogo && (
           <div className="relative flex items-center justify-center pb-6 sm:pb-8">
             {kembali && (
@@ -54,7 +59,7 @@ export function Layar({
                 <ArrowLeft size={24} strokeWidth={2} aria-hidden="true" />
               </button>
             )}
-            <span className="text-sub font-extrabold tracking-[-0.02em] text-tinta">lapakAi</span>
+            <LogoTeks className="text-sub" />
           </div>
         )}
         {pertanyaan && (

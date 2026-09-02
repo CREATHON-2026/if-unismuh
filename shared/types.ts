@@ -257,6 +257,37 @@ export interface Beranda {
 }
 
 // ---------------------------------------------------------------------------
+// Rekap (fitur 14)
+// ---------------------------------------------------------------------------
+
+/** Satu titik di grafik tren (per hari). Kedua angka dijumlahkan SQL. */
+export interface TitikTren {
+  /** Label siap tampil, mis. "Sen", "Sel". Frontend tidak merangkai tanggal. */
+  label: string;
+  omzet: number;
+  /** Mengikuti aturan Beranda: hanya penjualan yang modal produknya diketahui */
+  untung_bersih: number;
+}
+
+/**
+ * GET /rekap — fitur 14, grafik tren omzet vs untung minggu berjalan.
+ *
+ * Semua angka dihitung SQL. Frontend hanya menggambar garisnya — memetakan
+ * nilai ke piksel adalah tampilan, bukan perhitungan finansial (aturan #7).
+ */
+export interface Rekap {
+  /** 7 hari terakhir, urut dari paling lama ke hari ini */
+  hari: TitikTren[];
+  /** Total sepanjang periode grafik, dijumlahkan SQL — bukan oleh frontend */
+  omzet: number;
+  untung_bersih: number;
+  /** false -> tampilkan ajakan mencatat, bukan grafik datar nol */
+  ada_transaksi: boolean;
+  /** Paling banyak terjual sepanjang periode. null kalau belum ada penjualan */
+  produk_terlaris: { id: number; nama: string; jumlah_terjual: number } | null;
+}
+
+// ---------------------------------------------------------------------------
 // Pesanan Masuk (fitur 9)
 // ---------------------------------------------------------------------------
 

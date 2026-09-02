@@ -1,4 +1,5 @@
-// Klien API lapakAi — semuanya endpoint asli, tidak ada mock yang tersisa.
+// Klien API lapakAi — semuanya endpoint asli, kecuali SATU yang ditandai jelas:
+// ambilRekap masih data tiruan karena GET /rekap belum ada di backend.
 //
 // TIDAK ADA SATU PUN PERHITUNGAN UANG DI BERKAS INI. Setiap angka finansial
 // datang sudah jadi dari SQL (aturan #7). Kalau suatu saat ada yang tergoda
@@ -30,6 +31,7 @@ import type {
   OngkosTenagaReq,
   StatusWhatsappRes,
   HubungkanWhatsappReq,
+  Rekap,
 } from '@shared/types';
 import { ambilToken } from './sesi';
 
@@ -88,6 +90,36 @@ export function simpanResep(p: SimpanResepReq): Promise<Jawaban<TemuanPertama>> 
 
 export function ambilBeranda(): Promise<Jawaban<Beranda>> {
   return panggil('/beranda');
+}
+
+/**
+ * ★ DATA TIRUAN SEMENTARA — fitur 14. GET /rekap belum ada di backend;
+ * bentuknya persis kontrak docs/06-kontrak-api.md. Saat endpoint-nya jadi,
+ * ganti seluruh isi fungsi ini dengan `return panggil('/rekap');` — layar
+ * Rekap tidak perlu diubah sama sekali.
+ *
+ * Angka tiruan ini fixture, bukan perhitungan: totalnya ditulis tangan agar
+ * konsisten dengan titik-titiknya, sebagaimana SQL nanti yang menjumlahkan.
+ */
+export function ambilRekap(): Promise<Jawaban<Rekap>> {
+  return Promise.resolve({
+    ok: true,
+    data: {
+      hari: [
+        { label: 'Sen', omzet: 620_000, untung_bersih: 54_000 },
+        { label: 'Sel', omzet: 480_000, untung_bersih: 41_000 },
+        { label: 'Rab', omzet: 750_000, untung_bersih: 88_000 },
+        { label: 'Kam', omzet: 540_000, untung_bersih: -18_000 },
+        { label: 'Jum', omzet: 910_000, untung_bersih: 96_000 },
+        { label: 'Sab', omzet: 1_240_000, untung_bersih: 152_000 },
+        { label: 'Min', omzet: 860_000, untung_bersih: 101_000 },
+      ],
+      omzet: 5_400_000,
+      untung_bersih: 514_000,
+      ada_transaksi: true,
+      produk_terlaris: { id: 1, nama: 'Kripik Pisang', jumlah_terjual: 124 },
+    },
+  });
 }
 
 export function ambilDaftarProduk(): Promise<Jawaban<RingkasanProduk[]>> {
