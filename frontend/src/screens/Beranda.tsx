@@ -1,29 +1,36 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CircleAlert, Mic, TrendingDown } from 'lucide-react';
+import { CircleAlert, MessageCircle, Mic, Package, ReceiptText, TrendingDown } from 'lucide-react';
 import { formatRupiah } from '@shared/format/rupiah';
 import type { Beranda as DataBeranda } from '@shared/types';
 import { ambilBeranda, ambilSaya } from '../api/client';
 import { Layar } from '../components/Layar';
-import { KepalaAplikasi } from '../components/KepalaAplikasi';
-import { KartuHero } from '../components/KartuHero';
+import { KepalaHero } from '../components/KepalaHero';
+import { Lembar } from '../components/Lembar';
+import { KartuAksi } from '../components/KartuAksi';
 import { GridMetrik, KartuMetrik } from '../components/KartuMetrik';
 import { BarisDaftar, KartuDaftar } from '../components/BarisDaftar';
 import { NavBawah } from '../components/NavBawah';
 import { KeadaanGalat } from '../components/KeadaanGalat';
 import { KeadaanKosong } from '../components/KeadaanKosong';
-import { RangkaHero, RangkaKartu } from '../components/Rangka';
-import { Tombol } from '../components/Tombol';
+import { RangkaKartu } from '../components/Rangka';
 import { bacaOnboarding } from '../state/onboarding';
 
 /**
  * Beranda — fitur 7, dan tamparan pertama demo.
  *
- * Untung jadi angka utama di kartu gelap; uang masuk turun jadi salah satu
- * kotak metrik di bawahnya. Ini inti seluruh layar: pedagang datang mengira
- * omzet adalah untung. Menaruh keduanya sama besar justru membuatnya terasa
- * setara — padahal yang satu uang lewat, yang satu uang tinggal. Kartu gelap
- * dipakai sekali saja di layar ini, supaya "paling penting" tetap berarti.
+ * Untung bersih tidak lagi duduk di dalam kartu. Ia ADA DI DALAM kepala
+ * bergradien, yaitu bidang yang menjadi layarnya sendiri. Bedanya bukan hiasan:
+ * angka di dalam kartu selalu bisa disaingi kartu di sebelahnya, sedangkan
+ * angka yang menjadi kepala halaman tidak punya saingan sederajat. Ini inti
+ * seluruh layar — pedagang datang mengira omzet adalah untung, dan menaruh
+ * keduanya sama besar justru membuatnya terasa setara padahal yang satu uang
+ * lewat dan yang satu uang tinggal.
+ *
+ * Uang masuk tetap ikut, tepat di bawah untung, dan tetap ditulis besar. Kalau
+ * ia disusutkan jadi catatan kaki, hierarkinya MEMBALIK besaran: Rp 268.000
+ * tampil raksasa dan Rp 4.200.000 tampil kecil, lalu mata yang melirik sekilas
+ * menyimpulkan untungnya lebih banyak — kebalikan persis dari maksud layar ini.
  *
  * Tidak ada satu pun angka di berkas ini yang dihitung. Semuanya datang jadi
  * dari GET /beranda — aturan #7. Perbandingan yang ada di sini cuma memilih
@@ -33,6 +40,12 @@ import { bacaOnboarding } from '../state/onboarding';
  * GET /beranda tidak mengirim pembanding periode sebelumnya. Mengarangnya
  * supaya mirip dashboard di internet adalah persis kebohongan yang aplikasi ini
  * ada untuk menghapusnya.
+ *
+ * Tidak ada juga ikon lonceng di pojok kanan, walau rujukan rupanya punya.
+ * Tidak ada sistem notifikasi di aplikasi ini, dan lingkaran seukuran tombol
+ * yang tidak melakukan apa-apa saat ditekan membuat pengguna baru ragu apakah
+ * aplikasinya rusak atau mereka yang salah. Afordansi yang berbohong lebih
+ * buruk daripada ruang kosong.
  */
 export function Beranda() {
   const nav = useNavigate();
@@ -69,27 +82,64 @@ export function Beranda() {
     });
   }, [namaUsaha]);
 
+  const inisial = ((namaUsaha ?? 'W').trim().charAt(0) || 'W').toUpperCase();
+
+  const avatar = (
+    <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-white/15 text-lg font-bold text-white">
+      {inisial}
+    </span>
+  );
+
+  const aksiCepat = [
+    { ikon: Mic, label: 'Catat', onClick: () => nav('/catat') },
+    { ikon: Package, label: 'Produk', onClick: () => nav('/produk') },
+    { ikon: MessageCircle, label: 'Pesanan', onClick: () => nav('/pesanan') },
+    { ikon: ReceiptText, label: 'Riwayat', onClick: () => nav('/pesanan/riwayat') },
+  ];
+
   if (galat) {
     return (
-      <Layar tanpaLogo atas>
-        <KepalaAplikasi nama={namaUsaha} />
-        <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />
-        <NavBawah />
+      <Layar
+        hero={
+          <KepalaHero
+            kiri={avatar}
+            judul="lapakAi"
+            label="Untung bersih"
+            nilai="—"
+            catatan="Angkanya belum bisa diambil."
+          />
+        }
+      >
+        <Lembar>
+          <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />
+          <NavBawah />
+        </Lembar>
       </Layar>
     );
   }
 
-  // Rangkanya meniru susunan aslinya — kartu gelap lalu dua kotak metrik —
-  // supaya layar tidak melompat saat angkanya tiba.
+  // Rangkanya meniru susunan aslinya supaya layar tidak melompat saat angkanya
+  // tiba: kepala bergradien lebih dulu, lalu kartu aksi, lalu dua kotak metrik.
   if (!data) {
     return (
-      <Layar tanpaLogo atas>
-        <KepalaAplikasi nama={namaUsaha} />
-        <div className="mt-6 flex flex-col gap-4">
-          <RangkaHero />
-          <RangkaKartu tinggi="h-24" />
-        </div>
-        <NavBawah />
+      <Layar
+        hero={
+          <KepalaHero
+            kiri={avatar}
+            judul="lapakAi"
+            label="Untung bersih bulan ini"
+            nilai="…"
+            bawahIsi
+          />
+        }
+      >
+        <Lembar mengambang={<KartuAksi aksi={aksiCepat} />}>
+          <div className="mt-2 grid grid-cols-2 gap-3">
+            <RangkaKartu tinggi="h-28" />
+            <RangkaKartu tinggi="h-28" />
+          </div>
+          <NavBawah />
+        </Lembar>
       </Layar>
     );
   }
@@ -97,19 +147,12 @@ export function Beranda() {
   const rugi = data.untung_bersih < 0;
 
   return (
-    <Layar tanpaLogo atas>
-      <KepalaAplikasi nama={namaUsaha} />
-
-      <div className="mt-6">
-        <p className="text-isi text-redup">Bulan ini</p>
-        <p className="text-judul-kecil font-bold tracking-[-0.02em] text-tinta">
-          {namaUsaha ?? 'Warung Anda'}
-        </p>
-      </div>
-
-      <div className="mt-4">
-        <KartuHero
-          label="Untung bersih"
+    <Layar
+      hero={
+        <KepalaHero
+          kiri={avatar}
+          judul={namaUsaha ?? 'lapakAi'}
+          label="Untung bersih bulan ini"
           nilai={formatRupiah(data.untung_bersih)}
           nada={rugi ? 'rugi' : 'untung'}
           catatan={
@@ -117,27 +160,14 @@ export function Beranda() {
               ? 'Bulan ini uang yang keluar lebih besar daripada yang masuk.'
               : 'Ini yang benar-benar tinggal, bukan yang lewat.'
           }
+          bawahIsi
           bawah={
-            /*
-             * Uang masuk sengaja ditulis hampir sebesar untung, bukan sebagai
-             * catatan kaki.
-             *
-             * Untung 40px lawan uang masuk 19px membuat hierarkinya MEMBALIK
-             * besaran: Rp 268.000 tampil paling besar, Rp 4.200.000 paling
-             * kecil, dan mata yang melirik sekilas menyimpulkan untungnya lebih
-             * banyak — kebalikan persis dari yang ingin dikatakan layar ini.
-             *
-             * Pada 22px putih penuh, angka besarnya kembali terbaca besar,
-             * sementara untung tetap menang lewat ukuran dan warna hijaunya.
-             * Keduanya jadi bisa dibandingkan, yang memang seluruh gunanya.
-             */
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
+            <div className="mx-auto flex max-w-[19rem] items-center justify-between gap-3 border-t border-white/20 pt-4">
+              <div className="min-w-0 text-left">
                 <p className="text-isi font-medium text-white/80">Uang masuk</p>
-                {/* /75, bukan /50: angka lama diukur di atas navy #1B2536. Setelah
-                    hero jadi ungu, ujung terang gradiennya (#4C00BA) jauh lebih
-                    muda — /50 jatuh ke 3,35:1 dan gagal WCAG AA. /75 memberi
-                    6,16:1. Diukur ulang, bukan disalin. */}
+                {/* /75, bukan /50 seperti dulu: angka lama diukur di atas navy
+                    #1B2536. Di atas ujung terang gradien ungu (#4C00BA), /50
+                    jatuh ke 3,35:1 dan gagal WCAG AA. /75 memberi 6,16:1. */}
                 <p className="mt-0.5 text-label text-white/75">Belum dikurangi modal</p>
               </div>
               <span className="angka shrink-0 text-judul-kecil font-bold text-white">
@@ -146,79 +176,73 @@ export function Beranda() {
             </div>
           }
         />
-      </div>
+      }
+    >
+      <Lembar mengambang={<KartuAksi aksi={aksiCepat} />}>
+        <p className="label-bagian">RINGKASAN BULAN INI</p>
+        <div className="mt-2.5">
+          <GridMetrik>
+            <KartuMetrik
+              ikon={TrendingDown}
+              label="Produk merugi"
+              nilai={String(data.jumlah_produk_merugi)}
+              sub={data.jumlah_produk_merugi > 0 ? 'Dijual di bawah modal' : 'Tidak ada, aman'}
+              nada={data.jumlah_produk_merugi > 0 ? 'rugi' : 'untung'}
+              onClick={() => nav('/produk')}
+            />
+            <KartuMetrik
+              ikon={CircleAlert}
+              label="Belum dihitung"
+              nilai={String(data.baris_tanpa_modal)}
+              sub={data.baris_tanpa_modal > 0 ? 'Modal belum lengkap' : 'Semua sudah terhitung'}
+              nada={data.baris_tanpa_modal > 0 ? 'tanda' : 'netral'}
+            />
+          </GridMetrik>
+        </div>
 
-      <div className="mt-3">
-        <GridMetrik>
-          <KartuMetrik
-            ikon={TrendingDown}
-            label="Produk merugi"
-            nilai={String(data.jumlah_produk_merugi)}
-            sub={data.jumlah_produk_merugi > 0 ? 'Dijual di bawah modal' : 'Tidak ada, aman'}
-            nada={data.jumlah_produk_merugi > 0 ? 'rugi' : 'untung'}
-            onClick={() => nav('/produk')}
+        {/* Angka yang tidak lengkap harus mengaku tidak lengkap. */}
+        {data.baris_tanpa_modal > 0 && (
+          <p className="mt-3 rounded-kontrol bg-tanda px-4 py-3.5 text-isi leading-relaxed text-tanda-tinta">
+            {data.baris_tanpa_modal} penjualan belum ikut dihitung untungnya — modal produknya
+            belum lengkap. Sudah masuk uang masuk, belum masuk untung bersih.
+          </p>
+        )}
+
+        {!data.ada_transaksi && (
+          <KeadaanKosong
+            ikon={Mic}
+            judul="Belum ada penjualan bulan ini"
+            pesan="Catat yang hari ini dulu — cukup diucapkan, tidak perlu diketik satu per satu."
+            labelAksi="Catat penjualan"
+            onAksi={() => nav('/catat')}
           />
-          <KartuMetrik
-            ikon={CircleAlert}
-            label="Belum dihitung"
-            nilai={String(data.baris_tanpa_modal)}
-            sub={data.baris_tanpa_modal > 0 ? 'Modal belum lengkap' : 'Semua sudah terhitung'}
-            nada={data.baris_tanpa_modal > 0 ? 'tanda' : 'netral'}
-          />
-        </GridMetrik>
-      </div>
+        )}
 
-      {/* Angka yang tidak lengkap harus mengaku tidak lengkap. */}
-      {data.baris_tanpa_modal > 0 && (
-        <p className="mt-3 rounded-kontrol bg-tanda px-4 py-3.5 text-isi leading-relaxed text-tanda-tinta">
-          {data.baris_tanpa_modal} penjualan belum ikut dihitung untungnya — modal produknya belum
-          lengkap. Sudah masuk uang masuk, belum masuk untung bersih.
-        </p>
-      )}
+        {/* Terisi meski belum ada transaksi — dihitung dari resep, bukan penjualan. */}
+        {data.produk_paling_merugi && (
+          <>
+            <p className="label-bagian mt-7">PALING MERUGI</p>
+            <div className="mt-2">
+              <KartuDaftar>
+                <BarisDaftar
+                  ikon={TrendingDown}
+                  nadaIkon="rugi"
+                  judul={data.produk_paling_merugi.nama}
+                  meta="Rugi sebanyak itu setiap kali terjual"
+                  nilai={`\u2212 ${formatRupiah(Math.abs(data.produk_paling_merugi.margin_per_unit))}`}
+                  nadaNilai="rugi"
+                  onClick={() => nav('/produk')}
+                />
+              </KartuDaftar>
+              <p className="mt-2 px-1 text-kecil leading-relaxed text-redup">
+                Ketuk untuk melihat harga yang sebaiknya dipakai.
+              </p>
+            </div>
+          </>
+        )}
 
-      {!data.ada_transaksi && (
-        <KeadaanKosong
-          ikon={Mic}
-          judul="Belum ada penjualan bulan ini"
-          pesan="Catat yang hari ini dulu — cukup diucapkan, tidak perlu diketik satu per satu."
-          labelAksi="Catat penjualan"
-          onAksi={() => nav('/catat')}
-        />
-      )}
-
-      {/* Terisi meski belum ada transaksi — dihitung dari resep, bukan penjualan. */}
-      {data.produk_paling_merugi && (
-        <>
-          <p className="label-bagian mt-7">PALING MERUGI</p>
-          <div className="mt-2">
-            <KartuDaftar>
-              <BarisDaftar
-                ikon={TrendingDown}
-                nadaIkon="rugi"
-                judul={data.produk_paling_merugi.nama}
-                meta="Rugi sebanyak itu setiap kali terjual"
-                nilai={`\u2212 ${formatRupiah(Math.abs(data.produk_paling_merugi.margin_per_unit))}`}
-                nadaNilai="rugi"
-                onClick={() => nav('/produk')}
-              />
-            </KartuDaftar>
-            <p className="mt-2 px-1 text-kecil leading-relaxed text-redup">
-              Ketuk untuk melihat harga yang sebaiknya dipakai.
-            </p>
-          </div>
-        </>
-      )}
-
-      <div className="mt-5 flex gap-2.5">
-        <Tombol className="flex-1" onClick={() => nav('/catat')}>
-          Catat penjualan
-        </Tombol>
-        <Tombol varian="garis" className="flex-1" onClick={() => nav('/pesanan')}>
-          Pesanan
-        </Tombol>
-      </div>
-
-      <NavBawah />
+        <NavBawah />
+      </Lembar>
     </Layar>
   );
 }

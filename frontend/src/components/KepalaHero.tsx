@@ -56,7 +56,7 @@ export function KepalaHero({
     nada === 'rugi' ? 'text-rugi-terang' : nada === 'untung' ? 'text-untung-terang' : 'text-white';
 
   return (
-    <div className={`hero-gradien aman-atas px-5 ${bawahIsi ? 'pb-24' : 'pb-10'}`}>
+    <div className={`hero-gradien aman-atas px-5 ${bawahIsi ? 'pb-28' : 'pb-10'}`}>
       <div className="relative flex min-h-12 items-center justify-center">
         <div className="absolute left-0">
           {kiri ??

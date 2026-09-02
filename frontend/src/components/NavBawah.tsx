@@ -77,8 +77,12 @@ export function NavBawah() {
   const pusatAktif = aktif === PUSAT.ke;
 
   return (
-    <nav className="sticky bottom-0 -mx-5 mt-4 border-t border-garis bg-kartu/95 aman-bawah px-2 pt-2 backdrop-blur">
+    <nav className="sticky bottom-0 -mx-5 mt-auto border-t border-garis bg-kartu/95 aman-bawah px-2 pt-2 backdrop-blur">
       <div className="relative flex items-stretch justify-between">
+        {/* Jarak ke isi di atasnya datang dari `mt-auto`, bukan dari margin
+            tetap: di layar yang isinya pendek nav terdorong ke dasar layar, dan
+            di layar yang isinya panjang ia menempel tepat di bawah isi. Margin
+            tetap hanya benar untuk salah satu dari keduanya. */}
         {KIRI.map((t) => (
           <Slot key={t.ke} tujuan={t} aktif={aktif === t.ke} onPilih={() => nav(t.ke)} />
         ))}
