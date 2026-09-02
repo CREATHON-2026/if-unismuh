@@ -240,6 +240,33 @@ body {
 }
 
 /*
+ * Ukuran teks di dalam komponen vendor (beUI di src/components/agents/).
+ *
+ * JANGAN mengirim `text-utama` ke komponen mana pun yang menggabungkan kelas
+ * lewat `cn()`. Ini bukan kehati-hatian teoretis — ia sudah merusak layar Tanya
+ * dan baru ketahuan setelah membaca DOM di peramban.
+ *
+ * Sebabnya: `--text-utama` adalah token UKURAN (17px), tapi `tailwind-merge`
+ * di dalam `cn()` tidak tahu itu. Ia hanya melihat awalan `text-`, menyimpulkan
+ * warna, lalu MEMBUANG kelas warna komponen yang datang lebih dulu. Di
+ * `MessageBubbleContent` yang terbuang `text-foreground`, jadi gelembungnya
+ * kehilangan warna teks tanpa satu pun galat — dan `leading-6` ikut hilang.
+ *
+ * Di CSS mentah keduanya rukun; yang salah menebak hanya `cn()`. Kelas ini
+ * memutus tebakan itu: namanya bukan utilitas Tailwind, jadi `tailwind-merge`
+ * melewatinya dan kelas warna di sebelahnya selamat.
+ *
+ * Ditulis di luar `@layer` dengan sengaja — lihat "JEBAKAN LAPISAN" di
+ * `.tombol-gradien`. Di sini efeknya justru yang diinginkan: ukurannya harus
+ * menang atas `text-sm` bawaan vendor. Ia hanya mengatur ukuran dan tinggi
+ * baris, tidak pernah warna, supaya `text-white` / `text-tinta` tetap berkuasa.
+ */
+.teks-gelembung {
+  font-size: var(--text-utama);
+  line-height: 1.55;
+}
+
+/*
  * Kartu. Garis tipis, bukan bayangan tebal. Di ponsel murah yang kontras
  * layarnya rendah dan sering dipakai di bawah matahari, bayangan halus hilang
  * sama sekali — garis tidak. Ditulis sekali di sini supaya dua puluh layar
