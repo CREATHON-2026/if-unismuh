@@ -57,3 +57,12 @@ graphify-out/cache/ast/
 
 # Dump crash Node dari tool lain (Copilot CLI), bukan aplikasi ini
 report.*.json
+
+# Salinan direktori data PGlite yang rusak, dipindahkan saat pemulihan.
+# Puluhan MB dan tidak punya nilai apa pun setelah datanya diisi ulang.
+backend/db/data-*/
+backend/db/*.log
+backend/db/*.log.err
+
+# Jejak Playwright MCP (log console peramban), bukan bagian aplikasi
+.playwright-mcp/
