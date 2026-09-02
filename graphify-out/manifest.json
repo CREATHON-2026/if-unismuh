@@ -65,13 +65,13 @@
     "semantic_hash": ""
   },
   "docs/05-model-data.md": {
-    "mtime": 1788249341.0972252,
-    "ast_hash": "930fe47eeb71acda303705152a75a342",
-    "semantic_hash": "930fe47eeb71acda303705152a75a342"
+    "mtime": 1788308586.5494347,
+    "ast_hash": "715001be3d33112ca57ca631b6981ad5",
+    "semantic_hash": ""
   },
   "docs/06-kontrak-api.md": {
-    "mtime": 1788302443.49924,
-    "ast_hash": "2bb01cbb3ed689d07a49e7ebd8ec2999",
+    "mtime": 1788317396.7264526,
+    "ast_hash": "eb299338f1ca86a8f7024ec3284c4755",
     "semantic_hash": ""
   },
   "docs/07-alur-pengguna.md": {
@@ -110,8 +110,8 @@
     "semantic_hash": "a805dc4810e474af7949e692ce07d08c"
   },
   "backend/db/schema.sql": {
-    "mtime": 1788272931.3788512,
-    "ast_hash": "953ba2be84187553f998df9918f3f34d",
+    "mtime": 1788305946.1022863,
+    "ast_hash": "dd4437b8079cc8069e47924f0820c9f2",
     "semantic_hash": ""
   },
   "backend/package.json": {
@@ -160,8 +160,8 @@
     "semantic_hash": ""
   },
   "backend/src/config/env.ts": {
-    "mtime": 1788289177.565301,
-    "ast_hash": "76105581c1054d5c4976cd6757828384",
+    "mtime": 1788306396.1359437,
+    "ast_hash": "853507b5bdf6fae20e9c9fa332e61253",
     "semantic_hash": ""
   },
   "backend/src/db/index.ts": {
@@ -235,13 +235,13 @@
     "semantic_hash": ""
   },
   "backend/src/modules/pesanan/pesanan.queries.ts": {
-    "mtime": 1788290952.5984929,
-    "ast_hash": "2a20c02b8e454b7997d1db364d7aeac4",
+    "mtime": 1788307413.6719468,
+    "ast_hash": "7ad2d0dbf9fe3adb371749dcba053a8b",
     "semantic_hash": ""
   },
   "backend/src/modules/pesanan/pesanan.routes.ts": {
-    "mtime": 1788290611.180507,
-    "ast_hash": "bc1f065553f9f78a537de0204f0b0bd9",
+    "mtime": 1788306652.171431,
+    "ast_hash": "31f5cad44ad97a37fb6be90e35f2bae7",
     "semantic_hash": ""
   },
   "backend/src/modules/produk/produk.queries.ts": {
@@ -265,8 +265,8 @@
     "semantic_hash": ""
   },
   "backend/src/modules/transaksi/transaksi.queries.ts": {
-    "mtime": 1788281172.7177823,
-    "ast_hash": "5dd0911cc542e0d76ff263e3584db09c",
+    "mtime": 1788306123.3201416,
+    "ast_hash": "06c6cadbc3744a256bf3cd05139b883d",
     "semantic_hash": ""
   },
   "backend/src/modules/transaksi/transaksi.routes.ts": {
@@ -285,8 +285,8 @@
     "semantic_hash": ""
   },
   "backend/src/server.ts": {
-    "mtime": 1788291522.0048625,
-    "ast_hash": "4f89f755e254b78312e4fdbdcb22deec",
+    "mtime": 1788317890.1724935,
+    "ast_hash": "85f6ce5376c09cf36f05d53106b24a4a",
     "semantic_hash": ""
   },
   "backend/tsconfig.json": {
@@ -295,8 +295,8 @@
     "semantic_hash": ""
   },
   "shared/types.ts": {
-    "mtime": 1788297936.6461802,
-    "ast_hash": "d1a4ef8e0e38f9ebd73005326228bfe5",
+    "mtime": 1788317355.2532258,
+    "ast_hash": "eb7a19764c960655f0c4752ca021a676",
     "semantic_hash": ""
   },
   "backend/spike/README.md": {
@@ -330,8 +330,8 @@
     "semantic_hash": ""
   },
   "backend/src/modules/ekstraksi/ekstraksi.queries.ts": {
-    "mtime": 1788290943.343956,
-    "ast_hash": "66f414ead092b7868be69469f38c64bc",
+    "mtime": 1788306123.3232293,
+    "ast_hash": "b65c0b4f06b7099ef8b936d4e33a8e27",
     "semantic_hash": ""
   },
   "backend/src/modules/ekstraksi/ekstraksi.routes.ts": {
@@ -340,18 +340,18 @@
     "semantic_hash": ""
   },
   "frontend/package.json": {
-    "mtime": 1788295553.5634582,
-    "ast_hash": "f36d721ab07ae17793e7c5008350fdd8",
+    "mtime": 1788317969.3977616,
+    "ast_hash": "973b66df34079028859417cbb6c08336",
     "semantic_hash": ""
   },
   "frontend/src/App.tsx": {
-    "mtime": 1788290741.8877635,
-    "ast_hash": "78e5990cf73d88493d6dfd07e85c1a35",
+    "mtime": 1788318503.6550992,
+    "ast_hash": "f9e5c9b5d371dfd7c14ddf64fe3d1a63",
     "semantic_hash": ""
   },
   "frontend/src/api/client.ts": {
-    "mtime": 1788297953.0288503,
-    "ast_hash": "9c0718c0e51a240e111b9ed9514c0a1e",
+    "mtime": 1788318348.4174528,
+    "ast_hash": "1a00d2c9ac7984f1f0c6b22a85a9fdd4",
     "semantic_hash": ""
   },
   "frontend/src/api/sesi.ts": {
@@ -360,23 +360,23 @@
     "semantic_hash": ""
   },
   "frontend/src/components/InputTeks.tsx": {
-    "mtime": 1788286054.4466238,
-    "ast_hash": "3226752fe0cd7670bad726bba30141a8",
+    "mtime": 1788311543.2984693,
+    "ast_hash": "01426c68e4893f2c5ee1cc97217c50bf",
     "semantic_hash": ""
   },
   "frontend/src/components/KepalaAplikasi.tsx": {
-    "mtime": 1788296441.4774773,
-    "ast_hash": "ca4ea9a5aca8613f556ffa399de6af03",
+    "mtime": 1788314658.2402463,
+    "ast_hash": "8205482cca45641abb829f9896b8c127",
     "semantic_hash": ""
   },
   "frontend/src/components/KepalaResep.tsx": {
-    "mtime": 1788296441.4774773,
-    "ast_hash": "bf0bb6f0c8e4b434e4ea7205a186fab1",
+    "mtime": 1788314658.2502432,
+    "ast_hash": "8647aa78db5e95a20f0c15d70b87167f",
     "semantic_hash": ""
   },
   "frontend/src/components/Layar.tsx": {
-    "mtime": 1788296441.4789865,
-    "ast_hash": "fac93de222680189c796858c4ba253b6",
+    "mtime": 1788314699.652051,
+    "ast_hash": "7c23060e0c0dc59eefe6bf1aaee4e31b",
     "semantic_hash": ""
   },
   "frontend/src/components/Logo.tsx": {
@@ -385,18 +385,18 @@
     "semantic_hash": ""
   },
   "frontend/src/components/NavBawah.tsx": {
-    "mtime": 1788296441.4789865,
-    "ast_hash": "c485a6eeef54f9475e64c15483a0d59d",
+    "mtime": 1788314804.1625252,
+    "ast_hash": "296be8c02b605b9f8fc92cbcfe6de782",
     "semantic_hash": ""
   },
   "frontend/src/components/TitikLangkah.tsx": {
-    "mtime": 1788286054.4504468,
-    "ast_hash": "f0c436f18c93f2c73efbffb997600f4e",
+    "mtime": 1788314658.2552488,
+    "ast_hash": "2bd9ae7d11d89e2d1192550cda7683bc",
     "semantic_hash": ""
   },
   "frontend/src/components/Tombol.tsx": {
-    "mtime": 1788296441.4813726,
-    "ast_hash": "b1516072d63988fcebb0e071c2261ac0",
+    "mtime": 1788315471.7346249,
+    "ast_hash": "c1f7ba4370f2fb2cb34e0fecd8eab9ce",
     "semantic_hash": ""
   },
   "frontend/src/main.tsx": {
@@ -405,23 +405,23 @@
     "semantic_hash": ""
   },
   "frontend/src/screens/Beranda.tsx": {
-    "mtime": 1788296997.409999,
-    "ast_hash": "bf74a1acc4ecad4e558e4b55521ec1aa",
+    "mtime": 1788318571.9042964,
+    "ast_hash": "fa6687c9637406f321f68f441d68aefd",
     "semantic_hash": ""
   },
   "frontend/src/screens/CatatSuara.tsx": {
-    "mtime": 1788296486.205831,
-    "ast_hash": "83741436453c1b8d7eae5580dee2f2a2",
+    "mtime": 1788318603.476061,
+    "ast_hash": "a7df7b5aa2abb828ebc6fca4de2ddcdf",
     "semantic_hash": ""
   },
   "frontend/src/screens/DaftarProduk.tsx": {
-    "mtime": 1788296441.4833572,
-    "ast_hash": "e4a1440e08c84a563ecb7dbc54abbc02",
+    "mtime": 1788313062.5326488,
+    "ast_hash": "8576ec5d8396bd810152e3f0623de620",
     "semantic_hash": ""
   },
   "frontend/src/screens/DetailProduk.tsx": {
-    "mtime": 1788298006.7504597,
-    "ast_hash": "c319d54d9938b12edd93d018d9e90a1b",
+    "mtime": 1788313367.4013357,
+    "ast_hash": "d11343921bfe3fbea9ebc59d8b66cb3a",
     "semantic_hash": ""
   },
   "frontend/src/screens/InfoWhatsApp.tsx": {
@@ -430,53 +430,53 @@
     "semantic_hash": ""
   },
   "frontend/src/screens/JenisUsaha.tsx": {
-    "mtime": 1788296441.4853532,
-    "ast_hash": "d629faa0d0197e3d0999c4bebafdc9c7",
+    "mtime": 1788314842.1583254,
+    "ast_hash": "0ef72dabc99dd3818f042e0be4e4c76d",
     "semantic_hash": ""
   },
   "frontend/src/screens/KodeOtp.tsx": {
-    "mtime": 1788296441.4853532,
-    "ast_hash": "5a11bc3dbc4919cd5474902d07c3244b",
+    "mtime": 1788314678.6206696,
+    "ast_hash": "b881eb71541c8949188b3d70e98d1077",
     "semantic_hash": ""
   },
   "frontend/src/screens/KonfirmasiEkstraksi.tsx": {
-    "mtime": 1788296486.2078328,
-    "ast_hash": "7775ee9da9782417ae8944a741b77c0c",
+    "mtime": 1788314699.652051,
+    "ast_hash": "e21b74af1ee98be0599b17e07a41b080",
     "semantic_hash": ""
   },
   "frontend/src/screens/NamaUsaha.tsx": {
-    "mtime": 1788296441.4863534,
-    "ast_hash": "5ff8e0e5b98f9b6996de08ef69248870",
+    "mtime": 1788314504.422902,
+    "ast_hash": "4a64c4db6ccbb0e1b17bb4b451573f9e",
     "semantic_hash": ""
   },
   "frontend/src/screens/NomorHp.tsx": {
-    "mtime": 1788296486.2078328,
-    "ast_hash": "fca516a54899754c338a1529efa3e773",
+    "mtime": 1788314658.2791593,
+    "ast_hash": "c09d4a23d98b811df046b4077fbdb332",
     "semantic_hash": ""
   },
   "frontend/src/screens/PesananMasuk.tsx": {
-    "mtime": 1788296486.2088342,
-    "ast_hash": "2b5509bce06bd0cafa5597a1298b3b9d",
+    "mtime": 1788314678.621668,
+    "ast_hash": "ead908a53b08d0db42890ad47fb92ee6",
     "semantic_hash": ""
   },
   "frontend/src/screens/ProdukTerlaris.tsx": {
-    "mtime": 1788296441.4883544,
-    "ast_hash": "5bc99859e23266a8e7c8e44fdd9f574a",
+    "mtime": 1788314658.26278,
+    "ast_hash": "dda34417197e87dbb231b4629be9d9fe",
     "semantic_hash": ""
   },
   "frontend/src/screens/ResepBahan.tsx": {
-    "mtime": 1788296486.2098365,
-    "ast_hash": "e40e8113e3afa5570afb87c084e020bc",
+    "mtime": 1788314678.6246698,
+    "ast_hash": "4b1518fdc9b327346e8250d14f495df6",
     "semantic_hash": ""
   },
   "frontend/src/screens/ResepHarga.tsx": {
-    "mtime": 1788296486.2098365,
-    "ast_hash": "856a10eb809104ecf5121c64d9c9f45e",
+    "mtime": 1788314678.6256933,
+    "ast_hash": "517c7d383c93fb1f925cd350c9778f94",
     "semantic_hash": ""
   },
   "frontend/src/screens/ResepHasil.tsx": {
-    "mtime": 1788296486.2098365,
-    "ast_hash": "c857fc0c09006e080a2106ee7975429a",
+    "mtime": 1788314678.6256933,
+    "ast_hash": "a0fb8a34b0a8b51439707d30b9076b80",
     "semantic_hash": ""
   },
   "frontend/src/screens/Sambutan.tsx": {
@@ -485,8 +485,8 @@
     "semantic_hash": ""
   },
   "frontend/src/screens/TemuanPertama.tsx": {
-    "mtime": 1788296486.2108343,
-    "ast_hash": "5ab8fd5c821d0561d31eaa2f2528c072",
+    "mtime": 1788314504.4403043,
+    "ast_hash": "eaa1702e5191dc2e55d7a7767dcb8371",
     "semantic_hash": ""
   },
   "frontend/src/state/ekstraksi.ts": {
@@ -500,13 +500,13 @@
     "semantic_hash": ""
   },
   "frontend/tsconfig.json": {
-    "mtime": 1788280138.3670785,
-    "ast_hash": "2b2a97d43ba0861478426d8910434928",
+    "mtime": 1788317963.246387,
+    "ast_hash": "bacfb9fc6bb9738cc752bc62cbaa0477",
     "semantic_hash": ""
   },
   "frontend/vite.config.ts": {
-    "mtime": 1788280138.3685856,
-    "ast_hash": "bb17e3a17dbe08fb7937a438b0c7e833",
+    "mtime": 1788317963.2503922,
+    "ast_hash": "e760943ebf77ca1b28b01f4421265ce4",
     "semantic_hash": ""
   },
   "shared/format/rupiah.ts": {
@@ -570,23 +570,23 @@
     "semantic_hash": ""
   },
   "frontend/src/components/BarProgres.tsx": {
-    "mtime": 1788296441.4764721,
-    "ast_hash": "84fe8fd4af9ac8a66d7015356424362b",
+    "mtime": 1788314658.2360463,
+    "ast_hash": "8919a982a1bfc1433f6a8344ed598b3e",
     "semantic_hash": ""
   },
   "frontend/src/components/BarisDaftar.tsx": {
-    "mtime": 1788296441.4764721,
-    "ast_hash": "f6b5e8ace3609894d5df0b9369fdec1c",
+    "mtime": 1788312957.0998468,
+    "ast_hash": "aaaf53fcc2b347fd6274d7f573074e8d",
     "semantic_hash": ""
   },
   "frontend/src/components/KartuHero.tsx": {
-    "mtime": 1788296486.2018313,
-    "ast_hash": "0b50f513bbba09c94e866b3bc1428f6c",
+    "mtime": 1788310979.31191,
+    "ast_hash": "8acde7af0180f85c43c55e08e2c77388",
     "semantic_hash": ""
   },
   "frontend/src/components/KartuMetrik.tsx": {
-    "mtime": 1788296486.202834,
-    "ast_hash": "2bf9474e25431a40aad7d7a1cd7712e9",
+    "mtime": 1788313477.1462097,
+    "ast_hash": "7843186686b6e16c7116c10659497c0e",
     "semantic_hash": ""
   },
   "frontend/src/components/Lencana.tsx": {
@@ -595,13 +595,13 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Segmented.tsx": {
-    "mtime": 1788296441.4803445,
-    "ast_hash": "830e1c63b41d4c2cac3cee9a8d82ddd2",
+    "mtime": 1788311561.8962357,
+    "ast_hash": "13b583969388ecd64b8fedfbec772631",
     "semantic_hash": ""
   },
   "frontend/src/screens/SambungWhatsApp.tsx": {
-    "mtime": 1788296486.2098365,
-    "ast_hash": "e9f89ce4153fdfbf3c3de5fd724e67b0",
+    "mtime": 1788314658.2693012,
+    "ast_hash": "ec2c797ebb56659b424dd69126e93a1c",
     "semantic_hash": ""
   },
   "backend/src/lib/validasi.ts": {
@@ -745,8 +745,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/Rangka.tsx": {
-    "mtime": 1788295825.819793,
-    "ast_hash": "517d731abba92145c2793c1a05e74b5f",
+    "mtime": 1788314658.2827692,
+    "ast_hash": "343e85d0d0aa604fba25518e7fe0ba1e",
     "semantic_hash": ""
   },
   "frontend/src/components/KeadaanKosong.tsx": {
@@ -760,8 +760,8 @@
     "semantic_hash": ""
   },
   "frontend/src/components/KartuTenaga.tsx": {
-    "mtime": 1788297987.1752374,
-    "ast_hash": "937d639899c6a8a3f4c8b5a773b3470a",
+    "mtime": 1788314678.6091797,
+    "ast_hash": "30a78e180262ad5ed217ce62a8dd5664",
     "semantic_hash": ""
   },
   "docs/13-superpowers.md": {
@@ -770,8 +770,248 @@
     "semantic_hash": ""
   },
   "docs/14-chatbot.md": {
-    "mtime": 1788302845.9984834,
-    "ast_hash": "8fba763c2a36906441aa64d1b4caffb1",
+    "mtime": 1788320318.2386918,
+    "ast_hash": "efd6797aba7f42c9afe89be4eb3fdcb7",
+    "semantic_hash": ""
+  },
+  "backend/scripts/uji-proses.mjs": {
+    "mtime": 1788307249.3565676,
+    "ast_hash": "239228bf2f5187f1e403d24cf9e0c708",
+    "semantic_hash": ""
+  },
+  "backend/scripts/uji-tanya.mjs": {
+    "mtime": 1788317526.435684,
+    "ast_hash": "3d520fa31b6e3aeeeed8cb3bd16bcb8a",
+    "semantic_hash": ""
+  },
+  "backend/src/lib/midtrans.ts": {
+    "mtime": 1788306673.1953716,
+    "ast_hash": "c59631ae4efee0c22658ed8c4a1a10d6",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/proses/proses.controller.ts": {
+    "mtime": 1788306629.1073945,
+    "ast_hash": "78f2fa49ec312b3a1b72a6a889deb496",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/proses/proses.queries.ts": {
+    "mtime": 1788306346.6227632,
+    "ast_hash": "e68927f98ca1247deb9875f8b329de00",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/proses/proses.routes.ts": {
+    "mtime": 1788306629.1073945,
+    "ast_hash": "b098c1c10751c0608b74221108f39a9d",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/proses/proses.service.ts": {
+    "mtime": 1788306571.4377882,
+    "ast_hash": "0ba14e1a0dd8d347e484011b9d08b3a8",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/tanya/tanya.controller.ts": {
+    "mtime": 1788317878.3908687,
+    "ast_hash": "6238b1bf9d3973d59062b1ee953d93e0",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/tanya/tanya.llm.ts": {
+    "mtime": 1788317732.310517,
+    "ast_hash": "fe96ab9fb7388cd2f292ad0f8c3051c7",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/tanya/tanya.queries.ts": {
+    "mtime": 1788319980.9003637,
+    "ast_hash": "5c05642b2b57805f7816124e522c013d",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/tanya/tanya.routes.ts": {
+    "mtime": 1788317878.408388,
+    "ast_hash": "4112224f10474883c10fda4030095a82",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/tanya/tanya.service.ts": {
+    "mtime": 1788320027.6562984,
+    "ast_hash": "651a91ada9f4a06bd96d22a82bd21c65",
+    "semantic_hash": ""
+  },
+  "backend/src/modules/tanya/tanya.types.ts": {
+    "mtime": 1788319994.500518,
+    "ast_hash": "d49d8314477ca5ce7ea87cbdc871d72e",
+    "semantic_hash": ""
+  },
+  "frontend/components.json": {
+    "mtime": 1788318039.6304874,
+    "ast_hash": "c6ea6aeff074743b15d26e91029740bc",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/BottomSheet.tsx": {
+    "mtime": 1788311610.2432098,
+    "ast_hash": "5372e036f5e46698132a5508d376255c",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/KartuAksi.tsx": {
+    "mtime": 1788311343.731773,
+    "ast_hash": "7396842e076ec618fb946b71c7d57273",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/KepalaHero.tsx": {
+    "mtime": 1788315373.624205,
+    "ast_hash": "9d06db0b84408461d417965761ad6edd",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/Lembar.tsx": {
+    "mtime": 1788311920.2554896,
+    "ast_hash": "5932769b3f097499c847583aaea2edb4",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/SheetPesanan.tsx": {
+    "mtime": 1788315179.4565606,
+    "ast_hash": "7139917d77c40a0a47721fa550e5233e",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/TombolIkon.tsx": {
+    "mtime": 1788315207.2209382,
+    "ast_hash": "66649b5a34ba95b52bf4acecda3b34eb",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/agents/loading-states/thinking-shimmer.tsx": {
+    "mtime": 1788318055.6127236,
+    "ast_hash": "9e3fbf0727cd8a3f901613086f1c2941",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/agents/message-bubble.tsx": {
+    "mtime": 1788318191.329769,
+    "ast_hash": "42de78d95190f66421bd2ea0da755929",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/agents/message-context.tsx": {
+    "mtime": 1788318040.6538818,
+    "ast_hash": "1ad0ee318a148c81a6e31e114a904db1",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/agents/message-scroller.tsx": {
+    "mtime": 1788318236.9593198,
+    "ast_hash": "c7794bbaebcef99ffb0bd35b6d73e2dd",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/agents/message.tsx": {
+    "mtime": 1788318040.5554056,
+    "ast_hash": "95cac861faeb8eb628a9f0e16873bf10",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/motion/preview-rail.tsx": {
+    "mtime": 1788318040.801368,
+    "ast_hash": "19d0900c304a18bab18ea6e05de09f57",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/motion/text-shimmer.tsx": {
+    "mtime": 1788318191.327769,
+    "ast_hash": "41d5de061cd22fbe0e17ce68a4c093c7",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/ease.ts": {
+    "mtime": 1788318040.7289152,
+    "ast_hash": "65e512c5778f94cd003e27b7114d2d7b",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/hooks/use-dismiss.ts": {
+    "mtime": 1788318040.826195,
+    "ast_hash": "e961153df7da212bed4609794c0db843",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/hooks/use-hover-gesture.ts": {
+    "mtime": 1788318040.8537328,
+    "ast_hash": "7af4a4b0d4c39326e970df1816381dd2",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/hooks/use-tap-gesture.ts": {
+    "mtime": 1788318040.8746462,
+    "ast_hash": "9aefe037eab06d0c23d3e4c94d21eb80",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/text-shimmer.ts": {
+    "mtime": 1788318124.6138425,
+    "ast_hash": "045fb6227057aad6c55838269fedecfa",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/touch.ts": {
+    "mtime": 1788318040.8975778,
+    "ast_hash": "4f21133ce0247c6cc280c83208ab8f56",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/utils.ts": {
+    "mtime": 1788318124.6138425,
+    "ast_hash": "4740e19a535598c52793675678370ce0",
+    "semantic_hash": ""
+  },
+  "frontend/src/screens/ProsesPesanan.tsx": {
+    "mtime": 1788314678.6236951,
+    "ast_hash": "f81a44746b1f22b9c8e85ebd302caa22",
+    "semantic_hash": ""
+  },
+  "frontend/src/screens/RiwayatPesanan.tsx": {
+    "mtime": 1788313168.7907736,
+    "ast_hash": "cdf28a07e0d768e14f31a4a8715553a0",
+    "semantic_hash": ""
+  },
+  "frontend/src/screens/StrukPesanan.tsx": {
+    "mtime": 1788312132.5121014,
+    "ast_hash": "07bb7e4d52ffea62607add713953ff8c",
+    "semantic_hash": ""
+  },
+  "frontend/src/screens/Tanya.tsx": {
+    "mtime": 1788318463.8528056,
+    "ast_hash": "119fe122094bf9fdc13e08d184e3829b",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-09-02T00-33-11-594Z.yml": {
+    "mtime": 1788309191.594761,
+    "ast_hash": "86ca1c596c42b97f0b5445e4e28ab03d",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-09-02T01-17-39-756Z.yml": {
+    "mtime": 1788311859.75774,
+    "ast_hash": "249e427d47711f795526e7a84bb19950",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-09-02T01-18-43-757Z.yml": {
+    "mtime": 1788311923.759718,
+    "ast_hash": "3c5e02e887c23b508b3bcfb265223492",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-09-02T01-27-09-204Z.yml": {
+    "mtime": 1788312429.2060769,
+    "ast_hash": "05a7e2065a777edfbc81f5973a4d6bcc",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-09-02T01-27-37-563Z.yml": {
+    "mtime": 1788312457.564444,
+    "ast_hash": "cf15d6bd63de4b9a8b9bb21c00349ce7",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-09-02T01-28-02-187Z.yml": {
+    "mtime": 1788312482.1878088,
+    "ast_hash": "d7b781005be864022014f8483c091e9d",
+    "semantic_hash": ""
+  },
+  ".playwright-mcp/page-2026-09-02T01-28-18-683Z.yml": {
+    "mtime": 1788312498.6832771,
+    "ast_hash": "07d8d69a0074987394aa78093ebe5dc7",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-02-chatbot-tanya-design.md": {
+    "mtime": 1788317285.3691375,
+    "ast_hash": "c12b3f299283e1e78d121564fa74ac08",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-02-pesanan-ke-untung-design.md": {
+    "mtime": 1788308613.5142767,
+    "ast_hash": "5def53d6c002f725da96e1717280dbb6",
+    "semantic_hash": ""
+  },
+  "docs/superpowers/specs/2026-09-02-redesain-rupa-ewallet-design.md": {
+    "mtime": 1788315650.754072,
+    "ast_hash": "54a52800871dd480da21fed542b12bec",
     "semantic_hash": ""
   }
 }
