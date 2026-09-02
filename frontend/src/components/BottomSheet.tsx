@@ -84,7 +84,7 @@ export function BottomSheet({
             aria-modal="true"
             aria-label={judul}
             tabIndex={-1}
-            className="relative flex max-h-[88dvh] w-full max-w-md flex-col rounded-t-[28px] bg-kartu outline-none"
+            className="relative flex max-h-[88dvh] w-full max-w-md flex-col rounded-t-lembar bg-kartu shadow-mengambang outline-none"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}

@@ -74,8 +74,11 @@ export default function App() {
       <Route path="/catat" element={<CatatSuara />} />
       <Route path="/pesanan" element={<PesananMasuk />} />
       <Route path="/pesanan/whatsapp" element={<SambungWhatsApp />} />
-      {/* Dicapai dari dalam layar Pesanan, bukan dari NavBawah — ikon kelima
-          akan mengecilkan keempat target sentuh yang sudah ada. */}
+      {/* Sekarang punya slot sendiri di NavBawah. Dulu sengaja tidak, dengan
+          alasan ikon kelima mengecilkan target sentuh yang sudah ada — dan itu
+          memang terjadi kalau kelimanya sederajat. Setelah Catat naik jadi
+          tombol bulat yang mengambang, tinggal empat slot datar yang berbagi
+          lebar, sama seperti sebelumnya. */}
       <Route path="/pesanan/riwayat" element={<RiwayatPesanan />} />
       <Route path="/proses/:id" element={<ProsesPesanan />} />
       <Route path="/struk/:id" element={<StrukPesanan />} />

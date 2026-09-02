@@ -16,6 +16,7 @@ export function Layar({
   latar,
   kembali,
   atas = false,
+  hero,
 }: {
   pertanyaan?: string;
   children?: ReactNode;
@@ -24,7 +25,28 @@ export function Layar({
   latar?: string;
   kembali?: () => void;
   atas?: boolean;
+  /**
+   * Kepala bergradien penuh-lebar, dirender DI LUAR padding mendatar.
+   *
+   * Kalau diisi, layar bertanggung jawab atas padding isinya sendiri — biasanya
+   * dengan membungkusnya dalam `<Lembar>`. Header bawaan, `pertanyaan`, dan
+   * `atas` tidak berlaku di jalur ini: gradien sudah menjadi kepalanya, dan
+   * menumpuk wordmark di bawahnya membuat dua judul bersaing.
+   */
+  hero?: ReactNode;
 }) {
+  if (hero) {
+    return (
+      <div className={`min-h-dvh ${latar ?? 'bg-kanvas'}`}>
+        <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col">
+          {hero}
+          {children}
+          {aksi && <div className="flex flex-col gap-3 px-5 pb-6">{aksi}</div>}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`min-h-dvh ${latar ?? 'bg-kanvas'}`}>
       <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col px-5 py-6">
