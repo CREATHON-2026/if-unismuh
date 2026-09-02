@@ -22,6 +22,7 @@ import { PesananMasuk } from './screens/PesananMasuk';
 import { CatatSuara } from './screens/CatatSuara';
 import { SambungWhatsApp } from './screens/SambungWhatsApp';
 import { Rekap } from './screens/Rekap';
+import { Profil } from './screens/Profil';
 
 export default function App() {
   const nav = useNavigate();
@@ -73,6 +74,7 @@ export default function App() {
       <Route path="/pesanan" element={<PesananMasuk />} />
       <Route path="/pesanan/whatsapp" element={<SambungWhatsApp />} />
       <Route path="/rekap" element={<Rekap />} />
+      <Route path="/profil" element={<Profil />} />
     </Routes>
   );
 }

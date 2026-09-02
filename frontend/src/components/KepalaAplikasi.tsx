@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { bacaOnboarding } from '../state/onboarding';
 import { LogoTeks } from './Logo';
 
@@ -18,12 +19,20 @@ import { LogoTeks } from './Logo';
  * inisialnya ikut benar walau sessionStorage masih kosong.
  */
 export function KepalaAplikasi({ nama }: { nama?: string | null }) {
+  const nav = useNavigate();
   const inisial = ((nama ?? bacaOnboarding().nama_usaha ?? 'W').trim().charAt(0) || 'W').toUpperCase();
   return (
     <div className="flex items-center gap-3">
-      <span className="flex h-11 w-11 items-center justify-center rounded-full bg-hero text-lg font-bold text-white">
+      {/* Avatar = pintu ke profil. Beda dengan lonceng dulu: yang ini benar-benar
+          melakukan sesuatu saat diketuk. */}
+      <button
+        type="button"
+        aria-label="Buka profil"
+        onClick={() => nav('/profil')}
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-hero text-lg font-bold text-white transition active:scale-95"
+      >
         {inisial}
-      </span>
+      </button>
       <LogoTeks className="text-sub" />
     </div>
   );
