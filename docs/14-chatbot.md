@@ -1,9 +1,23 @@
 # Chatbot "Tanya lapakAi"
 
-> **Status: rancangan, belum dikerjakan — dan sengaja belum dikerjakan.**
-> Fitur ini **tidak ada** di [daftar prioritas](02-fitur-prioritas.md), bahkan
-> tidak di nomor 16–24. Baca [bagian terakhir](#kapan-ini-layak-dikerjakan)
-> sebelum memutuskan mulai.
+> **Status: sudah dibangun dan lolos uji.**
+> Rancangan di dokumen ini dikerjakan di branch `feat/chatbot-tanya` —
+> lihat [spec implementasinya](superpowers/specs/2026-09-02-chatbot-tanya-design.md).
+> Semua 30 pemeriksaan `backend/scripts/uji-tanya.mjs` lolos, termasuk uji
+> ketertelusuran yang mewajibkan tiap rupiah di jawaban punya padanan persis di
+> `acuan`.
+>
+> Peringatan prioritas di bawah **tetap berlaku**: fitur ini tidak ada di
+> [daftar prioritas](02-fitur-prioritas.md), jadi kalau alur inti goyah
+> menjelang demo, ini yang pertama dikorbankan. Baca
+> [bagian terakhir](#kapan-ini-layak-dikerjakan) sebelum menambah apa pun di
+> atasnya.
+>
+> Satu keputusan berubah dari rancangan awal: chatbotnya **hanya-baca**, persis
+> seperti saran di [bagian jalur tulis](#2-chatbot-yang-menulis-data). Maksud
+> `catat_transaksi` tidak menyimpan apa pun — ia mengembalikan `alihkan_ke` dan
+> layar Catat yang sudah ada yang menanganinya, lengkap dengan konfirmasi
+> manusia. Nol permukaan aturan #2 baru.
 
 Dokumen ini ada supaya kalau chatbot jadi dikerjakan, dikerjakannya **dengan
 cara yang tidak melanggar [aturan #1](../CLAUDE.md)** — bukan supaya seseorang
