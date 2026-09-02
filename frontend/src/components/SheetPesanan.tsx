@@ -116,7 +116,7 @@ export function SheetPesanan({
       aksi={
         <div className="flex flex-col gap-2">
           <Tombol
-            varian="gelap"
+            varian="utama"
             disabled={!siap}
             onClick={() =>
               produkId != null &&

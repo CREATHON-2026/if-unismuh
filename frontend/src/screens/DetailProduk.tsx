@@ -4,7 +4,8 @@ import { formatRupiah } from '@shared/format/rupiah';
 import type { DetailProduk as Detail } from '@shared/types';
 import { ambilDetailProduk } from '../api/client';
 import { Layar } from '../components/Layar';
-import { KartuHero } from '../components/KartuHero';
+import { KepalaHero } from '../components/KepalaHero';
+import { Lembar } from '../components/Lembar';
 import { BarProgres } from '../components/BarProgres';
 import { Lencana } from '../components/Lencana';
 import { NavBawah } from '../components/NavBawah';
@@ -52,39 +53,41 @@ export function DetailProduk() {
 
   if (galat) {
     return (
-      <Layar kembali={() => nav('/produk')} atas>
-        <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />
-        <NavBawah />
+      <Layar hero={<KepalaHero judul="Produk" kembali={() => nav('/produk')} />}>
+        <Lembar>
+          <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />
+          <NavBawah />
+        </Lembar>
       </Layar>
     );
   }
   if (!d) {
     return (
-      <Layar kembali={() => nav('/produk')} atas>
-        <div className="flex flex-col gap-3">
-          <RangkaHero />
-          <RangkaKartu tinggi="h-44" />
-        </div>
-        <NavBawah />
+      <Layar hero={<KepalaHero judul="Produk" kembali={() => nav('/produk')} />}>
+        <Lembar>
+          <div className="flex flex-col gap-3">
+            <RangkaHero />
+            <RangkaKartu tinggi="h-44" />
+          </div>
+          <NavBawah />
+        </Lembar>
       </Layar>
     );
   }
 
   return (
-    <Layar kembali={() => nav('/produk')} atas>
-      <div className="flex flex-wrap items-center gap-2">
-        <h1 className="text-judul font-extrabold tracking-[-0.02em] text-tinta">{d.nama}</h1>
-        {d.merugi && <Lencana nada="rugi">MERUGI</Lencana>}
-        {/* Kuning = perlu dicek. Terlaris baru jadi peringatan kalau produknya
-            juga merugi; terlaris yang untung cuma kabar baik, jadi netral. */}
-        {d.terlaris && <Lencana nada={d.merugi ? 'tanda' : 'netral'}>TERLARIS</Lencana>}
-      </div>
-
-      {/* Angka terpenting di layar ini: untung atau rugi per satu unit.
-          Modal dan harga jual ikut di bawah garis supaya keduanya terbaca
-          sebagai ASAL angka itu, bukan sebagai dua fakta terpisah. */}
-      <div className="mt-4">
-        <KartuHero
+    <Layar
+      hero={
+        /* Angka terpenting di layar ini: untung atau rugi per satu unit, dan
+           ia hidup di dalam gradien supaya tidak ada kartu lain yang bisa
+           menandinginya. Modal dan harga jual ikut di bawah garis supaya
+           keduanya terbaca sebagai ASAL angka itu, bukan sebagai dua fakta
+           terpisah — karena itu keduanya tetap baris tipis, bukan kartu besar.
+           Membesarkannya jadi kartu justru membuat ketiganya terlihat setara,
+           padahal hanya satu yang jadi alasan layar ini ada. */
+        <KepalaHero
+          judul={d.nama}
+          kembali={() => nav('/produk')}
           label={
             d.margin_per_unit == null
               ? 'Untung per unit'
@@ -104,23 +107,38 @@ export function DetailProduk() {
               : `Sudah terjual ${d.total_terjual} kali.`
           }
           bawah={
-            <div className="flex flex-col gap-2.5">
-              <div className="flex items-center justify-between text-isi">
-                <span className="text-white/70">Modal per unit</span>
-                <span className="angka font-semibold text-white">
-                  {d.modal_per_unit == null ? 'belum diisi' : formatRupiah(d.modal_per_unit)}
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-isi">
-                <span className="text-white/70">Harga jual</span>
-                <span className="angka font-semibold text-white">
-                  {formatRupiah(d.harga_jual)}
-                </span>
+            <div className="mx-auto max-w-[19rem]">
+              {(d.merugi || d.terlaris) && (
+                <div className="flex flex-wrap justify-center gap-2">
+                  {d.merugi && <Lencana nada="rugi">MERUGI</Lencana>}
+                  {/* Kuning = perlu dicek. Terlaris baru jadi peringatan kalau
+                      produknya juga merugi; terlaris yang untung cuma kabar
+                      baik, jadi netral. */}
+                  {d.terlaris && (
+                    <Lencana nada={d.merugi ? 'tanda' : 'netral'}>TERLARIS</Lencana>
+                  )}
+                </div>
+              )}
+              <div className="mt-4 flex flex-col gap-2.5 border-t border-white/20 pt-4">
+                <div className="flex items-center justify-between text-isi">
+                  <span className="text-white/70">Modal per unit</span>
+                  <span className="angka font-semibold text-white">
+                    {d.modal_per_unit == null ? 'belum diisi' : formatRupiah(d.modal_per_unit)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-isi">
+                  <span className="text-white/70">Harga jual</span>
+                  <span className="angka font-semibold text-white">
+                    {formatRupiah(d.harga_jual)}
+                  </span>
+                </div>
               </div>
             </div>
           }
         />
-      </div>
+      }
+    >
+      <Lembar className="pb-2">
 
       {/* Fitur 8. null = tidak ada yang perlu disarankan; sembunyikan, jangan
           tampilkan angka karangan. */}
@@ -198,7 +216,8 @@ export function DetailProduk() {
         />
       )}
 
-      <NavBawah />
+        <NavBawah />
+      </Lembar>
     </Layar>
   );
 }
