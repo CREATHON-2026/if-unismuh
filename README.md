@@ -10,11 +10,9 @@ Dibuat untuk **CREATHON 2026**, tema *AI & Data untuk UMKM*.
 
 ## Masalah
 
-Pedagang mikro menyamakan **omzet** dengan **untung**. Harga ditentukan dengan menebak atau meniru tetangga dan 
+Pedagang mikro menyamakan **omzet** dengan **untung**. Harga ditentukan dengan menebak atau meniru tetangga 
 
-Akibatnya sering terjadi: **produk yang paling laku justru yang paling merugikan** — dan pemiliknya tidak pernah tahu.
-
-Aplikasi pembukuan sudah banyak. Semuanya gagal di titik yang sama: menuntut orang berhenti pakai buku tulis.
+Akibatnya sering terjadi: **produk yang paling laku justru yang paling merugikan** dan pemiliknya tidak pernah tahu. dan juga rata-rata pedagang menggunakan whatsapp sebagai sistem untuk komunikasi dan transaksi.
 
 ## Solusi
 
