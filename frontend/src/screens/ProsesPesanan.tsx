@@ -301,15 +301,24 @@ export function ProsesPesanan() {
       {/* --- SELESAI --- */}
       {p.status === 'selesai' && (
         <div className="kartu mt-3 px-5 py-6">
-          {/* Centang hijau, bukan hijau "berhasil" bawaan rujukan: di titik
-              inilah untungnya benar-benar tercatat, jadi hijau di sini memang
-              berarti untung — bukan sekadar "operasi sukses". */}
+          {/* Centangnya hijau HANYA kalau pesanan ini benar-benar menambah
+              untung. Pesanan yang rugi tetap tercatat dan tetap selesai, tapi
+              hijau di aplikasi ini berarti untung — bukan "operasi berhasil".
+              Untuk itulah ungu ada: ia bisa berkata "sudah tercatat" tanpa ikut
+              berkata "Anda untung". Merah juga tidak dipakai di sini; centang
+              merah terbaca sebagai gagal, padahal pencatatannya berhasil. */}
           <div className="flex justify-center">
             <span
-              className="flex h-20 w-20 items-center justify-center rounded-full bg-untung-muda"
+              className={`flex h-20 w-20 items-center justify-center rounded-full ${
+                p.merugi ? 'bg-merek-muda' : 'bg-untung-muda'
+              }`}
               aria-hidden="true"
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-untung text-white">
+              <span
+                className={`flex h-14 w-14 items-center justify-center rounded-full text-white ${
+                  p.merugi ? 'bg-merek' : 'bg-untung'
+                }`}
+              >
                 <Check size={30} strokeWidth={3} />
               </span>
             </span>
@@ -320,7 +329,10 @@ export function ProsesPesanan() {
             {p.transaksi_id != null && (
               <span className="angka font-semibold text-tinta"> nomor {p.transaksi_id}</span>
             )}
-            . Untung di Beranda sudah bertambah.
+            .{' '}
+            {p.merugi
+              ? 'Untung di Beranda ikut berkurang, karena pesanan ini dijual di bawah modal.'
+              : 'Untung di Beranda sudah bertambah.'}
           </p>
           {p.cara_bayar === 'nanti' && !p.dibayar_pada && (
             <p className="mt-3 rounded-kontrol bg-tanda p-4 text-isi leading-relaxed text-tanda-tinta">
