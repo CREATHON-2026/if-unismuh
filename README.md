@@ -10,7 +10,7 @@ Dibuat untuk **CREATHON 2026**, tema *AI & Data untuk UMKM*.
 
 ## Masalah
 
-Pedagang mikro menyamakan **omzet** dengan **untung**. Harga ditentukan dengan menebak atau meniru tetangga.
+Pedagang mikro menyamakan **omzet** dengan **untung**. Harga ditentukan dengan menebak atau meniru tetangga dan 
 
 Akibatnya sering terjadi: **produk yang paling laku justru yang paling merugikan** — dan pemiliknya tidak pernah tahu.
 
@@ -42,10 +42,9 @@ Kebanyakan aplikasi pembukuan baru berguna setelah sebulan dipakai. lapakAi berg
 
 | Tahap | Ditangani oleh |
 |---|---|
-| Foto buku catatan | Gemini vision |
-| Catatan suara | Gemini (audio native) |
-| Ekstraksi jadi JSON | Gemini structured output |
-| Pencocokan nama produk | Gemini embedding + ambang keyakinan |
+| Catatan suara | Gamma4 + Web speech API (audio native) |
+| Ekstraksi jadi JSON | Gamma structured output |
+| Pencocokan nama produk | Gamma embedding + ambang keyakinan |
 | **Semua aritmetika** | **SQL** |
 
 **Platform: web app mobile-first.** Bukan karena tidak mampu bikin Android, tapi karena pedagang enggan install aplikasi baru.
@@ -59,7 +58,7 @@ Kebanyakan aplikasi pembukuan baru berguna setelah sebulan dipakai. lapakAi berg
 | Frontend | React + Vite + TypeScript + Tailwind |
 | Backend | Node.js + Express + TypeScript |
 | Database | PostgreSQL |
-| AI | Gemini |
+| AI | gamma 3 |
 
 ## Status
 
