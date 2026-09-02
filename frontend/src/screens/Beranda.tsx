@@ -162,7 +162,7 @@ export function Beranda() {
               <Wallet size={17} strokeWidth={1.8} aria-hidden="true" />
               Uang masuk
             </span>
-            <span className="angka mt-3 text-judul-kecil font-bold leading-tight text-tinta">
+            <span className="angka mt-3 break-words text-judul-kecil font-bold leading-tight text-tinta">
               {formatRupiah(data.omzet)}
             </span>
             <span className="mt-1.5 text-label text-redup">Belum dikurangi modal</span>
@@ -178,7 +178,7 @@ export function Beranda() {
               Untung bersih
             </span>
             <span
-              className={`angka mt-3 text-judul font-extrabold leading-tight ${rugi ? 'text-rugi' : 'text-untung'}`}
+              className={`angka mt-3 break-words text-judul font-extrabold leading-tight ${rugi ? 'text-rugi' : 'text-untung'}`}
             >
               {formatRupiah(data.untung_bersih)}
             </span>

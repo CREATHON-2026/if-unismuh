@@ -129,6 +129,16 @@ body {
   color: var(--color-tinta);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  /* Kilat abu-abu bawaan Android saat menyentuh tombol terasa seperti galat —
+     umpan balik sentuh sudah diurus active:scale di tiap kontrol. */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Fokus keyboard terlihat di kontrol mana pun — kenyamanan desktop & a11y.
+   Hanya :focus-visible: pengguna sentuh tidak melihat cincin yang mengganggu. */
+:focus-visible {
+  outline: 2.5px solid var(--color-hero);
+  outline-offset: 2px;
 }
 
 /*

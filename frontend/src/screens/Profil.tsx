@@ -232,7 +232,7 @@ export function Profil() {
             <button
               type="button"
               onClick={bukaUbah}
-              className="shrink-0 rounded-full bg-aksen-muda px-3.5 py-1.5 text-isi font-semibold text-tinta transition active:scale-95"
+              className="min-h-11 shrink-0 rounded-full bg-aksen-muda px-4 text-isi font-semibold text-tinta transition hover:bg-aksen-muda/70 active:scale-95"
             >
               Ubah
             </button>
@@ -253,7 +253,7 @@ export function Profil() {
             <button
               type="button"
               onClick={bukaUbah}
-              className="shrink-0 rounded-full bg-aksen-muda px-3.5 py-1.5 text-isi font-semibold text-tinta transition active:scale-95"
+              className="min-h-11 shrink-0 rounded-full bg-aksen-muda px-4 text-isi font-semibold text-tinta transition hover:bg-aksen-muda/70 active:scale-95"
             >
               Ubah
             </button>

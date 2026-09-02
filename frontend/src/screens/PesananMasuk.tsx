@@ -149,20 +149,23 @@ export function PesananMasuk() {
       </p>
 
       <div className="kartu mt-4 p-4">
-        <p className="text-utama font-bold text-tinta">Pesan pembeli</p>
+        <p id="label-pesan-pembeli" className="text-utama font-bold text-tinta">
+          Pesan pembeli
+        </p>
         <div className="relative mt-3">
           <textarea
             value={teks}
             onChange={(e) => setTeks(e.target.value)}
             placeholder={`Contoh: ${CONTOH}`}
             rows={4}
+            aria-labelledby="label-pesan-pembeli"
             className="w-full rounded-kontrol border-[1.5px] border-garis bg-kanvas p-4 pb-12 text-utama leading-relaxed text-tinta outline-none transition placeholder:text-redup focus:border-hero"
           />
           <button
             type="button"
             aria-label="Tempel dari papan klip"
             onClick={() => void tempelDariPapanKlip()}
-            className="absolute bottom-3.5 right-2.5 flex h-10 w-10 items-center justify-center rounded-xl text-aksen-tua transition active:scale-95"
+            className="absolute bottom-3 right-2.5 flex h-11 w-11 items-center justify-center rounded-xl text-aksen-tua transition hover:bg-aksen-muda active:scale-95"
           >
             <Clipboard size={20} strokeWidth={1.9} aria-hidden="true" />
           </button>

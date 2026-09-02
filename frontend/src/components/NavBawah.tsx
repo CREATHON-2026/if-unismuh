@@ -33,7 +33,7 @@ export function NavBawah() {
               onClick={() => nav(t.ke)}
               aria-current={aktif ? 'page' : undefined}
               className={`flex min-h-16 flex-1 flex-col items-center justify-center gap-1 rounded-2xl px-1 transition active:scale-95 ${
-                aktif ? 'bg-aksen-muda' : ''
+                aktif ? 'bg-aksen-muda' : 'hover:bg-kanvas'
               }`}
             >
               <Ikon

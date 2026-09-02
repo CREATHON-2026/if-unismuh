@@ -110,44 +110,47 @@ export function Rekap() {
             Kalau dua garisnya berjauhan, banyak uang lewat yang tidak jadi untung.
           </p>
 
-          <div className="kartu mt-3 flex flex-col p-5">
-            <span className="flex items-center gap-2.5 text-isi font-medium text-sedang">
-              <span
-                className="flex h-9 w-9 items-center justify-center rounded-xl bg-aksen-muda text-aksen-tua"
-                aria-hidden="true"
-              >
-                <Wallet size={18} strokeWidth={1.8} />
+          {/* Tablet ke atas: dua kartu periode berdampingan, tak perlu scroll. */}
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            <div className="kartu flex flex-col p-5">
+              <span className="flex items-center gap-2.5 text-isi font-medium text-sedang">
+                <span
+                  className="flex h-9 w-9 items-center justify-center rounded-xl bg-aksen-muda text-aksen-tua"
+                  aria-hidden="true"
+                >
+                  <Wallet size={18} strokeWidth={1.8} />
+                </span>
+                Uang masuk minggu ini
               </span>
-              Uang masuk minggu ini
-            </span>
-            <span className="angka mt-3 text-nomor font-extrabold leading-none text-tinta">
-              {formatRupiah(data.omzet)}
-            </span>
-            <span className="mt-2 text-kecil text-redup">Belum dikurangi modal</span>
-          </div>
+              <span className="angka mt-3 break-words text-nomor font-extrabold leading-none text-tinta">
+                {formatRupiah(data.omzet)}
+              </span>
+              <span className="mt-2 text-kecil text-redup">Belum dikurangi modal</span>
+            </div>
 
-          <div
-            className={`mt-3 flex flex-col rounded-kartu p-5 ${rugi ? 'bg-rugi-muda' : 'bg-untung-muda'}`}
-          >
-            <span
-              className={`flex items-center gap-2.5 text-isi font-semibold ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}
+            <div
+              className={`flex flex-col rounded-kartu p-5 ${rugi ? 'bg-rugi-muda' : 'bg-untung-muda'}`}
             >
               <span
-                className={`flex h-9 w-9 items-center justify-center rounded-xl text-white ${rugi ? 'bg-rugi' : 'bg-untung'}`}
-                aria-hidden="true"
+                className={`flex items-center gap-2.5 text-isi font-semibold ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}
               >
-                <PiggyBank size={18} strokeWidth={1.8} />
+                <span
+                  className={`flex h-9 w-9 items-center justify-center rounded-xl text-white ${rugi ? 'bg-rugi' : 'bg-untung'}`}
+                  aria-hidden="true"
+                >
+                  <PiggyBank size={18} strokeWidth={1.8} />
+                </span>
+                Untung bersih
               </span>
-              Untung bersih
-            </span>
-            <span
-              className={`angka mt-3 text-nomor font-extrabold leading-none ${rugi ? 'text-rugi' : 'text-untung'}`}
-            >
-              {formatRupiah(data.untung_bersih)}
-            </span>
-            <span className={`mt-2 text-kecil ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}>
-              {rugi ? 'Minggu ini uang keluar lebih besar' : 'Yang benar-benar tinggal minggu ini'}
-            </span>
+              <span
+                className={`angka mt-3 break-words text-nomor font-extrabold leading-none ${rugi ? 'text-rugi' : 'text-untung'}`}
+              >
+                {formatRupiah(data.untung_bersih)}
+              </span>
+              <span className={`mt-2 text-kecil ${rugi ? 'text-rugi-tua' : 'text-untung-tua'}`}>
+                {rugi ? 'Minggu ini uang keluar lebih besar' : 'Yang benar-benar tinggal minggu ini'}
+              </span>
+            </div>
           </div>
 
           {data.produk_terlaris && (

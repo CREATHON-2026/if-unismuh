@@ -53,8 +53,8 @@ export function TemuanPertama() {
           dan menuduh pengguna salah di layar pertama bukan cara membuka. */}
       <p className="mt-1 text-center text-utama leading-relaxed text-sedang">
         {temuan.merugi
-          ? 'Setiap bungkus yang laku justru mengurangi uang Anda.'
-          : 'Sekarang untung Anda per bungkus sudah terbaca, bukan tebakan.'}
+          ? `Setiap ${alurUsahaAktif().satuanJual} yang laku justru mengurangi uang Anda.`
+          : `Sekarang untung Anda per ${alurUsahaAktif().satuanJual} sudah terbaca, bukan tebakan.`}
       </p>
 
       {/* Momen inti onboarding: satu angka, dan asal-usulnya tepat di bawahnya.

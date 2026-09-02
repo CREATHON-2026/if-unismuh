@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { ambilSaya } from './api/client';
 import { ambilToken, simpanToken } from './api/sesi';
 import { tulisOnboarding } from './state/onboarding';
@@ -27,6 +27,12 @@ import { Profil } from './screens/Profil';
 export default function App() {
   const nav = useNavigate();
   const lokasi = useLocation();
+
+  // Ponsel: tiap pindah layar mulai dari atas. Tanpa ini posisi scroll layar
+  // sebelumnya terbawa, dan pertanyaan onboarding bisa muncul setengah terpotong.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [lokasi.pathname]);
 
   /**
    * GET /auth/saya tiap aplikasi dibuka: pulihkan + perpanjang sesi 90 hari,
@@ -75,6 +81,9 @@ export default function App() {
       <Route path="/pesanan/whatsapp" element={<SambungWhatsApp />} />
       <Route path="/rekap" element={<Rekap />} />
       <Route path="/profil" element={<Profil />} />
+      {/* Alamat tak dikenal jangan jadi layar kosong — pulangkan ke sambutan;
+          pemulih sesi di atas yang meneruskan ke beranda kalau sudah masuk. */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
