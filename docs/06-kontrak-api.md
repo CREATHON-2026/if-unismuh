@@ -183,6 +183,8 @@ Fitur 3 — ketik manual. **Banyak baris sekaligus**, bentuknya sama dengan laya
 ### `GET /transaksi?dari=&sampai=`
 Daftar transaksi beserta nama produknya. Bawaannya bulan berjalan.
 
+**Usulan dari desain Riwayat Penjualan (belum ada):** field `subtotal` per baris dan `total_periode`, keduanya dihitung SQL — frontend tidak boleh mengalikan `jumlah × harga_satuan` sendiri (aturan #7). Sementara itu layar riwayat hanya menampilkan angka yang sudah ada.
+
 ### `POST /transaksi/dari-teks`
 Fitur 2 — kalimat bebas jadi **usulan** transaksi. Melayani hasil transkripsi suara maupun ketikan bebas; endpoint ini tidak peduli teksnya datang dari mana.
 

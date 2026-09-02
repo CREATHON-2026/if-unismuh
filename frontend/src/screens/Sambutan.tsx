@@ -26,11 +26,11 @@ export function Sambutan() {
     >
       <div className="flex flex-col items-center gap-6 text-center">
         <div className="kartu flex items-center gap-3 px-8 py-6">
-          <LogoIkon ukuran={64} />
+          <LogoIkon ukuran={69} />
           <LogoTeks className="text-4xl" />
         </div>
         <p className="text-judul-kecil leading-relaxed text-sedang">
-          Tahu untung sebenarnya,
+          Hitung untung sebenarnya,
           <br />
           dari buku tulis yang sudah Anda pakai.
         </p>

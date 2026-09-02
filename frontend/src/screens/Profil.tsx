@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, LogOut, Phone, Store, Tag } from 'lucide-react';
+import { ArrowLeft, LogOut, Phone, ReceiptText, Store, Tag } from 'lucide-react';
 import type { JenisUsaha, Pengguna } from '@shared/types';
 import { ambilSaya, simpanUsaha } from '../api/client';
 import { hapusToken } from '../api/sesi';
 import { Layar } from '../components/Layar';
+import { BarisDaftar, KartuDaftar } from '../components/BarisDaftar';
 import { NavBawah } from '../components/NavBawah';
 import { KeadaanGalat } from '../components/KeadaanGalat';
 import { RangkaKartu } from '../components/Rangka';
@@ -275,6 +276,18 @@ export function Profil() {
           </div>
         </div>
       )}
+
+      <p className="label-bagian mt-7">CATATAN</p>
+      <div className="mt-2">
+        <KartuDaftar>
+          <BarisDaftar
+            ikon={ReceiptText}
+            judul="Riwayat penjualan"
+            meta="Semua catatan bulan ini, satu per satu"
+            onClick={() => nav('/riwayat')}
+          />
+        </KartuDaftar>
+      </div>
 
       <button
         type="button"

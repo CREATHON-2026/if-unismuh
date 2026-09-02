@@ -23,6 +23,8 @@ import { CatatSuara } from './screens/CatatSuara';
 import { SambungWhatsApp } from './screens/SambungWhatsApp';
 import { Rekap } from './screens/Rekap';
 import { Profil } from './screens/Profil';
+import { Notifikasi } from './screens/Notifikasi';
+import { RiwayatPenjualan } from './screens/RiwayatPenjualan';
 
 export default function App() {
   const nav = useNavigate();
@@ -81,6 +83,8 @@ export default function App() {
       <Route path="/pesanan/whatsapp" element={<SambungWhatsApp />} />
       <Route path="/rekap" element={<Rekap />} />
       <Route path="/profil" element={<Profil />} />
+      <Route path="/notifikasi" element={<Notifikasi />} />
+      <Route path="/riwayat" element={<RiwayatPenjualan />} />
       {/* Alamat tak dikenal jangan jadi layar kosong — pulangkan ke sambutan;
           pemulih sesi di atas yang meneruskan ke beranda kalau sudah masuk. */}
       <Route path="*" element={<Navigate to="/" replace />} />
