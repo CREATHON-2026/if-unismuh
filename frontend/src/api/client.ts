@@ -37,6 +37,7 @@ import type {
   OngkosTenagaReq,
   StatusWhatsappRes,
   HubungkanWhatsappReq,
+  TanyaRes,
 } from '@shared/types';
 import { ambilToken } from './sesi';
 
@@ -196,6 +197,18 @@ export function statusWhatsapp(): Promise<Jawaban<StatusWhatsappRes>> {
  */
 export function hubungkanWhatsapp(p: HubungkanWhatsappReq): Promise<Jawaban<StatusWhatsappRes>> {
   return panggil('/whatsapp/hubungkan', { method: 'POST', body: JSON.stringify(p) });
+}
+
+/**
+ * Tanya lapakAi — satu pertanyaan, satu jawaban. Hanya-baca.
+ *
+ * `jawaban` sudah berupa kalimat jadi dan `acuan` berisi angka SQL mentah.
+ * Layar hanya menampilkan keduanya; jangan menghitung apa pun dari `acuan`
+ * (aturan #7). Kalau ada angka yang dibutuhkan tapi belum ada di sana, minta
+ * ke pemilik backend — jangan diturunkan sendiri di React.
+ */
+export function tanya(pertanyaan: string): Promise<Jawaban<TanyaRes>> {
+  return panggil('/tanya', { method: 'POST', body: JSON.stringify({ pertanyaan }) });
 }
 
 /**

@@ -160,6 +160,47 @@
    */
   --shadow-mengambang: 0 8px 24px -6px rgb(15 23 42 / 0.16);
   --shadow-fab: 0 10px 24px -6px rgb(111 18 246 / 0.45);
+
+  /*
+   * Jembatan nama shadcn — HANYA untuk komponen yang disalin dari registri.
+   *
+   * Komponen beUI di src/components/agents/ memakai `bg-muted`,
+   * `text-muted-foreground`, `bg-card`, dan sembilan nama lain dari shadcn.
+   * Tanpa token ini Tailwind v4 tidak membangkitkan kelasnya sama sekali:
+   * bukan warna yang salah, melainkan TIDAK ADA warna, dan komponennya tampil
+   * polos tanpa satu pun galat. Kelas kegagalan yang sama dengan text-shimmer.
+   *
+   * Ini BUKAN sistem warna kedua. Tiap nama menunjuk ke token yang sudah ada di
+   * atas, jadi mengubah palet di satu tempat tetap mengubah semuanya. Yang
+   * sengaja TIDAK dijembatani: hijau. Tidak ada nama shadcn yang menunjuk ke
+   * --color-untung, supaya hijau tetap mustahil muncul kecuali soal untung.
+   *
+   * `destructive` menunjuk ke merah rugi, dan itu memang konsisten dengan
+   * aturan di atas: merah berarti rugi, galat, dan menghapus.
+   *
+   * Kode lapakAi sendiri JANGAN memakai nama-nama ini. Pakai `bg-kartu`,
+   * `text-redup`, `bg-merek`. Nama Inggris di sini ada supaya berkas vendor
+   * bisa dipasang ulang tanpa disunting, bukan supaya dipakai layar kita.
+   */
+  --color-background: var(--color-kanvas);
+  --color-foreground: var(--color-tinta);
+  --color-card: var(--color-kartu);
+  --color-card-foreground: var(--color-tinta);
+  --color-popover: var(--color-kartu);
+  --color-popover-foreground: var(--color-tinta);
+  --color-muted: var(--color-permukaan);
+  --color-muted-foreground: var(--color-redup);
+  --color-accent: var(--color-merek-muda);
+  --color-accent-foreground: var(--color-merek-tua);
+  --color-primary: var(--color-merek);
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: var(--color-permukaan);
+  --color-secondary-foreground: var(--color-tinta);
+  --color-destructive: var(--color-rugi);
+  --color-destructive-foreground: #FFFFFF;
+  --color-border: var(--color-garis);
+  --color-input: var(--color-garis);
+  --color-ring: var(--color-merek);
 }
 
 html {
