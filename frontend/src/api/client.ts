@@ -20,7 +20,6 @@ import type {
   KonfirmasiRes,
   Beranda,
   Rekap,
-  Transaksi,
   RingkasanProduk,
   UsulanProduk,
   DetailProduk,
@@ -100,11 +99,6 @@ export function simpanResep(p: SimpanResepReq): Promise<Jawaban<TemuanPertama>> 
 
 export function ambilBeranda(): Promise<Jawaban<Beranda>> {
   return panggil('/beranda');
-}
-
-/** Riwayat penjualan — tanpa parameter, backend memakai bulan berjalan. */
-export function ambilTransaksi(): Promise<Jawaban<Transaksi[]>> {
-  return panggil('/transaksi');
 }
 
 /**
