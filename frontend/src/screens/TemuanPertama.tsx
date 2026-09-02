@@ -8,6 +8,7 @@ import { Tombol } from '../components/Tombol';
 import { KartuHero } from '../components/KartuHero';
 import { KepalaAplikasi } from '../components/KepalaAplikasi';
 import { bacaOnboarding } from '../state/onboarding';
+import { alurUsahaAktif } from '../state/alurUsaha';
 import { tulisEkstraksi } from '../state/ekstraksi';
 
 export function TemuanPertama() {
@@ -66,8 +67,8 @@ export function TemuanPertama() {
           dan menuduh pengguna salah di layar pertama bukan cara membuka. */}
       <p className="mt-1 text-center text-utama leading-relaxed text-sedang">
         {temuan.merugi
-          ? 'Setiap bungkus yang laku justru mengurangi uang Anda.'
-          : 'Sekarang untung Anda per bungkus sudah terbaca, bukan tebakan.'}
+          ? `Setiap ${alurUsahaAktif().satuanJual} yang laku justru mengurangi uang Anda.`
+          : `Sekarang untung Anda per ${alurUsahaAktif().satuanJual} sudah terbaca, bukan tebakan.`}
       </p>
 
       {/* Momen inti onboarding: satu angka, dan asal-usulnya tepat di bawahnya.
@@ -78,7 +79,7 @@ export function TemuanPertama() {
           label={temuan.merugi ? 'Potensi kerugian' : 'Potensi keuntungan'}
           nilai={`${temuan.merugi ? '\u2212' : '+'} ${selisih}`}
           nada={temuan.merugi ? 'rugi' : 'untung'}
-          catatan={`${namaProduk} — setiap satu bungkus terjual.`}
+          catatan={`${namaProduk} — ${alurUsahaAktif().kalimatTemuan}.`}
           bawah={
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center justify-between text-isi">

@@ -94,11 +94,13 @@ export function JenisUsaha() {
 
       <h1 className="pt-6 tracking-[-0.02em] text-judul font-bold text-tinta">Apa jenis usahamu?</h1>
       <p className="text-utama leading-relaxed text-sedang">
-        Pilih satu yang paling menggambarkan bisnismu agar LapakAi bisa beradaptasi.
+        Pilih satu yang paling menggambarkan bisnismu agar lapakAi bisa beradaptasi.
       </p>
       {galat && <p className="font-semibold text-rugi">{galat}</p>}
 
-      <div className="flex flex-col gap-3 pt-2">
+      {/* Dua kolom mulai tablet: lima kartu pilihan setinggi ini membuat layar
+          lebar harus di-scroll padahal isinya cuma satu pertanyaan. */}
+      <div className="grid grid-cols-1 gap-3 pt-2 md:grid-cols-2">
         {PILIHAN.map((p) => {
           const dipilih = pilihan === p.id;
           const Ikon = p.ikon;

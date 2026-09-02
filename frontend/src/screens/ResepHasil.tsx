@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Layar } from '../components/Layar';
 import { Tombol } from '../components/Tombol';
+import { InputTeks } from '../components/InputTeks';
 import { KepalaResep } from '../components/KepalaResep';
 import { tulisOnboarding } from '../state/onboarding';
+import { alurUsahaAktif } from '../state/alurUsaha';
 
 export function ResepHasil() {
   const nav = useNavigate();
   const [jumlah, setJumlah] = useState('');
+  const alur = alurUsahaAktif();
   const valid = Number(jumlah) > 0;
 
   function lanjut() {
@@ -23,18 +26,16 @@ export function ResepHasil() {
 
       <div className="kartu mt-6 p-6">
         <h1 className="text-judul font-bold leading-snug tracking-[-0.02em] text-tinta">
-          Sekali bikin jadi berapa bungkus?
+          {alur.tanyaHasil}
         </h1>
-        <p className="mt-2 text-utama leading-relaxed text-sedang">
-          Hasil sekali produksi dari resep ini.
-        </p>
+        <p className="mt-2 text-utama leading-relaxed text-sedang">{alur.penjelasHasil}</p>
 
-        <input
+        <InputTeks
           type="tel"
           inputMode="numeric"
           autoFocus
           aria-label="Jumlah hasil sekali bikin"
-          placeholder="Contoh: 40"
+          placeholder={alur.placeholderHasil}
           value={jumlah}
           onChange={(e) => setJumlah(e.target.value.replace(/\D/g, ''))}
           className="angka mt-5 h-[72px] w-full rounded-kontrol border-[1.5px] border-garis-tua bg-kartu px-4 text-judul font-bold text-tinta outline-none transition placeholder:text-sub placeholder:font-normal placeholder:text-redup focus:border-merek"

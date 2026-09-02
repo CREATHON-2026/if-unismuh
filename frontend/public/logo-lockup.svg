@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 118">
+  <g>
+    <path fill="#29447D" d="M30 46 H90 A10 10 0 0 1 100 56 V102 Q100 108 95 104.5 L74 96 H32 A12 12 0 0 1 20 84 V56 A10 10 0 0 1 30 46 Z"/>
+    <rect x="18" y="103" width="8.5" height="8.5" rx="2.5" fill="#29447D"/>
+    <rect x="30.5" y="103" width="8.5" height="8.5" rx="2.5" fill="#29447D"/>
+    <rect x="43" y="103" width="8.5" height="8.5" rx="2.5" fill="#29447D"/>
+    <rect x="55.5" y="103" width="8.5" height="8.5" rx="2.5" fill="#29447D"/>
+    <path fill="#FF7100" d="M26 18 H36.4 L30 46 A9 6 0 0 1 12 46 L21.5 21 Q22.6 18 26 18 Z"/>
+    <path fill="#FFFFFF" d="M36.4 18 H51.6 L49 46 A9.5 6 0 0 1 30 46 Z"/>
+    <path fill="#FF7100" d="M51.6 18 H68.4 L71 46 A11 7 0 0 1 49 46 Z"/>
+    <path fill="#FFFFFF" d="M68.4 18 H83.6 L90 46 A9.5 6 0 0 1 71 46 Z"/>
+    <path fill="#FF7100" d="M83.6 18 H94 Q97.4 18 98.5 21 L108 46 A9 6 0 0 1 90 46 Z"/>
+  </g>
+  <text x="126" y="88" font-family="Quicksand, sans-serif" font-weight="700" font-size="66" letter-spacing="-1"><tspan fill="#29447D">lapak</tspan><tspan fill="#FF7100">Ai</tspan></text>
+</svg>

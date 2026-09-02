@@ -4,8 +4,7 @@ import { formatRupiah } from '@shared/format/rupiah';
 import type { DetailProduk as Detail } from '@shared/types';
 import { ambilDetailProduk } from '../api/client';
 import { Layar } from '../components/Layar';
-import { KepalaHero } from '../components/KepalaHero';
-import { Lembar } from '../components/Lembar';
+import { KartuHero } from '../components/KartuHero';
 import { BarProgres } from '../components/BarProgres';
 import { Lencana } from '../components/Lencana';
 import { NavBawah } from '../components/NavBawah';
@@ -19,6 +18,14 @@ import { RangkaHero, RangkaKartu } from '../components/Rangka';
  * Dua hal yang harus terlihat bersamaan: kabar buruk (rugi per unit) dan jalan
  * keluarnya (saran harga, fitur 8). Berhenti di kabar buruk saja membuat
  * pedagang merasa dihakimi, bukan dibantu.
+ *
+ * Dari mockup tim yang sengaja TIDAK dibawa:
+ * - "Harga Modal" sebagai kolom ketik: modal DIHITUNG SQL dari resep bahan
+ *   (fitur 5), bukan diketik — modal ketikan tidak bisa ditelusuri asalnya.
+ *   Mau mengubah modal? Ubah resep/bahannya.
+ * - Simpan Perubahan & Hapus Produk: endpoint-nya belum ada — kontraknya
+ *   sudah diusulkan di docs/06 (PATCH /produk/:id/harga, DELETE /produk/:id).
+ * - Foto, kategori, toggle "stok tersedia": tidak ada di data produk.
  *
  * Rincian bahan menjumlah PERSIS ke modal per unit — itu dijaga uji di backend.
  * Frontend hanya menampilkan; tidak ada satu penjumlahan pun di sini.
@@ -53,41 +60,39 @@ export function DetailProduk() {
 
   if (galat) {
     return (
-      <Layar hero={<KepalaHero judul="Produk" kembali={() => nav('/produk')} />}>
-        <Lembar>
-          <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />
-          <NavBawah />
-        </Lembar>
+      <Layar kembali={() => nav('/produk')} atas>
+        <KeadaanGalat pesan={galat} onCoba={() => void muat()} sedangMencoba={memuat} />
+        <NavBawah />
       </Layar>
     );
   }
   if (!d) {
     return (
-      <Layar hero={<KepalaHero judul="Produk" kembali={() => nav('/produk')} />}>
-        <Lembar>
-          <div className="flex flex-col gap-3">
-            <RangkaHero />
-            <RangkaKartu tinggi="h-44" />
-          </div>
-          <NavBawah />
-        </Lembar>
+      <Layar kembali={() => nav('/produk')} atas>
+        <div className="flex flex-col gap-3">
+          <RangkaHero />
+          <RangkaKartu tinggi="h-44" />
+        </div>
+        <NavBawah />
       </Layar>
     );
   }
 
   return (
-    <Layar
-      hero={
-        /* Angka terpenting di layar ini: untung atau rugi per satu unit, dan
-           ia hidup di dalam gradien supaya tidak ada kartu lain yang bisa
-           menandinginya. Modal dan harga jual ikut di bawah garis supaya
-           keduanya terbaca sebagai ASAL angka itu, bukan sebagai dua fakta
-           terpisah — karena itu keduanya tetap baris tipis, bukan kartu besar.
-           Membesarkannya jadi kartu justru membuat ketiganya terlihat setara,
-           padahal hanya satu yang jadi alasan layar ini ada. */
-        <KepalaHero
-          judul={d.nama}
-          kembali={() => nav('/produk')}
+    <Layar kembali={() => nav('/produk')} atas>
+      <div className="flex flex-wrap items-center gap-2">
+        <h1 className="text-judul font-extrabold tracking-[-0.02em] text-tinta">{d.nama}</h1>
+        {d.merugi && <Lencana nada="rugi">MERUGI</Lencana>}
+        {/* Kuning = perlu dicek. Terlaris baru jadi peringatan kalau produknya
+            juga merugi; terlaris yang untung cuma kabar baik, jadi netral. */}
+        {d.terlaris && <Lencana nada={d.merugi ? 'tanda' : 'netral'}>TERLARIS</Lencana>}
+      </div>
+
+      {/* Angka terpenting di layar ini: untung atau rugi per satu unit.
+          Modal dan harga jual ikut di bawah garis supaya keduanya terbaca
+          sebagai ASAL angka itu, bukan sebagai dua fakta terpisah. */}
+      <div className="mt-4">
+        <KartuHero
           label={
             d.margin_per_unit == null
               ? 'Untung per unit'
@@ -107,38 +112,25 @@ export function DetailProduk() {
               : `Sudah terjual ${d.total_terjual} kali.`
           }
           bawah={
-            <div className="mx-auto max-w-[19rem]">
-              {(d.merugi || d.terlaris) && (
-                <div className="flex flex-wrap justify-center gap-2">
-                  {d.merugi && <Lencana nada="rugi">MERUGI</Lencana>}
-                  {/* Kuning = perlu dicek. Terlaris baru jadi peringatan kalau
-                      produknya juga merugi; terlaris yang untung cuma kabar
-                      baik, jadi netral. */}
-                  {d.terlaris && (
-                    <Lencana nada={d.merugi ? 'tanda' : 'netral'}>TERLARIS</Lencana>
-                  )}
-                </div>
-              )}
-              <div className="mt-4 flex flex-col gap-2.5 border-t border-white/20 pt-4">
-                <div className="flex items-center justify-between text-isi">
-                  <span className="text-white/70">Modal per unit</span>
-                  <span className="angka font-semibold text-white">
-                    {d.modal_per_unit == null ? 'belum diisi' : formatRupiah(d.modal_per_unit)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-isi">
-                  <span className="text-white/70">Harga jual</span>
-                  <span className="angka font-semibold text-white">
-                    {formatRupiah(d.harga_jual)}
-                  </span>
-                </div>
+            /* Dua kolom ala mockup: modal kiri, jual kanan — tetap read-only. */
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <p className="text-isi font-medium text-white/70">Harga modal</p>
+                <p className="angka mt-1 text-judul-kecil font-bold text-white">
+                  {d.modal_per_unit == null ? 'belum diisi' : formatRupiah(d.modal_per_unit)}
+                </p>
+                <p className="mt-0.5 text-label text-white/70">Dihitung dari resep</p>
+              </div>
+              <div>
+                <p className="text-isi font-medium text-white/70">Harga jual</p>
+                <p className="angka mt-1 text-judul-kecil font-bold text-white">
+                  {formatRupiah(d.harga_jual)}
+                </p>
               </div>
             </div>
           }
         />
-      }
-    >
-      <Lembar className="pb-2">
+      </div>
 
       {/* Fitur 8. null = tidak ada yang perlu disarankan; sembunyikan, jangan
           tampilkan angka karangan. */}
@@ -157,13 +149,13 @@ export function DetailProduk() {
 
           <div className="mt-4 flex gap-2">
             <div className="flex-1 rounded-kontrol bg-untung-tua px-4 py-3">
-              <p className="text-label text-white/75">Batas tidak rugi</p>
+              <p className="text-label text-white/65">Batas tidak rugi</p>
               <p className="angka mt-0.5 text-utama font-bold">
                 {formatRupiah(d.saran_harga.harga_impas)}
               </p>
             </div>
             <div className="flex-1 rounded-kontrol bg-untung-tua px-4 py-3">
-              <p className="text-label text-white/75">Untung jadi</p>
+              <p className="text-label text-white/65">Untung jadi</p>
               <p className="angka mt-0.5 text-utama font-bold">
                 {formatRupiah(d.saran_harga.untung_per_unit)}
               </p>
@@ -216,8 +208,7 @@ export function DetailProduk() {
         />
       )}
 
-        <NavBawah />
-      </Lembar>
+      <NavBawah />
     </Layar>
   );
 }

@@ -1,4 +1,5 @@
-// Klien API lapakAi — semuanya endpoint asli, tidak ada mock yang tersisa.
+// Klien API lapakAi — semuanya endpoint asli, kecuali SATU yang ditandai jelas:
+// ambilRekap masih data tiruan karena GET /rekap belum ada di backend.
 //
 // TIDAK ADA SATU PUN PERHITUNGAN UANG DI BERKAS INI. Setiap angka finansial
 // datang sudah jadi dari SQL (aturan #7). Kalau suatu saat ada yang tergoda
@@ -39,6 +40,8 @@ import type {
   OngkosTenagaReq,
   StatusWhatsappRes,
   HubungkanWhatsappReq,
+  Rekap,
+  Transaksi,
   TanyaRes,
   RiwayatTanyaRes,
 } from '@shared/types';

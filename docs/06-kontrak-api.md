@@ -107,6 +107,8 @@ Wawancara resep satu produk. **Di sinilah temuan pertama lahir.**
 
 Frontend **tidak** menghitung `20000 - 21200`. Backend yang mengirim `margin_per_unit` dan `merugi`.
 
+**Pemetaan per jenis usaha (murni frontend, kontrak tidak berubah):** pertanyaan wawancara bercabang mengikuti `jenis_usaha` — makanan "sekali masak/porsi", minuman "sekali racik/gelas", **sembako mengirim satu bahan kulakan** (nama bahan = nama produk, `jumlah_beli` = `jumlah`), jasa "bahan habis pakai per sekian pelanggan". Semuanya tetap bentuk permintaan di atas; `bahan` tetap wajib ≥ 1.
+
 ## Beranda
 
 ### `GET /beranda?dari=2026-08-01&sampai=2026-08-31`
@@ -185,6 +187,8 @@ Fitur 3 — ketik manual. **Banyak baris sekaligus**, bentuknya sama dengan laya
 
 ### `GET /transaksi?dari=&sampai=`
 Daftar transaksi beserta nama produknya. Bawaannya bulan berjalan.
+
+**Usulan dari desain Riwayat Penjualan (belum ada):** field `subtotal` per baris dan `total_periode`, keduanya dihitung SQL — frontend tidak boleh mengalikan `jumlah × harga_satuan` sendiri (aturan #7). Sementara itu layar riwayat hanya menampilkan angka yang sudah ada.
 
 ### `POST /transaksi/dari-teks`
 Fitur 2 — kalimat bebas jadi **usulan** transaksi. Melayani hasil transkripsi suara maupun ketikan bebas; endpoint ini tidak peduli teksnya datang dari mana.
@@ -369,6 +373,14 @@ Jawabannya sama bentuknya dengan `POST /onboarding/resep` — `produk_id`, `nama
 Tampilkan produk seperti itu sebagai **"modal belum diisi"**, bukan sebagai untung penuh dan bukan sebagai rugi. Yang tidak diketahui harus tampil sebagai tidak diketahui.
 
 Kalau `bahan` diisi, `hasil_per_batch` wajib dan setiap bahan wajib punya `jumlah`, `jumlah_beli`, dan `harga_beli` — resep setengah jadi menghasilkan modal yang salah tanpa pesan galat.
+
+### `PATCH /produk/:id/harga` — **belum ada di backend**
+Usulan dari desain Detail Produk: pedagang mengganti harga jual (mis. memakai harga yang disarankan fitur 8). Body `{ "harga_jual": 22000 }`, jawabannya **DetailProduk penuh** dengan margin/saran terbaru dari SQL — frontend tidak menghitung selisihnya sendiri.
+
+**Harga modal TIDAK pernah bisa diubah lewat endpoint mana pun** — modal hasil hitungan resep (fitur 5). Mengubah modal = mengubah resep.
+
+### `DELETE /produk/:id` — **belum ada di backend**
+Usulan dari desain Detail Produk. Jawaban `{ "terhapus": true }`. Transaksi lama produk itu harus tetap utuh di laporan (jangan ikut terhapus) — detail keputusannya di pemilik backend.
 
 ### `PATCH /produk/:id/tenaga` — fitur 11
 

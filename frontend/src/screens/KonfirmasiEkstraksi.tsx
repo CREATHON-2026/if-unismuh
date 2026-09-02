@@ -7,7 +7,6 @@ import { konfirmasiEkstraksi, pratinjauEkstraksi } from '../api/client';
 import { Layar } from '../components/Layar';
 import { KartuHero } from '../components/KartuHero';
 import { Tombol } from '../components/Tombol';
-import { TombolIkon } from '../components/TombolIkon';
 import { bacaEkstraksi, hapusEkstraksi } from '../state/ekstraksi';
 
 function keBarisKonfirmasi(b: BarisEkstraksi): BarisKonfirmasi {
@@ -75,7 +74,7 @@ export function KonfirmasiEkstraksi() {
         tanpaLogo
         pertanyaan="Belum ada hasil foto"
         aksi={
-          <Tombol varian="utama" onClick={() => nav('/temuan')}>
+          <Tombol varian="gelap" onClick={() => nav('/temuan')}>
             Kembali
           </Tombol>
         }
@@ -91,7 +90,7 @@ export function KonfirmasiEkstraksi() {
         tanpaLogo
         pertanyaan="Tersimpan"
         aksi={
-          <Tombol varian="utama" onClick={() => nav('/beranda')}>
+          <Tombol varian="gelap" onClick={() => nav('/beranda')}>
             Ke Beranda
           </Tombol>
         }
@@ -106,8 +105,15 @@ export function KonfirmasiEkstraksi() {
 
   return (
     <Layar tanpaLogo atas>
-      <div className="-mx-5 flex items-center gap-3 border-b border-garis px-5 pb-4">
-        <TombolIkon ikon={ArrowLeft} label="Kembali" nada="terang" onClick={() => nav(-1)} />
+      <div className="-mx-5 flex items-center gap-3 border-b border-garis px-5 pb-4 md:-mx-8 md:px-8">
+        <button
+          type="button"
+          aria-label="Kembali"
+          onClick={() => nav(-1)}
+          className="-ml-1 flex h-11 w-11 items-center justify-center rounded-full text-tinta transition active:scale-95"
+        >
+          <ArrowLeft size={24} strokeWidth={2} />
+        </button>
         <h1 className="text-judul-kecil font-bold tracking-[-0.02em] text-tinta">
           Konfirmasi Transaksi
         </h1>
@@ -137,7 +143,7 @@ export function KonfirmasiEkstraksi() {
                 <input
                   value={b.nama_produk ?? b.nama_mentah}
                   onChange={(e) => ubah(b.urutan, { nama_produk: e.target.value })}
-                  className="h-12 min-w-0 flex-1 rounded-kontrol border border-garis bg-kartu px-3 text-utama font-semibold text-tinta outline-none focus:border-merek"
+                  className="h-12 min-w-0 flex-1 rounded-kontrol border border-garis bg-kartu px-3 text-utama font-semibold text-tinta outline-none focus:border-hero"
                 />
                 <div className="flex h-12 shrink-0 items-center gap-1 rounded-kontrol border border-garis bg-kartu px-3">
                   <span className="text-isi font-semibold text-redup">Rp</span>
@@ -163,7 +169,7 @@ export function KonfirmasiEkstraksi() {
                   onChange={(e) =>
                     ubah(b.urutan, { jumlah: Number(e.target.value.replace(/\D/g, '')) || 0 })
                   }
-                  className="angka h-11 w-16 rounded-kontrol border border-garis bg-kartu text-center text-utama font-semibold text-tinta outline-none focus:border-merek"
+                  className="angka h-11 w-16 rounded-kontrol border border-garis bg-kartu text-center text-utama font-semibold text-tinta outline-none focus:border-hero"
                 />
                 <span className="angka">
                   × {b.harga_satuan !== null ? formatRupiah(b.harga_satuan) : '—'}
@@ -268,7 +274,7 @@ export function KonfirmasiEkstraksi() {
       </div>
 
       <div className="mt-4">
-        <Tombol varian="utama" disabled={sibuk || baris.length === 0} onClick={simpan}>
+        <Tombol varian="gelap" disabled={sibuk || baris.length === 0} onClick={simpan}>
           <span className="flex items-center justify-center gap-2.5">
             <Save size={20} strokeWidth={1.9} aria-hidden="true" />
             {sibuk ? 'Menyimpan…' : 'Simpan Transaksi'}
