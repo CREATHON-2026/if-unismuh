@@ -182,7 +182,7 @@ export function ProsesPesanan() {
           }
           bawah={
             <div className="flex items-center justify-between text-isi">
-              <span className="text-white/55">Nilai pesanan</span>
+              <span className="text-white/70">Nilai pesanan</span>
               <span className="angka font-semibold text-white">
                 {formatRupiah(p.nilai_pesanan)}
               </span>

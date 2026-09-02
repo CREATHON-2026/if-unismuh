@@ -266,7 +266,7 @@ export function KonfirmasiEkstraksi() {
           nada="netral"
           bawah={
             <div className="flex items-center justify-between text-isi">
-              <span className="text-white/55">Total item</span>
+              <span className="text-white/70">Total item</span>
               <span className="angka font-semibold text-white">{total.item}</span>
             </div>
           }

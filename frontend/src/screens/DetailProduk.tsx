@@ -106,13 +106,13 @@ export function DetailProduk() {
           bawah={
             <div className="flex flex-col gap-2.5">
               <div className="flex items-center justify-between text-isi">
-                <span className="text-white/55">Modal per unit</span>
+                <span className="text-white/70">Modal per unit</span>
                 <span className="angka font-semibold text-white">
                   {d.modal_per_unit == null ? 'belum diisi' : formatRupiah(d.modal_per_unit)}
                 </span>
               </div>
               <div className="flex items-center justify-between text-isi">
-                <span className="text-white/55">Harga jual</span>
+                <span className="text-white/70">Harga jual</span>
                 <span className="angka font-semibold text-white">
                   {formatRupiah(d.harga_jual)}
                 </span>
@@ -139,13 +139,13 @@ export function DetailProduk() {
 
           <div className="mt-4 flex gap-2">
             <div className="flex-1 rounded-kontrol bg-untung-tua px-4 py-3">
-              <p className="text-label text-white/65">Batas tidak rugi</p>
+              <p className="text-label text-white/75">Batas tidak rugi</p>
               <p className="angka mt-0.5 text-utama font-bold">
                 {formatRupiah(d.saran_harga.harga_impas)}
               </p>
             </div>
             <div className="flex-1 rounded-kontrol bg-untung-tua px-4 py-3">
-              <p className="text-label text-white/65">Untung jadi</p>
+              <p className="text-label text-white/75">Untung jadi</p>
               <p className="angka mt-0.5 text-utama font-bold">
                 {formatRupiah(d.saran_harga.untung_per_unit)}
               </p>

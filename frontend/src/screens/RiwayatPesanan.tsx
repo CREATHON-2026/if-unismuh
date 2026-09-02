@@ -171,7 +171,7 @@ export function RiwayatPesanan() {
 function Angka({ label, nilai, sorot }: { label: string; nilai: number; sorot?: boolean }) {
   return (
     <div>
-      <p className="text-isi text-white/55">{label}</p>
+      <p className="text-isi text-white/70">{label}</p>
       <p className={`angka mt-0.5 text-judul-kecil font-bold ${sorot ? 'text-rugi-terang' : 'text-white'}`}>
         {nilai}
       </p>

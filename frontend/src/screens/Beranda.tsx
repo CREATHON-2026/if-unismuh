@@ -133,10 +133,12 @@ export function Beranda() {
              */
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-isi font-medium text-white/75">Uang masuk</p>
-                {/* /50, bukan /45: pada 12,5px di atas kartu gelap, /45 hanya 4,26:1 —
-                    gagal WCAG AA. /50 memberi 4,92:1. Diukur, bukan dikira. */}
-                <p className="mt-0.5 text-label text-white/50">Belum dikurangi modal</p>
+                <p className="text-isi font-medium text-white/80">Uang masuk</p>
+                {/* /75, bukan /50: angka lama diukur di atas navy #1B2536. Setelah
+                    hero jadi ungu, ujung terang gradiennya (#4C00BA) jauh lebih
+                    muda — /50 jatuh ke 3,35:1 dan gagal WCAG AA. /75 memberi
+                    6,16:1. Diukur ulang, bukan disalin. */}
+                <p className="mt-0.5 text-label text-white/75">Belum dikurangi modal</p>
               </div>
               <span className="angka shrink-0 text-judul-kecil font-bold text-white">
                 {formatRupiah(data.omzet)}
