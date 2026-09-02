@@ -223,3 +223,59 @@ Compiler tidak bisa menangkap lima hal berikut, jadi diperiksa manual:
 
 Berkas rujukan (render PNG 2× kelima frame) disimpan di luar repo, di folder
 sesi, supaya tidak menambah berat repo.
+
+## Hasil verifikasi
+
+Ditulis setelah kelima pemeriksaan dijalankan, bukan diperkirakan. Yang lolos
+tanpa perubahan diringkas; yang gagal ditulis lengkap, karena kegagalannya yang
+berguna.
+
+**Lolos:** nol aritmetika rupiah di React (nol `.reduce`, nol operator pada
+nilai uang); kuning hanya di perlu-dicek; merah hanya di rugi dan pesan galat;
+tidak ada isi yang tertutup FAB di kelima layar bernavigasi saat digulir ke
+paling bawah; `npm run build` dan `backend typecheck` bersih.
+
+**Gagal 1 — hijau dipakai untuk arti yang salah.** Panel keyakinan AI di
+`SheetPesanan` memakai `bg-untung-pucat` saat AI yakin. Itu hijau yang berarti
+"berhasil" — persis yang ditolak di bagian atas dokumen ini, tapi lolos karena
+yang diperiksa saat itu hanya warna yang *ditambahkan*, bukan yang sudah ada.
+Pesanan yang dibuka untuk mengujinya kebetulan rugi Rp 2.400, jadi layarnya
+menampilkan hijau di atas transaksi yang merugikan. Dipindah ke ungu muda.
+
+Pelajarannya: aturan warna tidak bisa diverifikasi dengan membaca diff. Ia
+harus diverifikasi dengan menyisir **semua** pemakaian `untung`/`rugi`/`tanda`
+di seluruh pohon, termasuk yang tidak disentuh redesain.
+
+**Gagal 2 — tombol nonaktif tidak terbaca.** `disabled:opacity-35` di atas
+gradien ungu menghasilkan lavender pucat dengan tulisan putih: **2,3:1**
+terukur. Hampir semua layar onboarding membuka dengan tombol nonaktif, jadi ini
+keadaan pertama yang dilihat pengguna baru. Diganti abu pejal dengan tulisan
+`sedang`: 6,2:1. `redup` sempat dicoba dan ditolak — 4,26:1, di bawah ambang.
+
+**Gagal 3 — jebakan lapisan CSS.** Perbaikan pertama untuk masalah di atas,
+`disabled:bg-none`, **tidak bekerja sama sekali** dan gagal tanpa suara.
+`.tombol-gradien` ditulis polos di `index.css` di luar `@layer`, sedangkan
+utilitas Tailwind hidup di `@layer utilities`. CSS selalu memenangkan aturan
+tak berlapis di atas aturan berlapis, berapa pun specificity-nya. Ketahuan
+hanya karena computed style dibaca dari browser, bukan karena kodenya terlihat
+benar — dan kodenya memang terlihat benar. Jalan keluarnya: jangan memasang
+kelas gradiennya saat nonaktif, bukan menimpanya. Dicatat di `index.css` karena
+berlaku juga untuk `.hero-gradien` dan `.lembar`.
+
+**Gagal 4 — cincin aktif FAB hanya ada di CSS.** `ring-merek-muda` di atas bar
+putih = 1,16:1, angka yang sudah tertulis di dokumen ini sebagai "jangan pernah
+jadi penanda tunggal", lalu tetap dipakai sebagai penanda tunggal. Dinaikkan ke
+ungu tembus 30%.
+
+**Direvisi — target sentuh.** Ambang 56px di atas berlaku untuk tombol utama,
+dan semuanya memenuhi (64px). Tombol ikon tidak bisa 56px tanpa membuat header
+terlihat berat, jadi dinaikkan 44 → 48px: di atas minimum WCAG, dan lebih
+nyaman untuk pengguna 35–60 tahun yang menekan tombol kembali terus-menerus.
+Pil penyaring tetap 44px.
+
+**Empat komponen dihapus atau disatukan.** `UbinIkon` dan ekspor
+`KartuStatistik` dibuang karena tidak punya rumah yang jujur — `GridUbin`
+menduplikasi `KartuAksi`, dan `KartuStatistik` butuh sepasang angka yang
+berlawanan, sedangkan di `DetailProduk` modal dan harga jual adalah **asal**
+angkanya, bukan lawannya. Tombol kembali yang ditulis ulang di empat tempat
+disatukan jadi satu `TombolIkon`.
