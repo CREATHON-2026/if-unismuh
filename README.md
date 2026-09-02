@@ -4,13 +4,12 @@
 
 Web app mobile-first yang memberitahu pedagang mikro berapa untung mereka sebenarnya — cukup dengan memotret buku catatan yang sudah mereka pakai selama ini.
 
-Dibuat untuk **CREATHON 2026**, tema *AI & Data untuk UMKM*.
 
 ---
 
 ## Masalah
 
-Pedagang mikro menyamakan **omzet** dengan **untung**. Harga ditentukan dengan menebak atau meniru tetangga 
+Pedagang mikro menyamakan **omzet** dengan **untung**. jadi mereka menetukan Harga dengan menebak atau meniru tetangga 
 
 Akibatnya sering terjadi: **produk yang paling laku justru yang paling merugikan** dan pemiliknya tidak pernah tahu. dan juga rata-rata pedagang menggunakan whatsapp sebagai sistem untuk komunikasi dan transaksi.
 
@@ -19,6 +18,7 @@ Akibatnya sering terjadi: **produk yang paling laku justru yang paling merugikan
 Jangan suruh mereka pindah. **Suruh mereka memotret buku itu.**
 
 Foto buku catatan → AI membaca tulisan tangan → transaksi terstruktur → SQL menghitung untung sebenarnya per produk.
+tidak hanya itu kami juga mengintegrasikan dengan whatsapp, sehingga chat dari pelanggan dapat diklasifikasi kemudian otomatis di input web dan dikalkulasikan
 
 ## Yang membuat ini berbeda
 
@@ -36,18 +36,19 @@ Kebanyakan aplikasi pembukuan baru berguna setelah sebulan dipakai. lapakAi berg
 
 ## Keputusan arsitektur
 
-**LLM tidak pernah menghitung.** Ia hanya mengubah bahasa dan tulisan tangan menjadi JSON. **SQL yang menghitung**, dan setiap baris bisa ditelusuri ke sumbernya. Kalau ragu, sistem bertanya — tidak menebak.
+**LLM tidak pernah menghitung.** Ia hanya mengubah bahasa dan tulisan tangan menjadi JSON. **SQL yang menghitung**, dan setiap baris bisa ditelusuri ke sumbernya. Kalau ragu, kami sediakan AI untuk bertanya — tidak menebak.
 
 | Tahap | Ditangani oleh |
 |---|---|
+| foto buku catatan | Gemini viisual
 | Catatan suara | Gamma4 + Web speech API (audio native) |
 | Ekstraksi jadi JSON | Gamma structured output |
 | Pencocokan nama produk | Gamma embedding + ambang keyakinan |
 | **Semua aritmetika** | **SQL** |
 
-**Platform: web app mobile-first.** Bukan karena tidak mampu bikin Android, tapi karena pedagang enggan install aplikasi baru.
+**Platform: web app mobile-first.**aplikasi berbasis web yang dirancang dan dikembangkan untuk perangkat seluler (seperti ponsel pintar) terlebih dahulu sebelum diperluas ke layar yang lebih besar seperti tablet dan komputer, Bukan karena tidak mampu bikin Android, tapi karena pedagang enggan install aplikasi baru.
 
-**WhatsApp: tempel teks manual.** Sistem tidak pernah mengirim pesan ke nomor pembeli.
+**WhatsApp: tempel teks manual.** disin Sistem tidak pernah mengirim pesan ke nomor pembeli.
 
 ## Stack
 
